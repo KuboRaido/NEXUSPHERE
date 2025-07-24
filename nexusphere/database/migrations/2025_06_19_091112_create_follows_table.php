@@ -15,7 +15,6 @@ return new class extends Migration
             $table->id('follow_id');
             $table->integer('follor_user_id')->unique();
             $table->integer('follower_user_id')->unique();
-            $table->created_at();
             $table->timestamps();
         });
     }
