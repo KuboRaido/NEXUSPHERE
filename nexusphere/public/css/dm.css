@@ -1,0 +1,144 @@
+/* 全体背景と中央配置 */
+body {
+  margin: 0;
+  padding: 0;
+  height: 100vh;
+  background-color: #add8e6;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-family: Arial, sans-serif;
+}
+
+/* スマホっぽいフレーム */
+body > * {
+  box-sizing: border-box;
+}
+
+.phone-frame {
+  width: 375px;
+  height: 812px; /* ←ここを伸ばします！もともとは667pxとか */
+  background-color: #fff;
+  border-radius: 40px;
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.25);
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+}
+
+
+/* タイトル（h1） */
+h1 {
+  font-size: 20px;
+  text-align: center;
+  color: #333;
+  margin-bottom: 10px;
+}
+
+/* チャットボックス */
+.chat-box {
+  flex: 1;
+  border: 1px solid #ccc;
+  border-radius: 10px;
+  padding: 8px 10px;
+  background-color: #f9f9f9;
+  overflow-y: auto;
+  margin-bottom: 10px;
+}
+
+.message-row{
+  display: flex;
+  align-items: flex-end;
+  gap: 8px;
+  margin: 6px 8px;
+}
+
+.message-row.from-me{
+  justify-content: flex-end;
+}
+
+.message-row.from-them{
+  justify-content: flex-start;
+}
+
+.msg-avatar{
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  object-fit: cover;
+  flex: 0 0 36px;
+}
+.message-wrapper {
+    display: flex;
+    margin: 8px;
+}
+
+.from-me {
+    justify-content: flex-end;
+}
+
+.from-them {
+    justify-content: flex-start;
+}
+
+.message-bubble {
+    padding: 10px 15px;
+    border-radius: 20px;
+    max-width: 60%;
+    background-color: #dcf8c6; /* from-me の吹き出し色 */
+    color: #000;
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
+    word-break: break-word;
+}
+
+.from-them .message-bubble {
+    background-color: #fff;
+    border: 1px solid #ccc;
+}
+
+/* 入力欄とボタン（縦並び） */
+#message-input {
+  width: 100%;
+  padding: 12px;
+  margin-bottom: 10px;
+  border-radius: 20px;
+  border: 1px solid #ccc;
+  font-size: 16px;
+  box-sizing: border-box;
+}
+
+button {
+  background-color: #ff69b4;
+  color: white;
+  border: none;
+  padding: 12px 0;
+  width: 100%;
+  font-size: 16px;
+  border-radius: 25px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+button:hover {
+  background-color: #ff4c9e;
+}
+.chat-header {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 16px;
+  border-bottom: 1px solid #ccc;
+}
+
+.chat-header .avatar {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  object-fit: cover;
+}
+
+.chat-header .username {
+  font-weight: bold;
+  font-size: 1.2rem;
+}
+

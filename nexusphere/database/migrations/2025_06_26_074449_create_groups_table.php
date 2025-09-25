@@ -23,6 +23,9 @@ return new class extends Migration
      */
     public function down(): void
     {
+        Schema::table('dms',function(\Illuminate\Database\Schema\Blueprint $table){
+            $table->dropForeign(['group_id']);
+        });
         Schema::dropIfExists('groups');
     }
 };

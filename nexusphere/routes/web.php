@@ -1,23 +1,28 @@
 <?php
 
 use App\Http\Controllers\LoginController;
-use App\Http\Controllers\DatabaseController;
-use Illuminate\Container\Attributes\Database;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\UserController;
-use App\Http\controllers\DmController;
+use App\Http\Controllers\DmController;
+use App\Http\Controllers\PostController;
+use App\Http\Controllers\ProfileController;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Config;
 
-Route::get('/', function () {return view('welcome');});
+Route::middleware('guest')->group(function(){
+   Route::get('/register',[UserController::class,'newloginform'])->name('newlogin');
+   Route::post('/register',[UserController::class,'register']);
+   Route::get('/login',[LoginController::class,'showLoginForm'])->name('login');
+   Route::post('/login',[LoginController::class,'login']);
+});
 
-Route::get('/post',function(){return view('post');});
-
+Route::middleware('auth')->group(function () {
+   Route::get('/dmlist',[DmController::class,'dmlistfront'])->name('dm-list');
+   Route::get('dm',[DmController::class,'dmfront'])->name('dm');
+   Route::get('/profile', [ProfileController::class, 'show'])->name('profile');
+   Route::get('/post', [PostController::class, 'post'])->name('post');
+   Route::get('/create', [PostController::class, 'create'])->name('create');
+});
 Route::post('/User',[UserController::class,'register']);
 
-Route::get('/login',[LoginController::class,'showLoginForm'])->name('login');
-Route::post('/login',[LoginController::class,'login']);
-
-Route::get('/newlogin',[UserController::class,'newloginform'])->name('newlogin');
-Route::post('/newlogin',[UserController::class,'register']);
-
-Route::get('/register',[UserController::class,'register'])->name('register');
-Route::post('/Dm',[DmController::class,'dm']);
+Route::get('/', function () {return view('welcome');});
