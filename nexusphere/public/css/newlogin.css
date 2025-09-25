@@ -7,6 +7,16 @@ body {
     min-height: 100vh;
     margin: 0;
 }
+.wrapper{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    min-height: 100vh;
+    width: 100%;
+    font-size:2rem;
+}
+
 .form-container {
     background-color: #ffffff; /* コンテナの背景色を白に設定 */
     padding: 2.5rem;

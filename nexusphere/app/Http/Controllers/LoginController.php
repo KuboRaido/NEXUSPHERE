@@ -3,8 +3,7 @@ namespace App\Http\Controllers;
 
 use App\Http\controllers\Controller;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Hash;
-use App\Models\User;
+use Illuminate\Support\Facades\Auth;
 
 class LoginController extends Controller
 {
@@ -14,20 +13,25 @@ class LoginController extends Controller
     }
     public function login(Request $request)
     {
-        $request->validate([
-            'mail'=>'required|email',
-            'password'=>'required'
+        $credentials = $request->validate([
+            'mail'=> ['required','email'],
+            'password'=>['required'],
         ]);
 
+        $remember = (bool) $request->boolean('remember');
 
-        $user = User::where('mail',$request->mail)->first();
+        if (Auth::attempt(['mail' => $credentials['mail'],'password' =>$credentials['password']],$remember)){
+            $request->session()->regenerate();
 
-        if(!$user|| !Hash::check($request->password,$user->password)){
-            return back()->withErrors([
-        'login_error' => 'メールアドレスまたはパスワードが間違っています',
-            ]);}
+            if($request->wantsJson()){
+                return response()->json(['ok' => true, 'id' => Auth::id()]);
+            }
+            return redirect()->intended(route('dm-list'));
+        }
 
-        return response()->json(['message'=>'ログイン成功'],200);
+        return back()->withErrors([
+            'login_error' => 'メールアドレスまたはパスワードが間違っています',
+        ])->onlyInput('mail');
 
     }
 }

@@ -8,6 +8,8 @@
     <link rel="stylesheet" href="{{ asset('css/newlogin.css') }}">
 </head>
 <body>
+    <div class="wrapper">
+    <h1 class="title">Nexusphere</h1>
     <div class="form-container">
         <h1 class="header-text">新規登録</h1>
         @if ($errors->any())

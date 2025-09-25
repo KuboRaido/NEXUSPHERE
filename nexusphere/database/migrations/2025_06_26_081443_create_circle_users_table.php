@@ -13,8 +13,8 @@ return new class extends Migration
     {
         Schema::create('circle_users', function (Blueprint $table) {
             $table->id('circle_user_id');
-            $table->integer('circle_id')->unique();
-            $table->integer('user_id')->unique();
+            $table->integer('circle_id');
+            $table->integer('user_id');
             $table->timestamps();
         });
     }

@@ -11,6 +11,9 @@ use App\Http\Model\Prc;
 class PostController extends Controller
 {
     public function post(){
-        
+        return view('index');
+    }
+    public function create(){
+        return view('create');
     }
 }
