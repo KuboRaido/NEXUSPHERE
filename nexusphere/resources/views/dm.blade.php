@@ -12,23 +12,22 @@
 </head>
 <body>
   <div class="phone-frame">
-    <h1>DMチャット画面</h1>
-
+    <div class="header">
+      <a href="{{url('dmlist')}}" class="back-button">←</a>
+      <span></span>
+    </div>
+    
+<!--チャットボックス-->
+    <div id="chat-box" class="chat-box"></div>
     <input type="hidden" id="currentUserId" value="{{auth()->id()}}">
     <input type="hidden" id="recipientId" value="{{$partnerId}}">
 
-    <div id="chat-box" class="chat-box"></div>
-
+<!--入力欄-->
     <form id="chat-form" class="chat-form" autocomplete="off">
+      <input type="file" id="image-input" accept="image/*" style="display:none;" onchange="previewImage(event)">
+      <button type="button" onclick="document.getElementById('image-input').click()">+</button>
       @csrf
-       <input
-        id="message-input"
-        type="text"
-        placeholder=""
-        autocomplete="off"
-        enterkeyhint="send"
-        inputmode="text"
-       />
+       <input id="message-input" type="text" placeholder="" autocomplete="off" enterkeyhint="send" inputmode="text"/>
        <button id="send-btn" type="submit" aria-label="送信">送信</button>
      </form>
   </div>
