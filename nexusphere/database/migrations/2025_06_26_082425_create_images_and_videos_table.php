@@ -14,11 +14,9 @@ return new class extends Migration
         Schema::create('images_and_videos', function (Blueprint $table) {
             $table->id('image_and_video_id');
             $table->integer('prc_id')->unique();
-            $table->integer('circle_id');
-            $table->text('movie');
-            $table->text('image');
-            $table->integer('group_message_id');
-            $table->integer('user_id');
+            $table->text('movie')->nullable();
+            $table->text('image')->nullable();
+            $table->integer('dm_id')->nullable();
             $table->timestamps();
         });
     }
