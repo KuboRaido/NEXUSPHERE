@@ -3,17 +3,18 @@
 <head>
   <meta charset="UTF-8">
   <title>メッセージ一覧</title>
-  <link rel="stylesheet" href="{{ asset('css/dm.css') }}">
+  <link rel="stylesheet" href="{{ asset('css/dm_index.css') }}">
 </head>
 <body>
-  <div class="phone-frame">
-    <h1>メッセージ一覧</h1>
-
-    <div id="chat-box">
-      <!-- JavaScriptでスレッド一覧を挿入 -->
-    </div>
+<div class="phone-frame">
+  <div class="header">
+    <span class="title">nexsphere</span>
   </div>
+  <div id="chat-box">
+  <!-- JavaScriptでスレッド一覧を挿入 -->
+</div>
+</div>  
 
-  <script src="{{ asset('js/dm.js') }}"></script>
+  <script src="{{ asset('js/dm-index.js') }}"></script>
 </body>
 </html>
