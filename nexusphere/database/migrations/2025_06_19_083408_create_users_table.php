@@ -14,13 +14,14 @@ return new class extends Migration
         Schema::create('users', function (Blueprint $table) {
             $table->id('user_id');
             $table->string('mail',255)->unique();
-            $table->string('password',20)->unique();
+            $table->string('password',255);
             $table->text('name');
-            $table->integer('age','2');
-            $table->integer('grade','1');
+            $table->integer('age');
+            $table->integer('grade');
             $table->text('subject');
             $table->text('major');
             $table->text('icon')->nullable();
+            $table->rememberToken();
             $table->timestamps();
         });
     }
@@ -30,6 +31,9 @@ return new class extends Migration
      */
     public function down(): void
     {
+        Schema::table('dms',function(\Illuminate\Database\Schema\Blueprint $table){
+            $table->dropForeign(['user_id']);
+        });
         Schema::dropIfExists('users');
     }
 };

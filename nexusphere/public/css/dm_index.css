@@ -1,0 +1,173 @@
+/* 全体背景と中央配置 */
+body {
+  margin: 0;
+  padding: 0;
+  height: 100vh;
+  background-color: #add8e6;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-family: Arial, sans-serif;
+}
+
+/* スマホっぽいフレーム */
+.phone-frame {
+  width: 375px;
+  height: 812px;
+  background-color: #fff;
+  border-radius: 40px;
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.25);
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+
+  transform: scale(0.60); /* ← 縮小率を調整（0.8～0.9あたり） */
+  transform-origin: center; /* 中央基準で縮小 */
+}
+
+
+/* タイトル */
+h1 {
+  font-size: 20px;
+  text-align: center;
+  color: #333;
+  margin-bottom: 10px;
+}
+
+
+.message-wrapper {
+    display: flex;
+    margin: 8px;
+}
+
+.from-me {
+    justify-content: flex-end;
+}
+
+.from-them {
+    justify-content: flex-start;
+}
+
+.message-bubble {
+    padding: 10px 15px;
+    border-radius: 20px;
+    max-width: 60%;
+    background-color: #dcf8c6;
+    color: #000;
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
+    word-break: break-word;
+}
+
+.from-them .message-bubble {
+    background-color: #fff;
+    border: 1px solid #ccc;
+}
+
+/* 入力欄とボタン */
+#message-input {
+  width: 100%;
+  padding: 12px;
+  margin-bottom: 10px;
+  border-radius: 20px;
+  border: 1px solid #ccc;
+  font-size: 16px;
+  box-sizing: border-box;
+}
+
+button {
+  background-color: #ff69b4;
+  color: white;
+  border: none;
+  padding: 12px 0;
+  width: 100%;
+  font-size: 16px;
+  border-radius: 25px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+button:hover {
+  background-color: #ff4c9e;
+}
+
+.chat-header {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 16px;
+  border-bottom: 1px solid #ccc;
+}
+
+.chat-header .avatar {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  object-fit: cover;
+}
+
+.chat-header .username {
+  font-weight: bold;
+  font-size: 1.2rem;
+}
+
+
+/*dm一覧*/
+#dm-list{list-style: none; margin: 0; padding: 0;}
+
+/* 1行 */
+#dm-list .dm-item {
+  border-bottom: 1px solid #eee;
+  border-top: 1px solid #eee;
+}
+
+#dm-list .dm-avatar{
+  width: 40px; height: 40px;
+  border-radius: 50%;
+  object-fit: cover;
+  flex: none;
+}
+
+#dm-list .dm-meta{
+  display: flex;
+  flex-direction: column;
+  min-width: 0; /* テキスト省略のため */
+  flex: 1;
+}
+
+/* クリック領域（a）をブロック化してカードっぽく */
+#dm-list .dm-link {
+  display: flex;
+  gap: 12px;
+  align-items: center;
+  padding: 10px 12px;
+  text-decoration: none;
+  color: inherit; /* 親の色を継承 */
+}
+
+/* 名前を強調 */
+#dm-list .dm-name {
+  font-weight: 600;
+  margin-right: auto; /* 右側に時間を寄せたいので */
+}
+
+/* 最終メッセージを省略表示 */
+#dm-list .dm-last {
+  max-width: 50%;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  color: #666;
+}
+
+/* 時刻を右端に */
+#dm-list .dm-time {
+  margin-left: auto;
+  font-size: 12px;
+  color: #999;
+  flex: none;
+}
+
+/* hover */
+#dm-list .dm-item:hover {
+  background: #f8f9fa;
+}
