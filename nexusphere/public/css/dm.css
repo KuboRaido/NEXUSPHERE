@@ -46,6 +46,8 @@ body > * {
   margin-bottom: 10px;
 }
 
+/*メッセージエリア*/
+
 .message-row{
   display: flex;
   align-items: flex-end;
@@ -73,14 +75,6 @@ body > * {
     margin: 8px;
 }
 
-.from-me {
-    justify-content: flex-end;
-}
-
-.from-them {
-    justify-content: flex-start;
-}
-
 .message-bubble {
     padding: 10px 15px;
     border-radius: 20px;
@@ -91,14 +85,39 @@ body > * {
     word-break: break-word;
 }
 
+.from-me {
+    justify-content: flex-end;
+}
+
+.from-them {
+    justify-content: flex-start;
+}
+
 .from-them .message-bubble {
     background-color: #fff;
     border: 1px solid #ccc;
 }
 
+.input-area button.attach-btn {
+  flex-shrink: 0;
+  width: 36px;            /* 横幅 */
+  height: 36px;           /* 高さを入力欄に合わせる */
+  padding: 0;             /* 内側余白は0 */
+  border-radius: 50%;     /* 丸ボタンに */
+  border: none;
+  background-color: #ff69b4;
+  color: white;
+  font-size: 18px;        /* アイコンサイズ */
+  cursor: pointer;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+
 /* 入力欄とボタン（縦並び） */
 #message-input {
-  width: 100%;
+  width: 70%;
   padding: 12px;
   margin-bottom: 10px;
   border-radius: 20px;
@@ -108,7 +127,9 @@ body > * {
 }
 
 button {
+  flex-shrink: 0;
   background-color: #ff69b4;
+  padding: 8px 15px;
   color: white;
   border: none;
   padding: 12px 0;
@@ -119,7 +140,7 @@ button {
   transition: background-color 0.3s ease;
 }
 
-button:hover {
+.button:hover {
   background-color: #ff4c9e;
 }
 .chat-header {
@@ -142,3 +163,14 @@ button:hover {
   font-size: 1.2rem;
 }
 
+#back-button {
+  position: absolute;
+  top: 8px;
+  left: 10px;
+  font-size: 22px;
+  color: #333;
+  text-decoration: none;
+  border: none;
+  cursor: pointer;
+  z-index: 10;
+}
