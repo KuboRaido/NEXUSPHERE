@@ -3,19 +3,24 @@
 <head>
   <meta charset="UTF-8">
   <title>メッセージ一覧</title>
-  <link rel="stylesheet" href="{{ asset('css/dm_index.css') }}">
+  <link rel="stylesheet" href="{{ asset('css/dm-list.css') }}">
   <meta name="default-avatar" content="{{ asset('images/default-avatar.png') }}">
   <script>window.DEFAULT_AVATAR_URL = "{{asset('images/default-avatar.png')}}"</script>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
 </head>
 <body>
   <div class="phone-frame">
     <h1>メッセージ一覧</h1>
-
     <ul id="dm-list" class="dm-list" data-chat-url-template="{{url('/dm')}}?to=__ID__">
     </ul>
-    
-  </div>
+    <div class="footer-nav">
+      <a href="#" class="tab active" data-target="home"><i class="fa-solid fa-house"></i></a>
+      <a href="#" class="tab" data-target="talk"><i class="fa-solid fa-comment"></i></a>
+      <a href="#" class="tab" data-target="mypage"><i class="fa-solid fa-user"></i></a>
+    </div>
 
-  <script src="{{ asset('js/dm.js') }}"></script>
+  </div>
+  <script src="{{ asset('js/dm-list.js') }}"></script>
 </body>
 </html>
