@@ -45,7 +45,6 @@ function renderMessages() {
   if (!chatBox) return;
 
   const currentUserId = String(getMeId() ?? '');
-  chatBox.innerHTML = '';
 
   for (const msg of messages){
     const mine = (msg.from === currentUserId);
@@ -75,6 +74,12 @@ function renderMessages() {
 
   chatBox.scrollTop = chatBox.scrollHeight; // 常に最下部へ
 }
+
+document.addEventListener('DOMContentLoaded',()=>{
+  const attachBtn = document.getElementById('attach-btn');
+  const fileInput = document.getElementById('file-input');
+  if (attachBtn && fileInput) attachBtn.addEventListener('click', () => fileInput.click());
+});
 
 // ----- API（会話） -----
 async function loadConversation(partnerId) {
@@ -111,6 +116,7 @@ async function sendMessage() {
   const recipientRaw = String(document.getElementById('recipientId')?.value ?? '').trim();
   const input = document.getElementById('message-input');
   const text = String(input?.value ?? '').trim();
+  //const fileInput = document.getElementsById('file-input');
   if (!text) return;
 
   let toId;
@@ -138,8 +144,6 @@ async function sendMessage() {
   try {
     const token = decodeURIComponent((document.cookie.match(/XSRF-TOKEN=([^;]+)/)||[])[1] || '');
 
-    // ★送信API：あなたの現コードに合わせて /api/v1/dmlist/dm を使用
-    //   バックが /api/v1/dm/send なら、ここを差し替えてください。
     const res = await fetch('/api/v1/dmlist/dm', {
       method: 'POST',
       headers: {

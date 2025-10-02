@@ -17,14 +17,13 @@ body > * {
 
 .phone-frame {
   width: 300px;
-  height: 812px;
+  height: 600px;
   background-color: #fff;
   border-radius: 40px;
   box-shadow: 0 8px 25px rgba(0, 0, 0, 0.25);
   padding: 20px;
   display: flex;
   flex-direction: column;
-  margin-top:auto;
 }
 
 .footer-nav {
@@ -32,10 +31,7 @@ body > * {
   justify-content: space-around;
   background: #f8f8f8;
   border-top: 1px solid #ddd;
-  padding: 10px 0;
-  margin-top: auto;
-  border-bottom-left-radius: 30px;
-  border-bottom-right-radius: 30px;
+  padding: 8px 0;
 }
 
 .footer-nav a {
@@ -45,8 +41,7 @@ body > * {
   display: flex;
   flex-direction: column;
   align-items: center;
-  min-width: 56px;       /* タップ幅確保 */
-  gap: 4px;
+  /* min-width: 56px;       /* タップ幅確保 */
 }
 
 .footer-nav a i {
@@ -58,17 +53,35 @@ body > * {
   color: #4CAF50; /* 選択されたタブの色 */
 }
 
-/* タイトル */
-h1 {
-  font-size: 20px;
-  text-align: center;
+.header{
+  height: 50px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
   color: #333;
-  margin-bottom: 10px;
+  border-bottom: 1px solid #ccc;
+  flex-shrink: 0;
+}
+/* タイトル */
+.title {
+  font-size: 20px;
+  font-weight: bold;
 }
 
 
 /*dm一覧*/
 #dm-list{
+  list-style: none;
+  height: 400px;           /* チャットボックス高さ固定 */
+  border: 1px solid #ccc;
+  border-radius: 10px;
+  margin: 10px;
+  background-color: #f9f9f9;
+  overflow-y: auto;        /* メッセージがはみ出したらスクロール */
+  padding: 10px;
+  position: relative;
+}
+/*#dm-list{
   list-style: none;
   margin: 0;
   padding: 0;
@@ -82,9 +95,10 @@ h1 {
 }
 
 #dm-list .dm-avatar{
-  width: 40px; height: 40px;
+  width: 48px;
+  height: 48px;
   border-radius: 50%;
-  object-fit: cover;
+  background-color: #00b894;
   flex: none;
 }
 
@@ -113,11 +127,11 @@ h1 {
 
 /* 最終メッセージを省略表示 */
 #dm-list .dm-last {
-  max-width: 50%;
+  font-size: 13px;
+  color: #555;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
-  color: #666;
 }
 
 /* 時刻を右端に */

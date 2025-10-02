@@ -47,4 +47,12 @@ class Dm extends Model
             
         });
     }
+
+    public $timestamps = true;
+
+    public function attachments()
+    {
+       return $this->hasMany(Images_and_video::class, 'dm_id', 'dm_id');
+    }
+
 }

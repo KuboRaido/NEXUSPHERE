@@ -13,22 +13,23 @@
 <body>
   <div class="phone-frame">
     <div class="header">
-     <a href="{{url('dmlist')}}" id="back-button" class="back-button">←</a> 
-      <span></span>
+      <span class="title">nexusphere</span>
     </div>
     
 <!--チャットボックス-->
-    <div id="chat-box" class="chat-box"></div>
+    <div id="chat-box" class="chat-box">
+     <a href="{{url('dmlist')}}" id="back-button" class="back-button">←</a> 
+    </div>
      <input type="hidden" id="currentUserId" value="{{auth()->id()}}">
      <input type="hidden" id="recipientId" value="{{$partnerId}}">
 <!--入力欄-->
     <form id="chat-form" class="chat-form" autocomplete="off">
        <div class="input-area">
-        <input type="file" id="image-input" accept="image/*" style="display:none;" onchange="previewImage(event)">
-        <button type="button" class="attach-btn" onclick="document.getElementById('image-input').click()">+</button>
-        @csrf
-        <input id="message-input" type="text" placeholder="" autocomplete="off" enterkeyhint="send" inputmode="text"/>
-        <button id="send-btn" type="submit" aria-label="送信">送信</button>
+         <input type="file" id="image-input" accept="image/*,video/*" style="display:none;" onchange="previewImage(event)" multiple hidden>
+         <button type="button" id="attach-btn"class="attach-btn" onclick="document.getElementById('image-input').click()">+</button>
+         @csrf
+         <input id="message-input" type="text" placeholder="" autocomplete="off" enterkeyhint="send" inputmode="text"/>
+         <button onclick="sendMessage()">送信</button>
        </div>
      </form>
   </div>
