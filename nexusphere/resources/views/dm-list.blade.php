@@ -11,9 +11,12 @@
 </head>
 <body>
   <div class="phone-frame">
-    <h1>メッセージ一覧</h1>
-    <ul id="dm-list" class="dm-list" data-chat-url-template="{{url('/dm')}}?to=__ID__">
-    </ul>
+    <div class="header">
+      <span class="title">DM</span>
+    </div>
+    
+     <ul id="dm-list" class="dm-list" data-chat-url-template="{{url('/dm')}}?to=__ID__"></ul>
+    
     <div class="footer-nav">
       <a href="#" class="tab active" data-target="home"><i class="fa-solid fa-house"></i></a>
       <a href="#" class="tab" data-target="talk"><i class="fa-solid fa-comment"></i></a>

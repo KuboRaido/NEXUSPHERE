@@ -10,7 +10,7 @@ use Illuminate\Support\Facades\Storage;
 use App\Models\Dm;
 use App\Models\User;
 use Illuminate\Support\Str;
-
+use App\Models\Images_and_video;
 class DmController extends Controller
 {
    private function avatarUrl(?User $u): string
@@ -168,24 +168,50 @@ class DmController extends Controller
       $userPk = (new User)->getKeyName();
       $data = $request->validate([
          'to'    => ['required','integer', "exists:users,{$userPk}"],
-         'text'  => ['required','string','max:2000'],
+         'text'  => ['nullable','string','max:5000'],
+         'files.*' => ['nullable','file','max:20480','mimetypes:image/*,video/*'],
       ],[],['to' =>'宛先ユーザーID','text'=>'メッセージ本文']);
    
-      $msg = Dm::create([
+      $dm = Dm::create([
          'sender_id'    => $me,
          'receiver_id'  => (int)$data['to'],
-         'message_text' => $data['text'],
+         'message_text' => $data['text']??null,
          'user_id'      => $me,
          'circle_id'    => null,
       ]);
 
+      $attachments = [];
+      if($request->hasFile('files')){
+         foreach ($request->file('files') as $file){
+            $path  = $file->store('dm/'.date('Y/m/d'),'public');
+            $mime  = $file->getMimeType();
+            $isImg = str_starts_with($mime,'image/');
+            $isMov = str_starts_with($mime,'video/');
+
+            do{$prc = random_int(100000000,999999999);}
+            while(\App\Models\Images_And_Video::where('prc_id',$prc)->exists());
+
+            $rec = \App\Models\Images_And_Video::create([
+               'prc_id' => $prc,
+               'image'  => $isImg ? $path : null,
+               'movie'  => $isMov ? $path : null,
+               'dm_id'  => $dm->dm_id,
+            ]);
+
+            $attachments[] = [
+               'type' => $rec->type,
+               'url'  => $rec->url,
+            ];
+         }
+      }
       return response()->json([
-         'id'         => $msg->dm_id,
-         'from_id'    => (int)$msg->sender_id,
-         'to_id'      => (int)$msg->receiver_id,
-         'text'       => (string)($msg->message_text ?? ''),
-         'dm_key'     => $msg->dm_key,
-         'created_at' => $msg->created_at->toISOString(),
+         'id'         => $dm->dm_id,
+         'from_id'    => (int)$dm->sender_id,
+         'to_id'      => (int)$dm->receiver_id,
+         'text'       => (string)($dm->message_text ?? ''),
+         'dm_key'     => $dm->dm_key,
+         'created_at' => $dm->created_at->toISOString(),
+         'attachments'=> $attachments,
       ], 201);
    }
 }
