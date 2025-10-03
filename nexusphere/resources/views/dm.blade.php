@@ -14,7 +14,7 @@
 
     <!-- チャット部分 -->
    <div id="chat-box">
-  <a href="{{ url('/dm/index') }}" class="back-button">←</a>
+  <a href="{{ url('/dm/dm-list') }}" class="back-button">←</a>
   <input type="hidden" id="currentUserId" value="1">
   <input type="hidden" id="recipientId" value="2">
 
