@@ -174,7 +174,7 @@ class DmController extends Controller
    
       $dm = Dm::create([
          'sender_id'    => $me,
-         'receiver_id'  => (int)$data['to'],
+         'receiver_id'  => $data['to'],
          'message_text' => $data['text']??null,
          'user_id'      => $me,
          'circle_id'    => null,

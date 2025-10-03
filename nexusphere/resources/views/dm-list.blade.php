@@ -4,10 +4,10 @@
   <meta charset="UTF-8">
   <title>メッセージ一覧</title>
   <link rel="stylesheet" href="{{ asset('css/dm-list.css') }}">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   <meta name="default-avatar" content="{{ asset('images/default-avatar.png') }}">
   <script>window.DEFAULT_AVATAR_URL = "{{asset('images/default-avatar.png')}}"</script>
   <meta name="viewport" content="width=device-width, initial-scale=1">
-
 </head>
 <body>
   <div class="phone-frame">
