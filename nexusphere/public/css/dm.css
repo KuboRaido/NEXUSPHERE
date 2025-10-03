@@ -45,21 +45,19 @@ body > * {
 
 /* チャットボックス */
 #chat-box {
-  height: 400px;           /* チャットボックス高さ固定 */
-  border: 1px solid #ccc;
+  display: flex;
+  flex-direction: column;  /* 縦並び */
+  height: 500px;
   border-radius: 10px;
-  margin: 10px;
-  background-color: #f9f9f9;
-  overflow-y: auto;        /* メッセージがはみ出したらスクロール */
-  padding: 10px;
-  position: relative;      
+  background-color: #f9f9f9; 
+  overflow: hidden; /* 枠からはみ出さないように */
 }
 
 /*メッセージエリア*/
 
 .messages {
-  height: 100%;  /* チャットボックスの高さいっぱい */
-  overflow-y: auto;
+  flex: 1;   /* 余ったスペースを全部使う */
+  overflow-y: auto; /* メッセージが増えたらスクロール */
   padding: 10px;
 }
 .message-wrapper {
@@ -69,12 +67,10 @@ body > * {
 
 .from-me {
   margin-left: auto;
-  background-color: #dcf8c6;
 }
 
 .from-them {
   margin-right: auto;
-  background-color: #fff;
   border: 1px solid #ccc;
 }
 
@@ -96,6 +92,9 @@ body > * {
 /* 入力欄とボタン（縦並び） */
 .input-area{
   display: flex;
+  border-top: 1px solid #ccc;
+  background-color: #fff;
+  flex-shrink: 0;
 }
 
 #image-input {
@@ -164,7 +163,6 @@ button {
 }
 
 .back-button {
-  position: absolute;
   top: 8px;
   left: 10px;
   font-size: 22px;

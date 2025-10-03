@@ -38,10 +38,11 @@ function sendMessage() {
 }
 
 function renderMessages() {
-    const chatBox = document.getElementById('chat-box');
+    const messagesDiv = document.querySelector('.messages');
     const currentUserId = document.getElementById('currentUserId').value;
 
-    chatBox.innerHTML = '';
+    // メッセージ部分だけをクリア
+    messagesDiv.innerHTML = '';
 
     messages.forEach(msg => {
         const wrapper = document.createElement('div');
@@ -53,10 +54,11 @@ function renderMessages() {
         bubble.textContent = msg.text;
 
         wrapper.appendChild(bubble);
-        chatBox.appendChild(wrapper);
+        messagesDiv.appendChild(wrapper);
     });
 
-    chatBox.scrollTop = chatBox.scrollHeight;
+    // 最新メッセージまでスクロール
+    messagesDiv.scrollTop = messagesDiv.scrollHeight;
 }
 
 
