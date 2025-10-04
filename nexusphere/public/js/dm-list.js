@@ -1,52 +1,76 @@
-// 仮データ
-const conversations = [
-  { id: 1, name: "佐藤 花子", lastMessage: "了解です😊", time: "10:15", unread: 2 },
-  { id: 2, name: "開発チーム", lastMessage: "デプロイ完了しました", time: "09:40", unread: 0 },
-  { id: 3, name: "田中 一郎", lastMessage: "今どこ？", time: "昨日", unread: 0 },
-  { id: 4, name: "中嶋さん", lastMessage: "資料送ります", time: "月曜", unread: 1 }
-];
+// dm-list.js --- 一覧ページ用（#dm-list があるページだけで動く）
 
-const chatBox = document.getElementById("chat-box");
+let DEFAULT_AVATAR = window.DEFAULT_AVATAR_URL || '/images/default-avatar.png';
 
-function renderConversations() {
-  chatBox.innerHTML = "";
-  conversations.forEach(c => {
-    const item = document.createElement("div");
-    item.className = "chat-item";
-
-    // アバター（名前の頭文字）
-    const avatar = document.createElement("div");
-    avatar.className = "avatar";
-    avatar.textContent = c.name.charAt(0);
-
-    // コンテンツ部分
-    const content = document.createElement("div");
-    content.className = "chat-content";
-    content.innerHTML = `
-      <div class="chat-name">${c.name}</div>
-      <div class="chat-message">${c.lastMessage}</div>
-    `;
-
-    // メタ情報（時間＋未読）
-    const meta = document.createElement("div");
-    meta.className = "chat-meta";
-    meta.innerHTML = `
-      <div>${c.time}</div>
-      ${c.unread > 0 ? `<div class="unread">${c.unread}</div>` : ""}
-    `;
-
-    item.appendChild(avatar);
-    item.appendChild(content);
-    item.appendChild(meta);
-
-    // クリック時の挙動（チャット画面に遷移する想定）
-    item.addEventListener("click", () => {
-      alert(c.name + " のチャットを開きます");
-    });
-
-    chatBox.appendChild(item);
-  });
+// ----- ユーティリティ（一覧用） -----
+function escapeHtml(s){
+  return String(s).replace(/[&<>"']/g, (c) => ({
+    '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;'
+  }[c]));
 }
 
-// 初期描画
-renderConversations();
+function formatTime(iso){
+  if(!iso) return '';
+  const d = new Date(iso);
+  return isNaN(d) ? '' : d.toLocaleString();
+}
+
+// ----- API & 描画（一覧） -----
+async function loadDmList(){
+  const listRoot = document.getElementById('dm-list');
+  if(!listRoot) return;
+
+  listRoot.innerHTML = '<li class="loading">読み込み中...</li>';
+
+  try{
+    const res = await fetch('/api/v1/dmlist',{
+      headers: {'Accept': 'application/json'},
+      credentials: 'include',
+    });
+    const json = await res.json();
+    if (!res.ok) throw new Error(json.message|| 'DM一覧の取得に失敗しました');
+
+    const items = Array.isArray(json) ? json : (json.data ?? json.dms ?? []);
+    if(!items.length){
+      listRoot.innerHTML = '<li class="empty">まだ会話がありません</li>';
+      return;
+    }
+
+    const tpl = listRoot.dataset.chatUrlTemplate || '/dm?to=__ID__';
+    const fallback = DEFAULT_AVATAR;
+
+    listRoot.innerHTML = '';
+    for (const it of items){
+      const href = tpl.replace('__ID__',encodeURIComponent(it.partner_id));
+      const icon = it.partner_icon || '/images/default-avatar.png';
+
+      const li = document.createElement('li');
+      li.className = 'dm-item';
+      li.innerHTML = `
+        <a class="dm-link" href="${href}">
+          <img class="dm-avatar" src="${icon}" alt="" onerror="this.src='${fallback}'">
+          <div class="dm-meta">
+            <div class="dm-name">${escapeHtml(it.partner_name || 'Unknown')}</div>
+            <div class="dm-last">${escapeHtml(it.last_message || '')}</div>
+          </div>
+          <time class="dm-time" datetime="${it.last_time || ''}">
+            ${formatTime(it.last_time)}
+          </time>
+        </a>
+      `;
+      listRoot.appendChild(li);
+    }
+  } catch (e) {
+    console.error(e);
+    listRoot.innerHTML = '<li class="error">一覧の読み込みに失敗しました</li>';
+  }
+}
+
+// ----- 起動（一覧ページのみ） -----
+document.addEventListener('DOMContentLoaded', async () => {
+  const listRoot = document.getElementById('dm-list');
+  if(!listRoot) return;
+
+  await fetch('/sanctum/csrf-cookie',{credentials:'include'});
+  await loadDmList();
+});

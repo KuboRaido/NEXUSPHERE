@@ -3,16 +3,43 @@
 use Illuminate\Foundation\Application;
 use Illuminate\Foundation\Configuration\Exceptions;
 use Illuminate\Foundation\Configuration\Middleware;
+use Illuminate\Support\Facades\Route;
+use Laravel\Sanctum\Http\Middleware\EnsureFrontendRequestsAreStateful;
+// use App\Http\Middleware\HandleInertiaRequests; // ← Inertia未使用ならコメントアウト
 
 return Application::configure(basePath: dirname(__DIR__))
     ->withRouting(
-        web: __DIR__.'/../routes/web.php',
-        commands: __DIR__.'/../routes/console.php',
-        health: '/up',
+        using: function () {
+            // API（v1）
+            Route::middleware('api')
+                ->prefix('api')
+                ->group(function () {
+                    Route::group([], base_path('routes/api.php'));
+                });
+
+            // 画面（Blade等）
+            Route::middleware('web')
+                ->group(base_path('routes/web.php'));
+        },
+        commands: __DIR__ . '/../routes/console.php',
+        health: '/healthz',
     )
-    ->withMiddleware(function (Middleware $middleware): void {
-        //
+    ->withMiddleware(function (Middleware $middleware) {
+        // Inertia使うときだけ：
+        // $middleware->web(append: [ HandleInertiaRequests::class ]);
+
+        // SPA + Sanctum（Cookie認証）を使うなら推奨
+        $middleware->appendToGroup('api', EnsureFrontendRequestsAreStateful::class);
+
+        $middleware->alias([
+            'auth'     => \App\Http\Middleware\Authenticate::class,
+            'verified' => \Illuminate\Auth\Middleware\EnsureEmailIsVerified::class,
+        ]);
     })
-    ->withExceptions(function (Exceptions $exceptions): void {
-        //
+    ->withExceptions(function (Exceptions $exceptions) {
+        $exceptions->renderable(function (\Illuminate\Auth\AuthenticationException $e, $request) {
+            if ($request->is('api/*')) {
+                return response()->json(['message' => 'Unauthenticated.'], 401);
+            }
+        });
     })->create();
