@@ -10,8 +10,8 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Config;
 
 Route::middleware('guest')->group(function(){
-   Route::get('/register',[UserController::class,'newLoginForm'])->name('newLogin');
-   Route::post('/register',[UserController::class,'register']);
+   Route::get('/newLogin',[UserController::class,'newLoginForm'])->name('newLogin');
+   Route::post('/newLogin',[UserController::class,'register']);
    Route::get('/login',[LoginController::class,'showLoginForm'])->name('login');
    Route::post('/login',[LoginController::class,'login']);
 });

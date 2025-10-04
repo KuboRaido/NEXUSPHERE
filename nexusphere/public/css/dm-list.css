@@ -122,8 +122,10 @@ body > * {
 
 /* 名前を強調 */
 #dm-list .dm-name {
-  font-weight: 600;
-  margin-right: auto; /* 右側に時間を寄せたいので */
+  white-space: nowrap;       
+  overflow: hidden;         
+  text-overflow: ellipsis;   
+  display: inline-block;   
 }
 
 /* 最終メッセージを省略表示 */

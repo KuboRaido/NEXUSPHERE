@@ -3,14 +3,13 @@
 namespace App\Http\Controllers;
 
 use App\Http\Controllers\Controller;
-use App\Http\Resources\DmListItemResource;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
 use App\Models\Dm;
 use App\Models\User;
-use Illuminate\Support\Str;
-use App\Models\Images_and_video;
+
+
 class DmController extends Controller
 {
    private function avatarUrl(?User $u): string

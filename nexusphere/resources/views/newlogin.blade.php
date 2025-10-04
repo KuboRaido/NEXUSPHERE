@@ -29,7 +29,7 @@
         </div>
     @endif
 
-        <form method="POST" action="{{ route('newlogin') }}" enctype="multipart/form-data">
+        <form method="POST" action="{{ route('newLogin') }}" enctype="multipart/form-data">
             @csrf
             <!-- メールアドレス -->
             <div>

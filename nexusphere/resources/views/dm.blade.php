@@ -24,12 +24,13 @@
      <input type="hidden" id="recipientId" value="{{$partnerId}}">
 <!--入力欄-->
     <form id="chat-form" class="chat-form" autocomplete="off">
+      <div id="preview-area" style="padding:6px 10px;"></div>
        <div class="input-area">
-         <input type="file" id="image-input" accept="image/*,video/*" style="display:none;" onchange="previewImage(event)" multiple hidden>
          <button type="button" id="attach-btn"class="attach-btn" onclick="document.getElementById('image-input').click()">+</button>
+          <input type="file" id="image-input" accept="image/*,video/*" style="display:none;" onchange="previewImage(event)" multiple hidden>
          @csrf
          <input id="message-input" type="text" placeholder="" autocomplete="off" enterkeyhint="send" inputmode="text"/>
-         <button onclick="sendMessage()">送信</button>
+         <button type="submit">送信</button>
        </div>
      </form>
   </div>
