@@ -88,6 +88,15 @@ body > * {
     margin: 8px;
 }
 
+.from-me {
+  margin-left: auto;
+}
+
+.from-them {
+  margin-right: auto;
+  border: 1px solid #ccc;
+}
+
 .message-bubble {
     padding: 10px 15px;
     border-radius: 20px;
@@ -113,9 +122,18 @@ body > * {
     border: 1px solid #ccc;
 }
 
-.input-area {
+/* 入力欄とボタン（縦並び） */
+.input-area{
   display: flex;
+  border-top: 1px solid #ccc;
+  background-color: #fff;
+  flex-shrink: 0;
 }
+
+#image-input {
+  display: none; /* ファイル選択はボタンで開く */
+}
+
 .input-area button.attach-btn {
   flex-shrink: 0;
   width: 36px;            /* 横幅 */
@@ -132,50 +150,34 @@ body > * {
   align-items: center;
 }
 
-
-/* 入力欄とボタン（縦並び） */
 #message-input {
-  width: 70%;
-  padding: 12px;
+  width: 70%;  
+  padding: 12px; /* 元の高さや見た目を維持 */
   border-radius: 15px;
   border: 1px solid #ccc;
   margin: 0;
 }
 
-#image-input{
-  display: none;
+
+#message-input, button {
+  margin: 4px        /* 少し余白をつける */
 }
-#image-input, button{
-  margin: 4px;
-}
+
 button {
   flex-shrink: 0;
-  background-color: #ff69b4;
-  font-size: 14px;
-  padding: 8px 15px;
-  color: white;
-  border: none;
+  padding: 8px 15px;  /* 高さと横幅を小さめに */
+  font-size: 14px;    /* 文字サイズも小さく */
   border-radius: 15px;
+  border: none;
+  background-color: #ff69b4;
+  color: white;
   cursor: pointer;
   transition: background-color 0.3s ease;
 }
 
+
 .button:hover {
   background-color: #ff4c9e;
-}
-.chat-header {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  padding: 16px;
-  border-bottom: 1px solid #ccc;
-}
-
-.chat-header .avatar {
-  width: 40px;
-  height: 40px;
-  border-radius: 50%;
-  object-fit: cover;
 }
 
 .chat-header .username {
@@ -183,8 +185,17 @@ button {
   font-size: 1.2rem;
 }
 
-#back-button {
-  position: absolute;
+.chat-header {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 12px;
+  border-bottom: 1px solid #ccc;
+  background-color: #3498db;
+  color: #fff;
+}
+
+.back-button {
   top: 8px;
   left: 10px;
   font-size: 22px;
@@ -193,4 +204,9 @@ button {
   border: none;
   cursor: pointer;
   z-index: 10;
+}
+
+.username {
+  font-weight: bold;
+  font-size: 1.2rem;
 }

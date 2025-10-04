@@ -1,4 +1,3 @@
-/* 全体背景と中央配置 */
 body {
   margin: 0;
   padding: 0;
@@ -8,7 +7,6 @@ body {
   justify-content: center;
   align-items: center;
   font-family: Arial, sans-serif;
-  
 }
 
 /* スマホっぽいフレーム */
@@ -18,7 +16,7 @@ body > * {
 
 .phone-frame {
   width: 300px;
-  height: 600px;
+  height: 600px; /* ←ここを伸ばします！もともとは667pxとか */
   background-color: #fff;
   border-radius: 40px;
   box-shadow: 0 8px 25px rgba(0, 0, 0, 0.25);
@@ -53,26 +51,23 @@ body > * {
   color: #4CAF50; /* 選択されたタブの色 */
 }
 
-.header{
-  height: 50px;
+.header {
+  height: 50px;           /* 高さを固定 */
   display: flex;
-  justify-content: center;
-  align-items: center;
+  justify-content: center; /* 横中央 */
+  align-items: center;     /* 縦中央 */
   color: #333;
   border-bottom: 1px solid #ccc;
-  flex-shrink: 0;
+  flex-shrink: 0;          /* flexで縮まないようにする */
 }
-/* タイトル */
+
+/* タイトル（h1） */
 .title {
   font-size: 20px;
   font-weight: bold;
 }
 
 
-/*dm一覧*/
-#dm-list{
-  list-style: none;
-}
 /* チャットボックス（相手リスト用） */
 #chat-box {
   height: 400px;           /* チャットボックス高さ固定 */
