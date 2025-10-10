@@ -15,19 +15,17 @@ class UserController extends Controller
      }
      public function register(Request $request){
         $request->validate([
-            'mail' =>'required|string|unique:users',
+            'mail' =>'required|string|unique:users,mail',
             'password' =>'required|string|min:8|max:20|confirmed',
             'name' =>'required|string|max:255',
             'age' =>'required|integer|min:0|max:120',
             'grade' =>'required|integer|min:1|max:4',
             'subject' =>'required|string|max:255',
             'major' =>'required|string|max:255',
-            'icon' =>'required|image|mimes:jpeg,png,jpg,gif|max:2048',
+            'icon' =>'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
         ]);
 
-        $iconPath = $request->file('icon')->store('icons', 'public');
-
-        User::create([
+        $data = [
             'mail' => $request->mail,
             'password' => Hash::make($request->password),
             'name' => $request->name,
@@ -35,8 +33,13 @@ class UserController extends Controller
             'grade' => $request->grade,
             'subject' => $request->subject,
             'major' => $request->major,
-            'icon' => $iconPath,
-        ]);
+        ];
+
+        if($request->hasFile('icon') && $request->file('icon')->isValid()){
+            $data['icon'] = $request->file('icon')->store('icons', 'public');
+        }
+
+        User::create($data);
 
             return redirect()->route('login')->with('success', '登録が完了しました！ログインしてください');
     }
