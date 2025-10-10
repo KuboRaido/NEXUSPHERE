@@ -11,7 +11,7 @@
   <div class="phone-frame">
     <header class="chat-header">
       <a href="javascript:history.back()" class="back-button">🔎</a>
-      <span class="title">nexsphere</span>
+  <span class="title">nexusphere</span>
       <button class="menu-button">☰</button>
     </header>
 
