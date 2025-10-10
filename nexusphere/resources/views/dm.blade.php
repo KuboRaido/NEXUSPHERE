@@ -26,9 +26,10 @@
     <form id="chat-form" class="chat-form" autocomplete="off">
       <div id="preview-area" style="padding:6px 10px;"></div>
        <div class="input-area">
-         <button type="button" id="attach-btn"class="attach-btn" onclick="document.getElementById('image-input').click()">+</button>
-          <input type="file" id="image-input" accept="image/*,video/*" style="display:none;" onchange="previewImage(event)" multiple hidden>
+         <button type="button" id="attach-btn"class="attach-btn" >+</button>
+          <input type="file" id="image-input" accept="image/*,video/*" style="display:none;" onchange="previewImage(event)" multiple>
          @csrf
+         <div id="preview-area" style="padding:6px 10px;"></div>
          <input id="message-input" type="text" placeholder="" autocomplete="off" enterkeyhint="send" inputmode="text"/>
          <button type="submit">送信</button>
        </div>

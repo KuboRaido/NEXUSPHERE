@@ -23,7 +23,7 @@
 <body>
     <div class="search-container">
         <form class="search-form" method="GET">
-            <input type="text" name="keyword" placehoider="キーワードを入力">
+            <input type="text" name="keyword" placeholder="キーワードを入力">
         </form>
     </div>
 </body>

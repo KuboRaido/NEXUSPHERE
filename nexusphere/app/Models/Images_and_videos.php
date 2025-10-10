@@ -4,24 +4,27 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Storage;
-class Images_and_video extends Model
+use App\Models\Dm;
+class Images_and_videos extends Model
 {
-    protected $table = 'images_and_videos_table';
-    protected $primaryKey = 'images_and_videos_id';
-    protected $fillable = ['prc_id','movie','image','dm_id'];
-
+    protected $table = 'images_and_videos';
+    protected $primaryKey = 'image_and_video_id';
+    protected $fillable = ['prc_id','video','image','dm_id'];
     protected $appends = ['url','type'];
-
+    public $timestamps = true;
+    
     public function getUrlAttribute(){
-        $path = $this->image ?? $this->movie;
-        return $path ? Storage::disk('public')->url($path) : null;
+        $path = $this->image ?? $this->video;
+        return $path ? Storage::url($path) : null;
     }
 
     public function getTypeAttribute(){
-        return $this->image ? 'image' : ($this->movie ? 'video' : null);
+        if ($this->image) return 'image';
+        if ($this->video) return 'video';
+        return 'file';
     }
 
     public function message(){
-        return $this->belongsTo(DM::class, 'dm_id','dm_id');
+        return $this->belongsTo(Dm::class, 'dm_id','dm_id');
     }
 }

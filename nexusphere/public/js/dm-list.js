@@ -16,7 +16,7 @@ function formatTime(iso){
 }
 
 // ----- API & 描画（一覧） -----
-async function loadDmList(){
+async function loaddmlist(){
   const listRoot = document.getElementById('dm-list');
   if(!listRoot) return;
 
@@ -72,5 +72,5 @@ document.addEventListener('DOMContentLoaded', async () => {
   if(!listRoot) return;
 
   await fetch('/sanctum/csrf-cookie',{credentials:'include'});
-  await loadDmList();
+  await loaddmlist();
 });

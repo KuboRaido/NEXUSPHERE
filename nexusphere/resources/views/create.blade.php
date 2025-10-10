@@ -1,6 +1,6 @@
 @extends('app')
 
-@section ('content')
+@section('content')
 <div class="container" style="max-width: 600px; margin: auto; padding: 20px;">
     <h2>新規投稿</h2>
     <form action="#" method="POST" enctype="multipart/form-data">
@@ -13,7 +13,7 @@
         </div>
         <div style="margin-bottom: 15px;">
             <label for="image">画像</label><br>
-            <inout type="file" name="image" id="image"></inout>        
+            <input type="file" name="image" id="image">
         </div>
 
         <button type="submit" style="padding: 10px 20px;">投稿</button>
