@@ -48,12 +48,12 @@ async function loadDmList(){
       li.className = 'dm-item';
       li.innerHTML = `
         <a class="dm-link" href="${href}">
-          <img class="dm-avatar" src="${icon}" alt="" onerror="this.src='${fallback}'">
-          <div class="dm-meta">
-            <div class="dm-name">${escapeHtml(it.partner_name || 'Unknown')}</div>
-            <div class="dm-last">${escapeHtml(it.last_message || '')}</div>
+          <img class="avatar" src="${icon}" alt="" onerror="this.src='${fallback}'">
+          <div class="chat-content">
+            <div class="chat-name">${escapeHtml(it.partner_name || 'Unknown')}</div>
+            <div class="chat-message">${escapeHtml(it.last_message || '')}</div>
           </div>
-          <time class="dm-time" datetime="${it.last_time || ''}">
+          <time class="chat-meta" datetime="${it.last_time || ''}">
             ${formatTime(it.last_time)}
           </time>
         </a>
