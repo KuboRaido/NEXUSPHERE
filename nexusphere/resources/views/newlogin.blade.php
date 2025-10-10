@@ -53,7 +53,7 @@
             <!-- 年齢 -->
             <div>
                 <label for="age" class="label-text">年齢</label>
-                <input type="number" id="age" name="age" placeholder="年齢を入力" class="input-field" min="0" max="100"required>
+                <input type="number" id="age" name="age" placeholder="年齢を入力" class="input-field" min="0" max="100" required>
             </div>
 
             <!-- 学年 -->
@@ -65,13 +65,13 @@
             <!-- 学科 -->
             <div>
                 <label for="subject" class="label-text">学科</label>
-                <input type="text" id="subject" name="subject" placeholder="学科を入力" class="input-field"required>
+                <input type="text" id="subject" name="subject" placeholder="学科を入力" class="input-field" required>
             </div>
 
             <!-- 専攻 -->
             <div>
                 <label for="major" class="label-text">専攻</label>
-                <input type="text" id="major" name="major" placeholder="専攻を入力" class="input-field"required>
+                <input type="text" id="major" name="major" placeholder="専攻を入力" class="input-field" required>
             </div>
 
             <!-- アイコン -->

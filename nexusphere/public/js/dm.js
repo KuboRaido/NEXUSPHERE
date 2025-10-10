@@ -16,6 +16,17 @@ let DEFAULT_AVATAR = window.DEFAULT_AVATAR_URL || '/images/default-avatar.png';
 let ME_ICON = DEFAULT_AVATAR;
 let PARTNER_ICON = DEFAULT_AVATAR;
 
+async function ensureXsrfReady() {
+  await fetch('/sanctum/csrf-cookie', { credentials: 'include' });
+}
+
+function getXsrfHeader() {
+  const m = document.cookie.match(/XSRF-TOKEN=([^;]+)/);
+  if (!m) return {};
+  const token = decodeURIComponent(m[1]);
+  return { 'X-XSRF-TOKEN': token };
+}
+
 function getMeId() {
   const el = document.getElementById('currentUserId');
   const v1 = el?.value;
@@ -39,8 +50,16 @@ function setCurrentPartner(id) {
 }
 
 function mergeById(oldList, newList) {
-  const map = new Map(oldList.map(m => [m.id, m]));
-  for (const m of newList) map.set(m.id, m);
+  const normalize = (entry) => {
+    if (!entry) return entry;
+    if (!(entry.timestamp instanceof Date)) {
+      entry.timestamp = entry.timestamp ? new Date(entry.timestamp) : new Date();
+    }
+    return entry;
+  };
+
+  const map = new Map(oldList.map(m => [m.id, normalize(m)]));
+  for (const m of newList) map.set(m.id, normalize(m));
   return Array.from(map.values()).sort((a,b)=> a.timestamp - b.timestamp);
 }
 
@@ -102,18 +121,28 @@ function renderMessages() {
 document.addEventListener('DOMContentLoaded',()=>{
   const attachBtn = document.getElementById('attach-btn');
   const fileInput = document.getElementById('image-input');
-  if (attachBtn && fileInput) attachBtn.addEventListener('click', () => fileInput.click());
+  if (attachBtn && fileInput){
+    attachBtn.addEventListener('click', (e) => {
+      e.preventDefault();
+      e.stopPropagation();
+      fileInput.click();
+    });
+  } ;
 });
 
 //API
-async function loadConversation(partnerId) {
-  if (!Number.isInteger(partnerId)) return;
-  setCurrentPartner(partnerId);
+async function loadConversation(currentPartnerId) {
+  if (!Number.isInteger(currentPartnerId)) return;
+  setCurrentPartner(currentPartnerId);
 
-  const res = await fetch(`/api/v1/dmlist/dm/${partnerId}`, {
+  const res = await fetch(`/api/v1/dm/${currentPartnerId}`, {
     headers: { 'Accept': 'application/json' },
     credentials: 'include',
   });
+  if(!res.ok){
+    console.error(`GET /api/v1/dm/${currentPartnerId} failed`, res.status);
+    throw new Error(`会話取得エラー: ${res.status}`);
+  }
   const json = await res.json();
 
   ME_ICON = json?.participants?.me?.avatar || ME_ICON;
@@ -124,11 +153,21 @@ async function loadConversation(partnerId) {
     from: String(m.from_id),
     to:   String(m.to_id),
     text: m.text,
-    attachment: m.attachments || [],
+    attachments: m.attachments || [],
     timestamp: new Date(m.created_at),
     pending: false
   }));
 
+  await ensureXsrfReady();
+  await fetch(`/api/v1/dm/${currentPartnerId}/read`,{method:'POST',headers:{'Accept':'application/json', ...getXsrfHeader()},credentials:'include'}).catch(()=>{});
+
+  
+  document.addEventListener('visibilitychange', async()=>{
+    if(document.visibilityState === 'visible' && Number.isInteger(currentPartnerId)){
+      await ensureXsrfReady();
+      fetch(`/api/v1/dm/${currentPartnerId}/read`,{method:'POST',headers:{'Accept':'application/json', ...getXsrfHeader()},credentials:'include'}).catch(()=>{});
+    }
+  });
   messages = mergeById(messages, newList);
   window.messages = messages;
 
@@ -137,13 +176,17 @@ async function loadConversation(partnerId) {
 
 async function sendMessage() {
   const meId = getMeId();
-  const currentUserId = String(meId);
   const recipientRaw = String(document.getElementById('recipientId')?.value ?? '').trim();
   const input = document.getElementById('message-input');
-  const text = String(input?.value ?? '').trim();
   const fileInput = document.getElementById('image-input');
-  if (!text) return;
 
+  const text = (input?.value ?? '').trim();
+  const files = fileInput?.files ?  Array.from(fileInput.files) : [];
+  if(input) input.value = '';
+  const hadFiles = files.length > 0;
+  if (fileInput) fileInput.value = '';
+
+   if (!text && !hadFiles) return;
   //自分にメッセージを送れる
   let toId;
   if (recipientRaw === '' || recipientRaw.toLowerCase() === 'me') {
@@ -156,14 +199,14 @@ async function sendMessage() {
   // 画面に一時表示＋メッセージにファイルを送付させる
   const tempId = 'tmp_' + Date.now();
   const tempAtt = [];
-  if(fileInput?.files?.length){
-    [...fileInput.files].forEach(f =>{
+  if(hadFiles){
+    files.forEach(f =>{
     const url = URL.createObjectURL(f);
     const type = f.type.startsWith('image/') ? 'image' : (f.type.startsWith('video/') ? 'video' : 'file');
     if(type === 'image' || type === 'video')tempAtt.push({type, url, pending:true});
   });
  }
-  messages.push({id:tempId, from:String(getMeId()), to:String(toId), text, attachment:tempAtt, timestamp:new Date(), pending:true});
+  messages.push({id:tempId, from:String(getMeId()), to:String(toId), text, attachments:tempAtt, timestamp:new Date(), pending:true});
   renderMessages();
 
 
@@ -171,20 +214,29 @@ async function sendMessage() {
     await fetch('/sanctum/csrf-cookie', {credentials:'include'});
     const token = decodeURIComponent((document.cookie.match(/XSRF-TOKEN=([^;]+)/)||[])[1] || '');
 
+    await fetch(`/api/v1/dm/${currentPartnerId}/read`, {
+     method:'POST',
+     headers: { 'Accept':'application/json', ...(token ? {'X-XSRF-TOKEN': token} : {}) },
+     credentials:'include'
+    });
+
+    const previewContainer = document.getElementById('preview-area');
+    if(previewContainer) previewContainer.innerHTML = '';
+
     let res, resd;
-    if(fileInput?.files?.length){
+    if (hadFiles) {
       const fd = new FormData();
       fd.append('to',toId);
       if(text)fd.append('text',text);
-      [...fileInput.files].forEach(f => fd.append('files[]',f));
-      res = await fetch('/api/v1/dmlist/dm', {
+      files.forEach(f => fd.append('files[]',f));
+      res = await fetch('/api/v1/dm', {
         method: 'POST',
         headers:{...(token ? {'X-XSRF-TOKEN':token} : {})},
         credentials:'include',
         body:fd
       });
     } else {
-      res = await fetch('/api/v1/dmlist/dm',{
+      res = await fetch('/api/v1/dm',{
         method: 'POST',
         headers:{'Accept':'application/json','Content-Type':'application/json',...(token ? {'X-XSRF-TOKEN':token} : {})},
         credentials:'include',
@@ -199,14 +251,11 @@ async function sendMessage() {
     if (idx !== -1) {
       messages[idx] = {
         id: resd.id,from:String(resd.from_id),to:String(resd.to_id),
-        text: resd.text,attachment:resd.attachments || [],
+        text: resd.text,attachments:resd.attachments || [],
         timestamp: new Date(resd.created_at), pending: false
     };
     renderMessages();
     }
-    // URLの ?to= を送信先に合わせる
-    if(fileInput)fileInput.value = '';
-    if(input)input.value = '';//
   } catch (err) {
     alert(err.message || '送信に失敗しました');
   }
@@ -223,18 +272,40 @@ document.addEventListener('DOMContentLoaded', async () => {
   const meId = getMeId();
   const qs = new URLSearchParams(location.search);
   const toParam = (qs.get('to') || '').trim();
+  const fileInput = document.getElementById('image-input');
+  const previewContainer = document.getElementById('preview-area');
 
-  let partnerId;
-  if (toParam === '' || toParam.toLowerCase() === 'me') {
-    partnerId = meId;
-  } else if (/^\d+$/.test(toParam)) {
-    partnerId = parseInt(toParam, 10);
-  } else {
-    partnerId = meId;
+  if(fileInput && previewContainer){
+    fileInput.addEventListener('change', () => {
+      previewContainer.innerHTML = '';
+      if(fileInput.files.length === 0){
+        return;
+      }
+
+      Array.from(fileInput.files).forEach(file => {
+        const reader = new FileReader();
+        reader.onload = (e) => {
+          const img = document.createElement('img');
+          img.src = e.target.result;
+          img.className = 'preview-image';
+          previewContainer.appendChild(img);
+        }
+        reader.readAsDataURL(file);
+      })
+    })
   }
 
-  setCurrentPartner(partnerId);
-  await loadConversation(partnerId);
+  let currentPartnerId;
+  if (toParam === '' || toParam.toLowerCase() === 'me') {
+    currentPartnerId = meId;
+  } else if (/^\d+$/.test(toParam)) {
+    currentPartnerId = parseInt(toParam, 10);
+  } else {
+    currentPartnerId = meId;
+  }
+
+  setCurrentPartner(currentPartnerId);
+  await loadConversation(currentPartnerId);
 
   // タッチ端末かどうか
   const isTouch = window.matchMedia('(pointer: coarse)').matches;

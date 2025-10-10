@@ -50,9 +50,9 @@ class Dm extends Model
 
     public $timestamps = true;
 
-    public function attachments()
+    public function Images_and_videos()
     {
-       return $this->hasMany(Images_and_video::class, 'dm_id', 'dm_id');
+       return $this->hasMany(Images_and_videos::class, 'dm_id', 'dm_id');
     }
 
 }
