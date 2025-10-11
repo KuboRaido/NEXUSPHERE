@@ -1,33 +1,73 @@
-<div class="container">
-    <h2>{{ $user->name }} さんのプロフィール</h2>
+<!doctype html>
+<html lang="ja">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>プロフィール</title>
+  <link rel="stylesheet" href="{{ asset('css/profile.css') }}">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+  <div class="phone-frame">
 
-    {{-- プロフィール画像 --}}
-    @if ($user->icon)
-        <img src="{{ asset('storage/' . $user->icon) }}" alt="プロフィール画像" style="width: 150px; height: 150px; object-fit: cover; border-radius: 50%;">
-    @else
-        <p>アイコン未設定</p>
-    @endif
+    <header class="header">
+      <span class="title">profile</span>
+    </header>
 
-    {{-- ユーザー基本情報 --}}
-    <ul>
-        <li><strong>学年：</strong> {{ $user->grade ?? '未設定' }}</li>
-        <li><strong>学科：</strong> {{ $user->department ?? '未設定' }}</li>
-        <li><strong>専攻：</strong> {{ $user->major ?? '未設定' }}</li>
-    </ul>
+    <main class="container">
+      <section class="profile-card" aria-label="ユーザープロフィール">
+        <div class="cover"></div>
 
-    <a href="{{ route('profile') }}">プロフィールを編集する</a>
+        <div class="profile-body">
+          <div class="avatar-wrap">
+            <div class="avatar" role="img" aria-label="ユーザーのアイコン"></div>
+          </div>
 
-    <hr>
+          <div class="main">
+            <div class="name-row">
+              <div>
+                <div class="display-name">山田 太郎</div>
+                <div class="handle">@username</div>
+              </div>
 
-    <h3>投稿一覧</h3>
+              <div class="meta-row" style="margin-left:12px;">
+                <div class="stat"><span class="num">12</span><span class="label">投稿</span></div>
+                <div class="stat"><span class="num">45</span><span class="label">フォロワー</span></div>
+                <div class="stat"><span class="num">31</span><span class="label">フォロー中</span></div>
+              </div>
 
-    @forelse ($posts as $post)
-        <div style="border: 1px solid #ccc; padding: 10px; margin-bottom: 10px;">
-            <p>{{ $post->content }}</p>
-            <small>投稿日: {{ $post->created_at->format('Y-m-d H:i') }}</small>
+              <div class="actions">
+                <button class="btn">編集</button>
+                <button class="btn secondary">フォロー</button>
+                <button class="dm-btn">DM</button>
+              </div>
+            </div>
+
+            <div class="bio">入力されていません</div>
+          </div>
         </div>
-    @empty
-        <p>まだ投稿はありません。</p>
-    @endforelse
-</div>
-@endsection
+
+        <div class="content">
+          <div class="left">
+            <h4>最近の投稿</h4>
+
+            <article class="post">
+              <div class="title">今日のランチはパスタ！</div>
+              <div class="excerpt">トマトソースが最高においしかった！</div>
+            </article>
+
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <div class="footer-nav">
+      <a href="#" class="tab active" data-target="home"><i class="fa-solid fa-house"></i></a>
+      <a href="/create" class="tab active" data-target="post"><i class="fas fa-paper-plane"></i></a>
+      <a href="/dmlist" class="tab active" data-target="talk"><i class="fa-solid fa-comment"></i></a>
+      <a href="/profile" class="tab active" data-target="mypage"><i class="fa-solid fa-user"></i></a>
+    </div>
+
+  </div>
+</body>
+</html>
