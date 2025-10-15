@@ -22,10 +22,13 @@ class UserController extends Controller
             'grade' =>'required|integer|min:1|max:4',
             'subject' =>'required|string|max:255',
             'major' =>'required|string|max:255',
-            'icon' =>'required|image|mimes:jpeg,png,jpg,gif|max:2048',
+            'icon' =>'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
         ]);
 
-        $iconPath = $request->file('icon')->store('icons', 'public');
+        $iconPath = null;
+        if ($request->hasFile('icon')) {
+            $iconPath = $request->file('icon')->store('icons', 'public');
+        }
 
         User::create([
             'mail' => $request->mail,
