@@ -10,7 +10,7 @@
 <body>
 <div class="phone-frame">
   <div class="header">
-    <span class="title">nexsphere</span>
+    <span class="title">nexusphere</span>
   </div>
   <div id="chat-box">
   <!-- JavaScriptでスレッド一覧を挿入 -->

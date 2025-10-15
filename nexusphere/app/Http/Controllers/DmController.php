@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Facades\DB;
 use App\Models\Dm;
 use App\Models\User;
 
@@ -42,7 +43,7 @@ class DmController extends Controller
    }
 
    # DM一覧（バック）相手ごとの「最後の一通」
-   public function dmListback(Request $request){
+   public function dmlistback(Request $request){
       $me = $request->user()?->getAuthIdentifier() ?? Auth::id();
       abort_if(!$me, 401, 'Unauthenticated');
 
@@ -118,9 +119,9 @@ class DmController extends Controller
    $me = Auth::id();
    abort_if(!$me, 401, 'Unauthenticated');
 
-   $userPk        = (new User) -> getKeyName(); 
+   $userPk = (new User) -> getKeyName(); 
+   $meUser = Auth::user();
    $partnerUser = User::where($userPk,$partner)->firstOrFail();
-   $meUser = User::where($userPk,$me)->firstOrFail();
 
    if($partner === $me){
       //自分にDM
@@ -137,14 +138,11 @@ class DmController extends Controller
        ->orderBy('created_at','asc')
        ->get(['dm_id','sender_id','receiver_id','message_text','created_at','dm_key']);
    }
-
-   $meIcon = $this->avatarUrl($meUser);
-   $partnerIcon = $this->avatarUrl($partnerUser);
    
    return response()->json([
       'participants' => [
          'me'     =>['id'=>$meUser->$userPk, 'name'=>$meUser->name, 'avatar'=>$meUser->avatar_url],
-         'partner'=>['id'=>$partnerUser->$userPk, 'name'=>$partnerUser->name,'avatar'=>$partnerUser->avatar_url],
+         'partner'=>['id'=>$partnerUser->$userPk, 'name'=>$partnerUser->name,'avatar'=>$partnerUser->avatar_url]
       ],
       'dms' => $messages->map(function($m){
          return[
@@ -154,6 +152,12 @@ class DmController extends Controller
             'text'      =>$m->message_text,
             'dm_key'    =>$m->dm_key,
             'created_at'=>$m->created_at?->toISOString(),
+            'attachments'=>$m->Images_and_videos->map(function($rec){
+                   $path = $rec->image ?: $rec->video;
+                   $url  = $path ? Storage::url($path) : null;
+                   $type = $rec->image ? 'image' : ($rec->video ? 'video' : 'file');
+                   return ['type'=>$type,'url' =>$url];
+            })->values(),
          ];
       }),
    ]);
@@ -168,7 +172,7 @@ class DmController extends Controller
       $data = $request->validate([
          'to'    => ['required','integer', "exists:users,{$userPk}"],
          'text'  => ['nullable','string','max:5000'],
-         'files.*' => ['nullable','file','max:20480','mimetypes:image/*,video/*'],
+         'files.*' => ['nullable','file','max:51200','mimetypes:image/*,video/*'],
       ],[],['to' =>'宛先ユーザーID','text'=>'メッセージ本文']);
    
       $dm = Dm::create([
@@ -187,13 +191,10 @@ class DmController extends Controller
             $isImg = str_starts_with($mime,'image/');
             $isMov = str_starts_with($mime,'video/');
 
-            do{$prc = random_int(100000000,999999999);}
-            while(\App\Models\Images_And_Video::where('prc_id',$prc)->exists());
-
-            $rec = \App\Models\Images_And_Video::create([
-               'prc_id' => $prc,
+         $rec = \App\Models\Images_and_videos::create([
+               'prc_id' => 0,
                'image'  => $isImg ? $path : null,
-               'movie'  => $isMov ? $path : null,
+               'video'  => $isMov ? $path : null,
                'dm_id'  => $dm->dm_id,
             ]);
 
@@ -212,6 +213,44 @@ class DmController extends Controller
          'created_at' => $dm->created_at->toISOString(),
          'attachments'=> $attachments,
       ], 201);
+   }
+
+   public function read(User $partner, Request $req)
+   {
+      $me = $req->user() ?? Auth::user();
+      if(!$me) {
+         return response()->json(['message' => 'Unauthenticated'], 401);
+      }
+
+      $meId = $me->getKey();
+      $partnerId = $partner->getKey();
+      DB::table('dm_reads')->upsert(
+         [[
+            'user_id'      => $meId, 
+            'partner_id'   => $partnerId,
+            'last_read_at' => now(),
+            'updated_at'   => now(),
+            'created_at'   => now(),
+          ]],
+         ['user_id','partner_id'], //衝突キー（unique）
+         ['last_read_at','updated_at']//更新する列
+      );
+
+      $meId      = Auth::id();
+      $partnerId = $partner->getKey();
+
+      $last = DB::table('dm_reads')
+       ->where('user_id', $meId)
+       ->where('partner_id', $partnerId)
+       ->value('last_read_at');
+
+      $unread = DB::table('dms')
+       ->where('receiver_id', $meId)      // 自分あて
+       ->where('sender_id', $partnerId)   // 相手から
+       ->when($last, fn($q) => $q->where('created_at', '>', $last))
+       ->count();
+
+      return response()->json(['ok'=>true, 'unread_count' => $unread]);
    }
 }
 ?>

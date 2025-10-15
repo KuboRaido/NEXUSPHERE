@@ -11,14 +11,10 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('groupmembers', function (Blueprint $table) {
-            $table->id('groupmember_id');
-            $table->unsignedBigInteger('user_id');
-            $table->unsignedBigInteger('group_id');
+        Schema::create('profiles', function (Blueprint $table) {
+            $table->id('profile_id');
+            $table->foreignId('user_id')->constrained('users','user_id')->cascadeOnDelete();
             $table->timestamps();
-
-            $table->unique(['user_id', 'group_id']);
-            $table->index('group_id');
         });
     }
 
@@ -27,6 +23,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('groupmembers');
+        Schema::dropIfExists('profiles');
     }
 };

@@ -12,9 +12,10 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('prcs', function (Blueprint $table) {
-            $table->id('pcr_id');
+            $table->id('prc_id');
             $table->integer('user_id')->unique();
-            $table->text('sentence',255)->nullable();
+            $table->text('sentence')->nullable();
+            $table->foreignId('profile_id')->constrained('profiles','profile_id')->cascadeOnDelete();
             $table->integer('type');
             $table->integer('parent_id');
             $table->integer('circle_id');
