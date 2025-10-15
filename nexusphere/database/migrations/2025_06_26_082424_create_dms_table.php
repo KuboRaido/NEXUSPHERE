@@ -71,6 +71,7 @@ return new class extends Migration
             $table->dropForeign(['reply_to_dm_id']);
         });
         Schema::dropIfExists('dms');
+        Schema::enableForeignKeyConstraints();
     }
 };
 

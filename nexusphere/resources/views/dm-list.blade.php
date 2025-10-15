@@ -19,9 +19,9 @@
     
     <div class="footer-nav">
       <a href="#" class="tab active" data-target="home"><i class="fa-solid fa-house"></i></a>
-      <a href="\posts\create" class="tab active" data-target="post"><i class="fas fa-paper-plane"></i></a>
-      <a href="\dm\dm-list" class="tab active" data-target="talk"><i class="fa-solid fa-comment"></i></a>
-      <a href="#" class="tab" data-target="mypage"><i class="fa-solid fa-user"></i></a>
+      <a href="/create" class="tab active" data-target="post"><i class="fas fa-paper-plane"></i></a>
+      <a href="/dmlist" class="tab active" data-target="talk"><i class="fa-solid fa-comment"></i></a>
+      <a href="/profile" class="tab active" data-target="mypage"><i class="fa-solid fa-user"></i></a>
     </div>
 
   </div>
