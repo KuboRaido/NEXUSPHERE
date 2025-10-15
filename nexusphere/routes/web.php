@@ -19,7 +19,7 @@ Route::middleware('guest')->group(function(){
 Route::middleware('auth')->group(function () {
    Route::get('/dmlist',[DmController::class,'dmlistfront'])->name('dm-list');
    Route::get('dm',[DmController::class,'dmfront'])->name('dm');
-   Route::get('/profile', [ProfileController::class, 'show'])->name('profile');
+   Route::get('/profile', [ProfileController::class, 'profileFront'])->name('profile');
    Route::get('/post', [PostController::class, 'post'])->name('post');
    Route::get('/create', [PostController::class, 'create'])->name('create');
 });
