@@ -1,7 +1,7 @@
 <?php
 namespace App\Http\Controllers;
 
-use App\Http\controllers\Controller;
+use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
@@ -18,7 +18,8 @@ class LoginController extends Controller
             'password'=>['required'],
         ]);
 
-        $remember = (bool) $request->boolean('remember');
+    // Laravel sends checkbox as 'on' or value when checked; boolean() normalizes it.
+    $remember = (bool) $request->boolean('remember');
 
         if (Auth::attempt(['mail' => $credentials['mail'],'password' =>$credentials['password']],$remember)){
             $request->session()->regenerate();
