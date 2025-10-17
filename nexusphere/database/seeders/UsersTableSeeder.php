@@ -17,7 +17,7 @@ class UsersTableSeeder extends Seeder
       User::create([
         'user_id' => 2,
         'mail'    => 'test',
-        'password'=> '00000',
+        'password'=> Hash::make('00000'),
         'name'    => 'Test User',
         'age'     => 20,
         'grade'   => 3,
@@ -29,7 +29,7 @@ class UsersTableSeeder extends Seeder
       User::create([
         'user_id' => 3,
         'mail'    => 'tests',
-        'password'=> '00000',
+        'password'=> Hash::make('00000'),
         'name'    => 'Test User',
         'age'     => 20,
         'grade'   => 3,

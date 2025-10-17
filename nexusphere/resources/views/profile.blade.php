@@ -27,25 +27,24 @@
             <div class="name-row">
               <div>
                 <div class="display-name">山田 太郎</div>
-                <div class="handle">@username</div>
-              </div>
-
-              <div class="meta-row" style="margin-left:12px;">
-                <div class="stat"><span class="num">12</span><span class="label">投稿</span></div>
-                <div class="stat"><span class="num">45</span><span class="label">フォロワー</span></div>
-                <div class="stat"><span class="num">31</span><span class="label">フォロー中</span></div>
+                <div class="handle">AI</div>
               </div>
 
               <div class="actions">
                 <button class="btn">編集</button>
-                <button class="btn secondary">フォロー</button>
-                <button class="dm-btn">DM</button>
+                <a href="/dm/{{$user->id}}" class="btn dm-btn">DM</a>
               </div>
             </div>
-
-            <div class="bio">入力されていません</div>
+            <div class="portfolio-section">
+              <button class="portfolio-toggle"><i class="fa-solid fa-chevron-down"></i>
+            </button>
+            <div class="portfolio-content">
+                <ul></ul>
+              </div>
+            </div>
           </div>
         </div>
+
 
         <div class="content">
           <div class="left">
@@ -69,5 +68,6 @@
     </div>
 
   </div>
+  <script src="{{ asset('js/profile.js') }}"></script>
 </body>
 </html>
