@@ -25,23 +25,29 @@ body > * {
   padding: 20px;
   display: flex;
   flex-direction: column;
+  position: relative;
+  overflow: hidden;
 }
 
 .footer-nav {
+  position: absolute; /* fixed → absolute に変更 */
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  height: 60px;
   display: flex;
   justify-content: space-around;
-  background: #f8f8f8;
-  border-top: 1px solid #ddd;
-  padding: 8px 0;
+  align-items: center;
+  background: #fff;
+  border-top: 1px solid #ccc;
+  border-bottom-left-radius: 40px;
+  border-bottom-right-radius: 40px;
 }
 
 .footer-nav a {
-  text-decoration: none;
-  color: #555;
-  font-size: 12px;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
+  color: #333;
+  text-emphasis: none;
+  font-size: 22px;
 }
 
 .footer-nav a i {
@@ -71,7 +77,9 @@ body > * {
 
 /*dm一覧*/
 #dm-list{
-  list-style: none;
+  flex: 1;
+  overflow: auto;
+  margin-bottom: 60px; /* フッターナビ分のスペース確保 */
 }
 /* チャットボックス（相手リスト用） */
 #chat-box {
