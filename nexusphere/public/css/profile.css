@@ -80,33 +80,37 @@ body > * {
 
 .profile-body {
   display: flex;
-  flex-direction: column;
+  flex-wrap: nowrap;
   align-items: center;
-  padding: 12px;
+  padding: 16px;
+  gap: 12px;
 }
 
 .avatar-wrap {
-  margin-top: -40px;
+  flex-shrink: 0;
 }
 
 .avatar {
-  width: 80px;
-  height: 80px;
+  width: 50px;
+  height: 50px;
   border-radius: 50%;
   border: 4px solid #fff;
-  background-color: palevioletred;
-  box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+  background-color: #ccc;
+  background-size: cover;
+  background-position: center;
 }
 
 .display-name {
   font-size: 18px;
   font-weight: bold;
-  margin-top: 6px;
+  margin-top: 4px;
+  white-space: nowrap;
 }
 
 .handle {
-  font-size: 13px;
-  color: #777;
+  font-size: 14px;
+  color: #666;
+  white-space: nowrap;
 }
 
 .bio {
@@ -140,10 +144,19 @@ body > * {
 /* =========================
    ボタン
 ========================= */
-.actions {
+  .actions .ntn{
+    padding: 6px 12px;
+  border: none;
+  border-radius: 6px;
+  background: #007bff;
+  color: white;
+  cursor: pointer;
+  }
+  
+.actions  {
   display: flex;
-  gap: 6px;
-  margin-top: 8px;
+  gap: 8px;
+  align-items: center;
 }
 
 .btn {
@@ -304,18 +317,81 @@ button[type="submit"]:hover {
 
 .dm-btn {
   background-color: #1991da;
-  color: #fff;
-  border: none;
-  border-radius: 1cm;
-  padding: 5px 10px;
-  font-size: 12px;
-  cursor: pointer;
-  display: flex;
+  display: inline-block;
   align-items: center;
-  gap: 5px;
-  transition: 0.3s;
+  text-align: center;
 }
 
 .dm-btn:hover {
   background-color: #1991da;
+}
+.main{
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  flex: 1;
+  min-width: 0;
+}
+
+.name-row{
+  display: flex;
+  gap: 8px;
+  align-items: center;
+}
+.btn:hover,
+.dm-btn:hover {
+  opacity: 0.8;
+}
+
+.portfolio-section {
+  margin-top: 10px;
+  border-top: 1px solid #ccc;
+  padding-top: 8px;
+}
+
+.portfolio-toggle {
+  width: 100%;
+  background: #f5f5f5;
+  border: none;
+  padding: 8px;
+  border-radius: 6px;
+  cursor: pointer;
+  text-align: left;
+  font-size: 14px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  transition: background 0.2s;
+}
+
+.portfolio-toggle:hover {
+  background: #e9ecef;
+}
+
+.portfolio-content {
+  display: none;
+  margin-top: 6px;
+  padding: 8px;
+  background: #fff;
+  border-radius: 6px;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+.portfolio-content ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.portfolio-content li {
+  margin-bottom: 6px;
+}
+
+.portfolio-content a {
+  text-decoration: none;
+  color: #007bff;
+}
+
+.portfolio-content a:hover {
+  text-decoration: underline;
 }
