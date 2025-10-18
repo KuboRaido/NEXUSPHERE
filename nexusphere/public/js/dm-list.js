@@ -9,10 +9,15 @@ function escapeHtml(s){
   }[c]));
 }
 
-function formatTime(iso){
-  if(!iso) return '';
+function formatTime(iso) {
+  if (!iso) return '';
   const d = new Date(iso);
-  return isNaN(d) ? '' : d.toLocaleString();
+  if (isNaN(d)) return '';
+
+  // 時間を "HH:MM" の形式に整形（ゼロ埋め対応）
+  const hours = d.getHours().toString().padStart(2, '0');
+  const minutes = d.getMinutes().toString().padStart(2, '0');
+  return `${hours}:${minutes}`;
 }
 
 // ----- API & 描画（一覧） -----
@@ -45,7 +50,7 @@ async function loaddmlist(){
       const icon = it.partner_icon || '/images/default-avatar.png';
 
       const li = document.createElement('li');
-      li.className = 'dm-item';
+      li.className = 'dm-list';
       li.innerHTML = `
         <a class="dm-link" href="${href}">
           <img class="avatar" src="${icon}" alt="" onerror="this.src='${fallback}'">
