@@ -121,7 +121,7 @@ class DmController extends Controller
 
    $userPk = (new User) -> getKeyName(); 
    $meUser = Auth::user();
-   $partnerUsaer = User::where($userPk,$partner)->firstOrFail();
+   $partnerUser = User::where($userPk,$partner)->firstOrFail();
 
    if($partner === $me){
       //自分にDM
