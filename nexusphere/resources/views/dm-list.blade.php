@@ -15,6 +15,10 @@
       <span class="title">DM</span>
     </div>
     
+    <div class="search-container">
+      <input type="text" id="search-input" placeholder="ユーザーを検索..." />
+    </div>
+
      <ul id="dm-list" class="dm-list" data-chat-url-template="{{url('/dm')}}?to=__ID__"></ul>
     
     <div class="footer-nav">

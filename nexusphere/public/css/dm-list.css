@@ -29,6 +29,21 @@ body > * {
   overflow: hidden;
 }
 
+.search-container {
+  padding: 8px;
+  background-color: #fff;
+}
+
+#search-input {
+  width: 100%;
+  padding: 8px;
+  font-size: 14px;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  box-sizing: border-box;
+}
+
+
 .footer-nav {
   position: absolute; /* fixed → absolute に変更 */
   bottom: 0;
@@ -77,6 +92,7 @@ body > * {
 
 /*dm一覧*/
 #dm-list{
+  list-style: none;
   flex: 1;
   overflow: auto;
   margin-bottom: 60px; /* フッターナビ分のスペース確保 */
@@ -128,6 +144,10 @@ body > * {
 .chat-name {
   font-weight: bold;
   font-size: 14px;
+   white-space: nowrap;       /* 折り返しを禁止 */
+  overflow: hidden;          /* はみ出した部分を非表示 */
+  text-overflow: ellipsis;   /* … で省略表示 */
+  display: block;            /* ellipsisを有効にするため必要 */
 }
 .chat-message {
   font-size: 13px;
@@ -141,8 +161,7 @@ body > * {
 .chat-meta {
   text-align: right;
   font-size: 12px;
-  color: #999;
-  margin-left: 8px;
+  margin-left: 4px;
 }
 .unread {
   display: inline-block;
