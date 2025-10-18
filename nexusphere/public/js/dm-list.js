@@ -9,6 +9,27 @@ function escapeHtml(s){
   }[c]));
 }
 
+document.addEventListener('DOMContentLoaded', function() {
+  const searchInput = document.getElementById('search-input');
+  const dmList = document.getElementById('dm-list');
+
+  if (searchInput) {
+    searchInput.addEventListener('input', function() {
+      const keyword = this.value.toLowerCase();
+      const items = dmList.querySelectorAll('li');
+
+      items.forEach(item => {
+        const nameElement = item.querySelector('.name');
+        if (nameElement) {
+          const nameText = nameElement.textContent.toLowerCase();
+          item.style.display = nameText.includes(keyword) ? '' : 'none';
+        }
+      });
+    });
+  }
+});
+
+
 function formatTime(iso) {
   if (!iso) return '';
   const d = new Date(iso);

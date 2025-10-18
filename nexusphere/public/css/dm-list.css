@@ -29,6 +29,21 @@ body > * {
   overflow: hidden;
 }
 
+.search-container {
+  padding: 8px;
+  background-color: #fff;
+}
+
+#search-input {
+  width: 100%;
+  padding: 8px;
+  font-size: 14px;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  box-sizing: border-box;
+}
+
+
 .footer-nav {
   position: absolute; /* fixed → absolute に変更 */
   bottom: 0;
