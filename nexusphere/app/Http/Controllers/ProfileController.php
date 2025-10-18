@@ -9,20 +9,34 @@ use Illuminate\Support\Facades\Storage;
 
 class ProfileController extends Controller
 {
-    public function profileFront()
+    public function profileFront(?int $user = null)
     {
-        $user = Auth::user();
+        $userId = Auth::id();
+        abort_if(!$user, 401);
 
-        $posts = Pcr::where('user_id', $user->id)
+        if ($user === null){
+            $profileUser = Auth::user();
+        }else{
+            $profileUser = User::where('user_id',$user)->firstOrFail();
+        }
+
+        $isMine = ((int)$userId === (int)$profileUser->user_id);
+
+        $posts = Pcr::where('user_id', $profileUser->id)
                      ->orderBy('created_at', 'desc')
                      ->get();
 
-        return view('profile', compact('user', 'posts'));
+        return view('profile', [
+            'profileUser' => $profileUser,
+            'isMine' => $isMine,
+            'posts' => $posts,
+        ]);
     }
 
     public function edit()
     {
         $user = Auth::user();
+        abort_if(!$user, 401);
         return view('profile_edit', compact('user'));
     }
 
