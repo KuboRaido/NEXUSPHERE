@@ -11,7 +11,7 @@ class ProfileSeeder extends Seeder
     /**
      * Run the database seeds.
      */
-    public function run(): void
+    /*public function run(): void
     {
         //テーブルのレコードを削除
         Profile::truncate();
@@ -25,5 +25,5 @@ class ProfileSeeder extends Seeder
         $profile->weight = 60.8;
         $profile->birth_day = '1992-11-19';
         $profile->save();
-    }
+    }*/
 }
