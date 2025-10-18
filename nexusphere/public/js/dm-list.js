@@ -45,7 +45,7 @@ async function loaddmlist(){
       const icon = it.partner_icon || '/images/default-avatar.png';
 
       const li = document.createElement('li');
-      li.className = 'dm-item';
+      li.className = 'dm-list';
       li.innerHTML = `
         <a class="dm-link" href="${href}">
           <img class="avatar" src="${icon}" alt="" onerror="this.src='${fallback}'">

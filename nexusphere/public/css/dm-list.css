@@ -80,6 +80,7 @@ body > * {
   flex: 1;
   overflow: auto;
   margin-bottom: 60px; /* フッターナビ分のスペース確保 */
+  list-style: none;
 }
 /* チャットボックス（相手リスト用） */
 #chat-box {
@@ -151,4 +152,10 @@ body > * {
   padding: 2px 6px;
   border-radius: 12px;
   margin-top: 4px;
+}
+.dm-link {
+  display: flex;
+  align-items: center;
+  text-decoration: none; /* リンクの下線を消す（好みで） */
+  color: inherit;        /* テキスト色を継承 */
 }
