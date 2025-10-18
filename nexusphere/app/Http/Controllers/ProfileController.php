@@ -45,16 +45,23 @@ class ProfileController extends Controller
         $id = Auth::id();
         abort_if(!$id, 401);
 
-        $user = User::query()->findOrFail($id);
+        $user = User::where('user_id', $id)->firstOrFail();
 
-        $request->validate([
+        $validate = $request->validate([
+            'name'       => 'required|string|max:255',
             'department' => 'nullable|string|max:255',
-            'major' => 'nullable|string|max:255',
-            'icon' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
+            'major'      => 'nullable|string|max:255',
+            'icon'       => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
+        ],[],[
+            'name'       => '名前',
+            'department' => '学部',
+            'major'      => '学科',
+            'icon'       => 'アイコン',
         ]);
 
-        $user->department = $request->input('department');
-        $user->major = $request->input('major');
+        $user->department = $request->input('name');
+        $user->major      = $request->input('major');
+        $user->icon       = $request->input('icon');
 
         if ($request->hasFile('icon')) {
             $path = $request->file('icon')->store('icons', 'public');
