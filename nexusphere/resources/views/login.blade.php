@@ -25,6 +25,9 @@
              </div>
            @endif
         </form>
+        <div class="register-link">
+  <p>アカウントをお持ちでない方は <a href="{{ route('newLogin') }}">新規登録はこちら</a></p>
+</div>
     </div>
 </body>
 </html>
