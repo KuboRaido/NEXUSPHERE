@@ -61,12 +61,7 @@ body > * {
   padding: 10px;
 }
 
-.message-row{
-  display: flex;
-  align-items: flex-end;
-  gap: 8px;
-  margin: 6px 8px;
-}
+
 
 .message-row.from-me{
   justify-content: flex-end;
@@ -88,38 +83,49 @@ body > * {
     margin: 8px;
 }
 
-.from-me {
-  margin-left: auto;
+.message-row.from-me {
+  justify-content: flex-end;
 }
 
-.from-them {
-  margin-right: auto;
-  border: 1px solid #ccc;
+.message-row.from-them {
+  justify-content: flex-start;
 }
 
+/* 吹き出し本体 */
 .message-bubble {
-    padding: 10px 15px;
-    border-radius: 20px;
-    max-width: 60%;
-    background-color: #dcf8c6; /* from-me の吹き出し色 */
-    color: #000;
-    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
-    word-break: break-word;
+  padding: 10px 14px;
+  border-radius: 18px;
+  max-width: 70%;
+  font-size: 14px;
+  line-height: 1.4;
+  position: relative;
+  word-break: break-word;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
 }
 
-.from-me {
-  margin-left: auto;
-    justify-content: flex-end;
+/* 自分の吹き出し（LINEの緑寄り） */
+.from-me .message-bubble {
+  background-color: #d1f5d3;
+  color: #000;
+  border-bottom-right-radius: 0;
 }
 
-.from-them {
-  margin-right: auto;
-    justify-content: flex-start;
-}
-
+/* 相手の吹き出し（白） */
 .from-them .message-bubble {
-    background-color: #fff;
-    border: 1px solid #ccc;
+  background-color: #ffffff;
+  color: #000;
+  border-bottom-left-radius: 0;
+  border: 1px solid #e0e0e0;
+}
+
+/* 吹き出しの画像・動画 */
+.message-bubble img,
+.message-bubble video {
+  max-width: 150px;
+  max-height: 200px;
+  border-radius: 12px;
+  display: block;
+  margin-top: 6px;
 }
 
 /* 入力欄とボタン（縦並び） */
@@ -210,3 +216,20 @@ button {
   font-weight: bold;
   font-size: 1.2rem;
 }
+/* 画像プレビュー（送信前）のサイズ調整 */
+#preview-area img,
+#preview-area video {
+  max-width: 120px;  /* 好きな幅に変更可能 */
+  max-height: 150px; /* 縦も制限して整える */
+  border-radius: 10px; /* LINE風に丸みをつける */
+  object-fit: cover; /* 自然なトリミング */
+  margin: 5px;
+}
+
+.preview-image {
+  max-width: 150px;
+  max-height: 150px;
+  border-radius: 8px;
+  margin: 4px;
+}
+
