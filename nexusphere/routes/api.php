@@ -12,6 +12,6 @@ Route::middleware('auth:sanctum')->prefix('v1')->group(function(){
     Route::get('dm', [DmController::class,'dmback'])->name('dm.show');
     Route::post('dm', [DmController::class,'dmsendback'])->name('dm.send'); //送る
     Route::post('dm/{partner}/read',[DmController::class,'read']);
-    Route::get('profile',[ProfileController::class,'profileBack']); 
+    //Route::get('profile',[ProfileController::class,'profileBack']); 
 
 });
