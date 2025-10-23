@@ -8,34 +8,38 @@
     <link rel="stylesheet" href="{{ asset('css/dm.css') }}">
     <meta name="default-avatar" content="{{ asset('images/default-avatar.png') }}">
     <script>window.DEFAULT_AVATAR_URL = "{{asset('images/default-avatar.png')}}"</script>
-
 </head>
 <body>
   <div class="phone-frame">
+
+    <!-- ヘッダー -->
     <div class="header">
+      <a href="{{url('dmlist')}}" id="back-button" class="back-button">←</a>
       <span class="title">nexusphere</span>
     </div>
     
-<!--チャットボックス-->
-    <div id="chat-box" class="chat-box">
-     <a href="{{url('dmlist')}}" id="back-button" class="back-button">←</a> 
-    </div>
-     <input type="hidden" id="currentUserId" value="{{auth()->id()}}">
-     <input type="hidden" id="recipientId" value="{{$partnerId}}">
-<!--入力欄-->
+    <!-- チャットボックス -->
+    <div id="chat-box" class="chat-box"></div>
+
+    <!-- 入力フォーム（これが唯一のフォーム） -->
     <form id="chat-form" class="chat-form" autocomplete="off">
-      <div id="preview-area" style="padding:6px 10px;"></div>
-       <div class="input-area">
-         <button type="button" id="attach-btn"class="attach-btn" >+</button>
-          <input type="file" id="image-input" accept="image/*,video/*" style="display:none;" onchange="previewImage(event)" multiple>
-         @csrf
-         <div id="preview-area" style="padding:6px 10px;"></div>
-         <input id="message-input" type="text" placeholder="" autocomplete="off" enterkeyhint="send" inputmode="text"/>
-         <button type="submit">送信</button>
-       </div>
-     </form>
+      <input type="hidden" id="currentUserId" value="{{auth()->id()}}">
+      <input type="hidden" id="recipientId" value="{{ $partnerId }}">
+
+      <div id="preview-area" class="preview-area"></div>
+
+      <div class="input-area">
+        <button type="button" id="attach-btn" class="attach-btn">＋</button>
+        <input type="file" id="image-input" accept="image/*,video/*" style="display:none;" multiple>
+
+        <input id="message-input" type="text" placeholder="メッセージを入力" autocomplete="off" enterkeyhint="send" />
+
+        <button type="submit" class="send-btn">送信</button>
+      </div>
+    </form>
+
   </div>
   
-  <script src="{{ asset('js/dm.js') }}" ></script>
-
+  <script src="{{ asset('js/dm.js') }}"></script>
 </body>
+</html>

@@ -94,12 +94,26 @@ function renderMessages() {
       msg.attachments.forEach( att =>{
         if(att.type === 'image'){
           const img = document.createElement('img');
-          img.src = att.url; img.alt = ''; img.style.maxWidth='200px'; img.style.borderRadius='8px';img.style.display='block';img.style.marginTop='6px';
-          wrap.appendChild(img);
+        img.src = att.url;
+        img.alt = '';
+        img.style.borderRadius = '8px';
+        img.style.display = 'block';
+        img.style.margin = '6px auto 0 auto'; // 上余白6px、左右中央
+        img.style.maxWidth = '100%';   // 吹き出しの幅に収める
+        img.style.height = 'auto';     // 縦横比を維持
+        img.style.objectFit = 'cover'; // 中央寄せのまま
+        wrap.appendChild(img);
         }else if (att.type === 'video'){
           const v = document.createElement('video');
-          v.src = att.url; v.controls = true; v.style.maxWidth='220px';v.style.borderRadius='8px'; v.style.display='block'; v.style.marginTop='6px';
-          wrap.appendChild(v);
+            v.src = att.url;
+            v.controls = true;
+            v.style.borderRadius = '8px';
+            v.style.display = 'block';
+            v.style.margin = '6px auto 0 auto'; // 上余白6px、左右中央
+            v.style.maxWidth = '100%';   // 吹き出しの幅に収める
+            v.style.height = 'auto';     // 縦横比を維持
+            v.style.objectFit = 'cover'; // 余白を埋める
+            wrap.appendChild(v);
         }
       });
     bubble.appendChild(wrap);
