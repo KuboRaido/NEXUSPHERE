@@ -8,5 +8,5 @@ class Profile extends Model
 {
     protected $table = 'profiles';
     protected $primaryKey = 'profile_id';
-    protected $fillable = ['user_id','department','major','icon'];
+    protected $fillable = ['user_id'];
 }

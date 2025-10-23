@@ -22,7 +22,7 @@ Route::middleware('auth')->group(function () {
    Route::get('dm',[DmController::class,'dmfront'])->name('dm');
    Route::get('/profile', [ProfileController::class, 'profileFront'])->name('profile');  //自分のプロフィール
    Route::get('/profile/{user}',[ProfileController::class,'profileOther'])->name('profile-other'); //他人のプロフィール
-   Route::get('/profile/edit',[ProfileController::class,'edit'])->name('profile-edit');//プロフィール編集画面
+   Route::get('/profile/edit',[ProfileController::class,'edit'])->name('profile.edit');//プロフィール編集画面
    Route::post('/profile/edit',[ProfileController::class,'update'])->name('profile-update');//プロフィール更新処理
    Route::get('/post', [PostController::class, 'post'])->name('post');
    Route::get('/create', [PostController::class, 'create'])->name('create');
