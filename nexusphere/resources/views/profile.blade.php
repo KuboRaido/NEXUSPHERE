@@ -67,7 +67,7 @@
     </main>
 
     <div class="footer-nav">
-      <a href="#" class="tab active" data-target="home"><i class="fa-solid fa-house"></i></a>
+      <a href="/feed" class="tab active" data-target="home"><i class="fa-solid fa-house"></i></a>
       <a href="/create" class="tab active" data-target="post"><i class="fas fa-paper-plane"></i></a>
       <a href="/dmlist" class="tab active" data-target="talk"><i class="fa-solid fa-comment"></i></a>
       <a href="/profile" class="tab active" data-target="mypage"><i class="fa-solid fa-user"></i></a>

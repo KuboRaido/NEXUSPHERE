@@ -3,15 +3,15 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
-use App\Models\Post;
+use App\Models\Pcr;
 use App\Models\PostImage;
 
-class PostController extends Controller
+class PcrController extends Controller
 {
     // 投稿一覧
     public function index()
     {
-        $posts = Post::with(['comments', 'images'])->orderBy('created_at', 'desc')->get();
+        $posts = Pcr::with(['comments', 'images'])->orderBy('created_at', 'desc')->get();
         return view('feed', compact('posts'));
     }
 
@@ -25,7 +25,7 @@ class PostController extends Controller
         ]);
 
         // 投稿作成
-        $post = Post::create([
+        $post = Pcr::create([
             'user_name' => 'ゲスト', // 仮のユーザー名
             'content' => $request->input('content'),
             'likes' => 0,
@@ -53,7 +53,7 @@ class PostController extends Controller
             'comment' => 'required|string|max:500',
         ]);
 
-        $post = Post::findOrFail($postId);
+        $post = Pcr::findOrFail($postId);
         $post->comments()->create([
             'content' => $request->input('comment')
         ]);
@@ -64,7 +64,7 @@ class PostController extends Controller
     // いいね
     public function like($postId)
     {
-        $post = Post::findOrFail($postId);
+        $post = Pcr::findOrFail($postId);
         $post->increment('likes');
         return redirect()->back();
     }
