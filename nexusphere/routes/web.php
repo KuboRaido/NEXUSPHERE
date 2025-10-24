@@ -28,4 +28,10 @@ Route::middleware('auth')->group(function () {
    Route::get('/create', [PostController::class, 'create'])->name('create');
 });
 
+   Route::get('/', [PostController::class, 'index']);
+   Route::get('/feed', [PostController::class, 'index']);
+   Route::post('/posts', [PostController::class, 'store']);
+   Route::post('/posts/{post}/like', [PostController::class, 'like']);
+   Route::post('/posts/{post}/comment', [PostController::class, 'comment']);
+
 Route::get('/', function () {return view('welcome');});

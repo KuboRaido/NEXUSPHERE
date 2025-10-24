@@ -27,13 +27,14 @@
         <p>{{ $post->content }}</p>
     </div>
 
-        {{-- 投稿画像 --}}
+    {{-- 投稿画像 --}}
     <div class="post-images">
         @foreach ($post->images as $img)
             <img src="{{ asset('storage/' . $img->image_path) }}" alt="投稿画像" class="post-image" onclick="openModal(this.src)">
         @endforeach
     </div>
 
+    {{-- アクション --}}
     <div class="post-actions">
         <form method="POST" action="/posts/{{ $post->id }}/like">
             @csrf
@@ -41,6 +42,7 @@
         </form>
     </div>
 
+    {{-- コメント --}}
     <div class="comment-box">
         <form method="POST" action="/posts/{{ $post->id }}/comment">
             @csrf
@@ -53,6 +55,7 @@
     </div>
 </div>
 @endforeach
+
 {{-- モーダル表示用 --}}
 <div class="modal" id="imageModal" onclick="closeModal()">
     <span class="modal-close" onclick="closeModal()">&times;</span>
