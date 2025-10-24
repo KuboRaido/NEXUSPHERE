@@ -18,11 +18,13 @@
     <div class="search-container">
       <input type="text" id="search-input" placeholder="ユーザーを検索..." />
     </div>
+    {{--検索結果表示--}}
+    <ul id="search-results" class="search-results" style="display: none;"></ul>
 
      <ul id="dm-list" class="dm-list" data-chat-url-template="{{url('/dm')}}?to=__ID__"></ul>
     
     <div class="footer-nav">
-      <a href="#" class="tab active" data-target="home"><i class="fa-solid fa-house"></i></a>
+      <a href="/feed" class="tab active" data-target="home"><i class="fa-solid fa-house"></i></a>
       <a href="/create" class="tab active" data-target="post"><i class="fas fa-paper-plane"></i></a>
       <a href="/dmlist" class="tab active" data-target="talk"><i class="fa-solid fa-comment"></i></a>
       <a href="/profile" class="tab active" data-target="mypage"><i class="fa-solid fa-user"></i></a>
