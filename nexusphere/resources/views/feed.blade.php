@@ -7,10 +7,11 @@
     <link rel="stylesheet" href="{{ asset('css/styles.css') }}">
 </head>
 <body>
-    {{-- サイトタイトル --}}
-    <h1 id="site-title">Nexusphere</h1>
 
     <div class="container">
+        {{-- サイトタイトル --}}
+        <h1 id="site-title">Nexusphere</h1>
+        
         {{-- 投稿フォーム --}}
         <form method="POST" action="{{ url('/posts') }}" enctype="multipart/form-data">
             @csrf
