@@ -91,7 +91,7 @@ body > * {
 
 
 /*dm一覧*/
-#dm-list{
+#dm-list {
   list-style: none;
   flex: 1;
   overflow: auto;
@@ -178,3 +178,26 @@ body > * {
   text-decoration: none; /* リンクの下線を消す（好みで） */
   color: inherit;        /* テキスト色を継承 */
 }
+
+/* DM一覧の通常は48pxのまま、検索中だけ30pxに縮小 */
+#dm-list li[style*="display: block"] .avatar {
+  width: 30px;
+  height: 30px;
+  margin-right: 8px;
+}
+
+/* 名前も少し小さくする */
+#dm-list li[style*="display: block"] .chat-name {
+  font-size: 13px;
+}
+
+/* メッセージは非表示にして一行に収める */
+#dm-list li[style*="display: block"] .chat-message {
+  display: none;
+}
+
+/* 時間も非表示 */
+#dm-list li[style*="display: block"] .chat-meta {
+  display: none;
+}
+

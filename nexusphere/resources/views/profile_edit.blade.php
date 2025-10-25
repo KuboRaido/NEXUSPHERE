@@ -4,25 +4,28 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width,initial-scale=1">
   <title>プロフィール編集</title>
-  <link rel="stylesheet" href="{{ asset('css/profile.css') }}">
+  <link rel="stylesheet" href="{{ asset('css/profile_edit.css') }}">
 </head>
 <body>
-  <div class="container">
-    <h1>プロフィール編集</h1>
+  <div class="phone-frame">
+    <div class="container">
+      <h1>プロフィール編集</h1>
 
-    @if ($errors->any())
-      <div class="alert alert-danger">
-        <ul>@foreach ($errors->all() as $e)<li>{{ $e }}</li>@endforeach</ul>
-      </div>
-    @endif
+      @if ($errors->any())
+        <div class="alert alert-danger">
+          <ul>@foreach ($errors->all() as $e)<li>{{ $e }}</li>@endforeach</ul>
+        </div>
+      @endif
 
-    <form method="POST" action="{{ route('profile-update') }}" enctype="multipart/form-data">
-      @csrf
+      <form method="POST" action="{{ route('profile-update') }}" enctype="multipart/form-data">
+        @csrf
 
-      <div class="field">
-        <label>現在のアイコン</label><br>
-        <img src="{{ $user->avatar_url }}" alt="" style="width:80px;height:80px;border-radius:50%;">
-      </div>
+        <div class="field">
+          <label>現在のアイコン</label>
+          <div class="current-avatar">
+            <img src="{{ $user->avatar_url }}" alt="アイコン" class="avatar-preview">
+          </div>
+        </div>
 
       <div class="field">
         <label for="icon">アイコン</label>
@@ -44,11 +47,12 @@
         <input id="major" type="text" name="major" value="{{ old('major', $user->major) }}">
       </div>
 
-      <div class="actions">
-        <button type="submit" class="btn" >保存</button>
-        <a href="{{ route('profile') }}" class="btn secondary">戻る</a>
-      </div>
-    </form>
+        <div class="actions">
+          <button type="submit" class="btn">保存</button>
+          <a href="{{ route('profile') }}" class="btn secondary">戻る</a>
+        </div>
+      </form>
+    </div>
   </div>
 </body>
 </html>
