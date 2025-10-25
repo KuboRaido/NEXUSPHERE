@@ -14,13 +14,16 @@
 
     <!-- ヘッダー -->
     <div class="header">
-      <a href="{{url('dmlist')}}" id="back-button" class="back-button">←</a>
       <span class="title">nexusphere</span>
     </div>
-    
+
+  <div class="chat-header">
+      <a href="{{url('dmlist')}}" class="back-button">←</a>
+      <span class="username">相手の名前</span>
+  </div>
+
     <!-- チャットボックス -->
     <div id="chat-box" class="chat-box"></div>
-
     <!-- 入力フォーム（これが唯一のフォーム） -->
     <form id="chat-form" class="chat-form" autocomplete="off">
       <input type="hidden" id="currentUserId" value="{{auth()->id()}}">
