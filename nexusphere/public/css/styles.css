@@ -3,37 +3,44 @@
 ============================== */
 * {
     box-sizing: border-box;
+    margin: 0;
+    padding: 0;
 }
 
 html, body {
     width: 100%;
-    margin: 0;
-    padding: 0 5px; /* ← 左右余白を5pxに設定 */
     overflow-x: hidden;
     font-family: 'Inter', sans-serif;
     background-color: #add8e6;
-}
-
-body {
-    display: flex;
-    justify-content: center;
-    align-items: flex-start;
-    min-height: 100vh;
+    color: #333;
 }
 
 /* ==============================
-   タイトル
+   ヘッダー（中央固定）
 ============================== */
-h1#site-title {
-    text-align: center;
+.site-header {
+    width: 100%;
+    padding: 20px 0;
+    background: transparent;
+    display: flex;
+    justify-content: center; /* 💡 横中央揃え */
+    align-items: center;
+    position: relative;
+}
+
+.header-inner {
+    width: 100%;
+    text-align: center; /* 💡 テキスト中央寄せ */
+}
+
+#site-title {
     font-size: 2rem;
     font-weight: 700;
     color: #333;
-    margin: 20px 0;
 }
 
 /* ==============================
-   全体ラッパー
+   コンテナ
 ============================== */
 .container {
     width: 100%;
@@ -71,7 +78,6 @@ input[type="file"] {
     background: none;
 }
 
-/* 投稿ボタン */
 .btn-submit {
     background-color: #ff69b4;
     color: white;
@@ -117,7 +123,9 @@ input[type="file"] {
     line-height: 1.6;
 }
 
-/* 投稿画像 */
+/* ==============================
+   投稿画像
+============================== */
 .post-images {
     display: flex;
     flex-direction: column;
@@ -133,13 +141,17 @@ input[type="file"] {
     transition: 0.3s;
 }
 
+.post-image:hover {
+    transform: scale(1.02);
+}
+
 /* ==============================
    モーダル
 ============================== */
 .modal {
     display: none;
     position: fixed;
-    z-index: 10;
+    z-index: 9999;
     left: 0;
     top: 0;
     width: 100vw;
@@ -152,6 +164,7 @@ input[type="file"] {
 .modal img {
     max-width: 90%;
     max-height: 90%;
+    border-radius: 1rem;
 }
 
 .modal-close {
@@ -163,7 +176,9 @@ input[type="file"] {
     cursor: pointer;
 }
 
-/* コメント欄 */
+/* ==============================
+   コメント欄
+============================== */
 .comment-box {
     margin-top: 10px;
 }
@@ -188,62 +203,12 @@ input[type="file"] {
    スマホ対応
 ============================== */
 @media screen and (max-width: 768px) {
-    html, body {
-        width: 100%;
-        margin: 0;
-        padding: 0 5px; /* ← スマホでも左右5px */
-    }
-
-    body {
-        display: block;
-        background-color: #add8e6;
+    #site-title {
+        font-size: 1.6rem;
     }
 
     .container {
-        width: 100%;
-        max-width: none;
-        padding: 0;
-        margin: 0;
-    }
-
-    form {
-        width: 100%;
         max-width: 100%;
-        margin: 0 auto 15px auto;
-        padding: 1rem;
-        border-radius: 0;
-        box-shadow: none;
-    }
-
-    textarea {
-        width: 100%;
-        box-sizing: border-box;
-    }
-
-    .post {
-        width: 100%;
-        margin: 0 auto 15px auto;
-        padding: 1rem;
-        border-radius: 0;
-        box-shadow: none;
-        box-sizing: border-box;
-    }
-
-    .post-images img {
-        width: 100%;
-        height: auto;
-        border-radius: 0;
-    }
-
-    .btn-submit {
-        padding: 0.75rem;
-    }
-
-    .comment-box input {
-        width: 75%;
-    }
-
-    .comment-box button {
-        width: 22%;
+        padding: 0.5rem;
     }
 }
