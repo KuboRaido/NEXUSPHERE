@@ -12,7 +12,7 @@ class ProfileController extends Controller
     public function profileFront(?int $user = null)
     {
         $userId = Auth::id();
-        abort_if(!$user, 401);
+        abort_if(!$userId, 401);
 
         if ($user === null){
             $profileUser = Auth::user();
@@ -26,7 +26,7 @@ class ProfileController extends Controller
                      ->orderBy('created_at', 'desc')
                      ->get();
 
-        return view('profile', [
+        return view('Profile', [
             'profileUser' => $profileUser,
             'isMine' => $isMine,
             'posts' => $posts,
@@ -45,16 +45,24 @@ class ProfileController extends Controller
         $id = Auth::id();
         abort_if(!$id, 401);
 
-        $user = User::query()->findOrFail($id);
+        $user = User::where('user_id', $id)->firstOrFail();
 
-        $request->validate([
-            'department' => 'nullable|string|max:255',
-            'major' => 'nullable|string|max:255',
-            'icon' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
+     $request->validate([
+            'name'       => 'required|string|max:255',
+            'subject'    => 'nullable|string|max:255',
+            'major'      => 'nullable|string|max:255',
+            'icon'       => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
+        ],[],[
+            'name'       => '名前',
+            'subject'    => '学部',
+            'major'      => '学科',
+            'icon'       => 'アイコン',
         ]);
 
-        $user->department = $request->input('department');
+        $user->name = $request->input('name');
+        $user->subject = $request->input('subject');
         $user->major = $request->input('major');
+        $user->icon = $request->input('icon');
 
         if ($request->hasFile('icon')) {
             $path = $request->file('icon')->store('icons', 'public');

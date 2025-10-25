@@ -113,6 +113,12 @@ body > * {
   white-space: nowrap;
 }
 
+.handle2 {
+  font-size: 14px;
+  color: #666;
+  white-space: nowrap;
+}
+
 .bio {
   margin-top: 6px;
   color: #444;

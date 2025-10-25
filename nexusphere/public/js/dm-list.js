@@ -9,27 +9,6 @@ function escapeHtml(s){
   }[c]));
 }
 
-document.addEventListener('DOMContentLoaded', function() {
-  const searchInput = document.getElementById('search-input');
-  const dmList = document.getElementById('dm-list');
-
-  if (searchInput) {
-    searchInput.addEventListener('input', function() {
-      const keyword = this.value.toLowerCase();
-      const items = dmList.querySelectorAll('li');
-
-      items.forEach(item => {
-        const nameElement = item.querySelector('.name');
-        if (nameElement) {
-          const nameText = nameElement.textContent.toLowerCase();
-          item.style.display = nameText.includes(keyword) ? '' : 'none';
-        }
-      });
-    });
-  }
-});
-
-
 function formatTime(iso) {
   if (!iso) return '';
   const d = new Date(iso);
@@ -39,6 +18,58 @@ function formatTime(iso) {
   const hours = d.getHours().toString().padStart(2, '0');
   const minutes = d.getMinutes().toString().padStart(2, '0');
   return `${hours}:${minutes}`;
+}
+
+//検索
+let searchTimeout = null;
+
+async function searchUsers(keyword){
+  const searchResults = document.getElementById('search-results');
+  if(!searchResults) return('存在しません');
+
+  if(!keyword || keyword.trim() === ''){
+    searchResults.innerHTML = '';
+    searchResults.style.display = 'none';
+    return;
+  }
+
+  try{
+    const res = await fetch(`/api/v1/users/search?q=${encodeURIComponent(keyword)}`,{
+      headers: {'Accept': 'application/json'},
+      credentials: 'include',
+    });
+
+    if(!res.ok) throw new Error('検索に失敗しました');
+
+    const users = await res.json();
+
+    if(users.length === 0){
+    searchResults.innerHTML = '<li class="empty">ユーザーが見つかりませんでした</li>';
+    searchResults.style.display = 'block';
+    return;
+  }
+
+  searchResults.innerHTML = '';
+  searchResults.style.display = 'block';
+
+  for(const user of users){
+    const li = document.createElement('li');
+    li.className = 'search-result-item';
+    li.innerHTML = `
+      <a class ="user-id" href="/dm?to=${user.user_id}">
+        <img class="icon" src="${user.icon || DEFAULT_AVATAR}" alt="" onerror="this.src='${DEFAULT_AVATAR}'">
+        <div class="search-content">
+         <div class="search-name">${escapeHtml(user.name)}</div>
+        </div>
+      </a>
+    `;
+    searchResults.appendChild(li);
+  }
+ } catch(e){
+  console.error(e);
+  searchResults.innerHTML = '<li class="error">検索中にエラーが発生しました</li>';
+  searchResults.style.display = 'block';
+ }
 }
 
 // ----- API & 描画（一覧） -----
@@ -100,3 +131,31 @@ document.addEventListener('DOMContentLoaded', async () => {
   await fetch('/sanctum/csrf-cookie',{credentials:'include'});
   await loaddmlist();
 });
+
+//検索バーのイベント
+const searchInput = document.getElementById('search-input');
+if(searchInput){
+  searchInput.addEventListener('input', function(){
+    const keyword = this.value.trim();
+
+    //入力のたびに少し待ってから検索
+    clearTimeout(searchTimeout);
+    searchTimeout = setTimeout(() => {
+      searchUsers(keyword);
+    }, 300);//0.3秒後に実行される関数
+  });
+
+  //カーソルが検索バーから外れたら検索結果を隠す
+  searchInput.addEventListener('blur',function(){
+    setTimeout(() => {
+      const searchResults = document.getElementById('search-results');
+      if(searchResults)searchResults.style.display = 'none';
+    },30000);//0.2秒後に実行される関数
+  });
+//入力が空でなければ検索する
+  searchInput.addEventListener('focus',function(){
+    if(this.value.trim()){
+      searchUsers(this.value.trim());
+    }
+  });
+}
