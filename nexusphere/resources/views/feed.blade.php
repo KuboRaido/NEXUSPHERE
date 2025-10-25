@@ -4,16 +4,21 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Nexusphere</title>
+    <meta name="csrf-token" content="{{ csrf_token() }}">
     <link rel="stylesheet" href="{{ asset('css/styles.css') }}">
 </head>
 <body>
 
-    <div class="container">
-        {{-- サイトタイトル --}}
-        <h1 id="site-title">Nexusphere</h1>
-        
+    {{-- サイトタイトル --}}
+    <header class="site-header">
+        <div class="header-inner">
+            <h1 id="site-title">Nexusphere</h1>
+        </div>
+    </header>
+
+    <main class="container">
         {{-- 投稿フォーム --}}
-        <form method="POST" action="{{ url('/posts') }}" enctype="multipart/form-data">
+        <form method="POST" action="{{ route('posts.store') }}" enctype="multipart/form-data">
             @csrf
             <textarea name="content" placeholder="いまどうしてる？" required></textarea>
             <input type="file" name="images[]" multiple accept="image/*">
@@ -22,7 +27,7 @@
 
         {{-- 投稿一覧 --}}
         @foreach($posts as $post)
-            <div class="post">
+            <div class="post" data-post-id="{{ $post->id }}">
                 <div class="post-header">
                     <span class="username">{{ $post->user_name }}</span>
                 </div>
@@ -38,10 +43,9 @@
                 @endif
 
                 <div class="post-actions">
-                    <form method="POST" action="/posts/{{ $post->id }}/like">
-                        @csrf
-                        <button type="submit">❤️ {{ $post->likes }}</button>
-                    </form>
+                    <button type="button" class="like-button" data-post-id="{{ $post->id }}">
+                        ❤️ <span class="like-count">{{ $post->likes }}</span>
+                    </button>
                 </div>
 
                 <div class="comment-box">
@@ -57,22 +61,37 @@
                 </div>
             </div>
         @endforeach
-    </div>
+    </main>
 
-    {{-- モーダル --}}
-    <div class="modal" id="imageModal" onclick="closeModal()">
-        <span class="modal-close" onclick="closeModal()">&times;</span>
-        <img id="modalImage" src="">
-    </div>
-
+    {{-- JS --}}
     <script>
-        function openModal(src) {
-            document.getElementById('modalImage').src = src;
-            document.getElementById('imageModal').style.display = 'flex';
-        }
+        // いいね非同期
+        document.addEventListener('DOMContentLoaded', () => {
+            const csrfToken = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
+            document.querySelectorAll('.like-button').forEach(button => {
+                button.addEventListener('click', async () => {
+                    const postId = button.dataset.postId;
+                    const response = await fetch(`/posts/${postId}/like`, {
+                        method: 'POST',
+                        headers: { 'X-CSRF-TOKEN': csrfToken, 'Content-Type': 'application/json' }
+                    });
+                    if (!response.ok) return alert('通信エラー');
+                    const data = await response.json();
+                    button.querySelector('.like-count').textContent = data.like_count;
+                });
+            });
+        });
 
-        function closeModal() {
-            document.getElementById('imageModal').style.display = 'none';
+        // モーダル
+        function openModal(src) {
+            const modal = document.createElement('div');
+            modal.classList.add('modal');
+            modal.innerHTML = `
+                <span class="modal-close" onclick="document.body.removeChild(this.parentElement)">×</span>
+                <img src="${src}">
+            `;
+            document.body.appendChild(modal);
+            modal.style.display = 'flex';
         }
     </script>
 </body>
