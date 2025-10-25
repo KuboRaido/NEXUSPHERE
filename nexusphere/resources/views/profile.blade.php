@@ -20,19 +20,22 @@
 
         <div class="profile-body">
           <div class="avatar-wrap">
-            <div class="avatar" role="img" aria-label="ユーザーのアイコン"></div>
+            <img class="avatar" src="{{ $profileUser->avatar_url }}" alt="アイコン">
           </div>
 
           <div class="main">
             <div class="name-row">
               <div>
-                <div class="display-name">山田 太郎</div>
-                <div class="handle">AI</div>
+                <div class="display-name">{{ $profileUser->name }}</div>
+                <div class="handle">{{ $profileUser->subject }}</div>
+                <div class="handle2">{{ $profileUser->major }}</div>
               </div>
 
               <div class="actions">
-                <button class="btn">編集</button>
-                <a href="/dm/{{$user->id}}" class="btn dm-btn">DM</a>
+                 @if($isMine)
+                    <a class="btn" href="{{ route('profile.edit') }}">編集</a>
+                 @endif
+                    <a class="dm-btn" href="{{ url('/dm') }}?to={{ $isMine ? 'me' : $profileUser->user_id }}">DM</a>
               </div>
             </div>
             <div class="portfolio-section">
@@ -50,18 +53,21 @@
           <div class="left">
             <h4>最近の投稿</h4>
 
-            <article class="post">
-              <div class="title">今日のランチはパスタ！</div>
-              <div class="excerpt">トマトソースが最高においしかった！</div>
-            </article>
-
+            @forelse($posts as $post)
+             <article class="post">
+              <div class="title">{{ $post->sentence ?? '(タイトルなし)' }}</div>
+              <div class="excerpt">{{ Str::limit($post->content ?? '', 120) }}</div>
+             </article>
+           @empty
+             <div class="no-posts">投稿はありません</div>
+           @endforelse
           </div>
         </div>
       </section>
     </main>
 
     <div class="footer-nav">
-      <a href="#" class="tab active" data-target="home"><i class="fa-solid fa-house"></i></a>
+      <a href="/feed" class="tab active" data-target="home"><i class="fa-solid fa-house"></i></a>
       <a href="/create" class="tab active" data-target="post"><i class="fas fa-paper-plane"></i></a>
       <a href="/dmlist" class="tab active" data-target="talk"><i class="fa-solid fa-comment"></i></a>
       <a href="/profile" class="tab active" data-target="mypage"><i class="fa-solid fa-user"></i></a>
