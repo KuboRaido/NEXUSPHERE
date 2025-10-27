@@ -136,6 +136,39 @@ body > * {
   flex-shrink: 0;
 }
 
+.search-result-item a {
+  display: flex;
+  align-items: center;
+  gap: 8px; /* アイコンと名前の間の余白 */
+  text-decoration: none; /* 下線消す */
+  color: #333; /* 文字色を統一 */
+}
+
+.icon {
+  width: 32px;  /* 好きなサイズに変更 */
+  height: 32px;
+  border-radius: 50%;
+  object-fit: cover;
+}
+
+.search-content .search-name {
+  font-size: 14px;
+  list-style: none;
+  font-weight: bold;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis; /* 長い名前を...で省略 */
+}
+
+#search-results,
+#search-results li {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+
+
 /* 名前＋メッセージ部分 */
 .chat-content {
   flex: 1;
