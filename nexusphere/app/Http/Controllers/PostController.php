@@ -107,4 +107,10 @@ class PostController extends Controller
             ]);
         }
     }
+
+    public function createPost()
+    {
+        // 投稿フォームを表示
+        return view('posts.create-post');
+    }
 }

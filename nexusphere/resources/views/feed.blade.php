@@ -17,15 +17,7 @@
     </header>
 
     <main class="container">
-        {{-- 投稿フォーム --}}
-        <form method="POST" action="{{ route('posts.store') }}" enctype="multipart/form-data">
-            @csrf
-            <textarea name="content" placeholder="いまどうしてる？" required></textarea>
-            <input type="file" name="images[]" multiple accept="image/*">
-            <button type="submit" class="btn-submit">投稿</button>
-        </form>
-
-        {{-- 投稿一覧 --}}
+        {{-- 投稿一覧（閲覧専用） --}}
         @foreach($posts as $post)
             <div class="post" data-post-id="{{ $post->id }}">
                 <div class="post-header">
