@@ -36,6 +36,15 @@ Route::get('/feed', [PostController::class, 'index']);
 Route::post('/posts', [PostController::class, 'store'])->name('posts.store');
 Route::post('/posts/{post}/like', [PostController::class, 'like'])->name('posts.like');
 Route::post('/posts/{post}/comment', [PostController::class, 'comment'])->name('posts.comment');
+Route::get('/post/create', [PostController::class, 'createPost'])->name('posts.create');
+
+//　投稿フォームを表示
+Route::get('/create-post', function () {
+    return view('create-post');
+})->name('posts.create');
+
+//　投稿送信処理
+Route::post('/post', [PostController::class, 'store'])->name('posts.store');
 
 // ❌ ← これ削除
 // Route::get('/', function () {return view('welcome');});
