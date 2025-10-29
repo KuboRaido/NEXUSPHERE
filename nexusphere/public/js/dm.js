@@ -84,8 +84,8 @@ function renderMessages() {
     img.onerror = () => { img.src = DEFAULT_AVATAR; };
     // アイコンを押したらプロフィールに飛べるようにする
     const profileId = (mine ? String(getMeId()) : String(msg.from || window.currentPartnerId || ''));
-    // 画像にリンクを追加
-    img.addEventListener(click, (e) => {
+    // 相手のiconの画像にリンクを追加
+    img.addEventListener('click', (e) => {
       e.preventDefault();
       if(!profileId) return;
       location.href = `/profile/${encodeURIComponent(profileId)}`;
