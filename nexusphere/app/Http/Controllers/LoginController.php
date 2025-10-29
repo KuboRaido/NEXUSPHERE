@@ -18,7 +18,6 @@ class LoginController extends Controller
             'password'=>['required'],
         ]);
 
-    // Laravel sends checkbox as 'on' or value when checked; boolean() normalizes it.
     $remember = (bool) $request->boolean('remember');
 
         if (Auth::attempt(['mail' => $credentials['mail'],'password' =>$credentials['password']],$remember)){
