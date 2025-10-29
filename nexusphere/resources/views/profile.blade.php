@@ -11,7 +11,7 @@
   <div class="phone-frame">
 
     <header class="header">
-      <span class="title">profile</span>
+      <span class="title">{{ $profileUser->name }} profile</span>
     </header>
 
     <main class="container">
