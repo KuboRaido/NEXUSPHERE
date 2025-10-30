@@ -72,7 +72,7 @@ class ProfileController extends Controller
 
     public function profileOther(User $user){
         $userId = Auth::id();
-        $isMine = ($userId && ((int)$userId === (int)$user->user_id));
+       $isMine = ($userId && ((int)$userId === (int)$user->id));
 
         $posts = Pcr::where('user_id', $user->id)
                     ->orderBy('created_at', 'desc')
