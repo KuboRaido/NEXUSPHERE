@@ -1,0 +1,139 @@
+body {
+  margin: 0;
+  padding: 0;
+  height: 100vh;
+  background-color: #add8e6;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-family: Arial, sans-serif;
+  
+}
+
+/* スマホっぽいフレーム */
+body > * {
+  box-sizing: border-box;
+}
+
+.phone-frame {
+  width: 300px;
+  height: 600px;
+  background-color: #fff;
+  border-radius: 40px;
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.25);
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  position: relative;
+  overflow: hidden;
+}
+
+.header{
+  height: 50px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  color: #333;
+  border-bottom: 1px solid #ccc;
+  flex-shrink: 0;
+}
+/* タイトル */
+.title {
+  font-size: 20px;
+  font-weight: bold;
+}
+
+/* 検索欄 */
+.search-container {
+    padding: 10px;
+    background-color: #f0f0f0;
+}
+
+.search-container input {
+    width: 90%;
+    padding: 8px 10px;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+}
+
+/* サークル一覧リスト */
+.club-list {
+    flex: 1;
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    overflow-y: auto;
+}
+
+/* 各サークル項目 */
+.club-item {
+    display: flex;
+    align-items: center;
+    padding: 12px;
+    border-bottom: 1px solid #eee;
+    cursor: pointer;
+    transition: background 0.2s;
+}
+
+.club-item:hover {
+    background-color: #f9f9f9;
+}
+
+/* サークルアイコン */
+.club-icon {
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    object-fit: cover;
+    margin-right: 12px;
+}
+
+/* サークル名・説明 */
+.club-info {
+    flex: 1;
+}
+
+.club-name {
+    font-weight: bold;
+    font-size: 16px;
+    margin-bottom: 4px;
+}
+
+.club-desc {
+    color: #666;
+    font-size: 14px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+/* フッターナビ */
+.footer-nav {
+  position: absolute; /* fixed → absolute に変更 */
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  height: 60px;
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+  background: #fff;
+  border-top: 1px solid #ccc;
+  border-bottom-left-radius: 40px;
+  border-bottom-right-radius: 40px;
+}
+
+.footer-nav a {
+  color: #333;
+  text-emphasis: none;
+  font-size: 22px;
+}
+
+.footer-nav a i {
+  font-size: 20px;
+  margin-bottom: 4px;
+}
+
+.footer-nav a.active {
+  color: #4CAF50; /* 選択されたタブの色 */
+}

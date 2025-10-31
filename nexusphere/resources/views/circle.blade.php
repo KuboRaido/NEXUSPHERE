@@ -2,27 +2,30 @@
 <html lang="ja">
 <head>
   <meta charset="UTF-8">
-  <title>メッセージ一覧</title>
-  <link rel="stylesheet" href="{{ asset('css/dm-list.css') }}">
+  <title>サークル一覧</title>
+  <link rel="stylesheet" href="{{ asset('css/circle.css') }}">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-  <meta name="default-avatar" content="{{ asset('images/default-avatar.png') }}">
-  <script>window.DEFAULT_AVATAR_URL = "{{asset('images/default-avatar.png')}}"</script>
+  <meta name="default-avatar" content="{{ asset('images/default-club.png') }}">
+  <script>window.DEFAULT_CLUB_ICON_URL = "{{ asset('images/default-club.png') }}";</script>
   <meta name="viewport" content="width=device-width, initial-scale=1">
 </head>
+
 <body>
   <div class="phone-frame">
     <div class="header">
-      <span class="title">DM</span>
+      <span class="title">サークル一覧</span>
     </div>
-    
+
     <div class="search-container">
-      <input type="text" id="search-input" placeholder="ユーザーを検索..." />
+      <input type="text" id="search-input" placeholder="サークルを検索..." />
     </div>
-    {{--検索結果表示--}}
+
+    {{-- 検索結果表示 --}}
     <ul id="search-results" class="search-results" style="display: none;"></ul>
 
-     <ul id="dm-list" class="dm-list" data-chat-url-template="{{url('/dm')}}?to=__ID__"></ul>
-    
+    {{-- サークル一覧 --}}
+    <ul id="club-list" class="club-list" data-club-url-template="{{ url('/club') }}?id=__ID__"></ul>
+
     <div class="footer-nav">
       <a href="/feed" class="tab active" data-target="home"><i class="fa-solid fa-house"></i></a>
       <a href="/create" class="tab active" data-target="post"><i class="fas fa-paper-plane"></i></a>
@@ -30,8 +33,8 @@
       <a href="/profile" class="tab active" data-target="mypage"><i class="fa-solid fa-user"></i></a>
       <a href="/circle" class="tab active" data-target="circle"><i class="fa-solid fa-cube"></i></i></a>
     </div>
-
   </div>
-  <script src="{{ asset('js/dm-list.js') }}"></script>
+
+  <script src="{{ asset('js/club-list.js') }}"></script>
 </body>
 </html>
