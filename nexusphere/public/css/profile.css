@@ -73,11 +73,6 @@ body > * {
   overflow: hidden;
 }
 
-.cover {
-  height: 100px;
-  background-color: blue;
-}
-
 .profile-body {
   display: flex;
   flex-wrap: nowrap;

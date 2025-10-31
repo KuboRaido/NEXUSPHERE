@@ -16,7 +16,6 @@
 
     <main class="container">
       <section class="profile-card" aria-label="ユーザープロフィール">
-        <div class="cover"></div>
 
         <div class="profile-body">
           <div class="avatar-wrap">
