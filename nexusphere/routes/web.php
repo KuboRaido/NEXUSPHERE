@@ -25,7 +25,7 @@ Route::middleware('auth')->group(function () {
    Route::get('/create', [PcrController::class, 'create'])->name('create');
    Route::get('feed',[PcrController::class,'index'])->name('feed');
    Route::get('circle',[CircleController::class,'circleFront'])->name('circle');
-   Route::get('circle/clubC\create',[CircleController::class,'clubCreate'])->name('circle.clubcreate');
+   Route::get('circle/create',[CircleController::class,'circleCreate'])->name('circle.create');
 });
 
 Route::get('/', function () {return view('welcome');});
