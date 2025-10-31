@@ -27,25 +27,25 @@
           </div>
         </div>
 
-        <div class="field">
-          <label for="icon">新しいアイコン</label>
-          <input id="icon" type="file" name="icon" required>
-        </div>
+      <div class="field">
+        <label for="icon">アイコン</label>
+        <input id="icon" type="file" name="icon"  value="{{old('icon',$user->avatar_url)}}">
+      </div>
 
-        <div class="field">
-          <label for="name">名前</label>
-          <input id="name" type="text" name="name" value="{{ old('name', $user->name) }}" required>
-        </div>
+      <div class="field">
+        <label for="name">名前</label>
+        <input id="name" type="text" name="name" value="{{ old('name', $user->name) }}">
+      </div>
 
-        <div class="field">
-          <label for="subject">学科</label>
-          <input id="subject" type="text" name="subject" value="{{ old('subject', $user->subject) }}" required>
-        </div>
+      <div class="field">
+        <label for="subject">学科</label>
+        <input id="subject" type="text" name="subject" value="{{ old('subject', $user->subject) }}">
+      </div>
 
-        <div class="field">
-          <label for="major">専攻</label>
-          <input id="major" type="text" name="major" value="{{ old('major', $user->major) }}" required>
-        </div>
+      <div class="field">
+        <label for="major">専攻</label>
+        <input id="major" type="text" name="major" value="{{ old('major', $user->major) }}">
+      </div>
 
         <div class="actions">
           <button type="submit" class="btn">保存</button>

@@ -82,7 +82,14 @@ function renderMessages() {
     img.src = mine ? ME_ICON : PARTNER_ICON;
     img.alt = '';
     img.onerror = () => { img.src = DEFAULT_AVATAR; };
-
+    // アイコンを押したらプロフィールに飛べるようにする
+    const profileId = (mine ? String(getMeId()) : String(msg.from || window.currentPartnerId || ''));
+    // 相手のiconの画像にリンクを追加
+    img.addEventListener('click', (e) => {
+      e.preventDefault();
+      if(!profileId) return;
+      location.href = `/profile/${encodeURIComponent(profileId)}`;
+    })
     const bubble = document.createElement('div');
     bubble.className = 'message-bubble';
     if(msg.text)bubble.textContent = msg.text;

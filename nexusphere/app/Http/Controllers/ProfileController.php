@@ -9,24 +9,20 @@ use Illuminate\Support\Facades\Storage;
 
 class ProfileController extends Controller
 {
-    public function profileFront(?int $user = null)
+    // show logged-in user's profile
+    public function profileFront()
     {
         $userId = Auth::id();
         abort_if(!$userId, 401);
 
-        if ($user === null){
-            $profileUser = Auth::user();
-        }else{
-            $profileUser = User::where('user_id',$user)->firstOrFail();
-        }
-
-        $isMine = ((int)$userId === (int)$profileUser->user_id);
+        $profileUser = Auth::user();
+        $isMine = true;
 
         $posts = Pcr::where('user_id', $profileUser->id)
                      ->orderBy('created_at', 'desc')
                      ->get();
 
-        return view('Profile', [
+        return view('profile', [
             'profileUser' => $profileUser,
             'isMine' => $isMine,
             'posts' => $posts,
@@ -72,5 +68,20 @@ class ProfileController extends Controller
         $user->save();
 
         return redirect()->route('profile')->with('status', 'プロフィールを更新しました。');
+    }
+
+    public function profileOther(User $user){
+        $userId = Auth::id();
+       $isMine = ($userId && ((int)$userId === (int)$user->id));
+
+        $posts = Pcr::where('user_id', $user->id)
+                    ->orderBy('created_at', 'desc')
+                    ->get();
+
+        return view('profile', [
+            'profileUser' => $user,
+            'isMine' => $isMine,
+            'posts' => $posts,
+        ]);
     }
 }
