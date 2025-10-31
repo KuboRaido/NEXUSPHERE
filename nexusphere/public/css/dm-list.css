@@ -29,20 +29,18 @@ body > * {
   overflow: hidden;
 }
 
+/* 検索欄 */
 .search-container {
-  padding: 8px;
-  background-color: #fff;
+    padding: 10px;
+    background-color: #f0f0f0;
 }
 
-#search-input {
-  width: 100%;
-  padding: 8px;
-  font-size: 14px;
-  border: 1px solid #ccc;
-  border-radius: 8px;
-  box-sizing: border-box;
+.search-container input {
+    width: 90%;
+    padding: 8px 10px;
+    border: 1px solid #ccc;
+    border-radius: 8px;
 }
-
 
 .footer-nav {
   position: absolute; /* fixed → absolute に変更 */
