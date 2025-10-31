@@ -29,7 +29,7 @@
 
       <div class="field">
         <label for="icon">アイコン</label>
-        <input id="icon" type="file" name="icon"  value="{{old('icon',$user->avatar_url)}}">
+        <input id="icon" type="file" name="icon" accept="image/*">
       </div>
 
       <div class="field">

@@ -111,7 +111,8 @@ class DmController extends Controller
 
       $to = $r->query('to');
       $partnerId = ($to === 'me' || $to === null) ? Auth::id() : (int) $to;
-      return view('dm', compact('partnerId'));
+      $partnerName = User::where('user_id', $partnerId)->value('name');
+      return view('dm', compact('partnerId', 'partnerName'));
    }
 
  # 会話ログ取得（バック）
