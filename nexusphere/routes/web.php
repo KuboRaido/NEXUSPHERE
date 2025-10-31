@@ -19,13 +19,13 @@ Route::middleware('auth')->group(function () {
    Route::get('/dmlist',[DmController::class,'dmlistfront'])->name('dm-list');
    Route::get('dm',[DmController::class,'dmfront'])->name('dm');
    Route::get('/profile', [ProfileController::class, 'profileFront'])->name('profile');  //自分のプロフィール
-   Route::get('/profile/{user}',[ProfileController::class,'profileOther'])->name('profile.other'); //他人のプロフィール
+   Route::get('/profile/{id}',[ProfileController::class,'profileOther'])->name('profile.other'); //他人のプロフィール
    Route::get('/profile/edit',[ProfileController::class,'edit'])->name('profile.edit');//プロフィール編集画面
    Route::get('/post', [PcrController::class, 'post'])->name('post');
    Route::get('/create', [PcrController::class, 'create'])->name('create');
    Route::get('feed',[PcrController::class,'index'])->name('feed');
    Route::get('circle',[CircleController::class,'circleFront'])->name('circle');
-   Route::get('circle/clubC\create',[CircleController::class,'clubCreate'])->name('circle.clubcreate');
+   Route::get('circle/create',[CircleController::class,'circleCreate'])->name('circle.create');
 });
 
 Route::get('/', function () {return view('welcome');});
