@@ -70,6 +70,7 @@
       <a href="/create" class="tab active" data-target="post"><i class="fas fa-paper-plane"></i></a>
       <a href="/dmlist" class="tab active" data-target="talk"><i class="fa-solid fa-comment"></i></a>
       <a href="/profile" class="tab active" data-target="mypage"><i class="fa-solid fa-user"></i></a>
+      <a href="/circle" class="tab active" data-target="circle"><i class="fa-solid fa-cube"></i></i></a>
     </div>
 
   </div>
