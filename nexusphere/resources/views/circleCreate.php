@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <title>クラブ作成</title>
-    <link rel="stylesheet" href="{{ asset('css/clubcreate.css') }}">
+    <link rel="stylesheet" href="{{ asset('css/circleCreate.css') }}">
 </head>
 <body>
     <div class="form-container">
@@ -41,6 +41,6 @@
         </form>
     </div>
 
-    <script src="{{ asset('js/clubcreate.js') }}"></script>
+    <script src="{{ asset('js/circleCreate.js') }}"></script>
 </body>
 </html>
