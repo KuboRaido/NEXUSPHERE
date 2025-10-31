@@ -11,8 +11,8 @@ class CircleController extends Controller
     {
             return view('circle');
     }
-    public function clubCreate()
+    public function circleCreate()
     {
-            return view('circle_clubcreate');
+            return view('circleCreate');
     }
 }
