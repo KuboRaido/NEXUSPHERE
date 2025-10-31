@@ -47,7 +47,7 @@ class ProfileController extends Controller
             'name'       => 'required|string|max:255',
             'subject'    => 'nullable|string|max:255',
             'major'      => 'nullable|string|max:255',
-            'icon'       => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
+            'icon'       => 'nullable|image|mimes:jpeg,png,jpg,gif,webp|max:2048',
         ],[],[
             'name'       => '名前',
             'subject'    => '学部',
@@ -55,14 +55,14 @@ class ProfileController extends Controller
             'icon'       => 'アイコン',
         ]);
 
-        $user->name = $request->input('name');
-        $user->subject = $request->input('subject');
-        $user->major = $request->input('major');
-        $user->icon = $request->input('icon');
+    $user->name = $request->input('name');
+    $user->subject = $request->input('subject');
+    $user->major = $request->input('major');
+    // ファイル入力は input() では取得しない。アップロードがあった場合のみ上書きする。
 
         if ($request->hasFile('icon')) {
             $path = $request->file('icon')->store('icons', 'public');
-            $user->icon = $path;
+            $user->icon = $path; // 例: icons/2025/10/31/xxxx.png （public ディスク）
         }
 
         $user->save();
