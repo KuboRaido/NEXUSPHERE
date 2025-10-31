@@ -187,7 +187,7 @@ button {
   align-items: center;
   gap: 10px;
   padding: 10px;
-  color: white;
+  color: #333; /* 背景が白のため白文字だと見えない。可視色に変更 */
   font-weight: bold;
   font-size: 1rem;
   flex-shrink: 0;
