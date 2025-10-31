@@ -19,7 +19,7 @@
 
   <div class="chat-header">
       <a href="{{url('dmlist')}}" class="back-button">←</a>
-      <span class="username">相手の名前</span>
+      <span class="username">{{ $partnerName }}</span>
   </div>
 
     <!-- チャットボックス -->
