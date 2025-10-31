@@ -50,7 +50,6 @@ body > * {
 }
 
 .search-container input {
-    width: 90%;
     padding: 8px 10px;
     border: 1px solid #ccc;
     border-radius: 8px;
