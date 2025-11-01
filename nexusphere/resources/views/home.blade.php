@@ -9,7 +9,7 @@
     <h1>Nexesphere</h1>
 
     {{-- 投稿フォーム --}}
-<form method="POST" action="/posts" enctype="multipart/form-data">
+<form method="POST" action="/post" enctype="multipart/form-data">
     @csrf
     <textarea name="content" placeholder="いまどうしてる？" required></textarea>
     <input type="file" name="images[]" multiple accept="image/*">
@@ -35,14 +35,14 @@
     </div>
 
     <div class="post-actions">
-        <form method="POST" action="/posts/{{ $post->id }}/like">
+        <form method="POST" action="/post/{{ $post->id }}/like">
             @csrf
             <button type="submit">❤️ {{ $post->likes }}</button>
         </form>
     </div>
 
     <div class="comment-box">
-        <form method="POST" action="/posts/{{ $post->id }}/comment">
+        <form method="POST" action="/post/{{ $post->id }}/comment">
             @csrf
             <input type="text" name="comment" placeholder="コメントを追加" required>
             <button type="submit">送信</button>
