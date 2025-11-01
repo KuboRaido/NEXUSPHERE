@@ -12,7 +12,7 @@ class PcrController extends Controller
     public function index()
     {
         $posts = Pcr::with(['comments', 'images'])->orderBy('created_at', 'desc')->get();
-        return view('feed', compact('posts'));
+        return view('home', compact('posts'));
     }
 
     // 投稿作成（テキスト＋画像最大10枚）
@@ -28,6 +28,7 @@ class PcrController extends Controller
         $post = Pcr::create([
             'user_name' => 'ゲスト', // 仮のユーザー名
             'content' => $request->input('content'),
+            'images' => [],
             'likes' => 0,
         ]);
 
@@ -36,7 +37,7 @@ class PcrController extends Controller
             $images = $request->file('images');
             $images = array_slice($images, 0, 10); // 最大10枚
             foreach ($images as $image) {
-                $path = $image->store('posts', 'public');
+                $path = $image->store('post', 'public');
                 $post->images()->create([
                     'image_path' => $path
                 ]);
@@ -67,5 +68,10 @@ class PcrController extends Controller
         $post = Pcr::findOrFail($postId);
         $post->increment('likes');
         return redirect()->back();
+    }
+
+    public function post()
+    {
+        return view('post');
     }
 }
