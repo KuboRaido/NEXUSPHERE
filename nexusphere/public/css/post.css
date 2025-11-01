@@ -107,12 +107,16 @@ body > * {
 
 /* ファイルアップロード */
 .file-label {
-  padding: 5px 10px;
-  cursor: pointer;
-  border-radius: 20px;
+  display: inline-flex;
+  justify-content: center;
+  align-items: center;
+  width: 40px;
+  height: 40px;
+  font-size: 24px;
   background-color: #ff69b4;
   color: #fff;
-  font-size: 18px;
+  border-radius: 50%;
+  cursor: pointer;
 }
 
 input[type="file"] {
@@ -120,17 +124,39 @@ input[type="file"] {
 }
 
 /* 投稿ボタン */
+
+.upload-container {
+  display: flex;
+  align-items: center;
+  gap: 10px; /* ボタン同士の間隔 */
+  margin-top: 10px;
+}
+
 button[type="submit"] {
-  background-color: #ff69b4;
-  color: #fff;
-  border: none;
+  flex-shrink: 0;
   padding: 8px 16px;
   border-radius: 20px;
   cursor: pointer;
   font-weight: bold;
+  background-color: #ff69b4;
+  color: #fff;
+  border: none;
   transition: 0.3s;
 }
 
 button[type="submit"]:hover {
   background-color: #1991da;
+}
+
+/* 画像プレビュー */
+#preview-container {
+  margin-top: 10px;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 5px;
+}
+#preview-container img {
+  max-width: 60px;
+  max-height: 60px;
+  border-radius: 10px;
 }
