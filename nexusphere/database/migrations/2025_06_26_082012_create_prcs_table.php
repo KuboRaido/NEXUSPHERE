@@ -15,6 +15,7 @@ return new class extends Migration
             $table->id('prc_id');
             $table->integer('user_id')->unique();
             $table->text('sentence')->nullable();
+            $table->integer('image_and_video_id');
             $table->foreignId('profile_id')->constrained('profiles','profile_id')->cascadeOnDelete();
             $table->integer('type');
             $table->integer('parent_id');

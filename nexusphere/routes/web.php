@@ -4,7 +4,7 @@ use App\Http\Controllers\LoginController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\DmController;
-use App\Http\Controllers\PcrController;
+use App\Http\Controllers\PrcController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\CircleController;
 
@@ -21,9 +21,8 @@ Route::middleware('auth')->group(function () {
    Route::get('/profile', [ProfileController::class, 'profileFront'])->name('profile');  //自分のプロフィール
    Route::get('/profile/edit',[ProfileController::class,'edit'])->name('profile.edit');//プロフィール編集画面
    Route::get('/profile/{id}',[ProfileController::class,'profileOther'])->name('profile.other'); //他人のプロフィール
-   Route::get('/post', [PcrController::class, 'post'])->name('post');
-   //Route::get('/create', [PcrController::class, 'create'])->name('create');
-   Route::get('/home',[PcrController::class,'index'])->name('home');
+   Route::get('/post', [PrcController::class, 'post'])->name('post');
+   Route::get('/home',[PrcController::class,'index'])->name('home');
    Route::get('circle',[CircleController::class,'circleFront'])->name('circle');
    Route::get('circle/create',[CircleController::class,'circleCreate'])->name('circle.create');
 });
