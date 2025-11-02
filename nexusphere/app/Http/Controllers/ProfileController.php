@@ -3,7 +3,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
-use App\Models\Pcr;
+use App\Models\Prc;
 use App\Models\User;
 use Illuminate\Support\Facades\Storage;
 
@@ -18,7 +18,7 @@ class ProfileController extends Controller
         $profileUser = Auth::user();
         $isMine = true;
 
-        $posts = Pcr::where('user_id', $profileUser->id)
+        $posts = Prc::where('user_id', $profileUser->id)
                      ->orderBy('created_at', 'desc')
                      ->get();
 
@@ -74,7 +74,7 @@ class ProfileController extends Controller
         $userId = Auth::id();
        $isMine = ($userId && ((int)$userId === (int)$user->id));
 
-        $posts = Pcr::where('user_id', $user->id)
+        $posts = Prc::where('user_id', $user->id)
                     ->orderBy('created_at', 'desc')
                     ->get();
 

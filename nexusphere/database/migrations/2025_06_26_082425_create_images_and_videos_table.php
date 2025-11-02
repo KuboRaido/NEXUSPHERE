@@ -16,7 +16,7 @@ return new class extends Migration
             $table->unsignedBigInteger('prc_id');
             $table->text('video')->nullable();
             $table->text('image')->nullable();
-            $table->unsignedBigInteger('dm_id');
+            $table->unsignedBigInteger('dm_id')->nullable();
             $table->timestamps();
 
             $table->foreign('dm_id')->references('dm_id')->on('dms')->cascadeOnDelete();
