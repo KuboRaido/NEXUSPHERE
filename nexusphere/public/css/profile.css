@@ -370,7 +370,7 @@ button[type="submit"]:hover {
 }
 
 .portfolio-content {
-  display: none;
+  justify-content: flex-start; /* 左寄せ */
   margin-top: 6px;
   padding: 8px;
   background: #fff;
