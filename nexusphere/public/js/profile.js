@@ -6,7 +6,7 @@ document.addEventListener("DOMContentLoaded", function() {
     const isOpen = content.style.display === "block";
     content.style.display = isOpen ? "none" : "block";
     toggleBtn.innerHTML = isOpen 
-      ? 'ポートフォリオを開く <i class="fa-solid fa-chevron-down"></i>' 
-      : 'ポートフォリオを閉じる <i class="fa-solid fa-chevron-up"></i>';
+      ? 'ポートフォリオ <i class="fa-solid fa-chevron-down"></i>' 
+      : 'ポートフォリオ <i class="fa-solid fa-chevron-up"></i>';
   });
 });

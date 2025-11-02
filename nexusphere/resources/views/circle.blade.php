@@ -18,6 +18,7 @@
 
     <div class="search-container">
       <input type="text" id="search-input" placeholder="サークルを検索..." />
+      <button type="button" id="attach-btn" class="attach-btn">＋</button>
     </div>
 
     {{-- 検索結果表示 --}}
