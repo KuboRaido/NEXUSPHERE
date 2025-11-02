@@ -17,7 +17,7 @@
 
 
     <div id="chat-box"> <!-- 既存のチャットボックス枠をフォームに流用 -->
-      <form action="{{ route('post.post') }}" name="files[]" multiple method="POST" enctype="multipart/form-data">
+      <form action="{{ route('post.back') }}" name="files[]" multiple method="POST" enctype="multipart/form-data">
         @csrf
 
         <!-- 投稿内容 -->
