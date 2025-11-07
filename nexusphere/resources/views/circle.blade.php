@@ -36,6 +36,6 @@
     </div>
   </div>
 
-  <script src="{{ asset('js/club-list.js') }}"></script>
+  <script src="{{ asset('js/circle-list.js ') }}"></script>
 </body>
 </html>
