@@ -9,7 +9,7 @@ class Prc extends Model
     protected $table = 'prcs';
     public $incrementing = true;
     protected $keyType = 'int';
-    protected $fillable = ['user_id','sentence','type','parent_id','circle_id','content','image_and_video_id',/*'profile_id'*/];
+    protected $fillable = ['user_id','sentence','comments','type','parent_id','circle_id','content','image_and_video_id',/*'profile_id'*/];
     protected $primaryKey = 'prc_id';
     public function user()
     {
@@ -25,4 +25,8 @@ class Prc extends Model
         return $this->hasMany(Nice::class, 'prc_id', 'prc_id');
     }
 
+    public function comments()
+    {
+        return $this->hasMany(Prc::class, 'parent_id', 'prc_id')->where('type', 'comment')->with('user');
+    }
 }
