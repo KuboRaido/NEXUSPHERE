@@ -3,10 +3,14 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
+use App\Models\Images_and_videos;
 use App\Models\Prc;
+use App\Models\Nice;
 
 class PrcController extends Controller
 {
+    
     // 投稿一覧
     public function index()
     {
@@ -17,28 +21,34 @@ class PrcController extends Controller
     // 投稿作成（テキスト＋画像最大10枚）
     public function store(Request $request)
     {
+
         // バリデーション
         $request->validate([
-            'content' => 'required|string|max:1000',
+            'sentence' => 'required|string|max:1000',
             'images.*' => 'image|mimes:jpeg,png,jpg,gif,webp|max:5120', // 1枚最大5MB
         ]);
 
         // 投稿作成
         $post = Prc::create([
-            'user_name' => 'ゲスト', // 仮のユーザー名
-            'content' => $request->input('content'),
-            'images' => [],
-            'likes' => 0,
+            'user_id' => Auth::id(),
+            'sentence' => $request->input('sentence'),
         ]);
 
         // 画像保存（最大10枚）
+        $fileInputs = [];
         if ($request->hasFile('images')) {
-            $images = $request->file('images');
-            $images = array_slice($images, 0, 10); // 最大10枚
+            $fileInputs = $request->file('images');
+        }
+
+        if (!empty($fileInputs)) {
+            $images = is_array($fileInputs) ? $fileInputs : [$fileInputs];
+            $images = array_slice($images, 0, 10);
             foreach ($images as $image) {
                 $path = $image->store('post', 'public');
-                $post->images()->create([
-                    'image_path' => $path
+                // Images_and_videos のカラム名は 'image'
+                Images_and_videos::create([
+                    'prc_id' => $post->prc_id,
+                    'image' => $path,
                 ]);
             }
         }
@@ -64,8 +74,23 @@ class PrcController extends Controller
     // いいね
     public function like($postId)
     {
-        $post = Prc::findOrFail($postId);
-        $post->increment('likes');
+        $userId = Auth::id();
+        abort_if(!$userId, 401, 'Unauthenticated');
+
+        $post = Prc::where('prc_id',$postId)->firstOrFail();
+
+        // すでにいいねがあるか確認（トグル）
+        $existing = Nice::where('prc_id', $post->prc_id)->where('user_id', $userId)->first();
+        if ($existing) {
+            $existing->delete();
+        } else {
+            // create new nice
+            Nice::create([
+                'prc_id' => $post->prc_id,
+                'user_id' => $userId,
+            ]);
+        }
+
         return redirect()->back();
     }
 

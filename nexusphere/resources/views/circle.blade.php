@@ -18,7 +18,7 @@
 
     <div class="search-container">
       <input type="text" id="search-input" placeholder="サークルを検索..." />
-      <button type="button" id="attach-btn" class="attach-btn">＋</button>
+      <button t:ype="button" id="attach-btn" class="attach-btn" href="{{ route('circle.create') }}">＋</button>
     </div>
 
     {{-- 検索結果表示 --}}
@@ -29,10 +29,10 @@
 
     <div class="footer-nav">
       <a href="/home" class="tab active" data-target="home"><i class="fa-solid fa-house"></i></a>
-      <a href="/create" class="tab active" data-target="post"><i class="fas fa-paper-plane"></i></a>
+      <a href="/post" class="tab active" data-target="post"><i class="fas fa-paper-plane"></i></a>
       <a href="/dmlist" class="tab active" data-target="talk"><i class="fa-solid fa-comment"></i></a>
       <a href="/profile" class="tab active" data-target="mypage"><i class="fa-solid fa-user"></i></a>
-      <a href="/circle" class="tab active" data-target="circle"><i class="fa-solid fa-cube"></i></i></a>
+      <a href="/circle" class="tab active" data-target="circle"><i class="fa-solid fa-cube"></i></a>
     </div>
   </div>
 

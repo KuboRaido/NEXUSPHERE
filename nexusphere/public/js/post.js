@@ -59,18 +59,23 @@ document.addEventListener('DOMContentLoaded', () => {
   // フォーム送信
   form.addEventListener('submit', (e) => {
     e.preventDefault();
-    const formData = new FormData();
-    formData.append('content', messageInput.value);
-    selectedFiles.forEach(file => formData.append('images[]', file));
 
-    fetch(form.action || '/create', { method: 'POST', body: formData })
-      .then(res => res.json())
-      .then(data => {
-        messageInput.value = '';
-        selectedFiles = [];
-        previewContainer.innerHTML = '';
+    const formData = new FormData(form);
+    // selectedFiles 配列を images[] として追加（imageInput をクリアしている実装に対応）
+    selectedFiles.forEach(f => formData.append('images[]', f));
+
+    const csrfInput = document.querySelector('input[name="_token"]');
+    const csrfToken = csrfInput ? csrfInput.value : null;
+
+    fetch(form.action || '/post', { method: 'POST', body: formData , headers: csrfToken ? {'X-CSRF-TOKEN': csrfToken} : {} ,credentials: 'same-origin' })
+      .then(res => {
+        if(!res.ok) throw new Error('Http' + res.status);
         alert('投稿しました♡');
+        window.location.reload();
       })
-      .catch(err => alert('投稿に失敗しました…'));
+      .catch(err => {
+        console.error('投稿エラー', err);
+        alert('投稿に失敗しました…');
+      });
   });
 });
