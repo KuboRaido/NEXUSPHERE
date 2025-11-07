@@ -193,7 +193,6 @@ class DmController extends Controller
             $isMov = str_starts_with($mime,'video/');
 
          $rec = \App\Models\Images_and_videos::create([
-               'prc_id' => 0,
                'image'  => $isImg ? $path : null,
                'video'  => $isMov ? $path : null,
                'dm_id'  => $dm->dm_id,

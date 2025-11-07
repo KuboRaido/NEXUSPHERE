@@ -11,8 +11,10 @@ class CircleController extends Controller
     {
             return view('circle');
     }
-    public function circleCreate()
+    public function circleCreate(Request $request)
     {
+        
             return view('circleCreate');
+        
     }
 }

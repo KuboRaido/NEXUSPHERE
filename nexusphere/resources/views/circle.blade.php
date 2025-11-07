@@ -18,14 +18,14 @@
 
     <div class="search-container">
       <input type="text" id="search-input" placeholder="サークルを検索..." />
-      <button t:ype="button" id="attach-btn" class="attach-btn" href="{{ route('circle.create') }}">＋</button>
+      <a type="button" id="attach-btn" class="attach-btn" href="{{ route('circle.create') }}">＋</a>
     </div>
 
     {{-- 検索結果表示 --}}
     <ul id="search-results" class="search-results" style="display: none;"></ul>
 
     {{-- サークル一覧 --}}
-    <ul id="club-list" class="club-list" data-club-url-template="{{ url('/club') }}?id=__ID__"></ul>
+    <ul id="club-list" class="club-list" data-club-url-template="{{ url('/circle') }}?id=__ID__"></ul>
 
     <div class="footer-nav">
       <a href="/home" class="tab active" data-target="home"><i class="fa-solid fa-house"></i></a>
