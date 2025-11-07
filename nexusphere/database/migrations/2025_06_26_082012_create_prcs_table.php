@@ -13,13 +13,12 @@ return new class extends Migration
     {
         Schema::create('prcs', function (Blueprint $table) {
             $table->id('prc_id');
-            $table->integer('user_id')->unique();
+            $table->foreignId('user_id')->nullable()->constrained('users','user_id')->cascadeOnDelete();
             $table->text('sentence')->nullable();
-            $table->integer('image_and_video_id');
-            $table->foreignId('profile_id')->constrained('profiles','profile_id')->cascadeOnDelete();
-            $table->integer('type');
-            $table->integer('parent_id');
-            $table->integer('circle_id');
+            $table->foreignId('profile_id')->nullable()->constrained('profiles','profile_id')->cascadeOnDelete();
+            $table->integer('type')->nullable();
+            $table->integer('parent_id')->nullable();
+            $table->foreignId('circle_id')->nullable()->constrained('circles','circle_id')->cascadeOnDelete();
             $table->timestamps();
         });
     }

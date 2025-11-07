@@ -22,6 +22,7 @@ Route::middleware('auth')->group(function () {
    Route::get('/profile/edit',[ProfileController::class,'edit'])->name('profile.edit');//プロフィール編集画面
    Route::get('/profile/{id}',[ProfileController::class,'profileOther'])->name('profile.other'); //他人のプロフィール
    Route::get('/post', [PrcController::class, 'post'])->name('post');
+   Route::post('/post',[PrcController::class,'store'])->name('post.back');
    Route::get('/home',[PrcController::class,'index'])->name('home');
    Route::get('circle',[CircleController::class,'circleFront'])->name('circle');
    Route::get('circle/create',[CircleController::class,'circleCreate'])->name('circle.create');

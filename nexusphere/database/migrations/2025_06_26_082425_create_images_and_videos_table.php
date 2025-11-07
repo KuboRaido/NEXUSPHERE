@@ -13,7 +13,7 @@ return new class extends Migration
     {
         Schema::create('images_and_videos', function (Blueprint $table) {
             $table->id('image_and_video_id');
-            $table->unsignedBigInteger('prc_id');
+            $table->foreignId('prc_id')->nullable()->constrained('prcs','prc_id')->cascadeOnDelete();
             $table->text('video')->nullable();
             $table->text('image')->nullable();
             $table->unsignedBigInteger('dm_id')->nullable();

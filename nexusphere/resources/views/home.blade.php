@@ -2,16 +2,16 @@
 <html lang="ja">
 <head>
     <meta charset="UTF-8">
-    <title>Nexesphere</title>
+    <title>Nexusphere</title>
     <link rel="stylesheet" href="/css/styles.css">
 </head>
 <body>
-    <h1>Nexesphere</h1>
+    <h1>Nexusphere</h1>
 
     {{-- 投稿フォーム --}}
 <form method="POST" action="/post" enctype="multipart/form-data">
     @csrf
-    <textarea name="content" placeholder="いまどうしてる？" required></textarea>
+    <textarea name="sentence" placeholder="いまどうしてる？" required></textarea>
     <input type="file" name="images[]" multiple accept="image/*">
     <button type="submit" class="btn-submit">投稿する</button>
 </form>
@@ -20,7 +20,7 @@
 @foreach ($posts as $post)
 <div class="post">
     <div class="post-header">
-        <span class="username">{{ $post->user_name }}</span>
+        <span class="username">{{ $post->user?->name ?? $post->user_name ?? 'Unknown' }}</span>
     </div>
 
     <div class="post-content">
@@ -30,7 +30,7 @@
         {{-- 投稿画像 --}}
     <div class="post-images">
         @foreach ($post->images as $img)
-            <img src="{{ asset('storage/' . $img->image_path) }}" alt="投稿画像" class="post-image" onclick="openModal(this.src)">
+            <img src="{{$img->url}}" alt="投稿画像" class="post-image" onclick="openModal(this.src)">
         @endforeach
     </div>
 
