@@ -18,8 +18,9 @@
 
     <div class="search-container">
       <input type="text" id="search-input" placeholder="サークルを検索..." />
-      <a type="button" id="attach-btn" class="attach-btn" href="{{ route('circle.create') }}">＋</a>
+      <a href="circle/create" class="attach-btn">＋</a>
     </div>
+
 
     {{-- 検索結果表示 --}}
     <ul id="search-results" class="search-results" style="display: none;"></ul>
@@ -36,6 +37,6 @@
     </div>
   </div>
 
-  <script src="{{ asset('js/club-list.js') }}"></script>
+  <script src="{{ asset('js/circle-list.js') }}"></script>
 </body>
 </html>
