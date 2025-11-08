@@ -38,7 +38,7 @@
 
                 <div class="form-group">
                     <label for="description">説明（必須）</label>
-                    <textarea id="description" name="description" rows="5" maxlength="500" required></textarea>
+                    <textarea id="description" name="sentence" rows="5" maxlength="500" required></textarea>
                 </div>
 
                 <button type="submit" class="submit-btn">作成する</button>

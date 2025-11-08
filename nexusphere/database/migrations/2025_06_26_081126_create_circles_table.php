@@ -1,5 +1,4 @@
 <?php
-
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
@@ -18,6 +17,7 @@ return new class extends Migration
             $table->integer('owner_id');
             $table->string('sentence',255);
             $table->string('icon')->nullable()->unique();
+            $table->integer('members_count')->default(0);
             $table->timestamps();
         });
     }

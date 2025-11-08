@@ -13,8 +13,8 @@ return new class extends Migration
     {
         Schema::create('circle_users', function (Blueprint $table) {
             $table->id('circle_user_id');
-            $table->integer('circle_id');
-            $table->integer('user_id');
+            $table->foreignId('circle_id')->constrained('circles','circle_id')->cascadeOnDelete();
+            $table->foreignId('user_id')->nullable()->constrained('users','user_id')->cascadeOnDelete();
             $table->timestamps();
         });
     }

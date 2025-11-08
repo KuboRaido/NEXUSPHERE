@@ -17,5 +17,4 @@ Route::middleware('auth:sanctum')->prefix('v1')->group(function(){
     Route::post('/profile/edit/update',[ProfileController::class,'update'])->name('profile-update');//プロフィール更新処理
     Route::get('users/search',[UserController::class,'search'])->name('users.search'); // ← ユーザー検索追加
     Route::get('circle',[CircleController::class,'circleback'])->name('circle.back');
-    Route::post('circle/create',[CircleController::class,'circleCreateBack'])->name('circle.create.back');
 });

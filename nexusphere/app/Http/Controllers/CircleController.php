@@ -3,7 +3,8 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
-use Model\Circle;
+use Illuminate\Support\Facades\Auth;
+use App\Models\Circle;
 
 class CircleController extends Controller
 {
@@ -11,10 +12,34 @@ class CircleController extends Controller
     {
             return view('circle');
     }
+    public function circleCreateFront()
+    {
+            return view('circleCreate');
+    }
     public function circleCreate(Request $request)
     {
-        
-            return view('circleCreate');
-        
+
+        $data = $request->validate([
+            'name' => 'required|string|max:255',
+            'sentence'    => 'required|string|max:255',
+            'images'      => 'required|image|mimes:jpeg,png,jpg,gif,webp|max:5120',
+            'category'    => 'nullable|string',
+        ]);
+
+          $iconPath = null;
+          if ($request->hasFile('images')) {
+              $iconPath = $request->file('image')->store('circle-icons', 'public');
+            }
+
+        Circle::create([
+            'owner_id'    => Auth::id(),
+            'circle_name' => $data['circle_name'],
+            'sentence'    => $data['sentence'],
+            'category'    => $data['category'],
+            'icon'      => $iconPath,
+        ]);
+
+
+        return redirect()->back();
     }
 }
