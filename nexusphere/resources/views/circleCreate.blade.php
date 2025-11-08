@@ -11,19 +11,21 @@
             <span class="title">サークル作成</span>
         </div>
         <div class="form-container">
-            <h1>クラブ作成</h1>
-            <!-- 画像プレビュー -->
+
+            <!-- 🖼️ 画像プレビュー部分 -->
             <div class="image-preview">
-                <img id="preview-image" src="" alt="画像を選択すると表示されます">
+                <!-- labelでクリック可能にする -->
+                <label for="image" class="image-label">
+                    <img id="preview-image" src="" alt="+">
+                </label>
             </div>
 
-            <!-- フォーム開始 -->
+            <!-- 📝 フォーム -->
             <form action="{{ route('circle') }}" method="POST" enctype="multipart/form-data">
                 @csrf
 
                 <div class="form-group">
-                    <label for="image">クラブ画像（必須）</label>
-                    <input type="file" id="image" name="image" accept="image/*" required onchange="previewImage(event)">
+                    <input type="file" id="image" name="image" accept="image/*" required onchange="previewImage(event)" style="display:none;">
                 </div>
 
                 <div class="form-group">
@@ -43,6 +45,7 @@
 
                 <button type="submit" class="submit-btn">作成する</button>
             </form>
+        </div>
     </div>
 
     <script src="{{ asset('js/circleCreate.js') }}"></script>
