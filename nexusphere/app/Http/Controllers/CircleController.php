@@ -22,7 +22,7 @@ class CircleController extends Controller
         $data = $request->validate([
             'name' => 'required|string|max:255',
             'sentence'    => 'required|string|max:255',
-            'images'      => 'required|image|mimes:jpeg,png,jpg,gif,webp|max:5120',
+            'image'      => 'required|image|mimes:jpeg,png,jpg,gif,webp|max:5120',
             'category'    => 'nullable|string',
         ]);
 
@@ -33,7 +33,7 @@ class CircleController extends Controller
 
         Circle::create([
             'owner_id'    => Auth::id(),
-            'circle_name' => $data['circle_name'],
+            'circle_name' => $data['name'],
             'sentence'    => $data['sentence'],
             'category'    => $data['category'],
             'icon'      => $iconPath,

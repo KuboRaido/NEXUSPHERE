@@ -12,7 +12,7 @@ return new class extends Migration
     {
         Schema::create('circles', function (Blueprint $table) {
             $table->id('circle_id');
-            $table->integer('category')->nullable();
+            $table->string('category')->nullable();
             $table->string('circle_name')->unique();
             $table->integer('owner_id');
             $table->string('sentence',255);
