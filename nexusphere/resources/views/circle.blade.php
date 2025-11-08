@@ -18,11 +18,7 @@
 
     <div class="search-container">
       <input type="text" id="search-input" placeholder="サークルを検索..." />
-<<<<<<< HEAD
-      <a type="button" id="attach-btn" class="attach-btn" href="{{ route('circle.create') }}">＋</a>
-=======
       <a href="circle/create" class="attach-btn">＋</a>
->>>>>>> origin/kotomi2
     </div>
 
 
