@@ -8,7 +8,8 @@
 <body>
     <div class="phone-frame">
         <div class="header">
-            <span class="title">サークル作成</span>
+         <a href="{{url('circle')}}" class="back-button">←</a>
+         <span class="title">サークル作成</span>
         </div>
         <div class="form-container">
 

@@ -149,7 +149,7 @@ body > * {
     padding: 6px 12px;
   border: none;
   border-radius: 6px;
-  background: #007bff;
+  background: #ff69b4;
   color: white;
   cursor: pointer;
   }
@@ -162,7 +162,7 @@ body > * {
 
 .btn {
   border: none;
-  background: #2563eb;
+  background: #ff69b4;
   color: white;
   font-size: 12px;
   border-radius: 8px;
@@ -172,8 +172,7 @@ body > * {
 
 .btn.secondary {
   background: transparent;
-  color: #2563eb;
-  border: 1px solid #2563eb;
+  color: #ff69b4;
 }
 
 /* =========================
@@ -267,7 +266,7 @@ button[type="submit"] {
 }
 
 button[type="submit"]:hover {
-  background-color: #1991da;
+  background-color: #ff69b4;
 }
 
 /* =========================
@@ -317,14 +316,14 @@ button[type="submit"]:hover {
 }
 
 .dm-btn {
-  background-color: #1991da;
+  background-color: #ff69b4;
   display: inline-block;
   align-items: center;
   text-align: center;
 }
 
 .dm-btn:hover {
-  background-color: #1991da;
+  background-color: #ff69b4;
 }
 .main{
   display: flex;
@@ -390,7 +389,7 @@ button[type="submit"]:hover {
 
 .portfolio-content a {
   text-decoration: none;
-  color: #007bff;
+  color: #ff69b4;
 }
 
 .portfolio-content a:hover {
