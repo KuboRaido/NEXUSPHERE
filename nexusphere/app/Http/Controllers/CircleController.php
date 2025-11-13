@@ -40,6 +40,6 @@ class CircleController extends Controller
         ]);
 
 
-        return redirect()->back();
+        return redirect()->route('circle')->with('status', 'プロフィールを更新しました。');
     }
 }
