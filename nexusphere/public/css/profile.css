@@ -316,15 +316,22 @@ button[type="submit"]:hover {
 }
 
 .dm-btn {
-  background-color: #ff69b4;
-  display: inline-block;
-  align-items: center;
-  text-align: center;
+  border: none;
+  background: #ff69b4;
+  color: white;
+  font-size: 12px;
+  border-radius: 8px;
+  padding: 6px 10px;
+  cursor: pointer;
+  text-decoration: none; /* aタグ用に追加 */
+  display: inline-block; /* aタグでもボタンっぽく表示 */
 }
 
 .dm-btn:hover {
-  background-color: #ff69b4;
+  opacity: 0.8;
 }
+  
+
 .main{
   display: flex;
   flex-direction: column;
