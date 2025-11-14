@@ -42,4 +42,12 @@ class CircleController extends Controller
 
         return redirect()->route('circle')->with('status', 'プロフィールを更新しました。');
     }
+    public function circleProfileFront()
+    {
+            return view('circleProfile');
+    }
+    public function circlePostFront()
+    {
+        return view('circlePost');
+    }
 }
