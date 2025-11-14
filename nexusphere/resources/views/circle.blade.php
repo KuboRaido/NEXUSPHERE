@@ -26,7 +26,7 @@
     <ul id="search-results" class="search-results" style="display: none;"></ul>
 
     {{-- サークル一覧 --}}
-    <ul id="club-list" class="club-list" data-club-url-template="{{ url('/circle') }}?id=__ID__"></ul>
+    <ul id="circle-list" class="circle-list" data-club-url-template="{{ url('/circle') }}?id=__ID__"></ul>
 
     <div class="footer-nav">
       <a href="/home" class="tab active" data-target="home"><i class="fa-solid fa-house"></i></a>

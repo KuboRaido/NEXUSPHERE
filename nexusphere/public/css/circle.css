@@ -84,7 +84,7 @@ body > * {
 }
 
 /* サークル一覧リスト */
-.club-list {
+.circle-list {
     flex: 1;
     list-style: none;
     margin: 0;
@@ -165,7 +165,7 @@ body > * {
   color: #4CAF50; /* 選択されたタブの色 */
 }
 
-.club-list::-webkit-scrollbar,
+.circle-list::-webkit-scrollbar,
 body::-webkit-scrollbar {
   display: none;
 }

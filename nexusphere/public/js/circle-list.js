@@ -1,72 +1,69 @@
-// circle-list.js
+//Circle検索
+let searchTimeout = null;
 
-document.addEventListener("DOMContentLoaded", async () => {
-  const clubList = document.getElementById("club-list");
-  const searchInput = document.getElementById("search-input");
-  const searchResults = document.getElementById("search-results");
-  const DEFAULT_ICON = window.DEFAULT_CLUB_ICON_URL || "/images/default-club.png";
+async function searchUsers(keyword){
+  const searchResults = document.getElementById('search-results');
 
-  // --- 仮のサークルデータ（本来はAPIやDBから取得） ---
-  const clubs = [
-    { id: 1, name: "音楽研究会", description: "音楽を愛する仲間たち！", icon: null },
-    { id: 2, name: "AI開発サークル", description: "AI技術で未来を創る！", icon: null },
-    { id: 3, name: "バスケ部", description: "体育館で週3活動中！", icon: null },
-    { id: 4, name: "写真愛好会", description: "カメラで世界を切り取ろう。", icon: null },
-  ];
-
-  // --- 一覧を描画する関数 ---
-  function renderClubs(list) {
-    clubList.innerHTML = "";
-    const urlTemplate = clubList.dataset.clubUrlTemplate;
-
-    list.forEach(club => {
-      const li = document.createElement("li");
-      li.classList.add("club-item");
-
-      li.innerHTML = `
-        <img src="${club.icon || DEFAULT_ICON}" alt="club icon" class="club-icon">
-        <div class="club-info">
-          <h3>${club.name}</h3>
-          <p>${club.description}</p>
-        </div>
-      `;
-
-      li.addEventListener("click", () => {
-        const url = urlTemplate.replace("__ID__", club.id);
-        window.location.href = url;
-      });
-
-      clubList.appendChild(li);
-    });
+  if(!keyword || keyword.trim() === ''){
+    searchResults.innerHTML = '';
+    searchResults.style.display = 'none';
+    return;
   }
 
-  // --- 初期表示 ---
-  renderClubs(clubs);
-
-  // --- 検索処理 ---
-  searchInput.addEventListener("input", e => {
-    const keyword = e.target.value.trim();
-    if (keyword === "") {
-      searchResults.style.display = "none";
-      renderClubs(clubs);
-      return;
-    }
-
-    const filtered = clubs.filter(c => c.name.includes(keyword) || c.description.includes(keyword));
-
-    searchResults.innerHTML = "";
-    filtered.forEach(c => {
-      const li = document.createElement("li");
-      li.textContent = c.name;
-      li.classList.add("search-item");
-      li.addEventListener("click", () => {
-        searchInput.value = c.name;
-        searchResults.style.display = "none";
-        renderClubs([c]);
-      });
-      searchResults.appendChild(li);
+  try{
+    const res = await fetch(`/api/v1/circle/search?q=${encodeURIComponent(keyword)}`,{
+      headers: {'Accept': 'application/json'},
+      credentials: 'include',
     });
 
-    searchResults.style.display = filtered.length > 0 ? "block" : "none";
-  });
-});
+    if(!res.ok) throw new Error('検索に失敗しました');
+
+    const circles = await res.json();
+
+    if(circles.length === 0){
+    searchResults.innerHTML = '<li class="empty">サークルが見つかりませんでした</li>';
+    searchResults.style.display = 'block';
+    return;
+  }
+
+  // 検索結果を表示
+  searchResults.innerHTML = '';
+  searchResults.style.display = 'block';
+
+  for(const circle of circles){
+    const li = document.createElement('li');
+    li.className = 'search-result-item';
+    li.innerHTML = `
+    <a class ="circle-id" href="/dm?to=${circle.circle_id}">
+        <img class="icon" src="${circle.icon}" alt="" ">
+        <div class="search-content">
+         <div class="search-name">${escapeHtml(circle.circle_name)}</div>
+        </div>
+    </a>
+    `;
+    searchResults.appendChild(li);
+  }
+  } catch(e) {
+    console.error(e);
+    searchResults.innerHTML = '<li class="error">検索中にエラーが発生しました</li>';
+    searchResults.style.display = 'block';
+  }
+}
+
+async function circlelist(){
+  const listRoot = document.getElementById('circle-list');
+  
+  listRoot.innerHTML = '<li class="loading">読み込み中...</li>';
+
+  try{
+    const res = await fetch('api/v1/circle',{
+      headers: {'Accept': 'application/json'},
+      credentials: 'include',
+    });
+    const json = await res.json();
+    const items = Array.isArray(json) ? json : (json.data ?? json.dms ?? []);
+    const tpl = listRoot.dataset.chatUrlTemplate || '/dm?to=__ID__';
+
+    
+  }
+}
