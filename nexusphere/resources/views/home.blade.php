@@ -25,12 +25,12 @@
                     <span class="username">{{ $post->user_name }}</span>
                 </div>
 
-                <div class="post-content">{{ $post->content }}</div>
+                <div class="post-content">{{ $post->sentence }}</div>
 
                 @if ($post->images && $post->images->count() > 0)
                     <div class="post-images">
                         @foreach ($post->images as $image)
-                            <img src="{{ asset('storage/' . $image->image_path) }}" alt="投稿画像" class="post-image" onclick="openModal(this.src)">
+                            <img src="{{ asset('storage/' . $image->image) }}" alt="投稿画像" class="post-image" onclick="openModal(this.src)">
                         @endforeach
                     </div>
                 @endif
