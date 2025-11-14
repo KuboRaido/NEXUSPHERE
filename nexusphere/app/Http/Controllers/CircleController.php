@@ -5,12 +5,28 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use App\Models\Circle;
+use Illuminate\Support\Facades\Storage;
 
 class CircleController extends Controller
 {
     public function circleFront()
     {
             return view('circle');
+    }
+    public function circleBack()
+    {
+        $rows = Circle::orderByDesc('created_at')->get();
+        $list = $rows->map(function (Circle $circle){
+            return [
+                'circle_id' => $circle->circle_id,
+                'circle_name' => $circle->circle_name,
+                'icon' => $circle->icon,
+                'category' => $circle->category,
+                'members_count' => $circle->members_count,
+                'sentence' => $circle->sentence,
+            ];
+        })->values();
+        return response()->json($list);
     }
     public function circleCreateFront()
     {
