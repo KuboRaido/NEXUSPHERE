@@ -43,11 +43,11 @@ body::-webkit-scrollbar {
 .header {
   height: 50px;
   display: flex;
-  justify-content: center;
   align-items: center;
+  justify-content: center; /* タイトルを中央に */
   color: #333;
   border-bottom: 1px solid #ccc;
-  flex-shrink: 0;
+  position: relative; /* ← 相対位置にして中のボタンを絶対配置できるようにする */
 }
 .title {
   font-size: 20px;
@@ -87,7 +87,18 @@ body::-webkit-scrollbar {
   line-height: 100px;
 }
 
-
+.back-button {
+  position: absolute;
+  left: 15px; /* ← 左端に配置 */
+  top: 50%;
+  transform: translateY(-50%); /* ← 縦の中央に揃える */
+  font-size: 22px;
+  color: #333;
+  text-decoration: none;
+  cursor: pointer;
+  background: none;
+  border: none;
+}
 
 /* 🧩 各フォーム項目 */
 .form-group {
