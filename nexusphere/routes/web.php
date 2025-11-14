@@ -26,7 +26,8 @@ Route::middleware('auth')->group(function () {
    Route::get('/home',[PrcController::class,'index'])->name('home');
    Route::get('circle',[CircleController::class,'circleFront'])->name('circle');
    Route::get('circle/create',[CircleController::class,'circleCreateFront'])->name('circle.create');
-   Route::post('circle',[CircleController::class,'circleCreate'])->name('circle.create');
+   Route::get('circle/profile',[CircleController::class,'circleProfileFront'])->name('circle.profile');
+   Route::get('circle/post',[CircleController::class,'circlePostFront'])->name('circle.post');
 });
 
 Route::get('/', function () {return view('welcome');});
