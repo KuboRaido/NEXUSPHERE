@@ -20,10 +20,10 @@ class CircleController extends Controller
             return [
                 'circle_id' => $circle->circle_id,
                 'circle_name' => $circle->circle_name,
-                'icon' => $circle->icon,
                 'category' => $circle->category,
                 'members_count' => $circle->members_count,
                 'sentence' => $circle->sentence,
+                'icon' => $circle->icon ? Storage::url($circle->icon) : null,
             ];
         })->values();
         return response()->json($list);
@@ -43,8 +43,8 @@ class CircleController extends Controller
         ]);
 
           $iconPath = null;
-          if ($request->hasFile('images')) {
-              $iconPath = $request->file('image')->store('circle-icons', 'public');
+          if ($request->hasFile('image')) {
+              $iconPath = $request->file('image')->store('icons', 'public');
             }
 
         Circle::create([
