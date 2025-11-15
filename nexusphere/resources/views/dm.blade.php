@@ -10,8 +10,6 @@
     <script>window.DEFAULT_AVATAR_URL = "{{asset('images/default-avatar.png')}}"</script>
 </head>
 <body>
-  <div class="phone-frame">
-
     <!-- ヘッダー -->
     <div class="header">
       <span class="title">nexusphere</span>
@@ -40,9 +38,6 @@
         <button type="submit" class="send-btn">送信</button>
       </div>
     </form>
-
-  </div>
-  
-  <script src="{{ asset('js/dm.js') }}"></script>
+ <script src="{{ asset('js/dm.js') }}"></script>
 </body>
 </html>
