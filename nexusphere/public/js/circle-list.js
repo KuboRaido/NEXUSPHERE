@@ -1,55 +1,3 @@
-//Circle検索
-let searchTimeout = null;
-
-async function searchUsers(keyword){
-  const searchResults = document.getElementById('search-results');
-
-  if(!keyword || keyword.trim() === ''){
-    searchResults.innerHTML = '';
-    searchResults.style.display = 'none';
-    return;
-  }
-
-  try{
-    const res = await fetch(`/api/v1/circle/search?q=${encodeURIComponent(keyword)}`,{
-      headers: {'Accept': 'application/json'},
-      credentials: 'include',
-    });
-
-    if(!res.ok) throw new Error('検索に失敗しました');
-
-    const circles = await res.json();
-
-    if(circles.length === 0){
-    searchResults.innerHTML = '<li class="empty">サークルが見つかりませんでした</li>';
-    searchResults.style.display = 'block';
-    return;
-  }
-
-  // 検索結果を表示
-  searchResults.innerHTML = '';
-  searchResults.style.display = 'block';
-
-  for(const circle of circles){
-    const li = document.createElement('li');
-    li.className = 'search-result-item';
-    li.innerHTML = `
-    <a class ="circle-id" href="/dm?to=${circle.circle_id}">
-        <img class="icon" src="${circle.icon}" alt="" ">
-        <div class="search-content">
-         <div class="search-name">${escapeHtml(circle.circle_name)}</div>
-        </div>
-    </a>
-    `;
-    searchResults.appendChild(li);
-  }
-  } catch(e) {
-    console.error(e);
-    searchResults.innerHTML = '<li class="error">検索中にエラーが発生しました</li>';
-    searchResults.style.display = 'block';
-  }
-}
-
 async function circlelist(){
   const listRoot = document.getElementById('circle-list');
   
@@ -64,6 +12,22 @@ async function circlelist(){
     const items = Array.isArray(json) ? json : (json.data ?? json.dms ?? []);
     const tpl = listRoot.dataset.chatUrlTemplate || '/dm?to=__ID__';
 
-    
+    // ここでサークル一覧を描画
+    listRoot.innerHTML = '';
+    items.forEach(circle => {
+      const li = document.createElement('li');
+      li.className = 'circle-item';
+      li.innerHTML = `
+        <a href="${tpl.replace('__ID__', circle.circle_id)}">
+          <img src="${circle.icon || window.DEFAULT_CLUB_ICON_URL}" alt="${circle.circle_name}">
+          <div class="name">${circle.circle_name}</div>
+        </a>
+      `;
+      listRoot.appendChild(li);
+    });
+
+  } catch(e) {
+    console.error(e);
+    listRoot.innerHTML = '<li class="error">サークル一覧の取得中にエラーが発生しました</li>';
   }
 }

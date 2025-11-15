@@ -10,7 +10,6 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
 </head>
 <body>
-  <div class="phone-frame">
     <div class="header">
       <span class="title">DM</span>
     </div>
@@ -30,8 +29,6 @@
       <a href="/profile" class="tab active" data-target="mypage"><i class="fa-solid fa-user"></i></a>
       <a href="/circle" class="tab active" data-target="circle"><i class="fa-solid fa-cube"></i></i></a>
     </div>
-
-  </div>
   <script src="{{ asset('js/dm-list.js') }}"></script>
 </body>
 </html>
