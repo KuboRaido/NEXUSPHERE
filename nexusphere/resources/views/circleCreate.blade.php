@@ -6,7 +6,6 @@
     <link rel="stylesheet" href="{{ asset('css/circleCreate.css') }}">
 </head>
 <body>
-    <div class="phone-frame">
         <div class="header">
          <a href="{{url('circle')}}" class="back-button">←</a>
          <span class="title">サークル作成</span>
@@ -47,8 +46,6 @@
                 <button type="submit" class="submit-btn">作成する</button>
             </form>
         </div>
-    </div>
-
     <script src="{{ asset('js/circleCreate.js') }}"></script>
 </body>
 </html>
