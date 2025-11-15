@@ -20,7 +20,7 @@
     {{--検索結果表示--}}
     <ul id="search-results" class="search-results" style="display: none;"></ul>
 
-     <ul id="dm-list" class="dm-list" data-chat-url-template="{{url('/dm')}}?to=__ID__"></ul>
+      <ul id="dm-list" class="dm-list" data-chat-url-template="{{url('/dm')}}?to=__ID__"></ul>
     
     <div class="footer-nav">
       <a href="/home" class="tab active" data-target="home"><i class="fa-solid fa-house"></i></a>

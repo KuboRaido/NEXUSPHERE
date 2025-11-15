@@ -70,6 +70,7 @@ function renderMessages() {
   chatBox.querySelectorAll('.message-row').forEach(el => el.remove());
 
   const currentUserId = String(getMeId() ?? '');
+  const makeStatus = (mine, read) => (!mine ? '' : (read ? '既読' : '未読'));
 
   for (const msg of messages){
     const mine = (msg.from === currentUserId);
@@ -236,9 +237,9 @@ async function sendMessage() {
     const token = decodeURIComponent((document.cookie.match(/XSRF-TOKEN=([^;]+)/)||[])[1] || '');
 
     await fetch(`/api/v1/dm/${currentPartnerId}/read`, {
-     method:'POST',
-     headers: { 'Accept':'application/json', ...(token ? {'X-XSRF-TOKEN': token} : {}) },
-     credentials:'include'
+      method:'POST',
+      headers: { 'Accept':'application/json', ...(token ? {'X-XSRF-TOKEN': token} : {}) },
+      credentials:'include'
     });
 
     const previewContainer = document.getElementById('preview-area');

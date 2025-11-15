@@ -7,8 +7,6 @@
 
   // 2. DOM取得
   const listRoot      = document.getElementById('circle-list');
-  if (!listRoot) return; // このページにサークル一覧がなければ何もしない
-
   const searchInput   = document.getElementById('search-input');
   const searchResults = document.getElementById('search-results');
 

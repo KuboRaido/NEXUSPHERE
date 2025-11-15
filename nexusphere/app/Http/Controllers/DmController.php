@@ -19,11 +19,11 @@ class DmController extends Controller
       if (!$u)return $default;
 
       $path = $u->avatarUrl 
-           ?? $u->icon
-           ?? $u->icon_path
-           ?? $u->avatar_path
-           ?? $u->profile_photo_path
-           ?? null;
+         ?? $u->icon
+         ?? $u->icon_path
+         ?? $u->avatar_path
+         ?? $u->profile_photo_path
+         ?? null;
 
       if (!$path) return $default;
 
@@ -100,14 +100,14 @@ class DmController extends Controller
    }
    unset($t);
 
-  return response()->json([
+return response()->json([
    'me_icon' => $meIcon,
    'data'    => $list,
-  ]);
- }
+]);
+}
 
  # 会話画面（フロント）
- public function dmfront(Request $r){
+public function dmfront(Request $r){
 
       $to = $r->query('to');
       $partnerId = ($to === 'me' || $to === null) ? Auth::id() : (int) $to;
@@ -115,15 +115,19 @@ class DmController extends Controller
       return view('dm', compact('partnerId', 'partnerName'));
    }
 
- # 会話ログ取得（バック）
- public function dmback(int $partner){
+# 会話ログ取得（バック）
+public function dmback(Request $request ,?int $partner=null){
    $me = Auth::id();
    abort_if(!$me, 401, 'Unauthenticated');
 
    $userPk = (new User) -> getKeyName(); 
    $meUser = Auth::user();
    $partnerUser = User::where($userPk,$partner)->firstOrFail();
-
+   $partnerReadAt = DB::table('dm_reads')
+      ->where('user_id', $me)
+      ->where('partner_id', $partner)
+      ->value('last_read_at');
+   
    if($partner === $me){
       //自分にDM
       $messages = Dm::where('sender_id',$me)
@@ -136,8 +140,8 @@ class DmController extends Controller
       })->orWhere(function($q) use($me,$partner){
          $q->where('sender_id',$partner)->where('receiver_id',$me);
       })
-       ->orderBy('created_at','asc')
-       ->get(['dm_id','sender_id','receiver_id','message_text','created_at','dm_key']);
+      ->orderBy('created_at','asc')
+      ->get(['dm_id','sender_id','receiver_id','message_text','created_at','dm_key']);
    }
    
    return response()->json([
@@ -145,7 +149,10 @@ class DmController extends Controller
          'me'     =>['id'=>$meUser->$userPk, 'name'=>$meUser->name, 'avatar'=>$meUser->avatar_url],
          'partner'=>['id'=>$partnerUser->$userPk, 'name'=>$partnerUser->name,'avatar'=>$partnerUser->avatar_url]
       ],
-      'dms' => $messages->map(function($m){
+      'dms' => $messages->map(function($m) use ($partnerReadAt, $meUser, $userPk){
+         $isMine = ((int) $m->sender_id === (int) $meUser->$userPk);
+         $is_read = $isMine && $partnerReadAt ? $m->created_at <= $partnerReadAt : false;
+
          return[
             'id'        =>$m->dm_id,
             'from_id'   =>$m->sender_id,
@@ -153,11 +160,12 @@ class DmController extends Controller
             'text'      =>$m->message_text,
             'dm_key'    =>$m->dm_key,
             'created_at'=>$m->created_at?->toISOString(),
+            'is_read'   =>$is_read,
             'attachments'=>$m->Images_and_videos->map(function($rec){
-                   $path = $rec->image ?: $rec->video;
-                   $url  = $path ? Storage::url($path) : null;
-                   $type = $rec->image ? 'image' : ($rec->video ? 'video' : 'file');
-                   return ['type'=>$type,'url' =>$url];
+                  $path = $rec->image ?: $rec->video;
+                  $url  = $path ? Storage::url($path) : null;
+                  $type = $rec->image ? 'image' : ($rec->video ? 'video' : 'file');
+                  return ['type'=>$type,'url' =>$url];
             })->values(),
          ];
       }),
@@ -231,7 +239,7 @@ class DmController extends Controller
             'last_read_at' => now(),
             'updated_at'   => now(),
             'created_at'   => now(),
-          ]],
+         ]],
          ['user_id','partner_id'], //衝突キー（unique）
          ['last_read_at','updated_at']//更新する列
       );
@@ -240,15 +248,15 @@ class DmController extends Controller
       $partnerId = $partner->getKey();
 
       $last = DB::table('dm_reads')
-       ->where('user_id', $meId)
-       ->where('partner_id', $partnerId)
-       ->value('last_read_at');
+      ->where('user_id', $meId)
+      ->where('partner_id', $partnerId)
+      ->value('last_read_at');
 
       $unread = DB::table('dms')
        ->where('receiver_id', $meId)      // 自分あて
        ->where('sender_id', $partnerId)   // 相手から
-       ->when($last, fn($q) => $q->where('created_at', '>', $last))
-       ->count();
+      ->when($last, fn($q) => $q->where('created_at', '>', $last))
+      ->count();
 
       return response()->json(['ok'=>true, 'unread_count' => $unread]);
    }
