@@ -20,7 +20,7 @@
       li.className = 'club-item';
       li.innerHTML = `
         <a class="circle-link" href="${resolveLink(circle.circle_id ?? circle.id)}">
-          <img class="club-icon" src="${escapeHtml(circle.icon)}" alt="" ">
+          <img class="club-icon" src="${escapeHtml(circle.icon)}">
           <div class="club-info">
             <div> 
               <span class="club-name">${escapeHtml(circle.circle_name || circle.name)}</span>
@@ -40,6 +40,7 @@
     searchResults.style.display = 'none';
     searchResults.innerHTML = '';
   };
+  
   const showSearch = (items) => {
     if (!searchResults) return;
     if (!items.length) {
@@ -53,7 +54,7 @@
       li.className = 'search-result-item';
       li.innerHTML = `
         <a class="circle-search-link" href="${resolveLink(circle.circle_id ?? circle.id)}">
-          <img class="icon" src="${escapeHtml(circle.icon || DEFAULT_ICON)}" alt="" onerror="this.src='${DEFAULT_ICON}'">
+          <img class="icon" src="${escapeHtml(circle.icon)}">
           <div class="search-content">
             <div class="search-name">${escapeHtml(circle.circle_name || circle.name || '名称未設定')}</div>
             <div class="search-meta">${escapeHtml(circle.category || '')}</div>
