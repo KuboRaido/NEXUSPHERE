@@ -6,10 +6,9 @@
   <title>プロフィール</title>
   <link rel="stylesheet" href="{{ asset('css/profile.css') }}">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
 </head>
 <body>
-  <div class="phone-frame">
-
     <header class="header">
       <span class="title">{{ $profileUser->name }} profile</span>
     </header>
@@ -72,8 +71,6 @@
       <a href="/profile" class="tab active" data-target="mypage"><i class="fa-solid fa-user"></i></a>
       <a href="/circle" class="tab active" data-target="circle"><i class="fa-solid fa-cube"></i></i></a>
     </div>
-
-  </div>
   <script src="{{ asset('js/profile.js') }}"></script>
 </body>
 </html>

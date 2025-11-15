@@ -7,7 +7,6 @@
   <link rel="stylesheet" href="{{ asset('css/profile_edit.css') }}">
 </head>
 <body>
-  <div class="phone-frame">
     <div class="container">
       <h1>プロフィール編集</h1>
 
@@ -53,6 +52,5 @@
         </div>
       </form>
     </div>
-  </div>
 </body>
 </html>
