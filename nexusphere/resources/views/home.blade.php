@@ -10,51 +10,68 @@
 </head>
 <body>
 
-    {{-- サイトタイトル --}}
-    <header class="site-header">
-        <div class="header-inner">
-            <h1 id="site-title">Nexusphere</h1>
-        </div>
-    </header>
+<header class="site-header">
+    <div class="header-inner">
+        <h1 id="site-title">Nexusphere</h1>
+    </div>
+</header>
 
-    <main class="container">
-        {{-- 投稿一覧（閲覧専用） --}}
-        @foreach($posts as $post)
-            <div class="post" data-post-id="{{ $post->id }}">
-                <div class="post-header">
-                    <span class="username">{{ $post->user_name }}</span>
-                </div>
+<main class="container">
 
-                <div class="post-content">{{ $post->sentence }}</div>
+    {{-- 投稿一覧（閲覧専用） --}}
+    @foreach($posts as $post)
+        <div class="post" data-post-id="{{ $post->prc_id }}">
 
-                @if ($post->images && $post->images->count() > 0)
-                    <div class="post-images">
-                        @foreach ($post->images as $image)
-                            <img src="{{ asset('storage/' . $image->image) }}" alt="投稿画像" class="post-image" onclick="openModal(this.src)">
-                        @endforeach
-                    </div>
-                @endif
+            {{-- 投稿者名 --}}
+            <div class="post-header">
+                <span class="username">{{ $post->user_name }}</span>
+            </div>
 
-                <div class="post-actions">
-                    <button type="button" class="like-button" data-post-id="{{ $post->id }}">
-                        ❤️ <span class="like-count">{{ $post->likes }}</span>
-                    </button>
-                </div>
+            {{-- 投稿内容 --}}
+            <div class="post-content">{{ $post->sentence }}</div>
 
-                <div class="comment-box">
-                    <form method="POST" action="/posts/{{ $post->id }}/comment">
-                        @csrf
-                        <input type="text" name="comment" placeholder="コメントを追加" required>
-                        <button type="submit">送信</button>
-                    </form>
-
-                    @foreach ($post->comments as $comment)
-                        <p>💬 {{ $comment->content }}</p>
+            {{-- 画像 --}}
+            @if ($post->images && $post->images->count() > 0)
+                <div class="post-images">
+                    @foreach ($post->images as $image)
+                        <img src="{{ asset('storage/' . $image->image) }}" 
+                             alt="投稿画像" 
+                             class="post-image" 
+                             onclick="openModal(this.src)">
                     @endforeach
                 </div>
+            @endif
+
+            {{-- いいね --}}
+            <div class="post-actions">
+                <form method="POST" action="/posts/{{ $post->prc_id }}/like">
+                    @csrf
+                    <button type="submit" class="like-button">
+                        ❤️ <span class="like-count">{{ $post->nices->count() }}</span>
+                    </button>
+                </form>
             </div>
-        @endforeach
-    </main>
+
+            {{-- コメント欄 --}}
+            <div class="comment-box">
+
+                {{-- コメント送信 --}}
+                <form method="POST" action="/posts/{{ $post->prc_id }}/comment">
+                    @csrf
+                    <input type="text" name="comment" placeholder="コメントを追加" required>
+                    <button type="submit">送信</button>
+                </form>
+
+                {{-- コメント一覧 --}}
+                @foreach ($post->comments as $comment)
+                    <p>💬 {{ $comment->sentence }}</p>
+                @endforeach
+
+            </div>
+        </div>
+    @endforeach
+
+</main>
 
     <div class="footer-nav">
       <a href="/home" class="tab {{ request()->is('home') ? 'active' : '' }}"><i class="fa-solid fa-house"></i></a>

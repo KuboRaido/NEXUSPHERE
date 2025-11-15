@@ -30,4 +30,14 @@ Route::middleware('auth')->group(function () {
    Route::get('circle/post',[CircleController::class,'circlePostFront'])->name('circle.post');
 });
 
+// コメント投稿
+Route::post('/posts/{postId}/comment', [PrcController::class, 'comment'])
+    ->name('posts.comment');
+
+// いいね
+Route::post('/posts/{postId}/like', [PrcController::class, 'like'])
+    ->name('posts.like');
+
+
+
 Route::get('/', function () {return view('welcome');});
