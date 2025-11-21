@@ -59,7 +59,7 @@ async function searchUsers(keyword){
       <a class ="user-id" href="/dm?to=${user.user_id}">
         <img class="icon" src="${user.icon || DEFAULT_AVATAR}" alt="" onerror="this.src='${DEFAULT_AVATAR}'">
         <div class="search-content">
-         <div class="search-name">${escapeHtml(user.name)}</div>
+          <div class="search-name">${escapeHtml(user.name)}</div>
         </div>
       </a>
     `;

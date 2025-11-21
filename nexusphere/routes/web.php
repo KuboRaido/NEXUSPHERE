@@ -28,6 +28,17 @@ Route::middleware('auth')->group(function () {
    Route::get('circle/create',[CircleController::class,'circleCreateFront'])->name('circle.create');
    Route::get('circle/profile',[CircleController::class,'circleProfileFront'])->name('circle.profile');
    Route::get('circle/post',[CircleController::class,'circlePostFront'])->name('circle.post');
+   Route::post('circle',[CircleController::class,'circleCreate']);
 });
+
+// コメント投稿
+Route::post('/posts/{postId}/comment', [PrcController::class, 'comment'])
+    ->name('posts.comment');
+
+// いいね
+Route::post('/posts/{postId}/like', [PrcController::class, 'like'])
+    ->name('posts.like');
+
+
 
 Route::get('/', function () {return view('welcome');});
