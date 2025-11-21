@@ -14,7 +14,9 @@ class PrcController extends Controller
     // 投稿一覧
     public function index()
     {
-        $posts = Prc::with(['comments', 'images'])->orderBy('created_at', 'desc')->get();
+        $posts = Prc::with(['comments', 'images'])
+                    ->orderBy('created_at', 'desc')
+                    ->get();
         return view('home', compact('posts'));
     }
 
@@ -64,15 +66,20 @@ class PrcController extends Controller
         ]);
 
         $post = Prc::findOrFail($postId);
+
+        // type と user_idを必ずセット
         $post->comments()->create([
-            'content' => $request->input('comment')
+            'sentence' => $request->comment,
+            'user_id' =>Auth::id(),
+            'type'    => '1', //数字に変更
+            'parent_id' => $post->prc_id,
         ]);
 
         return redirect()->back();
     }
 
-    // いいね
-    public function like($postId)
+    // いいね(POST /posts/{prc_id}/like)
+    public function like(Request $request, $postId)
     {
         $userId = Auth::id();
         abort_if(!$userId, 401, 'Unauthenticated');
@@ -80,7 +87,10 @@ class PrcController extends Controller
         $post = Prc::where('prc_id',$postId)->firstOrFail();
 
         // すでにいいねがあるか確認（トグル）
-        $existing = Nice::where('prc_id', $post->prc_id)->where('user_id', $userId)->first();
+        $existing = Nice::where('prc_id', $post->prc_id)
+                        ->where('user_id', $userId)
+                        ->first();
+
         if ($existing) {
             $existing->delete();
         } else {

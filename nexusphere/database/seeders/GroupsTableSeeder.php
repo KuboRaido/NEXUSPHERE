@@ -15,7 +15,7 @@ class GroupsTableSeeder extends Seeder
     {
         DB::table('circles')->insert([
             [
-                'circle_id'   => 1,
+                'circle_id'   => 10,
                 'circle_name' => 'AI研究部',
                 'category'    => '研究',
                 'owner_id'    => 2,
@@ -25,7 +25,7 @@ class GroupsTableSeeder extends Seeder
                 'updated_at' => Carbon::now(),
             ],
             [
-                'circle_id'   => 2,
+                'circle_id'   => 20,
                 'circle_name' => '音楽制作サークル',
                 'category'    => '音楽',
                 'owner_id'    => 2,
@@ -35,7 +35,7 @@ class GroupsTableSeeder extends Seeder
                 'updated_at' => Carbon::now(),
             ],
             [
-                'circle_id'   => 3,
+                'circle_id'   => 30,
                 'circle_name' => 'ゲーム開発同好会',
                 'category'    => 'ゲーム',
                 'owner_id'    => 2,
