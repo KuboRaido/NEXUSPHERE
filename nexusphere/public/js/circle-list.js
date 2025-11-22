@@ -11,7 +11,7 @@
   const searchResults = document.getElementById('search-results');
 
   // 3. URLテンプレート＆リンク生成関数
-  const linkTemplate = listRoot.dataset.chatUrlTemplate || '/circle?id=__ID__';
+  const linkTemplate = listRoot.dataset.clubUrlTemplate || '/circle?id=__ID__';
   const resolveLink = (id) =>
     linkTemplate.replace('__ID__', encodeURIComponent(String(id)));
 
@@ -29,31 +29,25 @@
     items.forEach((circle) => {
       const li = document.createElement('li');
       li.className = 'circle-item';
+
       const name = circle.circle_name || circle.name || '';
       const icon = circle.icon || window.DEFAULT_CLUB_ICON_URL || '';
 
       li.innerHTML = `
-        <a href="${resolveLink(circle.circle_id ?? circle.id)}">
-          <img src="${escapeHtml(icon)}" alt="${escapeHtml(name)}">
-          <div class="name">${escapeHtml(name)}</div>
+        <img src="${escapeHtml(icon)}" alt="${escapeHtml(name)}">
+        <a class="name" href="${resolveLink(circle.circle_id ?? circle.id)}">
+          ${escapeHtml(name)}
         </a>
       `;
+
       fragment.appendChild(li);
     });
 
     listRoot.replaceChildren(fragment);
   };
 
-  // 6. 検索結果の表示/非表示
-  const hideSearch = () => {
-    if (!searchResults) return;
-    searchResults.style.display = 'none';
-    searchResults.innerHTML = '';
-  };
-
+  // 6. 検索結果（丸く表示される修正版）
   const showSearch = (items) => {
-    if (!searchResults) return;
-
     if (!items.length) {
       searchResults.innerHTML = '<li class="empty">サークルが見つかりませんでした</li>';
       searchResults.style.display = 'block';
@@ -64,13 +58,14 @@
     items.forEach((circle) => {
       const li = document.createElement('li');
       li.className = 'circle-item';
+
       const name = circle.circle_name || circle.name || '';
       const icon = circle.icon || window.DEFAULT_CLUB_ICON_URL || '';
 
       li.innerHTML = `
-        <a href="${resolveLink(circle.circle_id ?? circle.id)}">
-          <img src="${escapeHtml(icon)}" alt="${escapeHtml(name)}">
-          <div class="name">${escapeHtml(name)}</div>
+        <img src="${escapeHtml(icon)}" alt="${escapeHtml(name)}">
+        <a class="name" href="${resolveLink(circle.circle_id ?? circle.id)}">
+          ${escapeHtml(name)}
         </a>
       `;
       fragment.appendChild(li);
@@ -80,7 +75,12 @@
     searchResults.style.display = 'block';
   };
 
-  // 7. フィルタ（検索）
+  const hideSearch = () => {
+    searchResults.style.display = 'none';
+    searchResults.innerHTML = '';
+  };
+
+  // 7. 検索フィルタ
   const filterCircles = (keyword) => {
     const trimmed = keyword.trim();
     if (!trimmed) {
@@ -109,7 +109,7 @@
 
   const debouncedFilter = debounce((value) => filterCircles(value), 200);
 
-  // 9. APIから取得
+  // 9. API取得
   const fetchCircles = async () => {
     listRoot.innerHTML = '<li class="loading">読み込み中...</li>';
 
@@ -122,6 +122,7 @@
 
       const body = await res.json();
       circles = Array.isArray(body) ? body : (body.data ?? []);
+
       renderList(circles);
     } catch (error) {
       console.error(error);
@@ -137,8 +138,6 @@
     searchInput.addEventListener('focus', () => {
       if (searchInput.value.trim()) debouncedFilter(searchInput.value);
     });
-    searchInput.addEventListener('blur', () => {
-      setTimeout(hideSearch, 200);
-    });
+    searchInput.addEventListener('blur', () => setTimeout(hideSearch, 200));
   }
 })();

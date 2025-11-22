@@ -58,20 +58,35 @@ return new class extends Migration
     public function down(): void
     {
         Schema::disableForeignKeyConstraints();
-        Schema::dropIfExists('dms');
-        Schema::enableForeignKeyConstraints();
 
-        Schema::table('dms',function(\Illuminate\Database\Schema\Blueprint $table){
+    // 外部キーを持つカラムを削除してからテーブル削除
+    Schema::table('dms', function (Blueprint $table) {
+        if (Schema::hasColumn('dms', 'circle_id')) {
             $table->dropForeign(['circle_id']);
+        }
+        if (Schema::hasColumn('dms', 'user_id')) {
             $table->dropForeign(['user_id']);
+        }
+        if (Schema::hasColumn('dms', 'group_id')) {
             $table->dropForeign(['group_id']);
+        }
+        if (Schema::hasColumn('dms', 'sender_id')) {
             $table->dropForeign(['sender_id']);
+        }
+        if (Schema::hasColumn('dms', 'receiver_id')) {
             $table->dropForeign(['receiver_id']);
+        }
+        if (Schema::hasColumn('dms', 'parent_id')) {
             $table->dropForeign(['parent_id']);
+        }
+        if (Schema::hasColumn('dms', 'reply_to_dm_id')) {
             $table->dropForeign(['reply_to_dm_id']);
-        });
-        Schema::dropIfExists('dms');
-        Schema::enableForeignKeyConstraints();
+        }
+    });
+
+    Schema::dropIfExists('dms');
+
+    Schema::enableForeignKeyConstraints();
     }
 };
 
