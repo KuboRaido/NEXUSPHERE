@@ -12,3 +12,13 @@ function previewImage(event) {
         preview.src = "";
     }
 }
+
+function previewImage(event) {
+    const img = document.getElementById('preview-image');
+    const plus = document.getElementById('plus');
+
+    img.src = URL.createObjectURL(event.target.files[0]);
+    img.style.display = 'block';
+    plus.style.display = 'none';
+}
+
