@@ -224,3 +224,9 @@ button {
   margin: 4px;
 }
 
+.read-status{
+  font-size: 10pz;
+  color: #888;
+  margin-left: 6px;
+  display: inline-block;
+}

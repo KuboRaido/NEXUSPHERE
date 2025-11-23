@@ -11,7 +11,27 @@
 <body>
     <header class="header">
       <span class="title">{{ $profileUser->name }} profile</span>
+<!--ここからログアウトボタン-->
+      @if($isMine)
+        <button type="button" class="logout-btn" id="logout-trigger">ログアウト</button>
+      @endif
     </header>
+      @if($isMine)
+        <div id="logout-confirm" class="logout-confirm" hidden>
+          <div class="logout-dialog">
+            <p>ログアウトしますか？</p>
+            <div class="logout-actions">
+                <button type="button" id="logout-yes">はい</button>
+                <button type="button" id="logout-no">いいえ</button>
+            </div>
+          </div>
+        </div>
+
+        <form id="logout-form" action="{{ route('logout') }}" method="POST" hidden>
+          @csrf
+        </form>
+      @endif
+<!--ここまで-->
 
     <main class="container">
       <section class="profile-card" aria-label="ユーザープロフィール">
