@@ -1,29 +1,21 @@
-/* 全体背景と中央配置 */
 body {
-  margin: 0;
-  padding: 0;
-  height: 100vh;
-  background-color: #add8e6;
-  display: flex;
-  justify-content: center;
-  align-items: center;
   font-family: Arial, sans-serif;
+  background-color: #add8e6;
+  min-height: 100vh;
 }
 
-/* スマホっぽいフレーム */
-body > * {
-  box-sizing: border-box;
+/* ヘッダー */
+.header {
+  background: #add8e6;
+  padding: 15px;
+  text-align: center;
+  font-size: 20px;
+  font-weight: bold;
 }
 
-.phone-frame {
-  width: 300px;
-  height: 600px; /* ←ここを伸ばします！もともとは667pxとか */
-  background-color: #fff;
-  border-radius: 40px;
-  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.25);
-  padding: 20px;
-  display: flex;
-  flex-direction: column;
+.title {
+  font-size: 20px;
+  font-weight: bold;
 }
 
 
@@ -37,9 +29,14 @@ body > * {
   border-bottom: 1px solid #ccc;
   flex-shrink: 0;
 }
-.title {
-  font-size: 20px;
-  font-weight: bold;
+
+.chat-container {
+  width: 90%;
+  margin: 30px auto;
+  padding: 20px;
+  background: #fff;
+  border-radius: 15px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.15);
 }
 
 /* チャットボックス */
@@ -120,44 +117,55 @@ flex-shrink: 0;
 }
 
 /* 入力欄とボタン（縦並び） */
-.input-area{
+.input-area {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
   display: flex;
+  justify-content: center; 
+  align-items: center;     
   border-top: 1px solid #ccc;
   background-color: #fff;
-  flex-shrink: 0;
+  height: 70px; /* 高さを少し大きく */
+  padding: 8px 12px; /* 内側の余白を追加 */
 }
 
-#image-input {
-  display: none; /* ファイル選択はボタンで開く */
+/* テキスト入力欄 */
+.input-area input[type="text"] {
+  flex: 1;                   /* 横幅いっぱいに */
+  height: 48px;               /* 高さを大きく */
+  padding: 0 12px;            /* 内側余白 */
+  border: 1px solid #ccc;
+  border-radius: 24px;        /* 丸みを大きく */
+  font-size: 16px;            /* 文字も少し大きく */
+  margin-right: 10px;         /* ボタンとの間隔 */
 }
 
+/* 添付ボタン */
 .input-area button.attach-btn {
   flex-shrink: 0;
-  width: 36px;            /* 横幅 */
-  height: 36px;           /* 高さを入力欄に合わせる */
-  padding: 0;             /* 内側余白は0 */
-  border-radius: 50%;     /* 丸ボタンに */
+  width: 48px;               /* 横幅を大きく */
+  height: 48px;              /* 高さを入力欄に合わせる */
+  border-radius: 50%;        /* 丸ボタン */
   border: none;
   background-color: #ff69b4;
   color: white;
-  font-size: 18px;        /* アイコンサイズ */
+  font-size: 22px;           /* アイコンを大きく */
   cursor: pointer;
   display: flex;
   justify-content: center;
   align-items: center;
 }
 
-#message-input {
-  width: 70%;  
-  padding: 12px; /* 元の高さや見た目を維持 */
-  border-radius: 15px;
+
+#message-input { 
   border: 1px solid #ccc;
-  margin: 0;
 }
 
 
 #message-input, button {
-  margin: 4px        /* 少し余白をつける */
+  margin: 0;        /* 少し余白をつける */
 }
 
 button {
@@ -230,3 +238,37 @@ button {
   margin-left: 6px;
   display: inline-block;
 }
+/* レスポンシブ対応 */
+@media screen and (max-width: 768px) {
+.chat-container {
+  width: 300px;
+  margin: 20px auto;
+  padding: 20px;
+  background: #fff;
+  border-radius: 15px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+}
+.input-area input[type="text"] {
+    height: 50px;
+    font-size: 17px;              /* 字を少し大きく */
+    border-radius: 28px;
+  }
+
+.input-area button.attach-btn {
+    width: 50px;
+    height: 50px;
+    font-size: 24px;              /* タップしやすく */
+  }
+
+.chat-box {
+  height: 300px;
+  border-radius: 10px;
+  padding: 10px;
+  overflow-y: auto;
+  margin: 10px;
+  position: relative;
+  scrollbar-width: none;
+  
+}
+}
+

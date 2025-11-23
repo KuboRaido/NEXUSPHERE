@@ -1,12 +1,13 @@
 body {
   font-family: Arial, sans-serif;
-  background-color: #f5f5f5;
+  background-color: #add8e6;
   padding-bottom: 80px; /* フッターの高さ分の余白 */
+  min-height: 100vh;
 }
 
 /* ヘッダー */
 .header {
-  background: #fff;
+  background: #add8e6;
   padding: 15px;
   text-align: center;
   font-size: 20px;
@@ -18,10 +19,22 @@ body {
   font-weight: bold;
 }
 
+.dmlist-container {
+  width: 90%;
+  margin: 30px auto;
+  padding: 20px;
+  background: #fff;
+  border-radius: 15px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+}
+
 /* 検索欄 */
 .search-container {
-    padding: 10px;
-    background-color: #f0f0f0;
+  padding: 10px;
+  background-color: #fff;
+  display: flex;
+  justify-content: center;   /* ← 中央寄せ */
+  margin: 10px 0;
 }
 
 .search-container input {
@@ -30,7 +43,6 @@ body {
     border: 1px solid #ccc;
     border-radius: 8px;
 }
-
 
 .footer-nav {
   position: fixed;
@@ -64,18 +76,6 @@ body {
   color: #4CAF50;
 }
 
-/* レスポンシブ対応 */
-@media screen and (max-width: 768px) {
-  .circle-item img {
-    width: 50px;
-    height: 50px;
-  }
-
-  .circle-item .name {
-    font-size: 14px;
-  }
-}
-
 .header{
   height: 50px;
   display: flex;
@@ -105,8 +105,7 @@ body {
   height: 400px;           /* チャットボックス高さ固定 */
   border: 1px solid #ccc;
   border-radius: 10px;
-  margin: 10px;
-  background-color: #f9f9f9;
+  background-color: #add8e6;
   overflow-y: auto;        /* メッセージがはみ出したらスクロール */
   padding: 10px;
   position: relative;
@@ -115,27 +114,19 @@ body {
 .chat-item {
   display: flex;
   align-items: center;
-  padding: 12px;
+  padding: 18px 12px; /* ← 更にゆったり */
   border-bottom: 1px solid #eee;
   cursor: pointer;
 }
 .chat-item:hover {
-  background: #f9f9f9;
+  background: #add8e6;
 }
 
 /* アバター（丸アイコン） */
 .avatar {
-  width: 48px;
-  height: 48px;
-  border-radius: 50%;
-  background: #00b894;
-  color: white;
-  font-weight: bold;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  margin-right: 12px;
-  flex-shrink: 0;
+  width: 60px;
+  height: 60px;
+  margin-right: 10px;
 }
 
 .search-result-item a {
@@ -178,14 +169,14 @@ body {
 }
 .chat-name {
   font-weight: bold;
-  font-size: 14px;
+  font-size: 20px;
    white-space: nowrap;       /* 折り返しを禁止 */
   overflow: hidden;          /* はみ出した部分を非表示 */
   text-overflow: ellipsis;   /* … で省略表示 */
   display: block;            /* ellipsisを有効にするため必要 */
 }
 .chat-message {
-  font-size: 13px;
+  font-size: 20px;
   color: #555;
   white-space: nowrap;
   overflow: hidden;
@@ -195,8 +186,8 @@ body {
 /* 時間と未読バッジ */
 .chat-meta {
   text-align: right;
-  font-size: 12px;
-  margin-left: 4px;
+  font-size: 15px;
+  margin-right: 5%;
 }
 .unread {
   display: inline-block;
@@ -210,8 +201,9 @@ body {
 .dm-link {
   display: flex;
   align-items: center;
-  text-decoration: none; /* リンクの下線を消す（好みで） */
-  color: inherit;        /* テキスト色を継承 */
+  padding: 16px 12px; /* ← 行全体を大きく */
+  text-decoration: none;
+  color: inherit; /* テキスト色を継承 */
 }
 
 /* DM一覧の通常は48pxのまま、検索中だけ30pxに縮小 */
@@ -234,5 +226,33 @@ body {
 /* 時間も非表示 */
 #dm-list li[style*="display: block"] .chat-meta {
   display: none;
+}
+
+/* レスポンシブ対応 */
+@media screen and (max-width: 768px) {
+.dmlist-container {
+  width: 300px;
+  margin: 20px auto;
+  padding: 20px;
+  background: #fff;
+  border-radius: 15px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+}
+
+.chat-item {
+    padding: 12px; /* 小さく戻す */
+  }
+.avatar {
+    width: 48px;
+    height: 48px;
+    margin-right: 9px;
+  }
+.chat-name {
+    font-size: 14px;
+  }
+.chat-message {
+    font-size: 13px;
+  }
+
 }
 

@@ -15,9 +15,12 @@
             <!-- 🖼️ 画像プレビュー部分 -->
             <div class="image-preview">
                 <!-- labelでクリック可能にする -->
-                <label for="image" class="image-label">
-                    <img id="preview-image" src="" alt="+">
-                </label>
+                <div class="image-preview">
+                    <label for="image" class="image-label">
+                        <span id="plus">＋</span>
+                        <img id="preview-image" style="display:none;">
+                    </label>
+                </div>
             </div>
 
             <!-- 📝 フォーム -->
