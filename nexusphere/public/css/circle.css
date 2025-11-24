@@ -100,35 +100,39 @@ body {
 
 /* フッターナビ */
 .footer-nav {
-  position: fixed;
-  bottom: 0;
-  left: 0;
-  width: 100%;
-  height: 60px;
-  background: #fff;
-  border-top: 1px solid #ccc;
-  display: flex;
-  justify-content: space-around;
-  align-items: center;
-  z-index: 1000;
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    background-color: #fff;
+    border-top: 1px solid #ddd;
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+    height: 60px;
+    z-index: 100;
+    box-shadow: 0 -2px 8px rgba(0, 0, 0, 0.05);
 }
 
 .footer-nav a {
-  text-decoration: none;
-  color: #555;
-  font-size: 12px;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
+    color: #666;
+    text-decoration: none;
+    font-size: 22px;
+    transition: color 0.3s ease, transform 0.2s ease;
 }
 
-.footer-nav a i {
-  font-size: 22px;
-  margin-bottom: 4px;
+.footer-nav a:hover {
+    color: #ff69b4;
+    transform: scale(1.1);
 }
 
 .footer-nav a.active {
-  color: #4CAF50;
+    color: #ff69b4; /* アクティブなタブの色 */
+}
+
+/* アイコン整列用 */
+.footer-nav i {
+    pointer-events: none;
 }
 
 /* レスポンシブ対応 */
