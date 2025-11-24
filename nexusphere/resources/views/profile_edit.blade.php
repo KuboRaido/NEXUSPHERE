@@ -5,10 +5,16 @@
   <meta name="viewport" content="width=device-width,initial-scale=1">
   <title>プロフィール編集</title>
   <link rel="stylesheet" href="{{ asset('css/profile_edit.css') }}">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <meta name="default-avatar" content="{{ asset('images/default-avatar.png') }}">
+  <script>window.DEFAULT_AVATAR_URL = "{{asset('images/default-avatar.png')}}"</script>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
 </head>
 <body>
-    <div class="container">
-      <h1>プロフィール編集</h1>
+   <header class="header">
+      <span class="title">profile編集</span>
+    </header>
+  <div class="container">
 
       @if ($errors->any())
         <div class="alert alert-danger">
