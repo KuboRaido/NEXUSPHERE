@@ -21,6 +21,11 @@ class User extends Authenticatable
     protected $fillable = ['name','mail','password','age','grade','subject','major','icon'];
     protected $hidden = ['password','remember_token'];
 
+    public function prcs()
+    {
+        return $this->hasMany(Prc::class, 'user_id', 'user_id');
+    }
+
     public function getAvatarUrlAttribute(): string
     {
         if(!empty($this->icon)){

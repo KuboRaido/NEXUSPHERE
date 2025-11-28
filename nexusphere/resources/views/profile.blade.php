@@ -50,9 +50,9 @@
               </div>
 
               <div class="actions">
-                 @if($isMine)
+                  @if($isMine)
                     <a class="btn" href="{{ route('profile.edit') }}">編集</a>
-                 @endif
+                  @endif
                     <a class="dm-btn" href="{{ url('/dm') }}?to={{ $isMine ? 'me' : $profileUser->user_id }}">DM</a>
               </div>
             </div>
@@ -71,14 +71,14 @@
           <div class="left">
             <h4>最近の投稿</h4>
 
-            @forelse($posts as $post)
-             <article class="post">
-              <div class="title">{{ $post->sentence ?? '(タイトルなし)' }}</div>
-              <div class="excerpt">{{ Str::limit($post->content ?? '', 120) }}</div>
-             </article>
-           @empty
-             <div class="no-posts">投稿はありません</div>
-           @endforelse
+              @forelse($user->prcs as $post)
+                <article class="post">
+                  <div class="title">{{ $post->sentence ?? '(タイトルなし)' }}</div>
+                  <div class="excerpt">{{ Str::limit($post->sentence ?? '', 120) }}</div>
+                </article>
+              @empty
+                <div class="no-posts">投稿はありません</div>
+              @endforelse
           </div>
         </div>
       </section>
