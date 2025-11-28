@@ -6,7 +6,7 @@ document.addEventListener('DOMContentLoaded', () => {
         button.addEventListener('click', async () => {
             const postId = button.dataset.postId;
 
-            const response = await fetch(`/posts/${postId}/like`, {
+            const response = await fetch('/home', {
                 method: 'POST',
                 headers: {
                     'X-CSRF-TOKEN': csrfToken,
