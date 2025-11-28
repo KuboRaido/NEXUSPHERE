@@ -7,23 +7,34 @@ document.addEventListener("DOMContentLoaded", function() {
   const yes           = document.getElementById("logout-yes");
   const no            = document.getElementById("logout-no");
   const form          = document.getElementById("logout-form");
-
   if (!trigger || !confirmLogout || !yes || !no || !form) return;
 
-  trigger.addEventListener('click', () => {
-    confirmLayer.hidden = false;
+  const showConfirm = () => {
+    confirmLogout.hidden = false;
+    confirmLogout.style.display = 'grid';
+  };
+
+  const hideConfirm = () => {
+    confirmLogout.hidden = true;
+    confirmLogout.style.display = 'none';
+  };
+
+  hideConfirm();
+
+  trigger.addEventListener('click', showConfirm);
+  no.addEventListener('click', hideConfirm);
+  yes.addEventListener('click', () => form.submit());
+
+  confirmLogout.addEventListener('click', (event) => {
+    if (event.target === event.currentTarget) {
+      hideConfirm();
+    }
   });
 
-  no.addEventListener('click', () => {
-    confirmLayer.hidden = true;
-  });
-
-  yes.addEventListener('click', () => {
-    form.submit();
-  });
-
-  confirmLayer.addEventListener('click', (event) => {
-    if (event.target === confirmLayer) confirmLayer.hidden = true;
+  document.addEventListener('keydown', (event) => {
+    if (event.key === 'Escape' && !confirmLogout.hidden) {
+      hideConfirm();
+    }
   });
 
   toggleBtn.addEventListener("click", () => {

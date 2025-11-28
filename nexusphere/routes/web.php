@@ -23,6 +23,7 @@ Route::middleware('auth')->group(function () {
     Route::get('/profile/edit',[ProfileController::class,'edit'])->name('profile.edit');//プロフィール編集画面
     Route::get('/profile/{id}',[ProfileController::class,'profileOther'])->name('profile.other'); //他人のプロフィール
     Route::post('/profile/logout',[LoginController::class,'logout'])->name('logout');
+    Route::post('/profile',[ProfileController::class,'post'])->name('profile.post'); 
 
     Route::get('/post', [PrcController::class, 'post'])->name('post');
     Route::post('/post',[PrcController::class,'store'])->name('post.back');
