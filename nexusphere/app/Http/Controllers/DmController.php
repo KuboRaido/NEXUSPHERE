@@ -124,8 +124,8 @@ public function dmback(Request $request ,?int $partner=null){
    $meUser = Auth::user();
    $partnerUser = User::where($userPk,$partner)->firstOrFail();
    $partnerReadAt = DB::table('dm_reads')
-      ->where('user_id', $me)
-      ->where('partner_id', $partner)
+      ->where('user_id', $partner)
+      ->where('partner_id', $me)
       ->value('last_read_at');
    
    if($partner === $me){

@@ -11,7 +11,27 @@
 <body>
     <header class="header">
       <span class="title">{{ $profileUser->name }} profile</span>
+<!--ここからログアウトボタン-->
+      @if($isMine)
+        <button type="button" class="logout-btn" id="logout-trigger">ログアウト</button>
+      @endif
     </header>
+      @if($isMine)
+        <div id="logout-confirm" class="logout-confirm" hidden>
+          <div class="logout-dialog">
+            <p>ログアウトしますか？</p>
+            <div class="logout-actions">
+                <button type="button" id="logout-yes">はい</button>
+                <button type="button" id="logout-no">いいえ</button>
+            </div>
+          </div>
+        </div>
+
+        <form id="logout-form" action="{{ route('logout') }}" method="POST" hidden>
+          @csrf
+        </form>
+      @endif
+<!--ここまで-->
 
     <main class="container">
       <section class="profile-card" aria-label="ユーザープロフィール">
@@ -30,9 +50,9 @@
               </div>
 
               <div class="actions">
-                 @if($isMine)
+                  @if($isMine)
                     <a class="btn" href="{{ route('profile.edit') }}">編集</a>
-                 @endif
+                  @endif
                     <a class="dm-btn" href="{{ url('/dm') }}?to={{ $isMine ? 'me' : $profileUser->user_id }}">DM</a>
               </div>
             </div>
@@ -51,14 +71,14 @@
           <div class="left">
             <h4>最近の投稿</h4>
 
-            @forelse($posts as $post)
-             <article class="post">
-              <div class="title">{{ $post->sentence ?? '(タイトルなし)' }}</div>
-              <div class="excerpt">{{ Str::limit($post->content ?? '', 120) }}</div>
-             </article>
-           @empty
-             <div class="no-posts">投稿はありません</div>
-           @endforelse
+              @forelse($user->prcs as $post)
+                <article class="post">
+                  <div class="title">{{ $post->sentence ?? '(タイトルなし)' }}</div>
+                  <div class="excerpt">{{ Str::limit($post->sentence ?? '', 120) }}</div>
+                </article>
+              @empty
+                <div class="no-posts">投稿はありません</div>
+              @endforelse
           </div>
         </div>
       </section>
