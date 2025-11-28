@@ -11,7 +11,7 @@
 </head>
 <body>
     <div class="header">
-      <span class="title">nexusphere</span>
+      <span class="title">Nexusphere</span>
     </div>
     <div class=dmlist-container>
           <div class="search-container">

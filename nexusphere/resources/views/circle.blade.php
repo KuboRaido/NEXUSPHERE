@@ -12,7 +12,7 @@
   <body>
     <!-- ヘッダー -->
       <div class="header">
-        <span class="title">サークル一覧</span>
+        <span class="title">Nexusphere</span>
       </div>
       <div class=circle-container>
       <!-- 検索ボックス -->
