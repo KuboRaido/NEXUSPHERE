@@ -8,7 +8,7 @@
 <body>
         <div class="header">
          <a href="{{url('circle')}}" class="back-button">←</a>
-         <span class="title">サークル作成</span>
+         <span class="title">Nexusphere</span>
         </div>
         <div class="form-container">
 

@@ -15,7 +15,7 @@ body {
 }
 
 .title {
-  font-size: 20px;
+  font-size: 2rem;
   font-weight: bold;
 }
 
@@ -89,11 +89,7 @@ body {
   border-bottom: 1px solid #ccc;
   flex-shrink: 0;
 }
-/* タイトル */
-.title {
-  font-size: 20px;
-  font-weight: bold;
-}
+
 
 
 /*dm一覧*/
