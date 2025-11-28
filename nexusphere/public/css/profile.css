@@ -406,3 +406,54 @@ button[type="submit"]:hover {
     font-size: 14px;
   }
 }
+
+/*ログアウト確認ダイアログ*/
+.logout-btn {
+  margin-left: auto;
+  padding: 6px 12px;
+  background: #f05a5a;
+  color: #fff;
+  font-size: 14px;
+  border: none;
+  border-radius: 20px;
+}
+
+.logout-confirm {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.5);
+  display: grid;
+  place-items: center;
+  z-index: 1000;
+}
+
+.logout-dialog {
+  background: #fff;
+  padding: 24px;
+  border-radius: 12px;
+  text-align: center;
+  width: min(80vw, 320px);
+}
+
+.logout-actions {
+  margin-top: 16px;
+  display: flex;
+  justify-content: center;
+  gap: 12px;
+}
+
+.logout-actions button {
+  padding: 6px 18px;
+  border: none;
+  border-radius: 16px;
+}
+
+#logout-yes {
+  background: #f05a5a;
+  color: #fff;
+}
+
+#logout-no {
+  background: #e0e0e0;
+  color: #333;
+}

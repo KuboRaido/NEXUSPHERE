@@ -19,13 +19,16 @@ class ProfileController extends Controller
         $isMine = true;
 
         $posts = Prc::where('user_id', $profileUser->id)
-                     ->orderBy('created_at', 'desc')
-                     ->get();
+                        ->orderBy('created_at', 'desc')
+                        ->get();
+                
+        $user = User::with('prcs')->where('user_id',$userId)->firstOrFail();
 
         return view('profile', [
             'profileUser' => $profileUser,
             'isMine' => $isMine,
             'posts' => $posts,
+            'user' => $user,
         ]);
     }
 
@@ -43,7 +46,7 @@ class ProfileController extends Controller
 
         $user = User::where('user_id', $id)->firstOrFail();
 
-     $request->validate([
+        $request->validate([
             'name'       => 'required|string|max:255',
             'subject'    => 'nullable|string|max:255',
             'major'      => 'nullable|string|max:255',
@@ -72,7 +75,7 @@ class ProfileController extends Controller
 
     public function profileOther(User $user){
         $userId = Auth::id();
-       $isMine = ($userId && ((int)$userId === (int)$user->id));
+        $isMine = ($userId && ((int)$userId === (int)$user->id));
 
         $posts = Prc::where('user_id', $user->id)
                     ->orderBy('created_at', 'desc')

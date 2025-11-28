@@ -35,9 +35,9 @@
                 <div class="post-images">
                     @foreach ($post->images as $image)
                         <img src="{{ asset('storage/' . $image->image) }}" 
-                             alt="投稿画像" 
-                             class="post-image" 
-                             onclick="openModal(this.src)">
+                                alt="投稿画像" 
+                                class="post-image" 
+                                onclick="openModal(this.src)">
                     @endforeach
                 </div>
             @endif

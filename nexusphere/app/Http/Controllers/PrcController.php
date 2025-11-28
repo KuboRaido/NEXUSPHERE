@@ -14,7 +14,8 @@ class PrcController extends Controller
     // 投稿一覧
     public function index()
     {
-        $posts = Prc::with(['comments', 'images'])
+        $posts = Prc::where('type', 0)
+                    ->with(['comments', 'images'])
                     ->orderBy('created_at', 'desc')
                     ->get();
         return view('home', compact('posts'));
@@ -34,6 +35,7 @@ class PrcController extends Controller
         $post = Prc::create([
             'user_id' => Auth::id(),
             'sentence' => $request->input('sentence'),
+            'type' => 0,
         ]);
 
         // 画像保存（最大10枚）
@@ -64,19 +66,18 @@ class PrcController extends Controller
         $request->validate([
             'comment' => 'required|string|max:500',
         ]);
-
+    
         $post = Prc::findOrFail($postId);
-
-        // type と user_idを必ずセット
+    
         $post->comments()->create([
             'sentence' => $request->comment,
-            'user_id' =>Auth::id(),
-            'type'    => '1', //数字に変更
-            'parent_id' => $post->prc_id,
+            'user_id'  => Auth::id(),
+            'type'     => 1,  // 数字に統一！（文字列禁止）
         ]);
 
         return redirect()->back();
     }
+
 
     // いいね(POST /posts/{prc_id}/like)
     public function like(Request $request, $postId)
