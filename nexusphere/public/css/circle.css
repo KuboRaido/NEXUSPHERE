@@ -126,10 +126,6 @@ body {
     transform: scale(1.1);
 }
 
-.footer-nav a.active {
-    color: #ff69b4; /* アクティブなタブの色 */
-}
-
 /* アイコン整列用 */
 .footer-nav i {
     pointer-events: none;
