@@ -16,6 +16,15 @@
     </div>
 </header>
 
+<div class="search-area">
+    <form method="GET" action="/home">
+        <input type="text" name="search" placeholder="キーワードで検索"
+               value="{{ request('search') }}" class="search-input">
+        <button type="submit" class="search-btn">検索</button>
+    </form>
+</div>
+
+
 <main class="container">
 
     {{-- 投稿一覧（閲覧専用） --}}
