@@ -10,28 +10,35 @@ use App\Models\Nice;
 
 class PrcController extends Controller
 {
-    
-    // 投稿一覧
-    public function index()
+    // 投稿一覧（検索対応）
+    public function index(Request $request)
     {
-        $posts = Prc::where('type', 0)
+        // 投稿(type = 0) をベースにクエリ作成
+        $query = Prc::where('type', 0)
                     ->with(['comments', 'images'])
-                    ->orderBy('created_at', 'desc')
-                    ->get();
+                    ->orderBy('created_at', 'desc');
+
+        // 検索ワードがある場合は sentence に対して LIKE 検索
+        if ($request->filled('search')) {
+            $keyword = $request->input('search');
+            $query->where('sentence', 'LIKE', "%{$keyword}%");
+        }
+
+        $posts = $query->get();
+
         return view('home', compact('posts'));
     }
 
     // 投稿作成（テキスト＋画像最大10枚）
     public function store(Request $request)
     {
-
         // バリデーション
         $request->validate([
             'sentence' => 'required|string|max:1000',
             'images.*' => 'image|mimes:jpeg,png,jpg,gif,webp|max:5120', // 1枚最大5MB
         ]);
 
-        // 投稿作成
+        // 投稿作成（type:0 = 投稿）
         $post = Prc::create([
             'user_id' => Auth::id(),
             'sentence' => $request->input('sentence'),
@@ -66,18 +73,17 @@ class PrcController extends Controller
         $request->validate([
             'comment' => 'required|string|max:500',
         ]);
-    
+
         $post = Prc::findOrFail($postId);
-    
+
         $post->comments()->create([
             'sentence' => $request->comment,
             'user_id'  => Auth::id(),
-            'type'     => 1,  // 数字に統一！（文字列禁止）
+            'type'     => 1,  // コメントを示す数値
         ]);
 
         return redirect()->back();
     }
-
 
     // いいね(POST /posts/{prc_id}/like)
     public function like(Request $request, $postId)
@@ -85,18 +91,20 @@ class PrcController extends Controller
         $userId = Auth::id();
         abort_if(!$userId, 401, 'Unauthenticated');
 
-        $post = Prc::where('prc_id',$postId)->firstOrFail();
+        // 投稿取得
+        $post = Prc::where('prc_id', $postId)->firstOrFail();
 
-        // すでにいいねがあるか確認（トグル）
+        // 既存のいいねを探す
         $existing = Nice::where('prc_id', $post->prc_id)
                         ->where('user_id', $userId)
                         ->first();
 
         if ($existing) {
+            // ❌ すでに存在 → 削除（いいね解除）
             $existing->delete();
         } else {
-            // create new nice
-            Nice::create([
+            // ❤️ 存在しない → 新規作成
+            Nice::firstOrCreate([
                 'prc_id' => $post->prc_id,
                 'user_id' => $userId,
             ]);
@@ -105,6 +113,8 @@ class PrcController extends Controller
         return redirect()->back();
     }
 
+
+    // 投稿フォーム表示
     public function post()
     {
         return view('post');
