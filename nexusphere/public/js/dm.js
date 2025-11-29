@@ -70,9 +70,11 @@ function renderMessages() {
   chatBox.querySelectorAll('.message-row').forEach(el => el.remove());
 
   const currentUserId = String(getMeId() ?? '');
+  const makeStatus = (mine, read) => (!mine ? '' : (read ? '既読' : '未読'));
 
   for (const msg of messages){
     const mine = (msg.from === currentUserId);
+    const status = makeStatus(mine, msg.isRead);
 
     const row = document.createElement('div');
     row.classList.add('message-row', mine ? 'from-me' : 'from-them');
@@ -126,6 +128,12 @@ function renderMessages() {
     bubble.appendChild(wrap);
   }
 
+  if(status){
+    const label = document.createElement('span');
+    label.className = 'read-status';
+    label.textContent = status;
+    bubble.appendChild(label);
+  }
     if (mine) {
       row.appendChild(bubble);
       row.appendChild(img);
@@ -176,7 +184,8 @@ async function loadConversation(currentPartnerId) {
     text: m.text,
     attachments: m.attachments || [],
     timestamp: new Date(m.created_at),
-    pending: false
+    pending: false,
+    isRead: Boolean(m.is_read)
   }));
 
   await ensureXsrfReady();
@@ -227,7 +236,7 @@ async function sendMessage() {
     if(type === 'image' || type === 'video')tempAtt.push({type, url, pending:true});
   });
  }
-  messages.push({id:tempId, from:String(getMeId()), to:String(toId), text, attachments:tempAtt, timestamp:new Date(), pending:true});
+  messages.push({id:tempId, from:String(getMeId()), to:String(toId), text, attachments:tempAtt, timestamp:new Date(), pending:true, isRead:false});
   renderMessages();
 
 
@@ -236,9 +245,9 @@ async function sendMessage() {
     const token = decodeURIComponent((document.cookie.match(/XSRF-TOKEN=([^;]+)/)||[])[1] || '');
 
     await fetch(`/api/v1/dm/${currentPartnerId}/read`, {
-     method:'POST',
-     headers: { 'Accept':'application/json', ...(token ? {'X-XSRF-TOKEN': token} : {}) },
-     credentials:'include'
+      method:'POST',
+      headers: { 'Accept':'application/json', ...(token ? {'X-XSRF-TOKEN': token} : {}) },
+      credentials:'include'
     });
 
     const previewContainer = document.getElementById('preview-area');

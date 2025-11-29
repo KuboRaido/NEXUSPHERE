@@ -1,37 +1,20 @@
-/* =========================
-   共通：全体レイアウト
-========================= */
 body {
-  margin: 0;
-  padding: 0;
-  height: 100vh;
-  background-color: #add8e6;
-  display: flex;
-  justify-content: center;
-  align-items: center;
   font-family: Arial, sans-serif;
+  background-color: #add8e6;
+  min-height: 100vh;
 }
 
-body > * {
-  box-sizing: border-box;
-}
-
-/* =========================
-   スマホフレーム
-========================= */
-.phone-frame {
-  width: 300px;
-  height: 600px; /* 共通化 */
-  background-color: #fff;
-  border-radius: 40px;
-  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.25);
-  display: flex;
-  flex-direction: column;
-  overflow: hidden;
+/* ヘッダー */
+.header {
+  background: #add8e6;
+  padding: 15px;
+  text-align: center;
+  font-size: 22px;
+  font-weight: bold;
 }
 
 .title {
-  font-size: 20px;
+  font-size: 22px;
   font-weight: bold;
 }
 
@@ -39,7 +22,7 @@ body > * {
 /* =========================
    ヘッダー（共通）
 ========================= */
-.header, .chat-header {
+.chat-header {
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -273,29 +256,39 @@ button[type="submit"]:hover {
    フッターナビ
 ========================= */
 .footer-nav {
-  display: flex;
-  justify-content: space-around;
-  background: #f8f8f8;
-  border-top: 1px solid #ddd;
-  padding: 8px 0;
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    background-color: #fff;
+    border-top: 1px solid #ddd;
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+    height: 60px;
+    z-index: 100;
+    box-shadow: 0 -2px 8px rgba(0, 0, 0, 0.05);
 }
 
 .footer-nav a {
-  text-decoration: none;
-  color: #555;
-  font-size: 12px;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
+    color: #666;
+    text-decoration: none;
+    font-size: 22px;
+    transition: color 0.3s ease, transform 0.2s ease;
 }
 
-.footer-nav a i {
-  font-size: 20px;
-  margin-bottom: 4px;
+.footer-nav a:hover {
+    color: #ff69b4;
+    transform: scale(1.1);
 }
 
 .footer-nav a.active {
-  color: #4CAF50;
+    color: #ff69b4; /* アクティブなタブの色 */
+}
+
+/* アイコン整列用 */
+.footer-nav i {
+    pointer-events: none;
 }
 
 /* 投稿カード */
@@ -401,4 +394,66 @@ button[type="submit"]:hover {
 
 .portfolio-content a:hover {
   text-decoration: underline;
+}
+
+@media screen and (max-width: 768px) {
+  .circle-item img {
+    width: 50px;
+    height: 50px;
+  }
+
+  .circle-item .name {
+    font-size: 14px;
+  }
+}
+
+/*ログアウト確認ダイアログ*/
+.logout-btn {
+  margin-left: auto;
+  padding: 6px 12px;
+  background: #f05a5a;
+  color: #fff;
+  font-size: 14px;
+  border: none;
+  border-radius: 20px;
+}
+
+.logout-confirm {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.5);
+  display: grid;
+  place-items: center;
+  z-index: 1000;
+}
+
+.logout-dialog {
+  background: #fff;
+  padding: 24px;
+  border-radius: 12px;
+  text-align: center;
+  width: min(80vw, 320px);
+}
+
+.logout-actions {
+  margin-top: 16px;
+  display: flex;
+  justify-content: center;
+  gap: 12px;
+}
+
+.logout-actions button {
+  padding: 6px 18px;
+  border: none;
+  border-radius: 16px;
+}
+
+#logout-yes {
+  background: #f05a5a;
+  color: #fff;
+}
+
+#logout-no {
+  background: #e0e0e0;
+  color: #333;
 }

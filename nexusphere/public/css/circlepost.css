@@ -1,0 +1,196 @@
+body {
+  font-family: Arial, sans-serif;
+  background-color: #add8e6;
+  min-height: 100vh;
+}
+
+/* ヘッダー */
+.site-header {
+    width: 100%;
+    padding: 20px 0;
+    background: transparent;
+    display: flex;
+    justify-content: center; /* 💡 横中央揃え */
+    align-items: center;
+    position: relative;
+}
+
+.title {
+  font-size: 2rem;
+  font-weight: bold;
+}
+
+.container {
+  width: 90%;
+  margin: 30px auto;
+  padding: 25px;
+  background: #fff;
+  border-radius: 15px;
+  box-shadow: 0 3px 10px rgba(0,0,0,0.15);
+  display: flex;            /* ←追加 */
+  flex-direction: column;   /* ←縦向き配置 */
+  align-items: center;      /* ←横中央揃え */
+}
+
+/* フッターナビ（常に下固定） */
+.footer-nav {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  height: 60px;
+  background: #fff;
+  border-top: 1px solid #ccc;
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+  z-index: 1000;
+}
+
+.footer-nav a {
+  text-decoration: none;
+  color: #555;
+  font-size: 12px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.footer-nav a i {
+  font-size: 20px;
+  margin-bottom: 4px;
+}
+
+.footer-nav a.active {
+  color: #4CAF50;
+}
+
+/* レスポンシブ対応 */
+@media screen and (max-width: 768px) {
+  .circle-item img {
+    width: 50px;
+    height: 50px;
+  }
+
+  .circle-item .name {
+    font-size: 14px;
+  }
+}
+
+/* ヘッダー */
+.chat-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 12px;
+  border-bottom: 1px solid #e6ecf0;
+  font-weight: bold;
+  font-size: 18px;
+}
+
+.back-button, .menu-button {
+  background: none;
+  border: none;
+  font-size: 20px;
+  cursor: pointer;
+}
+
+/* 投稿フォームコンテナ */
+#chat-box {
+  height: 400px;           /* チャットボックス高さ固定 */
+  border: 1px solid #ccc;
+  border-radius: 10px;
+  margin: 10px;
+  background-color: #f9f9f9;
+  overflow-y: auto;        /* メッセージがはみ出したらスクロール */
+  padding: 10px;
+  position: relative;
+}
+
+/* 投稿入力欄 */
+.post-input {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  flex: 1;
+  border: none;
+  outline: none;
+  resize: none;
+
+  background: #f0f0f0;     /* ← 灰色背景 */
+  padding: 12px;           /* ← 内側余白 */
+  border-radius: 12px;     /* ← 角を丸くする */
+  font-size: 16px;
+}
+
+.post-input img {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+}
+
+#message-input {
+  flex: 1;
+  border: none;
+  outline: none;
+  resize: none;
+  background: #f0f0f0;     /* ← 灰色背景 */
+  padding: 12px;           /* ← 内側余白 */
+  border-radius: 12px;     /* ← 角を丸くする */
+  font-size: 16px;
+}
+
+/* ファイルアップロード */
+.file-label {
+  display: inline-flex;
+  justify-content: center;
+  align-items: center;
+  width: 40px;
+  height: 40px;
+  font-size: 24px;
+  background-color: #ff69b4;
+  color: #fff;
+  border-radius: 50%;
+  cursor: pointer;
+}
+
+input[type="file"] {
+  display: none;
+}
+
+/* 投稿ボタン */
+
+.upload-container {
+  display: flex;
+  align-items: center;
+  gap: 10px; /* ボタン同士の間隔 */
+  margin-top: 10px;
+}
+
+button[type="submit"] {
+  flex-shrink: 0;
+  padding: 8px 16px;
+  border-radius: 20px;
+  cursor: pointer;
+  background-color: #ff69b4;
+  color: #fff;
+  border: none;
+  transition: 0.3s;
+}
+
+button[type="submit"]:hover {
+  background-color: #1991da;
+}
+
+/* 画像プレビュー */
+#preview-container {
+  margin-top: 10px;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 5px;
+}
+#preview-container img {
+  max-width: 60px;
+  max-height: 60px;
+  border-radius: 10px;
+}

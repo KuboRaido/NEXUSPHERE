@@ -1,69 +1,143 @@
-//Circle検索
-let searchTimeout = null;
+(() => {
+  // 1. HTMLエスケープ関数（XSS対策）
+  const escapeHtml = (value = '') =>
+    String(value).replace(/[&<>"']/g, (char) =>
+      ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[char] || char)
+    );
 
-async function searchUsers(keyword){
+  // 2. DOM取得
+  const listRoot      = document.getElementById('circle-list');
+  const searchInput   = document.getElementById('search-input');
   const searchResults = document.getElementById('search-results');
 
-  if(!keyword || keyword.trim() === ''){
-    searchResults.innerHTML = '';
+  // 3. URLテンプレート＆リンク生成関数
+  const linkTemplate = listRoot.dataset.clubUrlTemplate || '/circle?id=__ID__';
+  const resolveLink = (id) =>
+    linkTemplate.replace('__ID__', encodeURIComponent(String(id)));
+
+  // 4. サークル一覧データ
+  let circles = [];
+
+  // 5. 一覧描画
+  const renderList = (items) => {
+    if (!items.length) {
+      listRoot.innerHTML = '<li class="empty">まだサークルがありません</li>';
+      return;
+    }
+
+    const fragment = document.createDocumentFragment();
+    items.forEach((circle) => {
+      const li = document.createElement('li');
+      li.className = 'circle-item';
+
+      const name = circle.circle_name || circle.name || '';
+      const icon = circle.icon || window.DEFAULT_CLUB_ICON_URL || '';
+
+      li.innerHTML = `
+        <img src="${escapeHtml(icon)}" alt="${escapeHtml(name)}">
+        <a class="name" href="${resolveLink(circle.circle_id ?? circle.id)}">
+          ${escapeHtml(name)}
+        </a>
+      `;
+
+      fragment.appendChild(li);
+    });
+
+    listRoot.replaceChildren(fragment);
+  };
+
+  // 6. 検索結果（丸く表示される修正版）
+  const showSearch = (items) => {
+    if (!items.length) {
+      searchResults.innerHTML = '<li class="empty">サークルが見つかりませんでした</li>';
+      searchResults.style.display = 'block';
+      return;
+    }
+
+    const fragment = document.createDocumentFragment();
+    items.forEach((circle) => {
+      const li = document.createElement('li');
+      li.className = 'circle-item';
+
+      const name = circle.circle_name || circle.name || '';
+      const icon = circle.icon || window.DEFAULT_CLUB_ICON_URL || '';
+
+      li.innerHTML = `
+        <img src="${escapeHtml(icon)}" alt="${escapeHtml(name)}">
+        <a class="name" href="${resolveLink(circle.circle_id ?? circle.id)}">
+          ${escapeHtml(name)}
+        </a>
+      `;
+      fragment.appendChild(li);
+    });
+
+    searchResults.replaceChildren(fragment);
+    searchResults.style.display = 'block';
+  };
+
+  const hideSearch = () => {
     searchResults.style.display = 'none';
-    return;
-  }
+    searchResults.innerHTML = '';
+  };
 
-  try{
-    const res = await fetch(`/api/v1/circle/search?q=${encodeURIComponent(keyword)}`,{
-      headers: {'Accept': 'application/json'},
-      credentials: 'include',
+  // 7. 検索フィルタ
+  const filterCircles = (keyword) => {
+    const trimmed = keyword.trim();
+    if (!trimmed) {
+      hideSearch();
+      return;
+    }
+
+    const lower = trimmed.toLowerCase();
+    const matches = circles.filter((circle) => {
+      const name     = (circle.circle_name || circle.name || '').toLowerCase();
+      const category = (circle.category || '').toLowerCase();
+      return name.includes(lower) || category.includes(lower);
     });
 
-    if(!res.ok) throw new Error('検索に失敗しました');
+    showSearch(matches);
+  };
 
-    const circles = await res.json();
+  // 8. デバウンス
+  const debounce = (fn, delay = 300) => {
+    let timer = null;
+    return (...args) => {
+      if (timer) clearTimeout(timer);
+      timer = setTimeout(() => fn(...args), delay);
+    };
+  };
 
-    if(circles.length === 0){
-    searchResults.innerHTML = '<li class="empty">サークルが見つかりませんでした</li>';
-    searchResults.style.display = 'block';
-    return;
-  }
+  const debouncedFilter = debounce((value) => filterCircles(value), 200);
 
-  // 検索結果を表示
-  searchResults.innerHTML = '';
-  searchResults.style.display = 'block';
+  // 9. API取得
+  const fetchCircles = async () => {
+    listRoot.innerHTML = '<li class="loading">読み込み中...</li>';
 
-  for(const circle of circles){
-    const li = document.createElement('li');
-    li.className = 'search-result-item';
-    li.innerHTML = `
-    <a class ="circle-id" href="/dm?to=${circle.circle_id}">
-        <img class="icon" src="${circle.icon}" alt="" ">
-        <div class="search-content">
-         <div class="search-name">${escapeHtml(circle.circle_name)}</div>
-        </div>
-    </a>
-    `;
-    searchResults.appendChild(li);
-  }
-  } catch(e) {
-    console.error(e);
-    searchResults.innerHTML = '<li class="error">検索中にエラーが発生しました</li>';
-    searchResults.style.display = 'block';
-  }
-}
+    try {
+      const res = await fetch('/api/v1/circle', {
+        headers: { Accept: 'application/json' },
+        credentials: 'include',
+      });
+      if (!res.ok) throw new Error('サークル一覧の取得に失敗しました');
 
-async function circlelist(){
-  const listRoot = document.getElementById('circle-list');
-  
-  listRoot.innerHTML = '<li class="loading">読み込み中...</li>';
+      const body = await res.json();
+      circles = Array.isArray(body) ? body : (body.data ?? []);
 
-  try{
-    const res = await fetch('api/v1/circle',{
-      headers: {'Accept': 'application/json'},
-      credentials: 'include',
+      renderList(circles);
+    } catch (error) {
+      console.error(error);
+      listRoot.innerHTML = '<li class="error">サークル一覧の取得に失敗しました</li>';
+    }
+  };
+
+  // 10. イベント登録
+  document.addEventListener('DOMContentLoaded', fetchCircles);
+
+  if (searchInput) {
+    searchInput.addEventListener('input', (event) => debouncedFilter(event.target.value));
+    searchInput.addEventListener('focus', () => {
+      if (searchInput.value.trim()) debouncedFilter(searchInput.value);
     });
-    const json = await res.json();
-    const items = Array.isArray(json) ? json : (json.data ?? json.dms ?? []);
-    const tpl = listRoot.dataset.chatUrlTemplate || '/dm?to=__ID__';
-
-    
+    searchInput.addEventListener('blur', () => setTimeout(hideSearch, 200));
   }
-}
+})();
