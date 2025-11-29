@@ -1,171 +1,149 @@
 body {
-  margin: 0;
-  padding: 0;
-  height: 100vh;
-  background-color: #add8e6;
-  display: flex;
-  justify-content: center;
-  align-items: center;
   font-family: Arial, sans-serif;
-  
+  background-color: #add8e6;
+  min-height: 100vh;
 }
 
-/* スマホっぽいフレーム */
-body > * {
-  box-sizing: border-box;
-}
-
-.phone-frame {
-  width: 300px;
-  height: 600px;
-  background-color: #fff;
-  border-radius: 40px;
-  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.25);
-  padding: 20px;
-  display: flex;
-  flex-direction: column;
-  position: relative;
-  overflow: hidden;
-}
-
-.header{
-  height: 50px;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  color: #333;
-  border-bottom: 1px solid #ccc;
-  flex-shrink: 0;
-}
-/* タイトル */
-.title {
-  font-size: 20px;
+/* ヘッダー */
+.header {
+  background: #add8e6;
+  padding: 15px;
+  text-align: center;
+  font-size: 22px;
   font-weight: bold;
 }
 
-/* 検索欄 */
-.search-container {
-  padding: 10px;
-  background-color: #f0f0f0;
-  display: flex;
-  align-items: center;
-  gap: 10px; /* 余白 */
+.title {
+  font-size: 2rem;
+  font-weight: bold;
 }
 
-/* ＋ボタン（チャット画面と同じデザイン） */
-.attach-btn {
-  flex-shrink: 0;
-  width: 36px;
-  height: 36px;
-  padding: 0;
-  border-radius: 50%;
-  border: none;
-  background-color: #ff69b4; /* ピンク色 */
-  color: white;
-  font-size: 18px;
-  cursor: pointer;
+.circle-container {
+  width: 90%;
+  margin: 30px auto;
+  padding: 25px;
+  background: #fff;
+  border-radius: 15px;
+  box-shadow: 0 3px 10px rgba(0,0,0,0.15);
+}
+
+/* 検索ボックス */
+.search-container {
   display: flex;
   justify-content: center;
   align-items: center;
-  text-decoration: none; /* aタグ対応 */
-  transition: background-color 0.3s ease;
+  padding: 12px;
+  background: #fff;
+  border-bottom: 1px solid #ddd;
+  gap: 12px;
 }
-
-.attach-btn:hover {
-  background-color: #ff4c9e;
-}
-
-
 
 .search-container input {
-    padding: 8px 10px;
-    border: 1px solid #ccc;
-    border-radius: 8px;
+  width: 65%;
+  max-width: 450px;
+  padding: 10px;
+  border: 1px solid #ccc;
+  border-radius: 6px;
 }
 
-/* サークル一覧リスト */
+.attach-btn {
+  font-size: 26px;
+  text-decoration: none;
+  color: #ff69b4;
+}
+
+/* サークル一覧 */
 .circle-list {
-    flex: 1;
-    list-style: none;
-    margin: 0;
-    padding: 0;
-    overflow-y: auto;
+  list-style: none;
+  margin: 0;
+  padding: 0;
 }
 
-/* 各サークル項目 */
-.club-item {
-    display: flex;
-    align-items: center;
-    padding: 12px;
-    border-bottom: 1px solid #eee;
-    cursor: pointer;
-    transition: background 0.2s;
+.circle-item {
+  display: flex;
+  align-items: center;
+  padding: 15px;
+  background: #fff;
+  margin-bottom: 10px;
+  border-radius: 10px;
+  cursor: pointer;
+  transition: 0.2s;
 }
 
-.club-item:hover {
-    background-color: #f9f9f9;
+.circle-item:hover {
+  background: #eef7ff;
 }
 
-/* サークルアイコン */
-.club-icon {
-    width: 50px;
-    height: 50px;
-    border-radius: 50%;
-    object-fit: cover;
-    margin-right: 12px;
+.circle-item img {
+  width: 65px;
+  height: 65px;
+  border-radius: 50%;
+  margin-right: 15px;
+  object-fit: cover;
 }
 
-/* サークル名・説明 */
-.club-info {
-    flex: 1;
+/* サークル名 */
+.circle-item .name,
+.circle-item .name a {
+  font-size: 18px;
+  font-weight: bold;
+  color: #000;
+  text-decoration: none !important;
+  transition: color 0.2s ease;
 }
 
-.club-name {
-    font-weight: bold;
-    font-size: 16px;
-    margin-bottom: 4px;
-}
-
-.club-desc {
-    color: #666;
-    font-size: 14px;
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
+.circle-item .name:hover,
+.circle-item .name a:hover {
+  color: #4CAF50;
+  text-decoration: none !important;
 }
 
 /* フッターナビ */
 .footer-nav {
-  position: absolute; /* fixed → absolute に変更 */
-  bottom: 0;
-  left: 0;
-  width: 100%;
-  height: 60px;
-  display: flex;
-  justify-content: space-around;
-  align-items: center;
-  background: #fff;
-  border-top: 1px solid #ccc;
-  border-bottom-left-radius: 40px;
-  border-bottom-right-radius: 40px;
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    background-color: #fff;
+    border-top: 1px solid #ddd;
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+    height: 60px;
+    z-index: 100;
+    box-shadow: 0 -2px 8px rgba(0, 0, 0, 0.05);
 }
 
 .footer-nav a {
-  color: #333;
-  text-emphasis: none;
-  font-size: 22px;
+    color: #666;
+    text-decoration: none;
+    font-size: 22px;
+    transition: color 0.3s ease, transform 0.2s ease;
 }
 
-.footer-nav a i {
-  font-size: 20px;
-  margin-bottom: 4px;
+.footer-nav a:hover {
+    color: #ff69b4;
+    transform: scale(1.1);
 }
 
 .footer-nav a.active {
-  color: #4CAF50; /* 選択されたタブの色 */
+    color: #ff69b4; /* アクティブなタブの色 */
 }
 
-.circle-list::-webkit-scrollbar,
-body::-webkit-scrollbar {
-  display: none;
+/* アイコン整列用 */
+.footer-nav i {
+    pointer-events: none;
+}
+
+/* レスポンシブ対応 */
+@media screen and (max-width: 768px) {
+  .circle-item img {
+    width: 55px;
+    height: 55px;
+  }
+
+  .circle-item .name,
+  .circle-item .name a {
+    font-size: 16px;
+  }
 }

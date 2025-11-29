@@ -10,18 +10,17 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
 </head>
 <body>
-  <div class="phone-frame">
     <div class="header">
-      <span class="title">DM</span>
+      <span class="title">Nexusphere</span>
     </div>
-    
-    <div class="search-container">
-      <input type="text" id="search-input" placeholder="ユーザーを検索..." />
-    </div>
-    {{--検索結果表示--}}
-    <ul id="search-results" class="search-results" style="display: none;"></ul>
+    <div class=dmlist-container>
+          <div class="search-container">
+            <input type="text" id="search-input" placeholder="ユーザーを検索..." />
+          </div>
+          {{--検索結果表示--}}
+          <ul id="search-results" class="search-results" style="display: none;"></ul>
 
-     <ul id="dm-list" class="dm-list" data-chat-url-template="{{url('/dm')}}?to=__ID__"></ul>
+      <ul id="dm-list" class="dm-list" data-chat-url-template="{{url('/dm')}}?to=__ID__"></ul>
     
     <div class="footer-nav">
       <a href="/home" class="tab active" data-target="home"><i class="fa-solid fa-house"></i></a>
@@ -30,8 +29,6 @@
       <a href="/profile" class="tab active" data-target="mypage"><i class="fa-solid fa-user"></i></a>
       <a href="/circle" class="tab active" data-target="circle"><i class="fa-solid fa-cube"></i></i></a>
     </div>
-
-  </div>
   <script src="{{ asset('js/dm-list.js') }}"></script>
 </body>
 </html>

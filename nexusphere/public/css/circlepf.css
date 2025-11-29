@@ -1,0 +1,83 @@
+body {
+  font-family: Arial, sans-serif;
+  background-color: #add8e6;
+  min-height: 100vh;
+}
+
+/* ヘッダー */
+.header {
+  background: #add8e6;
+  padding: 15px;
+  text-align: center;
+  font-size: 22px;
+  font-weight: bold;
+}
+
+.title {
+  font-size: 22px;
+  font-weight: bold;
+}
+
+
+/* =========================
+   サークルプロフィールカード
+========================= */
+.circle-profile-card {
+  background: #f5f7fb;
+  border-radius: 12px;
+  box-shadow: 0 4px 14px rgba(0,0,0,0.05);
+  padding: 16px;
+  text-align: center;
+  margin-bottom: 12px;
+}
+
+.circle-header {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  margin-bottom: 8px;
+}
+
+.circle-avatar {
+  width: 70px;
+  height: 70px;
+  border-radius: 50%;
+  background-color: #ccc;
+  background-size: cover;
+  background-position: center;
+}
+
+.circle-info {
+  text-align: left;
+}
+
+.circle-name {
+  font-size: 20px;
+  font-weight: bold;
+  margin: 0;
+}
+
+.circle-handle {
+  color: #666;
+  font-size: 14px;
+}
+
+.circle-bio {
+  color: #444;
+  font-size: 13px;
+  margin: 8px 0;
+}
+
+.circle-stats {
+  display: flex;
+  justify-content: center;
+  gap: 8px;
+  margin-bottom: 8px;
+}
+
+.circle-actions {
+  display: flex;
+  justify-content: center;
+  gap: 10px;
+}
