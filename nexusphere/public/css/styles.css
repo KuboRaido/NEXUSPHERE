@@ -261,7 +261,7 @@ input[type="file"] {
 .search-area {
     width: 100%;
     padding: 15px;
-    background: #ffffffcc;
+    background: #add8e6 !important;
     display: flex;
     justify-content: center;
 }
@@ -290,3 +290,4 @@ input[type="file"] {
     cursor: pointer;
     font-weight: bold;
 }
+
