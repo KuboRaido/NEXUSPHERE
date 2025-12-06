@@ -15,6 +15,7 @@ return new class extends Migration
             $table->id('circle_user_id');
             $table->foreignId('circle_id')->constrained('circles','circle_id')->cascadeOnDelete();
             $table->foreignId('user_id')->nullable()->constrained('users','user_id')->cascadeOnDelete();
+            $table->unique(['circle_id','user_id']);
             $table->timestamps();
         });
     }

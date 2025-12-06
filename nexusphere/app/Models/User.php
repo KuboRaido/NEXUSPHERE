@@ -26,6 +26,12 @@ class User extends Authenticatable
         return $this->hasMany(Prc::class, 'user_id', 'user_id');
     }
 
+    public function circles()
+    {
+        return $this->belongsToMany(Circle::class,'circle_users', 'user_id', 'circle_id')
+                    ->withTimestamps();
+    }
+
     public function getAvatarUrlAttribute(): string
     {
         if(!empty($this->icon)){

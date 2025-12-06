@@ -90,7 +90,7 @@ class DmController extends Controller
    $partnerIds[] = (int)$me;
    $users = User::whereIn($userPk, array_unique($partnerIds))
             ->get()->keyBy($userPk);
-
+   // 自分のアイコンURL
    $meUser = $users[(int)$me] ?? null;
    $meIcon = $this->avatarUrl($meUser);
    foreach($list as &$t){
@@ -100,13 +100,35 @@ class DmController extends Controller
    }
    unset($t);
 
-return response()->json([
-   'me_icon' => $meIcon,
-   'data'    => $list,
-]);
+   // dm一覧の未読数表示
+   $unreadRows = DB::table('dms as dm')
+      ->select('dm.sender_id as partner_id', DB::raw('COUNT(*) AS unread'))
+      ->leftJoin('dm_reads as dr', function($join) use ($me) {
+         $join->on('dr.partner_id', '=' , 'dm.sender_id')
+            ->where('dr.user_id', '=', $me);
+      })
+      ->where('dm.receiver_id', $me)
+      ->whereNull('dm.deleted_at')
+      ->where(function ($q) {
+         $q->whereNull('dr.last_read_at')
+            ->orWhere('dm.created_at', '>', DB::raw('dr.last_read_at'));
+      })
+      ->groupBy('dm.sender_id')
+      ->pluck('unread', 'partner_id');
+
+   foreach($list as &$row){
+         $partnerId = (int) $row['partner_id'];
+         $row['unread_count'] = (int) ($unreadRows[$partnerId] ?? 0);
+      }
+      unset($row);
+
+   return response()->json([
+      'me_icon' => $meIcon,
+      'data'    => $list,
+   ]);
 }
 
- # 会話画面（フロント）
+# 会話画面（フロント）
 public function dmfront(Request $r){
 
       $to = $r->query('to');
@@ -116,7 +138,7 @@ public function dmfront(Request $r){
    }
 
 # 会話ログ取得（バック）
-public function dmback(Request $request ,?int $partner=null){
+public function dmback(?int $partner=null){
    $me = Auth::id();
    abort_if(!$me, 401, 'Unauthenticated');
 
