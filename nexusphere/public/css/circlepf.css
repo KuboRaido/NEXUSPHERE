@@ -291,10 +291,9 @@ button[type="submit"]:hover {
   transform: scale(1.1);
 }
 
-.footer-nav i {
-  pointer-events: none;
+.footer-nav a.active {
+  color: #ff69b4; /* アクティブなタブの色 */
 }
-
 /* 投稿カードのアクション */
 .post-actions {
   display: flex;
