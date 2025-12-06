@@ -34,9 +34,10 @@ Route::middleware('auth')->group(function () {
     Route::post('circle',[CircleController::class,'circleCreate']);
     Route::get('circle/create',[CircleController::class,'circleCreateFront'])->name('circle.create');
     Route::get('circle/{circle}',[CircleController::class,'circleProfileFront'])->name('circle.profile');
-    Route::get('circle/post',[CircleController::class,'circlePostFront'])->name('circle.post');
+    Route::get('circle/{circle}/post',[CircleController::class,'circlePostFront'])->name('circle.post');
+    Route::get('circle/{circle}/edit',[CircleController::class,'circleEdit'])->name('circle.edit');
 });
-
+    
 // コメント投稿
 Route::post('/posts/{postId}/comment', [PrcController::class, 'comment'])
     ->name('posts.comment');
