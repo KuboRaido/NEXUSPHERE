@@ -36,6 +36,7 @@ class PrcController extends Controller
         $request->validate([
             'sentence' => 'required|string|max:1000',
             'images.*' => 'image|mimes:jpeg,png,jpg,gif,webp|max:5120', // 1枚最大5MB
+            'videos.*' => 'mimetypes:video/mp4,video/quicktime|max:30720',
         ]);
 
         // 投稿作成（type:0 = 投稿）
@@ -60,6 +61,19 @@ class PrcController extends Controller
                 Images_and_videos::create([
                     'prc_id' => $post->prc_id,
                     'image' => $path,
+                ]);
+            }
+        }
+
+        if ($request->hasFile('videos')) {
+            $videos = $request->file('videos');
+
+            foreach ($videos as $video) {
+                $path = $video->store('post_video', 'public');
+
+                Images_and_videos::create([
+                    'prc_id' => $post->prc_id,
+                    'video'  => $path,
                 ]);
             }
         }
