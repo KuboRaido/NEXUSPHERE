@@ -59,22 +59,25 @@ body {
   padding: 0;
 }
 
-.circle-item {
+/* ← ★ a.circle-link に flex を渡す（ここが最重要） */
+.circle-item .circle-link {
   display: flex;
   align-items: center;
   padding: 15px;
   background: #fff;
   margin-bottom: 10px;
   border-radius: 10px;
-  cursor: pointer;
+  text-decoration: none;
+  color: inherit;
   transition: 0.2s;
 }
 
-.circle-item:hover {
+.circle-item .circle-link:hover {
   background: #eef7ff;
 }
 
-.circle-item img {
+/* 画像（a 内に入ったのでセレクタ変更） */
+.circle-item .circle-link img {
   width: 65px;
   height: 65px;
   border-radius: 50%;
@@ -82,9 +85,8 @@ body {
   object-fit: cover;
 }
 
-/* サークル名 */
-.circle-item .name,
-.circle-item .name a {
+/* サークル名（a 内なので修正） */
+.circle-item .circle-link .name {
   font-size: 18px;
   font-weight: bold;
   color: #000;
@@ -92,10 +94,8 @@ body {
   transition: color 0.2s ease;
 }
 
-.circle-item .name:hover,
-.circle-item .name a:hover {
+.circle-item .circle-link:hover .name {
   color: #4CAF50;
-  text-decoration: none !important;
 }
 
 /* フッターナビ */
@@ -126,21 +126,18 @@ body {
     transform: scale(1.1);
 }
 
-/* アイコン整列用 */
 .footer-nav i {
     pointer-events: none;
 }
 
-/* レスポンシブ対応 */
+/* レスポンシブ */
 @media screen and (max-width: 768px) {
-  .circle-item img {
+  .circle-item .circle-link img {
     width: 55px;
     height: 55px;
   }
 
-  .circle-item .name,
-  .circle-item .name a {
+  .circle-item .circle-link .name {
     font-size: 16px;
   }
-
 }
