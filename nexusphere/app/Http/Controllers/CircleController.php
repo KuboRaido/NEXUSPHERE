@@ -104,8 +104,8 @@ class CircleController extends Controller
             return view('circleProfile', ['circle' => $circle]);
     }
 
-    public function circlePostFront()
+    public function circlePostFront(Circle $circle)
     {
-        return view('circlePost');
+        return view('circlePost', ['circle' => $circle]);
     }
 }

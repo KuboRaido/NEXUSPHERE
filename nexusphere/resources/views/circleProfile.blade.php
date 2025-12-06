@@ -10,7 +10,7 @@
 <body>
 
 <header class="header">
-  <span class="title">profile</span>
+  <span class="title">{{ $circle->circle_name }}</span>
 </header>
 
 <main class="container">
