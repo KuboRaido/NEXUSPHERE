@@ -100,34 +100,39 @@ body {
 
 /* フッターナビ */
 .footer-nav {
-    position: fixed;
-    bottom: 0;
-    left: 0;
-    width: 100%;
-    background-color: #fff;
-    border-top: 1px solid #ddd;
-    display: flex;
-    justify-content: space-around;
-    align-items: center;
-    height: 60px;
-    z-index: 100;
-    box-shadow: 0 -2px 8px rgba(0, 0, 0, 0.05);
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  background-color: #fff;
+  border-top: 1px solid #ddd;
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+  height: 60px;
+  z-index: 100;
+  box-shadow: 0 -2px 8px rgba(0, 0, 0, 0.05);
 }
 
 .footer-nav a {
-    color: #666;
-    text-decoration: none;
-    font-size: 22px;
-    transition: color 0.3s ease, transform 0.2s ease;
+  color: #666;
+  text-decoration: none;
+  font-size: 22px;
+  transition: color 0.3s ease, transform 0.2s ease;
 }
 
 .footer-nav a:hover {
-    color: #ff69b4;
-    transform: scale(1.1);
+  color: #ff69b4;
+  transform: scale(1.1);
 }
 
+.footer-nav a.active {
+  color: #ff69b4; /* アクティブなタブの色 */
+}
+
+/* アイコン整列用 */
 .footer-nav i {
-    pointer-events: none;
+  pointer-events: none;
 }
 
 /* レスポンシブ */
