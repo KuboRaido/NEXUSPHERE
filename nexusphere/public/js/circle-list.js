@@ -63,9 +63,9 @@
       const icon = circle.icon || window.DEFAULT_CLUB_ICON_URL || '';
 
       li.innerHTML = `
-        <img src="${escapeHtml(icon)}" alt="${escapeHtml(name)}">
-        <a class="name" href="${resolveLink(circle.circle_id ?? circle.id)}">
-          ${escapeHtml(name)}
+        <a class="circle-link" href="${resolveLink(circle.circle_id ?? circle.id)}">
+          <img src="${escapeHtml(icon)}" alt="${escapeHtml(name)}">
+          <span class="name">${escapeHtml(name)}</span>
         </a>
       `;
       fragment.appendChild(li);
@@ -141,3 +141,4 @@
     searchInput.addEventListener('blur', () => setTimeout(hideSearch, 200));
   }
 })();
+

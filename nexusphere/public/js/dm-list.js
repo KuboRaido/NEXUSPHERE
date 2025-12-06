@@ -95,11 +95,12 @@ async function loaddmlist(){
 
     const tpl = listRoot.dataset.chatUrlTemplate || '/dm?to=__ID__';
     const fallback = DEFAULT_AVATAR;
-
     listRoot.innerHTML = '';
     for (const it of items){
       const href = tpl.replace('__ID__',encodeURIComponent(it.partner_id));
       const icon = it.partner_icon || '/images/default-avatar.png';
+      const unread = Number(it.unread_count || 0);
+      const badge = unread > 0 ? `<span class="unread">${unread}</span>` : '';
 
       const li = document.createElement('li');
       li.className = 'dm-list';
@@ -113,6 +114,7 @@ async function loaddmlist(){
           <time class="chat-meta" datetime="${it.last_time || ''}">
             ${formatTime(it.last_time)}
           </time>
+          ${badge}
         </a>
       `;
       listRoot.appendChild(li);

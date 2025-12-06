@@ -216,7 +216,7 @@ async function sendMessage() {
   const hadFiles = files.length > 0;
   if (fileInput) fileInput.value = '';
 
-   if (!text && !hadFiles) return;
+  if (!text && !hadFiles) return;
   //自分にメッセージを送れる
   let toId;
   if (recipientRaw === '' || recipientRaw.toLowerCase() === 'me') {
@@ -235,7 +235,7 @@ async function sendMessage() {
     const type = f.type.startsWith('image/') ? 'image' : (f.type.startsWith('video/') ? 'video' : 'file');
     if(type === 'image' || type === 'video')tempAtt.push({type, url, pending:true});
   });
- }
+  }
   messages.push({id:tempId, from:String(getMeId()), to:String(toId), text, attachments:tempAtt, timestamp:new Date(), pending:true, isRead:false});
   renderMessages();
 

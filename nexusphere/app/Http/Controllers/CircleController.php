@@ -2,17 +2,19 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Circle;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
-use App\Models\Circle;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Facades\DB;
 
 class CircleController extends Controller
 {
     public function circleFront()
     {
-            return view('circle');
+        return view('circle');
     }
+
     public function circleBack()
     {
         $rows = Circle::orderByDesc('created_at')->get();
@@ -28,40 +30,80 @@ class CircleController extends Controller
         })->values();
         return response()->json($list);
     }
+
     public function circleCreateFront()
     {
-            return view('circleCreate');
+        return view('circleCreate');
     }
+
     public function circleCreate(Request $request)
     {
 
         $data = $request->validate([
-            'name' => 'required|string|max:255',
+            'name'        => 'required|string|max:255',
             'sentence'    => 'required|string|max:255',
-            'image'      => 'required|image|mimes:jpeg,png,jpg,gif,webp|max:5120',
+            'image'       => 'required|image|mimes:jpeg,png,jpg,gif,webp|max:5120',
             'category'    => 'nullable|string',
         ]);
 
-          $iconPath = null;
-          if ($request->hasFile('image')) {
-              $iconPath = $request->file('image')->store('icons', 'public');
-            }
+        $iconPath = null;
+        if ($request->hasFile('image')) {
+            $iconPath = $request->file('image')->store('icons', 'public');
+        }
 
-        Circle::create([
+        DB::transaction(function () use ($data, $iconPath){
+            $circle = Circle::create([
             'owner_id'    => Auth::id(),
             'circle_name' => $data['name'],
             'sentence'    => $data['sentence'],
             'category'    => $data['category'],
             'icon'      => $iconPath,
-        ]);
+            'members_count' => 0,
+            ]);
 
+            $circle->members()->syncWithoutDetaching([Auth::id()]);
+
+            $circle->update([
+                'members_count' => $circle->members()->count(),
+            ]);
+        });
 
         return redirect()->route('circle')->with('status', 'プロフィールを更新しました。');
     }
-    public function circleProfileFront()
+
+    public function join(Circle $circle)
     {
-            return view('circleProfile');
+        DB::transaction(function () use ($circle) {
+            $circle->members()->syncWithoutDetaching([Auth::id()]);
+
+            $circle->update([
+                'members_count' => $circle->members()->count(),
+            ]);
+        });
+
+        return back()->with('status', 'サークルに参加しました');
     }
+
+    public function leave(Circle $circle)
+    {
+        DB::transaction(function () use ($circle) {
+            $circle->members()->detach(Auth::id());
+
+            $circle->update([
+                'members_count' => $circle->members()->count(),
+            ]);
+        });
+
+        return back()->with('status', 'サークルを退会しました');
+    }
+
+
+
+    public function circleProfileFront(Circle $circle)
+    {
+            return view('circleProfile', ['circle' => $circle]);
+    }
+
     public function circlePostFront()
     {
         return view('circlePost');

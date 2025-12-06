@@ -9,10 +9,10 @@ use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\CircleController;
 
 Route::middleware('guest')->group(function(){
-    Route::get('/newLogin',[UserController::class,'newLoginForm'])->name('newLogin');
-    Route::post('/newLogin',[UserController::class,'register']);
-    Route::get('/login',[LoginController::class,'showLoginForm'])->name('login');
-    Route::post('/login',[LoginController::class,'login']);
+    Route::get('/newlogin',[UserController::class,'newLoginForm'])->name('newLogin');
+    Route::post('/newlogin',[UserController::class,'register']);
+    Route::get('/',[LoginController::class,'showLoginForm'])->name('login');
+    Route::post('/',[LoginController::class,'login']);
 });
 
 Route::middleware('auth')->group(function () {
@@ -33,7 +33,7 @@ Route::middleware('auth')->group(function () {
     Route::get('circle',[CircleController::class,'circleFront'])->name('circle');
     Route::post('circle',[CircleController::class,'circleCreate']);
     Route::get('circle/create',[CircleController::class,'circleCreateFront'])->name('circle.create');
-    Route::get('circle/profile',[CircleController::class,'circleProfileFront'])->name('circle.profile');
+    Route::get('circle/{circle}',[CircleController::class,'circleProfileFront'])->name('circle.profile');
     Route::get('circle/post',[CircleController::class,'circlePostFront'])->name('circle.post');
 });
 
@@ -44,7 +44,3 @@ Route::post('/posts/{postId}/comment', [PrcController::class, 'comment'])
 // いいね
 Route::post('/posts/{postId}/like', [PrcController::class, 'like'])
     ->name('posts.like');
-
-
-
-Route::get('/', function () {return view('welcome');});
