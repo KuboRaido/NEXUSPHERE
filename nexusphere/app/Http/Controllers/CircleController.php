@@ -10,35 +10,51 @@ use Illuminate\Support\Facades\DB;
 
 class CircleController extends Controller
 {
+    /**
+     * サークルトップ画面（一覧）
+     */
     public function circleFront()
     {
-        return view('circle');
+        // もし circle.blade.php 内で $joined を参照してもエラーにならないように
+        return view('circle', [
+            'joined' => false,
+        ]);
     }
 
+    /**
+     * サークル一覧取得 API
+     */
     public function circleBack()
     {
         $rows = Circle::orderByDesc('created_at')->get();
-        $list = $rows->map(function (Circle $circle){
+
+        $list = $rows->map(function (Circle $circle) {
             return [
-                'circle_id' => $circle->circle_id,
-                'circle_name' => $circle->circle_name,
-                'category' => $circle->category,
-                'members_count' => $circle->members_count,
-                'sentence' => $circle->sentence,
-                'icon' => $circle->icon ? Storage::url($circle->icon) : null,
+                'circle_id'      => $circle->circle_id,
+                'circle_name'    => $circle->circle_name,
+                'category'       => $circle->category,
+                'members_count'  => $circle->members_count,
+                'sentence'       => $circle->sentence,
+                'icon'           => $circle->icon ? Storage::url($circle->icon) : null,
             ];
         })->values();
+
         return response()->json($list);
     }
 
+    /**
+     * サークル作成画面
+     */
     public function circleCreateFront()
     {
         return view('circleCreate');
     }
 
+    /**
+     * サークル作成処理
+     */
     public function circleCreate(Request $request)
     {
-
         $data = $request->validate([
             'name'        => 'required|string|max:255',
             'sentence'    => 'required|string|max:255',
@@ -51,26 +67,31 @@ class CircleController extends Controller
             $iconPath = $request->file('image')->store('icons', 'public');
         }
 
-        DB::transaction(function () use ($data, $iconPath){
+        DB::transaction(function () use ($data, $iconPath) {
             $circle = Circle::create([
-            'owner_id'    => Auth::id(),
-            'circle_name' => $data['name'],
-            'sentence'    => $data['sentence'],
-            'category'    => $data['category'],
-            'icon'      => $iconPath,
-            'members_count' => 0,
+                'owner_id'      => Auth::id(),
+                'circle_name'   => $data['name'],
+                'sentence'      => $data['sentence'],
+                'category'      => $data['category'],
+                'icon'          => $iconPath,
+                'members_count' => 0,
             ]);
 
+            // 作成者をメンバーに追加
             $circle->members()->syncWithoutDetaching([Auth::id()]);
 
+            // メンバー数更新
             $circle->update([
                 'members_count' => $circle->members()->count(),
             ]);
         });
 
-        return redirect()->route('circle')->with('status', 'プロフィールを更新しました。');
+        return redirect()->route('circle')->with('status', 'サークルを作成しました。');
     }
 
+    /**
+     * サークル参加
+     */
     public function join(Circle $circle)
     {
         DB::transaction(function () use ($circle) {
@@ -84,6 +105,9 @@ class CircleController extends Controller
         return back()->with('status', 'サークルに参加しました');
     }
 
+    /**
+     * サークル退会
+     */
     public function leave(Circle $circle)
     {
         DB::transaction(function () use ($circle) {
@@ -97,15 +121,27 @@ class CircleController extends Controller
         return back()->with('status', 'サークルを退会しました');
     }
 
-
-
+    /**
+     * サークルプロフィール（詳細）画面
+     * ★ ここが一番重要 → $joined を必ず渡す
+     */
     public function circleProfileFront(Circle $circle)
     {
-            return view('circleProfile', ['circle' => $circle]);
+        $joined = $circle->members()
+            ->where('user_id', Auth::id())
+            ->exists();
+
+        return view('circleProfile', [
+            'circle' => $circle,
+            'joined' => $joined,
+        ]);
     }
 
-    public function circlePostFront(Circle $circle)
+    /**
+     * サークル投稿画面
+     */
+    public function circlePostFront()
     {
-        return view('circlePost', ['circle' => $circle]);
+        return view('circlePost');
     }
 }
