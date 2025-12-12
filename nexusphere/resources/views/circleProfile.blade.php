@@ -20,7 +20,7 @@
 
       <!-- アイコン -->
       <div class="avatar-wrap">
-        <img class="avatar" src="" alt="アイコン">
+        <img class="avatar" src="{{$circle->icon}}" alt="アイコン">
       </div>
 
       <div class="main">
@@ -29,8 +29,8 @@
         <div class="name-row">
 
           <div class="name-set">
-            <div class="circle-name">サークル名: Sample Circle</div>
-            <div class="circle-desc">サークル説明がここに入ります。最大2〜3行まで想定しています。</div>
+            <div class="circle-name">{{ $circle->circle_name }}</div>
+            <div class="circle-desc">{{$circle->sentence}}</div>
           </div>
 
           <!-- アクションボタン（役割ごとに表示） -->

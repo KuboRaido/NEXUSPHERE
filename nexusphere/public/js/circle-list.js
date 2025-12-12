@@ -10,17 +10,10 @@
   const searchInput   = document.getElementById('search-input');
   const searchResults = document.getElementById('search-results');
 
-  const res = fetch('/api/v1/circle',{
-    headers: { 'Accept': 'application/json' },
-    credentials: 'include',
-  });
-
-  const circleList = res.json();
-
   // 3. URLテンプレート＆リンク生成関数
-  const linkTemplate = listRoot.dataset.clubUrlTemplate || '/circle?id=__ID__';
+  const linkTemplate = listRoot.dataset.clubUrlTemplate || '/circle/__ID__';
   const resolveLink = (id) =>
-  linkTemplate.replace('__ID__', encodeURIComponent(String(id)));
+    linkTemplate.replace('__ID__', encodeURIComponent(String(id)));
 
   // 4. サークル一覧データ
   let circles = [];
@@ -34,16 +27,20 @@
 
     const fragment = document.createDocumentFragment();
     items.forEach((circle) => {
-      const name = circle.circle_name || circle.name || '';
-      const icon = circle.icon || window.DEFAULT_CLUB_ICON_URL || '';
       const li = document.createElement('li');
       li.className = 'circle-item';
+
+      const name = circle.circle_name || circle.name || '';
+      const icon = circle.icon || window.DEFAULT_CLUB_ICON_URL || '';
+      const sentence = circle.sentence || '';
+
       li.innerHTML = `
-        <a class="circle-link" href="${resolveLink(circle.circle_id ?? circle.id)}">
-          <img src="${escapeHtml(icon)}" alt="${escapeHtml(name)}">
-          <span class="name">${escapeHtml(name)}</span>
-        </a>
-      `;
+  <a class="circle-link" href="${resolveLink(circle.circle_id ?? circle.id)}">
+    <img src="${escapeHtml(icon)}" alt="${escapeHtml(name)}">
+    <span class="name">${escapeHtml(name)}</span>
+    <span class="sentence">${escapeHtml(sentence)}</span>
+  </a>
+`;
 
 
       fragment.appendChild(li);
@@ -67,11 +64,13 @@
 
       const name = circle.circle_name || circle.name || '';
       const icon = circle.icon || window.DEFAULT_CLUB_ICON_URL || '';
+      const sentence = circle.sentence || '';
 
       li.innerHTML = `
         <a class="circle-link" href="${resolveLink(circle.circle_id ?? circle.id)}">
           <img src="${escapeHtml(icon)}" alt="${escapeHtml(name)}">
           <span class="name">${escapeHtml(name)}</span>
+          <span class="sentence">${escapeHtml(sentence)}</span>
         </a>
       `;
       fragment.appendChild(li);

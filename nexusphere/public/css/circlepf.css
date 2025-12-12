@@ -63,7 +63,7 @@ body {
   gap: 12px;
 }
 
-.avatar-wrap {
+.avatar-wrap{
   width: 100px;   /* 2倍に拡大 */
   height: 100px;  /* 2倍に拡大 */
   border-radius: 50%;
