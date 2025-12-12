@@ -121,10 +121,36 @@ class CircleController extends Controller
         return back()->with('status', 'サークルを退会しました');
     }
 
+<<<<<<< HEAD
     /**
      * サークルプロフィール（詳細）画面
      * ★ ここが一番重要 → $joined を必ず渡す
      */
+=======
+    public function update(Request $request, Circle $circle)
+    {
+        abort_if(!Auth::check(), 401);
+
+        $data = $request->validate([
+            'name'        => 'required|string|max:255',
+            'sentence'    => 'required|string|max:255',
+            'icon'       => 'required|image|mimes:jpeg,png,jpg,gif,webp|max:5120',
+        ]);
+
+        $circle->fill([
+            'circle_name' => $data['name'],
+            'sentence'    => $data['sentence'],
+        ]);
+
+        if ($request->hasFIle('icon')) {
+            $circle->icon = $request->file('icon')->store('icons', 'public');
+        }
+        $circle->save();
+
+        return redirect()->route('circle.profile', $circle->circle_id)->with('status', 'プロフィールを更新しました。');
+    }
+
+>>>>>>> e69f24c6e54de42b86e8e25d2999b71d2576ca24
     public function circleProfileFront(Circle $circle)
     {
         $joined = $circle->members()
@@ -144,4 +170,13 @@ class CircleController extends Controller
     {
         return view('circlePost');
     }
+<<<<<<< HEAD
 }
+=======
+
+    public function circleEdit(Circle $circle)
+    {
+        return view('circleprofile_edit', ['circle' => $circle]);
+    }
+}
+>>>>>>> e69f24c6e54de42b86e8e25d2999b71d2576ca24
