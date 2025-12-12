@@ -24,6 +24,19 @@
       <!-- 検索結果 -->
       <ul id="search-results" class="search-results" style="display: none;"></ul>
 
+      <!-- ▼ タブ切り替え -->
+      <div class="circle-tabs">
+        <button class="tab-btn active" data-target="joined">参加中</button>
+        <button class="tab-btn" data-target="not-joined">未参加</button>
+      </div>
+
+      <!-- ▼ 参加中サークル -->
+      <ul id="circle-joined" class="circle-section"></ul>
+
+      <!-- ▼ 未参加サークル -->
+      <ul id="circle-not-joined" class="circle-section" style="display:none;"></ul>
+
+
       <!-- サークル一覧 -->
       <ul id="circle-list" class="circle-list" data-club-url-template="{{ url('/circle/__ID__') }}?"></ul>
     </div>
