@@ -19,20 +19,43 @@
   let circles = [];
 
   // 5. 一覧描画
-  const renderList = (items) => {
-    if (!items.length) {
-      listRoot.innerHTML = '<li class="empty">まだサークルがありません</li>';
-      return;
-    }
+const renderList = (items) => {
+  const joinedRoot    = document.getElementById("circle-joined");
+  const notJoinedRoot = document.getElementById("circle-not-joined");
 
+<<<<<<< HEAD
     const fragment = document.createDocumentFragment();
     items.forEach((circle) => {
+=======
+  // 初期化
+  joinedRoot.innerHTML = '';
+  notJoinedRoot.innerHTML = '';
+
+  // 参加・未参加で分ける
+  const joinedItems    = items.filter(c => c.joined === true);
+  const notJoinedItems = items.filter(c => !c.joined);
+
+  // ============================
+  // ▼ 参加サークルが０件のとき
+  // ============================
+  if (joinedItems.length === 0) {
+    joinedRoot.innerHTML = `
+      <li class="empty">
+        まだ参加しているサークルがありません
+      </li>`;
+  } else {
+    // 通常の描画
+    joinedItems.forEach((circle) => {
+>>>>>>> origin/kotomi2
       const li = document.createElement('li');
       li.className = 'circle-item';
 
       const name = circle.circle_name || circle.name || '';
       const icon = circle.icon || window.DEFAULT_CLUB_ICON_URL || '';
+<<<<<<< HEAD
       const sentence = circle.sentence || '';
+=======
+>>>>>>> origin/kotomi2
 
       li.innerHTML = `
   <a class="circle-link" href="${resolveLink(circle.circle_id ?? circle.id)}">
@@ -42,12 +65,38 @@
   </a>
 `;
 
-
-      fragment.appendChild(li);
+      joinedRoot.appendChild(li);
     });
+  }
 
-    listRoot.replaceChildren(fragment);
-  };
+  // ============================
+  // ▼ 未参加サークルの描画
+  // ============================
+  if (notJoinedItems.length === 0) {
+    notJoinedRoot.innerHTML = `
+      <li class="empty">
+        未参加のサークルはありません
+      </li>`;
+  } else {
+    notJoinedItems.forEach((circle) => {
+      const li = document.createElement('li');
+      li.className = 'circle-item';
+
+      const name = circle.circle_name || circle.name || '';
+      const icon = circle.icon || window.DEFAULT_CLUB_ICON_URL || '';
+
+      li.innerHTML = `
+        <a class="circle-link" href="${resolveLink(circle.circle_id ?? circle.id)}">
+          <img src="${escapeHtml(icon)}" alt="${escapeHtml(name)}">
+          <span class="name">${escapeHtml(name)}</span>
+        </a>
+      `;
+      notJoinedRoot.appendChild(li);
+    });
+  }
+};
+
+
 
   // 6. 検索結果（丸く表示される修正版）
   const showSearch = (items) => {
@@ -145,5 +194,33 @@
     });
     searchInput.addEventListener('blur', () => setTimeout(hideSearch, 200));
   }
-})();
 
+    // ▼ タブ切り替え処理
+  document.addEventListener("DOMContentLoaded", () => {
+      const tabs = document.querySelectorAll(".tab-btn");
+      const sections = {
+          joined: document.getElementById("circle-joined"),
+          notJoined: document.getElementById("circle-not-joined")
+      };
+
+      tabs.forEach(tab => {
+          tab.addEventListener("click", () => {
+              // タブの見た目を切り替え
+              tabs.forEach(t => t.classList.remove("active"));
+              tab.classList.add("active");
+
+              const target = tab.dataset.target;
+
+              // 表示切り替え
+              if (target === "joined") {
+                  sections.joined.style.display = "block";
+                  sections.notJoined.style.display = "none";
+              } else {
+                  sections.joined.style.display = "none";
+                  sections.notJoined.style.display = "block";
+              }
+          });
+      });
+  });
+
+})();
