@@ -23,10 +23,6 @@ const renderList = (items) => {
   const joinedRoot    = document.getElementById("circle-joined");
   const notJoinedRoot = document.getElementById("circle-not-joined");
 
-<<<<<<< HEAD
-    const fragment = document.createDocumentFragment();
-    items.forEach((circle) => {
-=======
   // 初期化
   joinedRoot.innerHTML = '';
   notJoinedRoot.innerHTML = '';
@@ -46,16 +42,11 @@ const renderList = (items) => {
   } else {
     // 通常の描画
     joinedItems.forEach((circle) => {
->>>>>>> origin/kotomi2
       const li = document.createElement('li');
       li.className = 'circle-item';
 
       const name = circle.circle_name || circle.name || '';
       const icon = circle.icon || window.DEFAULT_CLUB_ICON_URL || '';
-<<<<<<< HEAD
-      const sentence = circle.sentence || '';
-=======
->>>>>>> origin/kotomi2
 
       li.innerHTML = `
   <a class="circle-link" href="${resolveLink(circle.circle_id ?? circle.id)}">
