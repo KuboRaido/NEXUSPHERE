@@ -36,7 +36,7 @@
           <!-- アクションボタン（役割ごとに表示） -->
           <div class="actions">
             <!-- オーナー専用 -->
-            <a class="btn role-owner" href="">編集</a>
+            <a class="btn role-owner" href="{{ route('circle.edit', $circle->circle_id) }}">編集</a>
             <a class="btn role-owner role-member" href="">DM</a>
             <a class="btn role-owner role-member" href="">投稿</a>
 
