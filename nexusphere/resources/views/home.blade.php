@@ -39,14 +39,39 @@
             {{-- 投稿内容 --}}
             <div class="post-content">{{ $post->sentence }}</div>
 
-            {{-- 画像 --}}
+            {{-- メディア (画像 or 動画) --}}
             @if ($post->images && $post->images->count() > 0)
                 <div class="post-images">
-                    @foreach ($post->images as $image)
-                        <img src="{{ asset('storage/' . $image->image) }}" 
-                                alt="投稿画像" 
-                                class="post-image" 
-                                onclick="openModal(this.src)">
+                    @foreach ($post->images as $media)
+
+                        @php
+                            // 画像と動画のどちらを使うか判定
+                            $filePath = $media->image ?? $media->video;
+
+                            // null回避
+
+                            // 拡張子取得
+                            $exetension = strtolower(pathinfo($filePath, PATHINFO_EXTENSION));
+                        @endphp
+
+                        {{-- 画像ならimgタグ --}}
+                        @if (in_array($exetension, ['jpg', 'jpeg', 'png', 'webp', 'gif']))
+                            <img src="{{ asset('storage/' . $filePath) }}"
+                                 alt="投稿画像"
+                                 class="post-image"
+                                 onclick="openModal(this.src)">
+                        @endif
+
+                        {{-- 動画ならvideoタグ --}}
+                        @if (in_array($exetension, ['mp4', 'mov', 'webm']))
+                            <video controls
+                                   class="post-video"
+                                   style="max-width: 100%; border-radius: 8px; margin-top: 10px;">
+                                <source src="{{ asset('storage/' . $filePath) }}" type="video/{{ $exetension }}">
+                                お使いのブラウザは動画再生に対応していません。
+                            </video>
+                        @endif
+
                     @endforeach
                 </div>
             @endif
