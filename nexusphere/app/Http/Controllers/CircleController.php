@@ -97,7 +97,28 @@ class CircleController extends Controller
         return back()->with('status', 'サークルを退会しました');
     }
 
+    public function update(Request $request, Circle $circle)
+    {
+        abort_if(!Auth::check(), 401);
 
+        $data = $request->validate([
+            'name'        => 'required|string|max:255',
+            'sentence'    => 'required|string|max:255',
+            'icon'       => 'required|image|mimes:jpeg,png,jpg,gif,webp|max:5120',
+        ]);
+
+        $circle->fill([
+            'circle_name' => $data['name'],
+            'sentence'    => $data['sentence'],
+        ]);
+
+        if ($request->hasFIle('icon')) {
+            $circle->icon = $request->file('icon')->store('icons', 'public');
+        }
+        $circle->save();
+
+        return redirect()->route('circle.profile', $circle->circle_id)->with('status', 'プロフィールを更新しました。');
+    }
 
     public function circleProfileFront(Circle $circle)
     {
@@ -107,5 +128,10 @@ class CircleController extends Controller
     public function circlePostFront(Circle $circle)
     {
         return view('circlePost', ['circle' => $circle]);
+    }
+
+    public function circleEdit(Circle $circle)
+    {
+        return view('circleprofile_edit', ['circle' => $circle]);
     }
 }
