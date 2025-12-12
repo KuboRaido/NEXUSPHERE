@@ -42,11 +42,13 @@
             {{-- メディア (画像 or 動画) --}}
             @if ($post->images && $post->images->count() > 0)
                 <div class="post-images">
-                    @foreach ($post->images as $image)
+                    @foreach ($post->images as $media)
 
                         @php
                             // 画像と動画のどちらを使うか判定
                             $filePath = $media->image ?? $media->video;
+
+                            // null回避
 
                             // 拡張子取得
                             $exetension = strtolower(pathinfo($filePath, PATHINFO_EXTENSION));
@@ -57,7 +59,7 @@
                             <img src="{{ asset('storage/' . $filePath) }}"
                                  alt="投稿画像"
                                  class="post-image"
-                                 onclick="openModel(this.src)">
+                                 onclick="openModal(this.src)">
                         @endif
 
                         {{-- 動画ならvideoタグ --}}
