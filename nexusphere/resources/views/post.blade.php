@@ -24,12 +24,11 @@
             <textarea name="sentence" placeholder="いまどうしてる？" required></textarea>
                 <div id="preview-container"></div>
             {{-- 画像・動画のアップロード --}}
-            <input
-                type="file"
-                name="media[]"
-                multiple
-                accept="image/*,video/mp4,video/webm,video/quicktime"
-            >
+            <input type="file" name="images[]" multiple accept="image/*">
+            <input type="file" name="videos[]" multiple accept="video/*">
+            
+
+
 
             <p class="file-note">※画像 or 30秒以内の動画を選択できます</p>
 
