@@ -121,10 +121,6 @@ class CircleController extends Controller
         return back()->with('status', 'サークルを退会しました');
     }
 
-    /**
-     * サークルプロフィール（詳細）画面
-     * ★ ここが一番重要 → $joined を必ず渡す
-     */
     public function circleProfileFront(Circle $circle)
     {
         $joined = $circle->members()
@@ -143,5 +139,10 @@ class CircleController extends Controller
     public function circlePostFront()
     {
         return view('circlePost');
+    }
+
+    public function circleEdit(Circle $circle)
+    {
+        return view('circleprofile_edit', ['circle' => $circle]);
     }
 }
