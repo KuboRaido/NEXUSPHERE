@@ -38,7 +38,7 @@
 
 
       <!-- サークル一覧 -->
-      <ul id="circle-list" class="circle-list" data-club-url-template="{{ url('/circle') }}?id=__ID__"></ul>
+      <ul id="circle-list" class="circle-list" data-club-url-template="{{ url('/circle/__ID__') }}?"></ul>
     </div>
     <div class="footer-nav">
       <a href="/home" class="tab {{ request()->is('home') ? 'active' : '' }}"><i class="fa-solid fa-house"></i></a>

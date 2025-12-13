@@ -11,7 +11,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
 </head>
 <body>
-   <header class="header">
+  <header class="header">
       <span class="title">profile編集</span>
     </header>
   <div class="container">
@@ -22,34 +22,34 @@
         </div>
       @endif
 
-      <form method="POST" action="{{ route('profile-update') }}" enctype="multipart/form-data">
+      <form method="POST" action="{{ route('circle-update', $circle->circle_id) }}" enctype="multipart/form-data">
         @csrf
 
         <div class="field">
           <label>現在のアイコン</label>
           <div class="current-avatar">
-            <img src="{{ $user->avatar_url }}" alt="アイコン" class="avatar-preview">
+            <img src="{{ $circle->icon }}" alt="アイコン" class="avatar-preview">
           </div>
         </div>
 
       <div class="field">
-        <label for="icon">アイコン</label>
-        <input id="icon" type="file" name="icon" accept="image/*">
+        <label for="image">アイコン</label>
+        <input id="image" type="file" name="image" accept="image/*">
       </div>
 
       <div class="name">
         <label for="name">名前</label>
-        <input id="name" type="text" name="name" value="{{ old('name', $user->name) }}">
+        <input id="name" type="text" name="name" value="{{ old('name', $circle->circle_name) }}">
       </div>
 
       <div class="explain">
-        <label for="major">サークル説明</label>
-        <input id="major" type="text" name="major" value="{{ old('major', $user->major) }}">
+        <label for="sentence">サークル説明</label>
+        <input id="sentence" type="text" name="sentence" value="{{ old('sentence', $circle->sentence) }}">
       </div>
 
         <div class="actions">
           <button type="submit" class="btn">保存</button>
-          <a href="{{ route('profile') }}" class="btn secondary">戻る</a>
+          <a href="{{ route('circle.profile', $circle->circle_id) }}" class="btn secondary">戻る</a>
         </div>
       </form>
     </div>
