@@ -1,119 +1,102 @@
 (() => {
-  // 1. HTMLエスケープ関数（XSS対策）
+  /* =========================
+   * 1. HTMLエスケープ（XSS対策）
+   * ========================= */
   const escapeHtml = (value = '') =>
     String(value).replace(/[&<>"']/g, (char) =>
-      ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[char] || char)
+      ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[char])
     );
 
-  // 2. DOM取得
+  /* =========================
+   * 2. DOM取得
+   * ========================= */
   const listRoot      = document.getElementById('circle-list');
   const searchInput   = document.getElementById('search-input');
   const searchResults = document.getElementById('search-results');
 
-  // 3. URLテンプレート＆リンク生成関数
-  const linkTemplate = listRoot.dataset.clubUrlTemplate || '/circle?id=__ID__';
-  const resolveLink = (id) =>
-    linkTemplate.replace('__ID__', encodeURIComponent(String(id)));
-
-  // 4. サークル一覧データ
-  let circles = [];
-
-  // 5. 一覧描画
-const renderList = (items) => {
   const joinedRoot    = document.getElementById("circle-joined");
   const notJoinedRoot = document.getElementById("circle-not-joined");
 
-  // 初期化
-  joinedRoot.innerHTML = '';
-  notJoinedRoot.innerHTML = '';
+  /* =========================
+   * 3. URLテンプレート
+   * ========================= */
+  const linkTemplate =
+    listRoot?.dataset.clubUrlTemplate || '/circle?id=__ID__';
 
-  // 参加・未参加で分ける
-  const joinedItems    = items.filter(c => c.joined === true);
-  const notJoinedItems = items.filter(c => !c.joined);
+  const resolveLink = (id) =>
+    linkTemplate.replace('__ID__', encodeURIComponent(String(id)));
 
-  // ============================
-  // ▼ 参加サークルが０件のとき
-  // ============================
-  if (joinedItems.length === 0) {
-    joinedRoot.innerHTML = `
-      <li class="empty">
-        まだ参加しているサークルがありません
-      </li>`;
-  } else {
-    // 通常の描画
-    joinedItems.forEach((circle) => {
-      const li = document.createElement('li');
-      li.className = 'circle-item';
+  /* =========================
+   * 4. データ
+   * ========================= */
+  let circles = [];
 
-      const name = circle.circle_name || circle.name || '';
-      const icon = circle.icon || window.DEFAULT_CLUB_ICON_URL || '';
+  /* =========================
+   * 5. サークル1件HTML生成
+   * ========================= */
+  const createCircleItem = (circle) => {
+    const li = document.createElement('li');
+    li.className = 'circle-item';
 
-      li.innerHTML = `
-        <a class="circle-link" href="${resolveLink(circle.circle_id ?? circle.id)}">
-          <img src="${escapeHtml(icon)}" alt="${escapeHtml(name)}">
+    const name    = circle.circle_name || circle.name || '';
+    const icon    = circle.icon || window.DEFAULT_CLUB_ICON_URL || '';
+    const members = circle.members_count ?? 0;
+
+    li.innerHTML = `
+      <a class="circle-link" href="${resolveLink(circle.circle_id ?? circle.id)}">
+        <img src="${escapeHtml(icon)}" alt="${escapeHtml(name)}">
+        <div class="circle-text">
           <span class="name">${escapeHtml(name)}</span>
-        </a>
-      `;
+          <span class="members">
+            <i class="fa-solid fa-users"></i> ${members}人
+          </span>
+        </div>
+      </a>
+    `;
+    return li;
+  };
 
-      joinedRoot.appendChild(li);
-    });
-  }
+  /* =========================
+   * 6. 一覧描画
+   * ========================= */
+  const renderList = (items) => {
+    joinedRoot.innerHTML = '';
+    notJoinedRoot.innerHTML = '';
 
-  // ============================
-  // ▼ 未参加サークルの描画
-  // ============================
-  if (notJoinedItems.length === 0) {
-    notJoinedRoot.innerHTML = `
-      <li class="empty">
-        未参加のサークルはありません
-      </li>`;
-  } else {
-    notJoinedItems.forEach((circle) => {
-      const li = document.createElement('li');
-      li.className = 'circle-item';
+    const joinedItems    = items.filter(c => c.joined === true);
+    const notJoinedItems = items.filter(c => !c.joined);
 
-      const name = circle.circle_name || circle.name || '';
-      const icon = circle.icon || window.DEFAULT_CLUB_ICON_URL || '';
+    // 参加中
+    if (!joinedItems.length) {
+      joinedRoot.innerHTML = `<li class="empty">まだ参加しているサークルがありません</li>`;
+    } else {
+      joinedItems.forEach(c => joinedRoot.appendChild(createCircleItem(c)));
+    }
 
-      li.innerHTML = `
-        <a class="circle-link" href="${resolveLink(circle.circle_id ?? circle.id)}">
-          <img src="${escapeHtml(icon)}" alt="${escapeHtml(name)}">
-          <span class="name">${escapeHtml(name)}</span>
-        </a>
-      `;
-      notJoinedRoot.appendChild(li);
-    });
-  }
-};
+    // 未参加
+    if (!notJoinedItems.length) {
+      notJoinedRoot.innerHTML = `<li class="empty">未参加のサークルはありません</li>`;
+    } else {
+      notJoinedItems.forEach(c => notJoinedRoot.appendChild(createCircleItem(c)));
+    }
+  };
 
-
-
-  // 6. 検索結果（丸く表示される修正版）
+  /* =========================
+   * 7. 検索表示
+   * ========================= */
   const showSearch = (items) => {
+    searchResults.innerHTML = '';
+
     if (!items.length) {
-      searchResults.innerHTML = '<li class="empty">サークルが見つかりませんでした</li>';
+      searchResults.innerHTML = `<li class="empty">サークルが見つかりませんでした</li>`;
       searchResults.style.display = 'block';
       return;
     }
 
     const fragment = document.createDocumentFragment();
-    items.forEach((circle) => {
-      const li = document.createElement('li');
-      li.className = 'circle-item';
+    items.forEach(circle => fragment.appendChild(createCircleItem(circle)));
 
-      const name = circle.circle_name || circle.name || '';
-      const icon = circle.icon || window.DEFAULT_CLUB_ICON_URL || '';
-
-      li.innerHTML = `
-        <a class="circle-link" href="${resolveLink(circle.circle_id ?? circle.id)}">
-          <img src="${escapeHtml(icon)}" alt="${escapeHtml(name)}">
-          <span class="name">${escapeHtml(name)}</span>
-        </a>
-      `;
-      fragment.appendChild(li);
-    });
-
-    searchResults.replaceChildren(fragment);
+    searchResults.appendChild(fragment);
     searchResults.style.display = 'block';
   };
 
@@ -122,93 +105,79 @@ const renderList = (items) => {
     searchResults.innerHTML = '';
   };
 
-  // 7. 検索フィルタ
+  /* =========================
+   * 8. 検索フィルタ
+   * ========================= */
   const filterCircles = (keyword) => {
-    const trimmed = keyword.trim();
-    if (!trimmed) {
-      hideSearch();
-      return;
-    }
+    const key = keyword.trim().toLowerCase();
+    if (!key) return hideSearch();
 
-    const lower = trimmed.toLowerCase();
-    const matches = circles.filter((circle) => {
-      const name     = (circle.circle_name || circle.name || '').toLowerCase();
+    const matches = circles.filter(circle => {
+      const name = (circle.circle_name || circle.name || '').toLowerCase();
       const category = (circle.category || '').toLowerCase();
-      return name.includes(lower) || category.includes(lower);
+      return name.includes(key) || category.includes(key);
     });
 
     showSearch(matches);
   };
 
-  // 8. デバウンス
   const debounce = (fn, delay = 300) => {
-    let timer = null;
+    let timer;
     return (...args) => {
-      if (timer) clearTimeout(timer);
+      clearTimeout(timer);
       timer = setTimeout(() => fn(...args), delay);
     };
   };
 
-  const debouncedFilter = debounce((value) => filterCircles(value), 200);
+  const debouncedFilter = debounce(filterCircles, 200);
 
-  // 9. API取得
+  /* =========================
+   * 9. API取得
+   * ========================= */
   const fetchCircles = async () => {
-    listRoot.innerHTML = '<li class="loading">読み込み中...</li>';
-
     try {
       const res = await fetch('/api/v1/circle', {
         headers: { Accept: 'application/json' },
         credentials: 'include',
       });
-      if (!res.ok) throw new Error('サークル一覧の取得に失敗しました');
+      if (!res.ok) throw new Error();
 
       const body = await res.json();
       circles = Array.isArray(body) ? body : (body.data ?? []);
-
       renderList(circles);
-    } catch (error) {
-      console.error(error);
-      listRoot.innerHTML = '<li class="error">サークル一覧の取得に失敗しました</li>';
+
+    } catch (e) {
+      console.error(e);
+      joinedRoot.innerHTML =
+        `<li class="error">サークル一覧の取得に失敗しました</li>`;
     }
   };
 
-  // 10. イベント登録
-  document.addEventListener('DOMContentLoaded', fetchCircles);
-
-  if (searchInput) {
-    searchInput.addEventListener('input', (event) => debouncedFilter(event.target.value));
-    searchInput.addEventListener('focus', () => {
-      if (searchInput.value.trim()) debouncedFilter(searchInput.value);
-    });
-    searchInput.addEventListener('blur', () => setTimeout(hideSearch, 200));
-  }
-
-    // ▼ タブ切り替え処理
+  /* =========================
+   * 10. タブ切り替え
+   * ========================= */
   document.addEventListener("DOMContentLoaded", () => {
-      const tabs = document.querySelectorAll(".tab-btn");
-      const sections = {
-          joined: document.getElementById("circle-joined"),
-          notJoined: document.getElementById("circle-not-joined")
-      };
+    fetchCircles();
 
-      tabs.forEach(tab => {
-          tab.addEventListener("click", () => {
-              // タブの見た目を切り替え
-              tabs.forEach(t => t.classList.remove("active"));
-              tab.classList.add("active");
+    document.querySelectorAll(".tab-btn").forEach(tab => {
+      tab.addEventListener("click", () => {
+        document.querySelectorAll(".tab-btn")
+          .forEach(t => t.classList.remove("active"));
+        tab.classList.add("active");
 
-              const target = tab.dataset.target;
-
-              // 表示切り替え
-              if (target === "joined") {
-                  sections.joined.style.display = "block";
-                  sections.notJoined.style.display = "none";
-              } else {
-                  sections.joined.style.display = "none";
-                  sections.notJoined.style.display = "block";
-              }
-          });
+        const target = tab.dataset.target;
+        joinedRoot.style.display    = target === "joined" ? "block" : "none";
+        notJoinedRoot.style.display = target === "joined" ? "none"  : "block";
       });
+    });
+
+    if (searchInput) {
+      searchInput.addEventListener('input', e => debouncedFilter(e.target.value));
+      searchInput.addEventListener('focus', () => {
+        if (searchInput.value.trim()) debouncedFilter(searchInput.value);
+      });
+      searchInput.addEventListener('blur', () => setTimeout(hideSearch, 200));
+    }
   });
 
 })();
