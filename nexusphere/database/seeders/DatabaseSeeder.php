@@ -14,6 +14,7 @@ class DatabaseSeeder extends Seeder
     public function run(): void
     {
         //各テーブルへのデータの流し込みを呼び出す
-        $this->call(ProfileSeeder::class);
+        $this->call(UsersTableSeeder::class);
+        $this->call(GroupsTableSeeder::class);
     }
 }

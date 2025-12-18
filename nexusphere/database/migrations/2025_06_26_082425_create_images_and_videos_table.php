@@ -13,13 +13,14 @@ return new class extends Migration
     {
         Schema::create('images_and_videos', function (Blueprint $table) {
             $table->id('image_and_video_id');
-            $table->integer('prc_id')->unique();
-            $table->integer('circle_id');
-            $table->text('movie');
-            $table->text('image');
-            $table->integer('group_message_id');
-            $table->integer('user_id');
+            $table->foreignId('prc_id')->nullable()->constrained('prcs','prc_id')->cascadeOnDelete();
+            $table->text('video')->nullable();
+            $table->text('image')->nullable();
+            $table->unsignedBigInteger('dm_id')->nullable();
             $table->timestamps();
+
+            $table->foreign('dm_id')->references('dm_id')->on('dms')->cascadeOnDelete();
+            $table->index(['prc_id', 'dm_id']);
         });
     }
 
