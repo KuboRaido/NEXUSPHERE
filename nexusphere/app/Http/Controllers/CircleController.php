@@ -10,25 +10,29 @@ use Illuminate\Support\Facades\DB;
 
 class CircleController extends Controller
 {
-    /**
-     * サークルトップ画面（一覧）
-     */
+    //サークルトップ画面（一覧）
     public function circleFront()
     {
-        // もし circle.blade.php 内で $joined を参照してもエラーにならないように
-        return view('circle', [
-            'joined' => false,
-        ]);
+        return view('circle');
     }
 
-    /**
-     * サークル一覧取得 API
-     */
-    public function circleBack()
+    //サークル一覧取得 API
+    public function circleBack(Circle $circle)
     {
-        $rows = Circle::orderByDesc('created_at')->get();
+        $userId = Auth::id();
+        $rows = Circle::with(['members' => function ($q) use ($userId) {
+            $q->where('circle_users.user_id', $userId)
+            ;}])
+            ->orderByDesc('created_at')
+            ->get();
 
-        $list = $rows->map(function (Circle $circle) {
+        $list = $rows->map(function (Circle $circle) use ($userId) {
+
+            $isOwner = $circle->owner_id === $userId;
+
+            $isMember = $circle->members->isNotEmpty();
+
+            $role = $isOwner ? 'owner' : ($isMember ? 'member' : 'guest');
             return [
                 'circle_id'      => $circle->circle_id,
                 'circle_name'    => $circle->circle_name,
@@ -36,23 +40,20 @@ class CircleController extends Controller
                 'members_count'  => $circle->members_count,
                 'sentence'       => $circle->sentence,
                 'icon'           => $circle->icon ? Storage::url($circle->icon) : null,
+                'role'           => $role,
             ];
         })->values();
 
         return response()->json($list);
     }
 
-    /**
-     * サークル作成画面
-     */
+    //サークル作成画面
     public function circleCreateFront()
     {
         return view('circleCreate');
     }
 
-    /**
-     * サークル作成処理
-     */
+    //サークル作成処理
     public function circleCreate(Request $request)
     {
         $data = $request->validate([
@@ -89,9 +90,7 @@ class CircleController extends Controller
         return redirect()->route('circle')->with('status', 'サークルを作成しました。');
     }
 
-    /**
-     * サークル参加
-     */
+    //サークル参加
     public function join(Circle $circle)
     {
         DB::transaction(function () use ($circle) {
@@ -123,19 +122,15 @@ class CircleController extends Controller
 
     public function circleProfileFront(Circle $circle)
     {
-        $joined = $circle->members()
-            ->where('user_id', Auth::id())
-            ->exists();
+        $userId = Auth::id();
+        $isOwner  = $circle->owner_id === $userId;
+        $isMember = $circle->members()->where('circle_users.user_id', $userId)->exists();
+        $role     = $isOwner ? 'owner' : ($isMember ? 'member' : 'guest');
 
-        return view('circleProfile', [
-            'circle' => $circle,
-            'joined' => $joined,
-        ]);
+        return view('circleProfile', compact('circle','isMember', 'role'),);
     }
 
-    /**
-     * サークル投稿画面
-     */
+    /*サークル投稿画面*/
     public function circlePostFront()
     {
         return view('circlePost');
