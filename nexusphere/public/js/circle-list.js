@@ -19,21 +19,20 @@
   let circles = [];
 
   // 5. 一覧描画
-const renderList = (items) => {
+  const renderList = (items) => {
   const joinedRoot    = document.getElementById("circle-joined");
   const notJoinedRoot = document.getElementById("circle-not-joined");
 
   // 初期化
   joinedRoot.innerHTML = '';
   notJoinedRoot.innerHTML = '';
+  if (listRoot) listRoot.innerHTML = '';
 
   // 参加・未参加で分ける
-  const joinedItems    = items.filter(c => c.joined === true);
-  const notJoinedItems = items.filter(c => !c.joined);
+  const joinedItems    = items.filter(c => c.role === "member" || c.role === "owner");
+  const notJoinedItems = items.filter(c => c.role === "guest");
 
-  // ============================
   // ▼ 参加サークルが０件のとき
-  // ============================
   if (joinedItems.length === 0) {
     joinedRoot.innerHTML = `
       <li class="empty">
@@ -47,6 +46,7 @@ const renderList = (items) => {
 
       const name = circle.circle_name || circle.name || '';
       const icon = circle.icon || window.DEFAULT_CLUB_ICON_URL || '';
+      const sentence = circle.sentence || '';
 
       li.innerHTML = `
   <a class="circle-link" href="${resolveLink(circle.circle_id ?? circle.id)}">
@@ -60,9 +60,7 @@ const renderList = (items) => {
     });
   }
 
-  // ============================
   // ▼ 未参加サークルの描画
-  // ============================
   if (notJoinedItems.length === 0) {
     notJoinedRoot.innerHTML = `
       <li class="empty">
