@@ -6,6 +6,7 @@
   <title>プロフィール</title>
   <link rel="stylesheet" href="{{ asset('css/circlepf.css') }}">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <script> window.USER_ROLE = "{{ $role }}";</script>
 </head>
 <body>
 
@@ -36,12 +37,11 @@
           <!-- アクションボタン（役割ごとに表示） -->
           <div class="actions">
             <!-- オーナー専用 -->
-            <a class="btn role-owner" href="{{ route('circle.edit', $circle->circle_id) }}">編集</a>
+            <a class="btn role-owner" href="{{ route('circle.edit',['circle' => $circle->circle_id]) }}">編集</a>
             <a class="btn role-owner role-member" href="">DM</a>
             <a class="btn role-owner role-member" href="">投稿</a>
-
             <!-- 一般ユーザー専用 -->
-            <a class="btn role-general" href="">参加する</a>
+            <a class="btn role-" href="">参加する</a>
           </div>
 
         </div>
