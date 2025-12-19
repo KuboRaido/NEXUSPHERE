@@ -41,7 +41,7 @@
             <a class="btn role-owner role-member" href="">DM</a>
             <a class="btn role-owner role-member" href="">投稿</a>
             <!-- 一般ユーザー専用 -->
-            <a class="btn role-" href="">参加する</a>
+            <a class="btn role-guest" href="">参加する</a>
           </div>
 
         </div>
