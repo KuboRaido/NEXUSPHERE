@@ -38,8 +38,8 @@
           <div class="actions">
             <!-- オーナー専用 -->
             <a class="btn role-owner" href="{{ route('circle.edit',['circle' => $circle->circle_id]) }}">編集</a>
-            <a class="btn role-owner role-member" href="">DM</a>
-            <a class="btn role-owner role-member" href="">投稿</a>
+            <a class="btn role-owner role-member" href="{{ route('circle.dm',['circle' => $circle->circle_id]) }}">DM</a>
+            <a class="btn role-owner role-member" href="{{ route('circle.post',['circle' => $circle->circle_id]) }}">投稿</a>
             <!-- 一般ユーザー専用 -->
             <a class="btn role-guest" href="">参加する</a>
           </div>

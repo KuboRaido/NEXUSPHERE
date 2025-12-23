@@ -6,5 +6,15 @@ use Illuminate\Database\Eloquent\Model;
 
 class Group extends Model
 {
-    //
+    protected $table = 'groups';
+    protected $primaryKey = 'group_id';
+    protected $fillable = ['group_id','group_name','circle_id'];
+
+    public function circle(){
+        return $this->belongsTo(Circle::class,'circle_id','circle_id');
+    }
+
+    public function members(){
+        return $this->belongsToMany(User::class,'groupmembers','group_id','user_id')->withTimestamps();
+    }
 }
