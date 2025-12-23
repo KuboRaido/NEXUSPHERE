@@ -37,9 +37,9 @@
         <input id="image" type="file" name="image" accept="image/*">
       </div>
 
-      <div class="name">
-        <label for="name">名前</label>
-        <input id="name" type="text" name="name" value="{{ old('name', $circle->circle_name) }}">
+      <div class="circle_name">
+        <label for="circle_name">名前</label>
+        <input id="circle_name" type="text" name="circle_name" value="{{ old('circle_name', $circle->circle_name) }}">
       </div>
 
       <div class="explain">

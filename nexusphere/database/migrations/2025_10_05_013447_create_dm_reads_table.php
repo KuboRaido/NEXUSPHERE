@@ -15,11 +15,12 @@ return new class extends Migration
             $table->id();
             $table->foreignId('user_id')->constrained('users','user_id')->cascadeOnDelete();
             $table->foreignId('partner_id')->constrained('users','user_id')->cascadeOnDelete();
+            $table->foreignId('group_id')->nullable();
             $table->timestamp('last_read_at')->nullable();
             $table->timestamps();
 
-            $table->unique(['user_id', 'partner_id']); // ← upsert の衝突キー
-            $table->index(['partner_id', 'user_id']);  // 集計用
+            $table->unique(['user_id', 'partner_id','group_id']); // ← upsert の衝突キー
+            $table->index(['partner_id', 'user_id','group_id']);  // 集計用
         });
     }
 

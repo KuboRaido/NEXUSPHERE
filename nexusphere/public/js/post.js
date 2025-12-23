@@ -1,6 +1,5 @@
 document.addEventListener('DOMContentLoaded', () => {
   const form = document.querySelector('#chat-box form');
-  const messageInput = document.getElementById('message-input');
   const imageInput = document.getElementById('image');
   const previewContainer = document.getElementById('preview-container');
 
@@ -70,12 +69,12 @@ document.addEventListener('DOMContentLoaded', () => {
     fetch(form.action || '/post', { method: 'POST', body: formData , headers: csrfToken ? {'X-CSRF-TOKEN': csrfToken} : {} ,credentials: 'same-origin' })
       .then(res => {
         if(!res.ok) throw new Error('Http' + res.status);
-        alert('投稿しました♡');
+        alert('投稿しました');
         window.location.reload();
       })
       .catch(err => {
         console.error('投稿エラー', err);
-        alert('投稿に失敗しました…');
+        alert('投稿に失敗しました');
       });
   });
 });
