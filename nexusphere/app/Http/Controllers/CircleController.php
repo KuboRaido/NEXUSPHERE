@@ -140,4 +140,13 @@ class CircleController extends Controller
     {
         return view('circleprofile_edit', ['circle' => $circle]);
     }
+
+    public function circleDmFront(Circle $circle)
+    {
+        $userId = Auth::id() ?? abort(401);
+        $isMember = $circle->members()->where('circle_users.user_id', $userId)->exists();
+        $circle_id   = $circle->circle_id;
+        $groupId = $circle->group_id;
+        return view('circledm',['circle_name' => $circle->circle_name,'circle_id' => $circle_id, 'userId' => $userId, 'groupId' => $groupId]);
+    }
 }
