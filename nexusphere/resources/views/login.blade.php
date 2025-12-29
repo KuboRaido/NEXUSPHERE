@@ -2,7 +2,7 @@
 <html lang="ja">
 <head>
     <meta charset="UTF-8">
-    <!-- 外部CSSを読み込む -->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="{{ asset('css/login.css') }}">
 </head>
 <body>
@@ -14,7 +14,7 @@
            </div>
          @endif
 
-    <form method="POST" action="{{ route('login') }}">
+        <form method="POST" action="{{ route('login') }}">
             @csrf
             <input type="email" name="mail" placeholder="Username or email" required>
             <input type="password" name="password" placeholder="Password" required>
@@ -26,8 +26,8 @@
            @endif
         </form>
         <div class="register-link">
-  <p>アカウントをお持ちでない方は <a href="{{ route('newLogin') }}">新規登録はこちら</a></p>
-</div>
+        <p>アカウントをお持ちでない方は <a href="{{ route('newLogin') }}">新規登録はこちら</a></p>
+      </div>
     </div>
 </body>
 </html>

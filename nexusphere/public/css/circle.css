@@ -197,7 +197,7 @@ body {
 /* =========================
    レスポンシブ
 ========================= */
-@media screen and (max-width: 768px) {
+@media screen and (max-width: 600px) {
   .circle-item .circle-link img {
     width: 55px;
     height: 55px;

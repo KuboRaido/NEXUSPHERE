@@ -7,6 +7,13 @@ body {
     min-height: 100vh;
     margin: 0;
 }
+.title {
+    font-size: 2rem;
+    font-weight: bold;
+    margin-bottom: 2rem;
+    text-align: center;   /* ← 中央寄せ */
+}
+
 .wrapper{
     display: flex;
     flex-direction: column;
@@ -18,17 +25,21 @@ body {
 }
 
 .form-container {
-    background-color: #ffffff; /* コンテナの背景色を白に設定 */
+    background-color: #ffffff;
     padding: 2.5rem;
-    border-radius: 1.5rem; /* 角を丸くする */
+    border-radius: 1.5rem;
     box-shadow: 0 10px 15px rgba(0, 0, 0, 0.1);
     width: 100%;
     max-width: 400px;
+    max-height: 70vh;     /* ← 画面高さの70% */
+    overflow-y: auto;     /* ← 縦スクロール */
+    overflow-x: hidden;   /* ← 横スクロール防止 */
     box-sizing: border-box;
     display: flex;
     flex-direction: column;
-    gap: 1.25rem; /* 要素間のスペース */
+    gap: 1.25rem;
 }
+
 .input-field {
     width: 100%;
     padding: 0.75rem 1rem;
@@ -54,10 +65,47 @@ body {
     cursor: pointer;
     transition: transform 0.2s ease-in-out, background-color 0.2s;
 }
-.submit-button:hover {
-    transform: scale(1.03); /* ホバー時に少し膨らむ */
-    background-color: #ff4d9a; /* ホバー時のボタンの色を少し濃くする */
+
+.button-row {
+    display: flex;
+    gap: 1rem;
+    margin-top: 1.5rem; /* ← ここが余白 */
 }
+
+.button-row > * {
+    flex: 1;
+}
+
+/* キャンセルボタンをリンクとして見せる */
+.cancel-button {
+    padding: 1rem;
+    width: 100%;
+    background-color: #ffffff;
+    color: #555;
+    border: 2px solid #d1d5db;
+    border-radius: 0.75rem;
+    font-size: 16px;
+    font-weight: 600;
+    text-decoration: none;
+    cursor: pointer;
+    transition: background-color 0.2s, transform 0.2s;
+}
+
+.cancel-button:hover {
+    background-color: #f3f4f6;
+    transform: scale(1.03);
+}
+
+.submit-button,
+.cancel-button {
+    height: 56px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    box-sizing: border-box;
+}
+
+
 .header-text {
     font-size: 2rem;
     font-weight: 700;
@@ -125,4 +173,10 @@ body {
         height: 60px;
         font-size: 2rem;
     }
+
+    .form-container {
+        flex-direction: column;
+        overflow-x: visible;
+    }
+
 }
