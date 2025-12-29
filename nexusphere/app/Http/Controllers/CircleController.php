@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Circle;
+use App\Models\Prc;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
@@ -17,7 +18,7 @@ class CircleController extends Controller
     }
 
     //サークル一覧取得 API
-    public function circleBack(Circle $circle)
+    public function circleBack()
     {
         $userId = Auth::id();
         $rows = Circle::with(['members' => function ($q) use ($userId) {
@@ -120,20 +121,63 @@ class CircleController extends Controller
         return back()->with('status', 'サークルを退会しました');
     }
 
+    public function update(Circle $circle,Request $request)
+    {
+        $id = Auth::id();
+        abort_if(!$id, 401);
+
+        $circleId = $circle->id;
+
+        //$user = User::where('user_id', $id)->firstOrFail();
+
+        $request->validate([
+            'circle_name'        => 'nullable|string|max:255',
+            'sentence'    => 'nullable|string|max:255',
+            'icon'       => 'nullable|image|mimes:jpeg,png,jpg,gif,webp|max:5120',
+            //'category'    => 'nullable|string',
+        ]);
+
+        $iconPath = null;
+        if ($request->hasFile('image')) {
+            $iconPath = $request->file('image')->store('icons', 'public');
+            $circle->icon = $iconPath;
+        }
+
+        $circle->circle_name = $request->input('circle_name');
+        $circle->sentence = $request->input('sentence');
+        //$circle->category = $request->input('category');
+        // ファイル入力は input() では取得しない。アップロードがあった場合のみ上書きする。
+
+        if ($request->hasFile('icon')) {
+            $path = $request->file('icon')->store('icons', 'public');
+            $circle->icon = $path; // 例: icons/2025/10/31/xxxx.png （public ディスク）
+        }
+
+        $circle->save();
+
+        return redirect()->route('circle.profile',['circle' => $circle->circle_id])->with('status', 'プロフィールを更新しました。');
+    }
+
     public function circleProfileFront(Circle $circle)
     {
         $userId = Auth::id();
         $isOwner  = $circle->owner_id === $userId;
         $isMember = $circle->members()->where('circle_users.user_id', $userId)->exists();
         $role     = $isOwner ? 'owner' : ($isMember ? 'member' : 'guest');
+        $posts    = Prc::where('circle_id', $circle->circle_id)
+                        ->orderBy('created_at', 'desc')
+                        ->get();
 
-        return view('circleProfile', compact('circle','isMember', 'role'),);
+        return view('circleProfile', ['circle' => $circle,'isMember' => $isMember, 'role' => $role, 'posts' => $posts ],);
     }
 
     /*サークル投稿画面*/
-    public function circlePostFront()
+    public function circlePostFront(Circle $circle)
     {
-        return view('circlePost');
+        $userId     = Auth::id();
+        $circle_id  = $circle->circle_id;
+
+        return view('circlePost', ['circle' => $circle_id, 'userId' => $userId]);
     }
 
     public function circleEdit(Circle $circle)
@@ -144,7 +188,6 @@ class CircleController extends Controller
     public function circleDmFront(Circle $circle)
     {
         $userId = Auth::id() ?? abort(401);
-        $isMember = $circle->members()->where('circle_users.user_id', $userId)->exists();
         $circle_id   = $circle->circle_id;
         $groupId = $circle->group_id;
         return view('circledm',['circle_name' => $circle->circle_name,'circle_id' => $circle_id, 'userId' => $userId, 'groupId' => $groupId]);

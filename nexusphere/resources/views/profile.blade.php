@@ -71,7 +71,7 @@
           <div class="left">
             <h4>最近の投稿</h4>
 
-              @forelse($user->prcs as $post)
+              @forelse($posts as $post)
                 <article class="post">
                   <div class="title">{{ $post->sentence ?? '(タイトルなし)' }}</div>
                   <div class="excerpt">{{ Str::limit($post->sentence ?? '', 120) }}</div>

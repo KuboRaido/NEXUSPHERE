@@ -258,7 +258,7 @@ public function dmback(Request $request, ?int $partner=null){
          'message_text' => $data['text']??null,
          'user_id'      => $me,
          'circle_id'    => null,
-      ]);
+         ]);
       }
 
       $attachments = [];
@@ -298,36 +298,66 @@ public function dmback(Request $request, ?int $partner=null){
       if(!$me) {
          return response()->json(['message' => 'Unauthenticated'], 401);
       }
-
-      $meId = $me->getKey();
       $partnerId = $partner->getKey();
-      DB::table('dm_reads')->upsert(
+      $circle = $req->integer('circle_id');
+
+      if($circle > 0){
+         $meId = $me->getKey();
+         DB::table('dm_reads')->upsert(
          [[
             'user_id'      => $meId, 
-            'partner_id'   => $partnerId,
+            'circle_id'    => $circle,
             'last_read_at' => now(),
             'updated_at'   => now(),
             'created_at'   => now(),
          ]],
-         ['user_id','partner_id'], //衝突キー（unique）
+         ['user_id','circle_id'], //衝突キー（unique）
          ['last_read_at','updated_at']//更新する列
-      );
+         );
 
-      $meId      = Auth::id();
-      $partnerId = $partner->getKey();
+         $last = DB::table('dm_reads')
+         ->where('user_id', $meId)
+         ->where('circle_id', $circle)
+         ->value('last_read_at');
 
-      $last = DB::table('dm_reads')
-      ->where('user_id', $meId)
-      ->where('partner_id', $partnerId)
-      ->value('last_read_at');
+         $unread = DB::table('dms')
+         ->where('circle_id', $circle)   // 相手から
+         ->when($last, fn($q) => $q->where('created_at', '>', $last))
+         ->count();
 
-      $unread = DB::table('dms')
-       ->where('receiver_id', $meId)      // 自分あて
-       ->where('sender_id', $partnerId)   // 相手から
-      ->when($last, fn($q) => $q->where('created_at', '>', $last))
-      ->count();
+         return response()->json(['ok'=>true, 'unread_count' => $unread]);
+      }
 
-      return response()->json(['ok'=>true, 'unread_count' => $unread]);
+      if ($partnerId !== null){
+            $meId = $me->getKey();
+            DB::table('dm_reads')->upsert(
+            [[
+               'user_id'      => $meId, 
+               'partner_id'   => $partnerId,
+               'last_read_at' => now(),
+               'updated_at'   => now(),
+               'created_at'   => now(),
+            ]],
+            ['user_id','partner_id'], //衝突キー（unique）
+            ['last_read_at','updated_at']//更新する列
+         );
+
+         $meId      = Auth::id();
+
+         $last = DB::table('dm_reads')
+         ->where('user_id', $meId)
+         ->where('partner_id', $partnerId)
+         ->value('last_read_at');
+
+         $unread = DB::table('dms')
+         ->where('receiver_id', $meId)
+         ->where('sender_id', $partnerId)   // 相手から
+         ->when($last, fn($q) => $q->where('created_at', '>', $last))
+         ->count();
+
+         return response()->json(['ok'=>true, 'unread_count' => $unread]);
+
+      }
    }
 }
 ?>

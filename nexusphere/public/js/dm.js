@@ -67,6 +67,7 @@ function renderMessages() {
 
   chatBox.querySelectorAll('.message-row').forEach(el => el.remove());
 
+
   const currentUserId = String(getMeId() ?? '');
   const makeStatus = (mine, read) => (!mine ? '' : (read ? '既読' : '未読'));
 
@@ -83,12 +84,16 @@ function renderMessages() {
     img.alt = '';
     img.onerror = () => { img.src = DEFAULT_AVATAR; };
     // アイコンを押したらプロフィールに飛べるようにする
-    const profileId = (mine ? String(getMeId()) : String(msg.from || window.currentPartnerId || ''));
+    const profileId =String(msg.from || window.currentPartnerId || '');
     // 相手のiconの画像にリンクを追加
     img.addEventListener('click', (e) => {
       e.preventDefault();
       if(!profileId) return;
-      location.href = `/profile/${encodeURIComponent(profileId)}`;
+      if(profileId === String(getMeId())){
+        location.href = `/profile`;
+      } else  {
+        location.href = `/profile/${encodeURIComponent(profileId)}`;
+      }
     })
     const bubble = document.createElement('div');
     bubble.className = 'message-bubble';
@@ -218,7 +223,7 @@ async function loadCircleConversation(circle_id){
     attachments: m.attachments || [],
     timestamp: new Date(m.created_at),
     pending: false,
-    isRead: false,
+    isRead: Boolean(m.is_read),
   }));
   renderMessages();
 }
@@ -230,6 +235,7 @@ async function sendMessage() {
   const input = document.getElementById('message-input');
   const fileInput = document.getElementById('image-input');
   const circle = Number(document.getElementById('circle_id')?.value ?? '');
+  const hasCircle = Number.isInteger(circle) && circle > 0;
   if(Number.isInteger(circle)) fd.append('circle_id', circle);
 
   const text = (input?.value ?? '').trim();
@@ -268,19 +274,26 @@ async function sendMessage() {
     await fetch('/sanctum/csrf-cookie', {credentials:'include'});
     const token = decodeURIComponent((document.cookie.match(/XSRF-TOKEN=([^;]+)/)||[])[1] || '');
 
-    await fetch(`/api/v1/dm/${currentPartnerId}/read`, {
-      method:'POST',
-      headers: { 'Accept':'application/json', ...(token ? {'X-XSRF-TOKEN': token} : {}) },
-      credentials:'include'
-    });
+    if(hasCircle){
+        await fetch(`/api/v1/circle/${circle}/dm`, {
+        method:'POST',
+        headers: { 'Accept':'application/json', ...(token ? {'X-XSRF-TOKEN': token} : {}) },
+        credentials:'include'
+      });
+    } else {
+        await fetch(`/api/v1/dm/${currentPartnerId}/read`, {
+          method:'POST',
+          headers: { 'Accept':'application/json', ...(token ? {'X-XSRF-TOKEN': token} : {}) },
+          credentials:'include'
+        });
+    }
 
     const previewContainer = document.getElementById('preview-area');
     if(previewContainer) previewContainer.innerHTML = '';
 
     let res, resd;
 
-    const isCircleMode = Number.isInteger(circle);
-    //const circleIdVal = circle ? circle : null;
+    const isCircleMode = Number.isInteger(circle) && circle > 0;
     if (hadFiles) {
       if(isCircleMode){
         fd.append('circle_id', circle);
@@ -336,7 +349,7 @@ document.addEventListener('DOMContentLoaded', async () => {
   const fileInput = document.getElementById('image-input');
   const previewContainer = document.getElementById('preview-area');
   const circle = Number(document.getElementById('circle_id')?.value ?? '');
-  const isCircleMode = Number.isInteger(circle);
+  const isCircleMode = Number.isInteger(circle) && circle > 0;
 
   if(fileInput && previewContainer){
     fileInput.addEventListener('change', () => {
