@@ -121,42 +121,36 @@ class CircleController extends Controller
         return back()->with('status', 'サークルを退会しました');
     }
 
-    public function update(Circle $circle,Request $request)
+    public function update(Circle $circle, Request $request)
     {
-        $id = Auth::id();
-        abort_if(!$id, 401);
-
-        $circleId = $circle->id;
-
-        //$user = User::where('user_id', $id)->firstOrFail();
+        abort_if(!Auth::id(), 401);
 
         $request->validate([
-            'circle_name'        => 'nullable|string|max:255',
+            'circle_name' => 'nullable|string|max:255',
             'sentence'    => 'nullable|string|max:255',
-            'icon'       => 'nullable|image|mimes:jpeg,png,jpg,gif,webp|max:5120',
-            //'category'    => 'nullable|string',
+            'icon'        => 'nullable|image|mimes:jpeg,png,jpg,gif,webp|max:5120',
         ]);
-
-        $iconPath = null;
-        if ($request->hasFile('image')) {
-            $iconPath = $request->file('image')->store('icons', 'public');
-            $circle->icon = $iconPath;
-        }
-
-        $circle->circle_name = $request->input('circle_name');
-        $circle->sentence = $request->input('sentence');
-        //$circle->category = $request->input('category');
-        // ファイル入力は input() では取得しない。アップロードがあった場合のみ上書きする。
 
         if ($request->hasFile('icon')) {
             $path = $request->file('icon')->store('icons', 'public');
-            $circle->icon = $path; // 例: icons/2025/10/31/xxxx.png （public ディスク）
+            $circle->icon = $path; // ← icons/xxxx.png
+        }
+
+        if ($request->filled('circle_name')) {
+            $circle->circle_name = $request->circle_name;
+        }
+
+        if ($request->filled('sentence')) {
+            $circle->sentence = $request->sentence;
         }
 
         $circle->save();
 
-        return redirect()->route('circle.profile',['circle' => $circle->circle_id])->with('status', 'プロフィールを更新しました。');
+        return redirect()
+            ->route('circle.profile', ['circle' => $circle->circle_id])
+            ->with('status', 'プロフィールを更新しました。');
     }
+
 
     public function circleProfileFront(Circle $circle)
     {

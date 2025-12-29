@@ -21,8 +21,14 @@
 
       <!-- アイコン -->
       <div class="avatar-wrap">
-        <img class="avatar" src="{{$circle->icon}}" alt="アイコン">
+          <img
+            class="avatar"
+            src="{{ $circle->icon? Storage::url($circle->icon): asset('images/default-circle.png') }}"
+            alt="アイコン"
+          >
+
       </div>
+
 
       <div class="main">
 
