@@ -17,7 +17,8 @@ class ProfileController extends Controller
         $profileUser = Auth::user();
         $isMine = true;
 
-        $posts = Prc::where('user_id', $profileUser->id)
+        $posts = Prc::where('user_id', $profileUser->user_id)
+                        ->whereNull('circle_id')
                         ->orderBy('created_at', 'desc')
                         ->get();
                 

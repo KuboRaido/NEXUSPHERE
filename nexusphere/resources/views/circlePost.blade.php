@@ -19,16 +19,17 @@
 
     <main class="container">
         {{-- 投稿フォーム --}}
-        <form method="POST" action="{{ route('post.back') }}" enctype="multipart/form-data">
+        <form method="POST" action="{{ route('circlePost.back',['circle' => $circle]) }}" enctype="multipart/form-data">
             @csrf
             <textarea name="sentence" placeholder="いまどうしてる？" required></textarea>
             <div id="preview-container"></div>
             <input type="file" name="images[]" multiple accept="image/*">
+            <input type="hidden" name="circle_id" value="{{ $circle }}">
             <button type="submit" class="btn-submit">投稿</button>
         </form>
     </main>
 
-   <div class="footer-nav">
+    <div class="footer-nav">
         <a href="/home" class="tab {{ request()->is('home') ? 'active' : '' }}"><i class="fa-solid fa-house"></i></a>
         <a href="/post" class="tab {{ request()->is('post') ? 'active' : '' }}"><i class="fas fa-paper-plane"></i></a>
         <a href="/dmlist" class="tab {{ request()->is('dmlist') ? 'active' : '' }}"><i class="fa-solid fa-comment"></i></a>

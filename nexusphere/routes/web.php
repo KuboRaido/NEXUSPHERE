@@ -27,6 +27,7 @@ Route::middleware('auth')->group(function () {
 
     Route::get('/post', [PrcController::class, 'post'])->name('post');
     Route::post('/post',[PrcController::class,'store'])->name('post.back');
+    Route::post('circle/{circle}/post',[PrcController::class,'circleStore'])->name('circlePost.back');
 
     Route::get('/home',[PrcController::class,'index'])->name('home');
 
@@ -36,6 +37,7 @@ Route::middleware('auth')->group(function () {
     Route::get('circle/{circle}',[CircleController::class,'circleProfileFront'])->name('circle.profile');
     Route::get('circle/{circle}/post',[CircleController::class,'circlePostFront'])->name('circle.post');
     Route::get('circle/{circle}/edit',[CircleController::class,'circleEdit'])->name('circle.edit');
+    Route::get('circle/{circle}/dm',[CircleController::class,'circleDmFront'])->name('circle.dm');
 });
     
 // コメント投稿

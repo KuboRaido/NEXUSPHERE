@@ -13,6 +13,7 @@ class PrcController extends Controller
     // 投稿一覧（検索対応）
     public function index(Request $request)
     {
+        if(!empty($request->circle_id)){
         // 投稿(type = 0) をベースにクエリ作成
         $query = Prc::where('type', 0)
                     ->with(['comments', 'images'])
@@ -26,7 +27,25 @@ class PrcController extends Controller
 
         $posts = $query->get();
 
-        return view('home', compact('posts'));
+        return view('circleProfile', compact('posts'));
+        }
+
+        if(empty($request -> circle_id)){
+            // 投稿(type = 0) をベースにクエリ作成
+            $query = Prc::where('type', 0)
+                    ->with(['comments', 'images'])
+                    ->orderBy('created_at', 'desc');
+
+            // 検索ワードがある場合は sentence に対して LIKE 検索
+            if ($request->filled('search')) {
+                $keyword = $request->input('search');
+                $query->where('sentence', 'LIKE', "%{$keyword}%");
+            }
+
+            $posts = $query->get();
+
+            return view('home', compact('posts'));
+        }
     }
 
     // 投稿作成（テキスト＋画像最大10枚）
@@ -40,12 +59,12 @@ class PrcController extends Controller
         ]);
 
         // 投稿作成（type:0 = 投稿）
-        $post = Prc::create([
+            $post = Prc::create([
             'user_id' => Auth::id(),
             'sentence' => $request->input('sentence'),
             'type' => 0,
-        ]);
-
+            ]);
+        
         // 画像保存（最大10枚）
         $fileInputs = [];
         if ($request->hasFile('images')) {
@@ -55,13 +74,14 @@ class PrcController extends Controller
         if (!empty($fileInputs)) {
             $images = is_array($fileInputs) ? $fileInputs : [$fileInputs];
             $images = array_slice($images, 0, 10);
+
             foreach ($images as $image) {
-                $path = $image->store('post', 'public');
-                // Images_and_videos のカラム名は 'image'
-                Images_and_videos::create([
+                    $path = $image->store('post', 'public');
+                    // Images_and_videos のカラム名は 'image'
+                    Images_and_videos::create([
                     'prc_id' => $post->prc_id,
                     'image' => $path,
-                ]);
+                    ]);
             }
         }
 
@@ -81,6 +101,60 @@ class PrcController extends Controller
         return redirect()->back();
     }
 
+    public function circleStore(Request $request){
+
+        $circle = $request->circle_id;
+        // バリデーション
+        $request->validate([
+            'sentence' => 'required|string|max:1000',
+            'images.*' => 'image|mimes:jpeg,png,jpg,gif,webp|max:5120', // 1枚最大5MB
+            'videos.*' => 'mimetypes:video/mp4,video/quicktime|max:30720',
+        ]);
+
+        // 投稿作成（type:0 = 投稿）
+            $post = Prc::create([
+            'user_id' => Auth::id(),
+            'sentence' => $request->input('sentence'),
+            'circle_id' => $request->input('circle_id'),
+            'type' => 0,
+        ]);
+        
+        // 画像保存（最大10枚）
+        $fileInputs = [];
+        if ($request->hasFile('images')) {
+            $fileInputs = $request->file('images');
+        }
+
+        if (!empty($fileInputs)) {
+            $images = is_array($fileInputs) ? $fileInputs : [$fileInputs];
+            $images = array_slice($images, 0, 10);
+            foreach ($images as $image) {
+                    $path = $image->store('post', 'public');
+                    // Images_and_videos のカラム名は 'image'
+                    Images_and_videos::create([
+                        'prc_id' => $post->prc_id,
+                        'image' => $path,
+                        'circle_id' => $request->circle_id,
+                    ]);
+            }
+        }
+
+        if ($request->hasFile('videos')) {
+            $videos = $request->file('videos');
+
+            foreach ($videos as $video) {
+                    $path = $video->store('post_video', 'public');
+
+                    Images_and_videos::create([
+                        'prc_id' => $post->prc_id,
+                        'video'  => $path,
+                        'circle_id' => $request->circle_id,
+                    ]);
+            }
+        }
+
+        return redirect()->route('circle.profile',['circle' => $circle]);
+    }
     // コメント作成
     public function comment(Request $request, $postId)
     {

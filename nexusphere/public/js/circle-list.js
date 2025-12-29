@@ -46,13 +46,54 @@
 
   // 5. 一覧描画
   const renderList = (items) => {
-    if (!items.length) {
-      listRoot.innerHTML = '<li class="empty">まだサークルがありません</li>';
-      return;
-    }
+  const joinedRoot    = document.getElementById("circle-joined");
+  const notJoinedRoot = document.getElementById("circle-not-joined");
 
-    const fragment = document.createDocumentFragment();
-    items.forEach((circle) => {
+  // 初期化
+  joinedRoot.innerHTML = '';
+  notJoinedRoot.innerHTML = '';
+  if (listRoot) listRoot.innerHTML = '';
+
+  // 参加・未参加で分ける
+  const joinedItems    = items.filter(c => c.role === "member" || c.role === "owner");
+  const notJoinedItems = items.filter(c => c.role === "guest");
+
+  // ▼ 参加サークルが０件のとき
+  if (joinedItems.length === 0) {
+    joinedRoot.innerHTML = `
+      <li class="empty">
+        まだ参加しているサークルがありません
+      </li>`;
+  } else {
+    // 通常の描画
+    joinedItems.forEach((circle) => {
+      const li = document.createElement('li');
+      li.className = 'circle-item';
+
+      const name = circle.circle_name || circle.name || '';
+      const icon = circle.icon || window.DEFAULT_CLUB_ICON_URL || '';
+      const sentence = circle.sentence || '';
+
+      li.innerHTML = `
+  <a class="circle-link" href="${resolveLink(circle.circle_id ?? circle.id)}">
+    <img src="${escapeHtml(icon)}" alt="${escapeHtml(name)}">
+    <span class="name">${escapeHtml(name)}</span>
+    <span class="sentence">${escapeHtml(sentence)}</span>
+  </a>
+`;
+
+      joinedRoot.appendChild(li);
+    });
+  }
+
+  // ▼ 未参加サークルの描画
+  if (notJoinedItems.length === 0) {
+    notJoinedRoot.innerHTML = `
+      <li class="empty">
+        未参加のサークルはありません
+      </li>`;
+  } else {
+    notJoinedItems.forEach((circle) => {
       const li = document.createElement('li');
       li.className = 'circle-item';
 
@@ -181,4 +222,5 @@
     });
     searchInput.addEventListener('blur', () => setTimeout(hideSearch, 200));
   }
-})();
+}
+});
