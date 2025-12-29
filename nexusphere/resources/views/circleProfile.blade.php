@@ -52,6 +52,15 @@
     <div class="content">
       <div class="left">
         <h4>最近の投稿</h4>
+
+          @forelse($posts as $post)
+            <article class="post">
+              <div class="title">{{ $post->sentence ?? '(タイトルなし)' }}</div>
+              <div class="excerpt">{{ Str::limit($post->sentence ?? '', 120) }}</div>
+            </article>
+          @empty
+            <div class="no-posts">投稿はありません</div>
+          @endforelse
       </div>
     </div>
 

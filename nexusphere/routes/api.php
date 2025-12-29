@@ -14,6 +14,7 @@ Route::middleware('auth:sanctum')->prefix('v1')->group(function(){
     Route::get('/circle/{circle}/dm',[DmController::class,'dmCircleBack'])->name('dm.circle');
     Route::post('dm', [DmController::class,'dmsendback'])->name('dm.send'); //送る
     Route::post('dm/{partner}/read',[DmController::class,'read']);
+    Route::post('circle/{circle}/dm',[DmController::class,'read']);
     Route::post('/profile/edit/update',[ProfileController::class,'update'])->name('profile-update');//プロフィール更新処理
     Route::get('users/search',[UserController::class,'search'])->name('users.search'); // ← ユーザー検索追加
     Route::get('circle',[CircleController::class,'circleback'])->name('circle.back');

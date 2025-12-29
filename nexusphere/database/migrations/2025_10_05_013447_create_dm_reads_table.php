@@ -14,13 +14,13 @@ return new class extends Migration
         Schema::create('dm_reads', function (Blueprint $table) {
             $table->id();
             $table->foreignId('user_id')->constrained('users','user_id')->cascadeOnDelete();
-            $table->foreignId('partner_id')->constrained('users','user_id')->cascadeOnDelete();
-            $table->foreignId('group_id')->nullable();
+            $table->foreignId('partner_id')->nullable()->constrained('users','user_id')->cascadeOnDelete();
+            $table->foreignId('circle_id')->nullable()->constrained('circles','circle_id')->cascadeOnDelete();
             $table->timestamp('last_read_at')->nullable();
             $table->timestamps();
 
-            $table->unique(['user_id', 'partner_id','group_id']); // ← upsert の衝突キー
-            $table->index(['partner_id', 'user_id','group_id']);  // 集計用
+            $table->unique(['user_id', 'partner_id']); // ← upsert の衝突キー
+            $table->index(['partner_id', 'user_id']);  // 集計用
         });
     }
 

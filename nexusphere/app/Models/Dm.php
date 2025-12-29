@@ -45,13 +45,15 @@ class Dm extends Model
                 return;
             } 
             
-            if(!isset($dm->sender_id, $dm->receiver_id)){
+            if(isset($dm->sender_id, $dm->receiver_id)){
                 $a = (int) $dm->sender_id;
                 $b = (int) $dm->receiver_id;
                 $low = min($a,$b);
                 $high = max($a,$b);
 
                 $dm->dm_key = "{$low}-{$high}";
+
+                return;
             }
 
             throw new \InvalidArgumentException('sender_idとreceiver_idは必須です。');
