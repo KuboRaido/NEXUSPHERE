@@ -85,12 +85,14 @@
                     <img id="uploadedIcon" src="#" alt="Uploaded Icon" style="display: none;">
                 </div>
                 <input type="file" id="iconUpload" name="icon" accept="image/*" class="icon-upload-input">
-            </div>
-
-            <!-- 登録ボタン -->
-            <button type="submit" class="submit-button">登録</button>
+            </div>          
         </form>
     </div>
+    <!-- 登録・キャンセルボタン -->
+            <div class="button-row">
+                <button type="submit" class="submit-button">登録</button>
+                <a href="{{ route('login') }}" class="cancel-button">戻る</a>
+            </div>
 
     <!-- Custom JavaScript -->
     <script src="{{ asset('js/newlogin.js') }}"></script>
