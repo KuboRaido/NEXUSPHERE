@@ -9,6 +9,7 @@ use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\DB;
 use App\Models\Dm;
 use App\Models\User;
+use App\Models\Circle;
 
 
 class DmController extends Controller
@@ -138,7 +139,7 @@ public function dmfront(Request $r){
    }
 
 # 会話ログ取得（バック）
-public function dmback(?int $partner=null){
+public function dmback(Request $request, ?int $partner=null){
    $me = Auth::id();
    abort_if(!$me, 401, 'Unauthenticated');
 
@@ -194,25 +195,71 @@ public function dmback(?int $partner=null){
    ]);
    }
 
+   public function dmCircleBack(Circle $circle){
+      $m = Dm::where('circle_id', $circle->circle_id)->whereNull('receiver_id')->orderBy('created_at')->get();
+
+      return response()->json([
+         'participants' => [
+            'me'     =>['id' => Auth::id()],
+            'circle' =>['id' => $circle->circle_id, 'name' => $circle->circle_name],
+         ],
+         'dms' => $m->map(function (DM $dm){
+            return[
+            'id'        =>$dm->dm_id,
+            'from_id'   =>$dm->sender_id,
+            //'circle_id' =>$dm->circle_id,
+            'text'      =>$dm->message_text,
+            //'dm_key'    =>$dm->dm_key,
+            'created_at'=>$dm->created_at?->toISOString(),
+            'is_read'   =>$dm->is_read,
+            'attachments'=>$dm->Images_and_videos->map(function($rec){
+                  return [
+                     'type'=>$rec->image ? 'image' : ($rec->video ? 'video' : 'file'),
+                     'url' =>Storage::url($rec->image ?: $rec->video),
+                  ];
+               }),
+            ];
+         }),
+      ]);
+   }
+
    public function dmsendback(Request $request)
    {
       $me = $request ->user()?->getAuthIdentifier() ?? Auth::id();
       abort_if(!$me, 401, 'Unauthenticated');
 
+      $circle_id = $request -> integer('circle_id');
       $userPk = (new User)->getKeyName();
-      $data = $request->validate([
-         'to'    => ['required','integer', "exists:users,{$userPk}"],
-         'text'  => ['nullable','string','max:5000'],
+
+      $baseRules = [
+         'text' => ['nullable','string','max:5000'],
          'files.*' => ['nullable','file','max:51200','mimetypes:image/*,video/*'],
-      ],[],['to' =>'宛先ユーザーID','text'=>'メッセージ本文']);
-   
-      $dm = Dm::create([
+      ];
+      if($circle_id){
+         $data = $request->validate($baseRules + [
+            'circle_id' => ['required', 'integer', 'exists:circles,circle_id'],
+         ]);
+
+         $dm = Dm::create([
+         'sender_id'    => $me,
+         'receiver_id'  => null,
+         'message_text' => $data['text'] ?? null,
+         'user_id'      => $me,
+         'circle_id'    => $circle_id,
+      ]);
+      } else {
+         $data = $request->validate($baseRules + [
+            'to' => ['required', 'integer', "exists:users,{$userPk}"],
+         ]);
+
+         $dm = Dm::create([
          'sender_id'    => $me,
          'receiver_id'  => $data['to'],
          'message_text' => $data['text']??null,
          'user_id'      => $me,
          'circle_id'    => null,
-      ]);
+         ]);
+      }
 
       $attachments = [];
       if($request->hasFile('files')){
@@ -251,36 +298,66 @@ public function dmback(?int $partner=null){
       if(!$me) {
          return response()->json(['message' => 'Unauthenticated'], 401);
       }
-
-      $meId = $me->getKey();
       $partnerId = $partner->getKey();
-      DB::table('dm_reads')->upsert(
+      $circle = $req->integer('circle_id');
+
+      if($circle > 0){
+         $meId = $me->getKey();
+         DB::table('dm_reads')->upsert(
          [[
             'user_id'      => $meId, 
-            'partner_id'   => $partnerId,
+            'circle_id'    => $circle,
             'last_read_at' => now(),
             'updated_at'   => now(),
             'created_at'   => now(),
          ]],
-         ['user_id','partner_id'], //衝突キー（unique）
+         ['user_id','circle_id'], //衝突キー（unique）
          ['last_read_at','updated_at']//更新する列
-      );
+         );
 
-      $meId      = Auth::id();
-      $partnerId = $partner->getKey();
+         $last = DB::table('dm_reads')
+         ->where('user_id', $meId)
+         ->where('circle_id', $circle)
+         ->value('last_read_at');
 
-      $last = DB::table('dm_reads')
-      ->where('user_id', $meId)
-      ->where('partner_id', $partnerId)
-      ->value('last_read_at');
+         $unread = DB::table('dms')
+         ->where('circle_id', $circle)   // 相手から
+         ->when($last, fn($q) => $q->where('created_at', '>', $last))
+         ->count();
 
-      $unread = DB::table('dms')
-       ->where('receiver_id', $meId)      // 自分あて
-       ->where('sender_id', $partnerId)   // 相手から
-      ->when($last, fn($q) => $q->where('created_at', '>', $last))
-      ->count();
+         return response()->json(['ok'=>true, 'unread_count' => $unread]);
+      }
 
-      return response()->json(['ok'=>true, 'unread_count' => $unread]);
+      if ($partnerId !== null){
+            $meId = $me->getKey();
+            DB::table('dm_reads')->upsert(
+            [[
+               'user_id'      => $meId, 
+               'partner_id'   => $partnerId,
+               'last_read_at' => now(),
+               'updated_at'   => now(),
+               'created_at'   => now(),
+            ]],
+            ['user_id','partner_id'], //衝突キー（unique）
+            ['last_read_at','updated_at']//更新する列
+         );
+
+         $meId      = Auth::id();
+
+         $last = DB::table('dm_reads')
+         ->where('user_id', $meId)
+         ->where('partner_id', $partnerId)
+         ->value('last_read_at');
+
+         $unread = DB::table('dms')
+         ->where('receiver_id', $meId)
+         ->where('sender_id', $partnerId)   // 相手から
+         ->when($last, fn($q) => $q->where('created_at', '>', $last))
+         ->count();
+
+         return response()->json(['ok'=>true, 'unread_count' => $unread]);
+
+      }
    }
 }
 ?>

@@ -1,5 +1,3 @@
-// dm-chat.js --- 会話ページ用（#chat-box があるページだけで動く）
-
 // グローバル状態
 let messages = window.messages || [];
 window.messages = messages;
@@ -69,6 +67,7 @@ function renderMessages() {
 
   chatBox.querySelectorAll('.message-row').forEach(el => el.remove());
 
+
   const currentUserId = String(getMeId() ?? '');
   const makeStatus = (mine, read) => (!mine ? '' : (read ? '既読' : '未読'));
 
@@ -85,12 +84,16 @@ function renderMessages() {
     img.alt = '';
     img.onerror = () => { img.src = DEFAULT_AVATAR; };
     // アイコンを押したらプロフィールに飛べるようにする
-    const profileId = (mine ? String(getMeId()) : String(msg.from || window.currentPartnerId || ''));
+    const profileId =String(msg.from || window.currentPartnerId || '');
     // 相手のiconの画像にリンクを追加
     img.addEventListener('click', (e) => {
       e.preventDefault();
       if(!profileId) return;
-      location.href = `/profile/${encodeURIComponent(profileId)}`;
+      if(profileId === String(getMeId())){
+        location.href = `/profile`;
+      } else  {
+        location.href = `/profile/${encodeURIComponent(profileId)}`;
+      }
     })
     const bubble = document.createElement('div');
     bubble.className = 'message-bubble';
@@ -204,11 +207,36 @@ async function loadConversation(currentPartnerId) {
   renderMessages();
 }
 
+async function loadCircleConversation(circle_id){
+  const res  = await fetch(`/api/v1/circle/${circle_id}/dm`, {
+    headers: {Accept: 'application/json' },
+    credentials: 'include',
+  });
+
+  if(!res.ok) throw new Error(`会話取エラー: ${res.status}`);
+  const json = await res.json();
+  messages = mergeById(messages, json.dms || []).map(m => ({
+    id: m.id,
+    from: String(m.from_id),
+    to:   '',
+    text: m.text,
+    attachments: m.attachments || [],
+    timestamp: new Date(m.created_at),
+    pending: false,
+    isRead: Boolean(m.is_read),
+  }));
+  renderMessages();
+}
+
 async function sendMessage() {
   const meId = getMeId();
+  const fd = new FormData();
   const recipientRaw = String(document.getElementById('recipientId')?.value ?? '').trim();
   const input = document.getElementById('message-input');
   const fileInput = document.getElementById('image-input');
+  const circle = Number(document.getElementById('circle_id')?.value ?? '');
+  const hasCircle = Number.isInteger(circle) && circle > 0;
+  if(Number.isInteger(circle)) fd.append('circle_id', circle);
 
   const text = (input?.value ?? '').trim();
   const files = fileInput?.files ?  Array.from(fileInput.files) : [];
@@ -219,7 +247,9 @@ async function sendMessage() {
   if (!text && !hadFiles) return;
   //自分にメッセージを送れる
   let toId;
-  if (recipientRaw === '' || recipientRaw.toLowerCase() === 'me') {
+  if(recipientRaw === 'circle'){
+    toId = circle;
+  } else if (recipientRaw === '' || recipientRaw.toLowerCase() === 'me') {
     toId = meId;
   } else {
     toId = Number.parseInt(recipientRaw, 10);
@@ -244,19 +274,32 @@ async function sendMessage() {
     await fetch('/sanctum/csrf-cookie', {credentials:'include'});
     const token = decodeURIComponent((document.cookie.match(/XSRF-TOKEN=([^;]+)/)||[])[1] || '');
 
-    await fetch(`/api/v1/dm/${currentPartnerId}/read`, {
-      method:'POST',
-      headers: { 'Accept':'application/json', ...(token ? {'X-XSRF-TOKEN': token} : {}) },
-      credentials:'include'
-    });
+    if(hasCircle){
+        await fetch(`/api/v1/circle/${circle}/dm`, {
+        method:'POST',
+        headers: { 'Accept':'application/json', ...(token ? {'X-XSRF-TOKEN': token} : {}) },
+        credentials:'include'
+      });
+    } else {
+        await fetch(`/api/v1/dm/${currentPartnerId}/read`, {
+          method:'POST',
+          headers: { 'Accept':'application/json', ...(token ? {'X-XSRF-TOKEN': token} : {}) },
+          credentials:'include'
+        });
+    }
 
     const previewContainer = document.getElementById('preview-area');
     if(previewContainer) previewContainer.innerHTML = '';
 
     let res, resd;
+
+    const isCircleMode = Number.isInteger(circle) && circle > 0;
     if (hadFiles) {
-      const fd = new FormData();
-      fd.append('to',toId);
+      if(isCircleMode){
+        fd.append('circle_id', circle);
+      } else {
+        fd.append('to', toId);
+      }
       if(text)fd.append('text',text);
       files.forEach(f => fd.append('files[]',f));
       res = await fetch('/api/v1/dm', {
@@ -266,11 +309,12 @@ async function sendMessage() {
         body:fd
       });
     } else {
+      const payload = isCircleMode ? {circle_id: circle, text} : {to: toId, text};
       res = await fetch('/api/v1/dm',{
         method: 'POST',
         headers:{'Accept':'application/json','Content-Type':'application/json',...(token ? {'X-XSRF-TOKEN':token} : {})},
         credentials:'include',
-        body:JSON.stringify({to:toId,text})
+        body: JSON.stringify(payload),
       });
     }
     try {resd = await res.json();} catch(_) {}
@@ -304,6 +348,8 @@ document.addEventListener('DOMContentLoaded', async () => {
   const toParam = (qs.get('to') || '').trim();
   const fileInput = document.getElementById('image-input');
   const previewContainer = document.getElementById('preview-area');
+  const circle = Number(document.getElementById('circle_id')?.value ?? '');
+  const isCircleMode = Number.isInteger(circle) && circle > 0;
 
   if(fileInput && previewContainer){
     fileInput.addEventListener('change', () => {
@@ -334,9 +380,21 @@ document.addEventListener('DOMContentLoaded', async () => {
     currentPartnerId = meId;
   }
 
-  setCurrentPartner(currentPartnerId);
-  await loadConversation(currentPartnerId);
+  if (toParam === '' || toParam.toLowerCase() === 'me') {
+    currentPartnerId = meId;
+  } else if (/^\d+$/.test(toParam)) {
+    currentPartnerId = parseInt(toParam, 10);
+  } else {
+    currentPartnerId = meId;
+  }
 
+  setCurrentPartner(currentPartnerId);
+
+  if(isCircleMode){
+    await loadCircleConversation(circle);
+  } else {
+    await loadConversation(currentPartnerId);
+  }
   // タッチ端末かどうか
   const isTouch = window.matchMedia('(pointer: coarse)').matches;
 

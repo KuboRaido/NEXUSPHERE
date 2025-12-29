@@ -29,6 +29,11 @@ class Prc extends Model
         return $this->belongsTo(User::class,'user_id','user_id');
     }
 
+    public function circle()
+    {
+        return $this->belongsTo(Circle_user::class,'circle_id','circle_id');
+    }
+
     // 画像
     public function images()
     {

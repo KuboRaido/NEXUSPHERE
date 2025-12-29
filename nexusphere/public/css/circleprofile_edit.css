@@ -72,7 +72,7 @@ h1 {
   border: 1px solid #ccc;
 }
 
-.name, .explain {
+.circle_name, .explain {
   display: flex;
   flex-direction: column;
   margin-bottom: 12px;

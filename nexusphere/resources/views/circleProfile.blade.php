@@ -6,6 +6,7 @@
   <title>プロフィール</title>
   <link rel="stylesheet" href="{{ asset('css/circlepf.css') }}">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <script> window.USER_ROLE = "{{ $role }}";</script>
 </head>
 <body>
 
@@ -36,12 +37,11 @@
           <!-- アクションボタン（役割ごとに表示） -->
           <div class="actions">
             <!-- オーナー専用 -->
-            <a class="btn role-owner" href="{{ route('circle.edit', $circle->circle_id) }}">編集</a>
-            <a class="btn role-owner role-member" href="">DM</a>
-            <a class="btn role-owner role-member" href="">投稿</a>
-
+            <a class="btn role-owner" href="{{ route('circle.edit',['circle' => $circle->circle_id]) }}">編集</a>
+            <a class="btn role-owner role-member" href="{{ route('circle.dm',['circle' => $circle->circle_id]) }}">DM</a>
+            <a class="btn role-owner role-member" href="{{ route('circle.post',['circle' => $circle->circle_id]) }}">投稿</a>
             <!-- 一般ユーザー専用 -->
-            <a class="btn role-general" href="">参加する</a>
+            <a class="btn role-guest" href="">参加する</a>
           </div>
 
         </div>
@@ -52,6 +52,15 @@
     <div class="content">
       <div class="left">
         <h4>最近の投稿</h4>
+
+          @forelse($posts as $post)
+            <article class="post">
+              <div class="title">{{ $post->sentence ?? '(タイトルなし)' }}</div>
+              <div class="excerpt">{{ Str::limit($post->sentence ?? '', 120) }}</div>
+            </article>
+          @empty
+            <div class="no-posts">投稿はありません</div>
+          @endforelse
       </div>
     </div>
 
