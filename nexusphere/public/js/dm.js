@@ -84,7 +84,7 @@ function renderMessages() {
     img.alt = '';
     img.onerror = () => { img.src = DEFAULT_AVATAR; };
     // アイコンを押したらプロフィールに飛べるようにする
-    const profileId =String(msg.from || window.currentPartnerId || '');
+    const profileId =String(currentPartnerId);
     // 相手のiconの画像にリンクを追加
     img.addEventListener('click', (e) => {
       e.preventDefault();
@@ -92,7 +92,7 @@ function renderMessages() {
       if(profileId === String(getMeId())){
         location.href = `/profile`;
       } else  {
-        location.href = `/profile/${encodeURIComponent(profileId)}`;
+        location.href = `/profile/${profileId}`;
       }
     })
     const bubble = document.createElement('div');
