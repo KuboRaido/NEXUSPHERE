@@ -73,16 +73,18 @@ class ProfileController extends Controller
         return redirect()->route('profile')->with('status', 'プロフィールを更新しました。');
     }
 
-    public function profileOther(User $user){
+    public function profileOther(Request $request){
         $userId = Auth::id();
-        $isMine = ($userId && ((int)$userId === (int)$user->id));
+        $profileUser = User::findOrFail($request->user_id);
+        $isMine = ($userId && ((int)$userId === $profileUser));
 
-        $posts = Prc::where('user_id', $user->id)
+        $posts = Prc::where('user_id', $profileUser->user_id)
+                    ->whereNull('circle_id')
                     ->orderBy('created_at', 'desc')
                     ->get();
 
         return view('profile', [
-            'profileUser' => $user,
+            'profileUser' => $profileUser,
             'isMine' => $isMine,
             'posts' => $posts,
         ]);

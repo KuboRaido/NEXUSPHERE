@@ -21,7 +21,7 @@ Route::middleware('auth')->group(function () {
 
     Route::get('/profile', [ProfileController::class, 'profileFront'])->name('profile');  //自分のプロフィール
     Route::get('/profile/edit',[ProfileController::class,'edit'])->name('profile.edit');//プロフィール編集画面
-    Route::get('/profile/{id}',[ProfileController::class,'profileOther'])->name('profile.other'); //他人のプロフィール
+    Route::get('/profile/{user_id}',[ProfileController::class,'profileOther'])->name('profile.other'); //他人のプロフィール
     Route::post('/profile/logout',[LoginController::class,'logout'])->name('logout');
     Route::post('/profile',[ProfileController::class,'post'])->name('profile.post'); 
 
