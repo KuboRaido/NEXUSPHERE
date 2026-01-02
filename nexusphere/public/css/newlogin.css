@@ -7,37 +7,28 @@ body {
     min-height: 100vh;
     margin: 0;
 }
-.title {
-    font-size: 2rem;
-    font-weight: bold;
-    margin-bottom: 2rem;
-    text-align: center;   /* ← 中央寄せ */
-}
 
-.wrapper{
+.wrapper {
     display: flex;
     flex-direction: column;
     align-items: center;
     justify-content: center;
     min-height: 100vh;
     width: 100%;
-    font-size:2rem;
+    font-size: 2rem;
 }
 
 .form-container {
-    background-color: #ffffff;
+    background-color: #ffffff; /* コンテナの背景色を白に設定 */
     padding: 2.5rem;
-    border-radius: 1.5rem;
+    border-radius: 1.5rem; /* 角を丸くする */
     box-shadow: 0 10px 15px rgba(0, 0, 0, 0.1);
     width: 100%;
-    max-width: 400px;
-    max-height: 70vh;     /* ← 画面高さの70% */
-    overflow-y: auto;     /* ← 縦スクロール */
-    overflow-x: hidden;   /* ← 横スクロール防止 */
+    max-width: 900px;
     box-sizing: border-box;
     display: flex;
     flex-direction: column;
-    gap: 1.25rem;
+    gap: 1.25rem; /* 要素間のスペース */
 }
 
 .input-field {
@@ -50,11 +41,12 @@ body {
     outline: none;
     transition: border-color 0.2s;
 }
+
 .input-field:focus {
     border-color: #a78bfa; /* フォーカス時のボーダー色 */
 }
+
 .submit-button {
-    width: 100%;
     padding: 1rem;
     background-color: #ff69b4; /* ボタンの色をff69b4に設定 */
     color: white;
@@ -66,45 +58,22 @@ body {
     transition: transform 0.2s ease-in-out, background-color 0.2s;
 }
 
-.button-row {
-    display: flex;
-    gap: 1rem;
-    margin-top: 1.5rem; /* ← ここが余白 */
-}
-
-.button-row > * {
-    flex: 1;
-}
-
-/* キャンセルボタンをリンクとして見せる */
 .cancel-button {
     padding: 1rem;
-    width: 100%;
     background-color: #ffffff;
-    color: #555;
-    border: 2px solid #d1d5db;
-    border-radius: 0.75rem;
-    font-size: 16px;
+    color: white;
+    border: none;
+    border-radius: 0.75rem; /* 角を丸くする */
+    font-size: 1.125rem;
     font-weight: 600;
-    text-decoration: none;
     cursor: pointer;
-    transition: background-color 0.2s, transform 0.2s;
+    transition: transform 0.2s ease-in-out, background-color 0.2s;
 }
 
-.cancel-button:hover {
-    background-color: #f3f4f6;
-    transform: scale(1.03);
+.submit-button:hover {
+    transform: scale(1.03); /* ホバー時に少し膨らむ */
+    background-color: #ff4d9a; /* ホバー時のボタンの色を少し濃くする */
 }
-
-.submit-button,
-.cancel-button {
-    height: 56px;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    box-sizing: border-box;
-}
-
 
 .header-text {
     font-size: 2rem;
@@ -113,12 +82,14 @@ body {
     text-align: center;
     margin-bottom: 1.5rem;
 }
+
 .label-text {
     font-size: 0.875rem;
     color: #555;
     margin-bottom: 0.25rem;
     display: block;
 }
+
 .icon-upload-container {
     display: flex;
     flex-direction: column;
@@ -126,6 +97,7 @@ body {
     gap: 0.75rem;
     margin-top: 1rem;
 }
+
 .icon-placeholder {
     width: 80px;
     height: 80px;
@@ -140,11 +112,13 @@ body {
     overflow: hidden;
     position: relative;
 }
+
 .icon-placeholder img {
     width: 100%;
     height: 100%;
     object-fit: cover;
 }
+
 .icon-upload-input {
     display: none;
 }
@@ -156,6 +130,8 @@ body {
         border-radius: 1rem;
         width: 90%;
         max-width: none;
+        flex-direction: column;
+        overflow-x: visible;
     }
 
     .header-text {
@@ -173,10 +149,4 @@ body {
         height: 60px;
         font-size: 2rem;
     }
-
-    .form-container {
-        flex-direction: column;
-        overflow-x: visible;
-    }
-
 }

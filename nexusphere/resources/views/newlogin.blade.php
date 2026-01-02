@@ -88,12 +88,11 @@
             </div>          
         </form>
     </div>
-    <!-- 登録・キャンセルボタン -->
-            <div class="button-row">
-                <button type="submit" class="submit-button">登録</button>
-                <a href="{{ route('login') }}" class="cancel-button">戻る</a>
-            </div>
-
+        <!-- 登録ボタン --> 
+            <button type="submit" class="submit-button">登録</button>
+            <button type="submit" class="cancel-button"><a href="{{ route('login') }}">戻る</a></button>
+            </form> 
+        </div>
     <!-- Custom JavaScript -->
     <script src="{{ asset('js/newlogin.js') }}"></script>
 </body>
