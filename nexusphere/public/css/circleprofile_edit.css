@@ -77,20 +77,78 @@ h1 {
   flex-direction: column;
   margin-bottom: 12px;
 }
-
-/* 現在のアイコン */
-.current-avatar {
+/* 全体を中央寄せ */
+.field {
   display: flex;
-  justify-content: center;
-  margin-bottom: 8px;
+  flex-direction: column;
+  align-items: center;
 }
 
+/* 現在 → 新しい の横並び */
+.avatar-row {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 32px;
+  margin: 20px 0;
+}
+
+/* 各アイコンブロック */
+.avatar-box {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+/* ラベル */
+.avatar-label {
+  font-size: 14px;
+  margin-bottom: 8px;
+  color: #444;
+}
+
+/* アイコンサイズUP */
 .avatar-preview {
-  width: 60px;
-  height: 60px;
+  width: 120px;
+  height: 120px;
   border-radius: 50%;
   object-fit: cover;
+  border: 2px solid #ccc;
 }
+
+/* 矢印 */
+.arrow {
+  font-size: 36px;
+  font-weight: bold;
+  line-height: 1;
+}
+
+/* クリック用 */
+.avatar-click {
+  position: relative;
+  cursor: pointer;
+}
+
+/* ホバー演出 */
+.avatar-overlay {
+  position: absolute;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.55);
+  color: #fff;
+  font-size: 14px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  opacity: 0;
+  transition: opacity 0.2s ease;
+}
+
+.avatar-click:hover .avatar-overlay {
+  opacity: 1;
+}
+
+
 
 /* ボタン */
 .actions {
