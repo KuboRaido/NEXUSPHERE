@@ -1,151 +1,126 @@
 (() => {
-  // 1. HTMLエスケープ関数（XSS対策）
+  'use strict';
+
+  /* =========================
+   * 1. HTMLエスケープ（XSS対策）
+   * ========================= */
   const escapeHtml = (value = '') =>
     String(value).replace(/[&<>"']/g, (char) =>
-      ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[char] || char)
+      ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[char])
     );
 
-  // 2. DOM取得
-  const listRoot      = document.getElementById('circle-list');
-  const searchInput   = document.getElementById('search-input');
-  const searchResults = document.getElementById('search-results');
+  /* =========================
+   * 2. DOM取得
+   * ========================= */
+  const listRoot        = document.getElementById('circle-list');
+  const joinedRoot      = document.getElementById('circle-joined');
+  const notJoinedRoot   = document.getElementById('circle-not-joined');
+  const searchInput     = document.getElementById('search-input');
+  const searchResults   = document.getElementById('search-results');
 
-  document.addEventListener("DOMContentLoaded", () => {
-  const tabButtons = document.querySelectorAll(".tab-btn");
-  const joinedSection = document.getElementById("circle-joined");
-  const notJoinedSection = document.getElementById("circle-not-joined");
+  // ★変更：必須DOMが無ければ即終了（JS全停止防止）
+  if (!joinedRoot || !notJoinedRoot) return;
 
-  tabButtons.forEach(btn => {
-    btn.addEventListener("click", () => {
-      // activeクラス切り替え
-      tabButtons.forEach(b => b.classList.remove("active"));
-      btn.classList.add("active");
+  /* =========================
+   * 3. URL生成
+   * ========================= */
+  const linkTemplate =
+    listRoot?.dataset.clubUrlTemplate || '/circle/__ID__'; // ★変更：optional chaining
 
-      // 表示切り替え
-      const target = btn.dataset.target;
-
-      if (target === "joined") {
-        joinedSection.style.display = "block";
-        notJoinedSection.style.display = "none";
-      } else {
-        joinedSection.style.display = "none";
-        notJoinedSection.style.display = "block";
-      }
-    });
-  });
-});
-
-
-  // 3. URLテンプレート＆リンク生成関数
-  const linkTemplate = listRoot.dataset.clubUrlTemplate || '/circle/__ID__';
   const resolveLink = (id) =>
     linkTemplate.replace('__ID__', encodeURIComponent(String(id)));
 
-  // 4. サークル一覧データ
+  /* =========================
+   * 4. サークルデータ
+   * ========================= */
   let circles = [];
 
-  // 5. 一覧描画
+  /* =========================
+   * 5. 一覧描画（参加 / 未参加）
+   * ========================= */
   const renderList = (items) => {
-  const joinedRoot    = document.getElementById("circle-joined");
-  const notJoinedRoot = document.getElementById("circle-not-joined");
+    joinedRoot.innerHTML = '';
+    notJoinedRoot.innerHTML = '';
 
-  // 初期化
-  joinedRoot.innerHTML = '';
-  notJoinedRoot.innerHTML = '';
-  if (listRoot) listRoot.innerHTML = '';
+    const joinedItems    = items.filter(c => c.role === 'member' || c.role === 'owner');
+    const notJoinedItems = items.filter(c => c.role === 'guest');
 
-  // 参加・未参加で分ける
-  const joinedItems    = items.filter(c => c.role === "member" || c.role === "owner");
-  const notJoinedItems = items.filter(c => c.role === "guest");
+    /* ---- 参加サークル ---- */
+    if (joinedItems.length === 0) {
+      joinedRoot.innerHTML = `<li class="empty">まだ参加しているサークルがありません</li>`;
+    } else {
+      const fragment = document.createDocumentFragment(); // ★変更：fragment定義
 
-  // ▼ 参加サークルが０件のとき
-  if (joinedItems.length === 0) {
-    joinedRoot.innerHTML = `
-      <li class="empty">
-        まだ参加しているサークルがありません
-      </li>`;
-  } else {
-    // 通常の描画
-    joinedItems.forEach((circle) => {
-      const li = document.createElement('li');
-      li.className = 'circle-item';
+      joinedItems.forEach(circle => {
+        const li = document.createElement('li');
+        li.className = 'circle-item';
 
-      const name = circle.circle_name || circle.name || '';
-      const icon = circle.icon || window.DEFAULT_CLUB_ICON_URL || '';
-      const sentence = circle.sentence || '';
-
-      li.innerHTML = `
-  <a class="circle-link" href="${resolveLink(circle.circle_id ?? circle.id)}">
-    <img src="${escapeHtml(icon)}" alt="${escapeHtml(name)}">
-    <span class="name">${escapeHtml(name)}</span>
-    <span class="sentence">${escapeHtml(sentence)}</span>
-  </a>
-`;
-
-      joinedRoot.appendChild(li);
-    });
-  }
-
-  // ▼ 未参加サークルの描画
-  if (notJoinedItems.length === 0) {
-    notJoinedRoot.innerHTML = `
-      <li class="empty">
-        未参加のサークルはありません
-      </li>`;
-  } else {
-    notJoinedItems.forEach((circle) => {
-      const li = document.createElement('li');
-      li.className = 'circle-item';
-
-      const name = circle.circle_name || circle.name || '';
-      const icon = circle.icon || window.DEFAULT_CLUB_ICON_URL || '';
-      const sentence = circle.sentence || '';
-      const members = circle.member_count ?? 0;
-
-      li.innerHTML = `
-        <a class="circle-link" href="${resolveLink(circle.circle_id ?? circle.id)}">
-            <img src="${escapeHtml(icon)}" alt="${escapeHtml(name)}">
-
-            <div class="circle-text">
-              <span class="name">${escapeHtml(name)}</span>
-              <span class="sentence">${escapeHtml(sentence)}</span>
-            </div>
-
-            <span class="members">👥 ${members}人</span>
+        li.innerHTML = `
+          <a class="circle-link" href="${resolveLink(circle.circle_id ?? circle.id)}">
+            <img src="${escapeHtml(circle.icon || '')}">
+            <span class="name">${escapeHtml(circle.circle_name || '')}</span>
+            <span class="sentence">${escapeHtml(circle.sentence || '')}</span>
           </a>
         `;
 
-      fragment.appendChild(li);
-    });
+        fragment.appendChild(li);
+      });
 
-    listRoot.replaceChildren(fragment);
+      joinedRoot.replaceChildren(fragment);
+    }
+
+    /* ---- 未参加サークル ---- */
+    if (notJoinedItems.length === 0) {
+      notJoinedRoot.innerHTML = `<li class="empty">未参加のサークルはありません</li>`;
+    } else {
+      const fragment = document.createDocumentFragment(); // ★変更：fragment定義
+
+      notJoinedItems.forEach(circle => {
+        const li = document.createElement('li');
+        li.className = 'circle-item';
+
+        li.innerHTML = `
+          <a class="circle-link" href="${resolveLink(circle.circle_id ?? circle.id)}">
+            <img src="${escapeHtml(circle.icon || '')}">
+            <div class="circle-text">
+              <span class="name">${escapeHtml(circle.circle_name || '')}</span>
+              <span class="sentence">${escapeHtml(circle.sentence || '')}</span>
+            </div>
+            <span class="members">👥 ${circle.member_count ?? 0}人</span>
+          </a>
+        `;
+
+        fragment.appendChild(li);
+      });
+
+      notJoinedRoot.replaceChildren(fragment); // ★変更：listRoot → notJoinedRoot
+    }
   };
 
-
-  // 6. 検索結果（丸く表示される修正版）
+  /* =========================
+   * 6. 検索結果表示
+   * ========================= */
   const showSearch = (items) => {
+    searchResults.innerHTML = '';
+
     if (!items.length) {
-      searchResults.innerHTML = '<li class="empty">サークルが見つかりませんでした</li>';
+      searchResults.innerHTML = `<li class="empty">サークルが見つかりませんでした</li>`;
       searchResults.style.display = 'block';
       return;
     }
 
-    const fragment = document.createDocumentFragment();
-    items.forEach((circle) => {
+    const fragment = document.createDocumentFragment(); // ★変更：fragment定義
+
+    items.forEach(circle => {
       const li = document.createElement('li');
       li.className = 'circle-item';
 
-      const name = circle.circle_name || circle.name || '';
-      const icon = circle.icon || window.DEFAULT_CLUB_ICON_URL || '';
-      const sentence = circle.sentence || '';
-      const members = circle.member_count ?? 0;
-
       li.innerHTML = `
         <a class="circle-link" href="${resolveLink(circle.circle_id ?? circle.id)}">
-          <img src="${escapeHtml(icon)}" alt="${escapeHtml(name)}">
-          <span class="name">${escapeHtml(name)}</span>
-          <span class="sentence">${escapeHtml(sentence)}</span>
-          <span class="members">👥 ${members}人</span>
+          <img src="${escapeHtml(circle.icon || '')}">
+          <span class="name">${escapeHtml(circle.circle_name || '')}</span>
+          <span class="sentence">${escapeHtml(circle.sentence || '')}</span>
+          <span class="members">👥 ${circle.member_count ?? 0}人</span>
         </a>
       `;
 
@@ -156,71 +131,88 @@
     searchResults.style.display = 'block';
   };
 
-
   const hideSearch = () => {
     searchResults.style.display = 'none';
     searchResults.innerHTML = '';
   };
 
-  // 7. 検索フィルタ
+  /* =========================
+   * 7. 検索ロジック
+   * ========================= */
   const filterCircles = (keyword) => {
-    const trimmed = keyword.trim();
-    if (!trimmed) {
-      hideSearch();
-      return;
-    }
+    const key = keyword.trim().toLowerCase();
+    if (!key) return hideSearch();
 
-    const lower = trimmed.toLowerCase();
-    const matches = circles.filter((circle) => {
-      const name     = (circle.circle_name || circle.name || '').toLowerCase();
-      const category = (circle.category || '').toLowerCase();
-      return name.includes(lower) || category.includes(lower);
+    const matches = circles.filter(c => {
+      return (
+        (c.circle_name || '').toLowerCase().includes(key) ||
+        (c.category || '').toLowerCase().includes(key)
+      );
     });
 
     showSearch(matches);
   };
 
-  // 8. デバウンス
+  /* =========================
+   * 8. debounce
+   * ========================= */
   const debounce = (fn, delay = 300) => {
-    let timer = null;
+    let timer;
     return (...args) => {
-      if (timer) clearTimeout(timer);
+      clearTimeout(timer);
       timer = setTimeout(() => fn(...args), delay);
     };
   };
 
-  const debouncedFilter = debounce((value) => filterCircles(value), 200);
+  const debouncedFilter = debounce(filterCircles, 200);
 
-  // 9. API取得
+  /* =========================
+   * 9. API取得
+   * ========================= */
   const fetchCircles = async () => {
-    listRoot.innerHTML = '<li class="loading">読み込み中...</li>';
-
     try {
       const res = await fetch('/api/v1/circle', {
         headers: { Accept: 'application/json' },
         credentials: 'include',
       });
-      if (!res.ok) throw new Error('サークル一覧の取得に失敗しました');
+
+      if (!res.ok) throw new Error('fetch failed');
 
       const body = await res.json();
       circles = Array.isArray(body) ? body : (body.data ?? []);
 
       renderList(circles);
-    } catch (error) {
-      console.error(error);
-      listRoot.innerHTML = '<li class="error">サークル一覧の取得に失敗しました</li>';
+    } catch (e) {
+      console.error(e);
     }
   };
 
-  // 10. イベント登録
+  /* =========================
+   * 10. タブ切り替え
+   * ========================= */
+  document.querySelectorAll('.tab-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+      document.querySelectorAll('.tab-btn')
+        .forEach(b => b.classList.remove('active'));
+
+      btn.classList.add('active');
+
+      const target = btn.dataset.target;
+      joinedRoot.style.display    = target === 'joined' ? 'block' : 'none';
+      notJoinedRoot.style.display = target === 'joined' ? 'none'  : 'block';
+    });
+  });
+
+  /* =========================
+   * 11. イベント登録
+   * ========================= */
   document.addEventListener('DOMContentLoaded', fetchCircles);
 
   if (searchInput) {
-    searchInput.addEventListener('input', (event) => debouncedFilter(event.target.value));
+    searchInput.addEventListener('input', e => debouncedFilter(e.target.value));
     searchInput.addEventListener('focus', () => {
       if (searchInput.value.trim()) debouncedFilter(searchInput.value);
     });
     searchInput.addEventListener('blur', () => setTimeout(hideSearch, 200));
   }
-}
-});
+})();
