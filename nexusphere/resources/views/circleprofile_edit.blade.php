@@ -28,7 +28,7 @@
         <div class="field">
           <label>現在のアイコン</label>
           <div class="current-avatar">
-            <img src="{{ $circle->icon }}" alt="アイコン" class="avatar-preview">
+            <img src="{{ Storage::url($circle->icon) }}" alt="アイコン" class="avatar-preview">
           </div>
         </div>
 
