@@ -24,18 +24,44 @@
 
       <form method="POST" action="{{ route('circle-update', $circle->circle_id) }}" enctype="multipart/form-data">
         @csrf
+    <div class="field">
+      <label>アイコン</label>
 
-        <div class="field">
-          <label>現在のアイコン</label>
-          <div class="current-avatar">
-            <img src="{{ Storage::url($circle->icon) }}" alt="アイコン" class="avatar-preview">
-          </div>
+      <div class="avatar-row">
+        <!-- 現在 -->
+        <div class="avatar-box">
+          <p class="avatar-label">現在</p>
+          <img
+            src="{{ $circle->icon
+                  ? Storage::url($circle->icon)
+                  : asset('images/default-avatar.png') }}"
+            class="avatar-preview"
+          >
         </div>
 
-      <div class="field">
-        <label for="image">アイコン</label>
-        <input id="image" type="file" name="image" accept="image/*">
+        <div class="arrow">→</div>
+
+        <!-- 新しい（クリックで選択） -->
+        <div class="avatar-box">
+          <p class="avatar-label">新しい</p>
+
+          <label for="image" class="avatar-click">
+            <img
+              id="preview"
+              src="{{ $circle->icon
+                    ? Storage::url($circle->icon)
+                    : asset('images/default-avatar.png') }}"
+              class="avatar-preview"
+            >
+          </label>
+        </div>
       </div>
+
+      <!-- 実体の file input（隠す） -->
+      <input id="image" type="file" name="image" accept="image/*" hidden>
+    </div>
+
+
 
       <div class="circle_name">
         <label for="circle_name">名前</label>
