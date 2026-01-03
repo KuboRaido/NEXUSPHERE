@@ -4,10 +4,12 @@ namespace App\Http\Controllers;
 
 use App\Models\Circle;
 use App\Models\Prc;
+use App\Models\Circle_requests;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Database\QueryException;
 
 class CircleController extends Controller
 {
@@ -91,18 +93,67 @@ class CircleController extends Controller
         return redirect()->route('circle')->with('status', 'サークルを作成しました。');
     }
 
-    //サークル参加
-    public function join(Circle $circle)
+    public function circleRequest(Circle $circle)
     {
-        DB::transaction(function () use ($circle) {
-            $circle->members()->syncWithoutDetaching([Auth::id()]);
+        $request = $circle->joinRequests()
+                    ->with(['user:user_id,name,icon','circle:circle_id'])
 
-            $circle->update([
-                'members_count' => $circle->members()->count(),
-            ]);
+                    ->orderByDesc('created_at')
+                    ->get()
+                    ->map( function (Circle_requests $request) {
+                        return [
+                            'circle_request_id' =>  $request->circle_request_id,
+                            'circle_id'         =>  $request->circle_id,
+                            'user_id'           =>  $request->user_id,
+                            'user_name'         =>  $request->user?->name,
+                            'user_icon'         =>  $request->user?->icon ? Storage::url($request->use->icon) : null,
+                            'status'            =>  $request->status,
+                        ];
+                    });
+
+        return view('circleRequest', [
+            'circle' => $circle,
+            'requests' => $request,
+        ]);
+    }
+
+    //サークル参加
+    public function join(Circle $circle, Request $request)
+    {
+        $user = $request->user();
+        if($circle->members()->where('circle_users.user_id', $user->user_id)->exists()){
+            return back()->with('status', '既に参加済みのサークルです');
+        }
+
+        try{
+            Circle_requests::updateOrCreate(
+                ['user_id' => $user->user_id, 'circle_id' => $circle->circle_id],
+                ['user_id' => $user->user_id, 'circle_id' => $circle->circle_id,'status' => 'pending','request_at' => now()]
+            );
+        } catch (QueryException $e){
+            report($e);
+            return back()->withErrors('参加申請が送信できませんでした');
+        }
+
+        return back()->with('status', '参加申請を送信しました');
+    }
+
+    public function approve(Circle $circle, Circle_requests $circle_request)
+    {
+        $this->authorize('manage', $circle);
+        DB::transaction(function () use ($circle_request) {
+            $circle_request->update(['status' => 'approved']);
+            $circle_request->circle->members()->syncWithoutDetaching($circle_request->user_id);
         });
 
-        return back()->with('status', 'サークルに参加しました');
+        return back()->with('status', '参加を承認しました');
+    }
+
+    public function reject(Circle $circle, Circle_requests $circle_request)
+    {
+        $this->authorize('manage', $circle);
+        $circle_request->update(['status' => 'rejected']);
+        return back()->with('status', '参加申請を拒否しました');
     }
 
     /**
