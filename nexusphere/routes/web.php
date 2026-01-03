@@ -10,7 +10,7 @@ use App\Http\Controllers\CircleController;
 
 Route::middleware('guest')->group(function(){
     Route::get('/newlogin',[UserController::class,'newLoginForm'])->name('newLogin');
-    Route::post('/newlogin',[UserController::class,'register']);
+    Route::post('/newlogin',[UserController::class,'register'])->name('register');
     Route::get('/',[LoginController::class,'showLoginForm'])->name('login');
     Route::post('/',[LoginController::class,'login']);
 });
@@ -38,6 +38,10 @@ Route::middleware('auth')->group(function () {
     Route::get('circle/{circle}/post',[CircleController::class,'circlePostFront'])->name('circle.post');
     Route::get('circle/{circle}/edit',[CircleController::class,'circleEdit'])->name('circle.edit');
     Route::get('circle/{circle}/dm',[CircleController::class,'circleDmFront'])->name('circle.dm');
+    Route::get('circle/{circle}/request',[CircleController::class,'circleRequest'])->name('circle.request');
+    Route::post('circle/{circle}',[CircleController::class,'join'])->name('circle.join');
+    Route::post('circle/{circle}/request/{circle_request}/approve',[CircleController::class,'approve'])->name('circle.approve');
+    Route::post('circle/{circle}/request/{circle_request}/reject',[CircleController::class,'reject'])->name('circle.reject');
 });
     
 // コメント投稿
