@@ -97,9 +97,11 @@ body {
 
 /* 🔴 テキスト全体を横いっぱいに */
 .circle-text {
- display: flex;
-  flex-direction: column; /* ← これが一番重要 */
+  display: flex;
+  flex-direction: column;
   gap: 4px;
+  flex: 1;        /* ← これを追加 */
+  min-width: 0;   /* ← テキスト省略対策（超重要） */
 }
 
 /* サークル名（左固定） */

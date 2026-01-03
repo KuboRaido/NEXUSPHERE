@@ -55,13 +55,17 @@
         const li = document.createElement('li');
         li.className = 'circle-item';
 
-        li.innerHTML = `
-          <a class="circle-link" href="${resolveLink(circle.circle_id ?? circle.id)}">
-            <img src="${escapeHtml(circle.icon || '')}">
-            <span class="name">${escapeHtml(circle.circle_name || '')}</span>
-            <span class="sentence">${escapeHtml(circle.sentence || '')}</span>
-          </a>
-        `;
+          li.innerHTML = `
+      <a class="circle-link" href="${resolveLink(circle.circle_id ?? circle.id)}">
+        <img src="${escapeHtml(circle.icon || '')}">
+        <div class="circle-text">
+          <span class="name">${escapeHtml(circle.circle_name || '')}</span>
+          <span class="sentence">${escapeHtml(circle.sentence || '')}</span>
+        </div>
+        <span class="members">👥 ${circle.member_count ?? 0}人</span>
+      </a>
+    `;
+
 
         fragment.appendChild(li);
       });
