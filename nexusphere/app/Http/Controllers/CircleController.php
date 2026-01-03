@@ -26,10 +26,11 @@ class CircleController extends Controller
         $rows = Circle::with(['members' => function ($q) use ($userId) {
             $q->where('circle_users.user_id', $userId)
             ;}])
+            ->withCount('members')
             ->orderByDesc('created_at')
             ->get();
 
-        $list = $rows->map(function (Circle $circle) use ($userId) {
+            $list = $rows->map(function (Circle $circle) use ($userId) {
 
             $isOwner = $circle->owner_id === $userId;
 
