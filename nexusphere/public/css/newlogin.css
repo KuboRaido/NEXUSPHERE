@@ -60,14 +60,16 @@ body {
 
 .cancel-button {
     padding: 1rem;
-    background-color: #ffffff;
-    color: white;
+    background-color: #ff69b4;
     border: none;
     border-radius: 0.75rem; /* 角を丸くする */
     font-size: 1.125rem;
     font-weight: 600;
     cursor: pointer;
     transition: transform 0.2s ease-in-out, background-color 0.2s;
+    font-size: 1rem;
+    font-weight: 700;
+    color: #ffffff;
 }
 
 .submit-button:hover {

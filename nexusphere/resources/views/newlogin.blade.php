@@ -29,7 +29,7 @@
         </div>
     @endif
 
-        <form method="POST" action="{{ route('newLogin') }}" enctype="multipart/form-data">
+        <form id='register' method="POST" action="{{ route('register') }}" enctype="multipart/form-data">
             @csrf
             <!-- メールアドレス -->
             <div>
@@ -88,10 +88,11 @@
             </div>          
         </form>
     </div>
+
         <!-- 登録ボタン --> 
-            <button type="submit" class="submit-button">登録</button>
-            <button type="submit" class="cancel-button"><a href="{{ route('login') }}">戻る</a></button>
-            </form> 
+            <button type="submit" class="submit-button" form="register">登録</button>
+            <a href="{{ route('login') }}" class="cancel-button" style="text-decoration: none; display: inline-block; text-align: center;">戻る</a>
+
         </div>
     <!-- Custom JavaScript -->
     <script src="{{ asset('js/newlogin.js') }}"></script>
