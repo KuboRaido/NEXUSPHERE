@@ -380,6 +380,55 @@ button[type="submit"]:hover {
   .circle-item .name {
     font-size: 14px;
   }
+    .btn,
+  .dm-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 4px 12px;
+    font-size: 12px;
+    border-radius: 8px;
+    background: #ff69b4;
+    color: #fff;
+    cursor: pointer;
+    text-decoration: none;
+    border: none;
+    line-height: 1;
+    box-sizing: border-box;
+  }
+    /* 名前＋ボタンを横並び */
+  .name-row {
+    align-items: center;
+    justify-content: space-between;
+  }
+
+  /* 名前と説明を縦にまとめる */
+  .name-set {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+  }
+
+  /* 説明は下に残す（少し小さく） */
+  .circle-desc {
+    font-size: 12px;
+    max-width: 220px;
+  }
+
+  /* ボタンを右寄せ */
+  .actions {
+    margin-top: -6px;
+    display: flex;
+    gap: 6px;
+    flex-shrink: 0;
+  }
+
+  /* ボタンをスマホ用に小さく */
+  .actions .btn {
+    padding: 4px 10px;
+    font-size: 13px;
+    white-space: nowrap;
+  }
 }
 
 /* =========================
