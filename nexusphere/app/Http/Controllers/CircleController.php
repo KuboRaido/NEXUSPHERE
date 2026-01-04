@@ -10,6 +10,7 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Database\QueryException;
+use Illuminate\Support\Facades\Redirect;
 
 class CircleController extends Controller
 {
@@ -142,10 +143,12 @@ class CircleController extends Controller
     public function approve(Circle $circle, Circle_requests $circle_request)
     {
         $this->authorize('manage', $circle);
+        $members = $circle->members()->orderBy('created_at')->get();
         DB::transaction(function () use ($circle_request) {
             $circle_request->update(['status' => 'approved']);
             $circle_request->circle->members()->syncWithoutDetaching($circle_request->user_id);
         });
+        $circle->members_count = $members->count();
 
         return back()->with('status', '参加を承認しました');
     }
@@ -160,17 +163,33 @@ class CircleController extends Controller
     /**
      * サークル退会
      */
-    public function leave(Circle $circle)
+    public function circleCancel(Circle $circle)
     {
-        DB::transaction(function () use ($circle) {
+        $userId = Auth::id();
+
+        DB::transaction(function () use ($circle, $userId) {
+            
+            //　残りのメンバー数を取得
+            $members = $circle->members()->where('circle_users.user_id','!=',$userId)->orderBy('created_at')->get();
+
+            // メンバーから削除
             $circle->members()->detach(Auth::id());
 
-            $circle->update([
-                'members_count' => $circle->members()->count(),
-            ]);
+            // もしオーナーが退会したときにメンバーが一人もいなかったらサークルを削除
+            if($members->isEmpty()) {
+                $circle->delete();
+            } else {
+                // メンバーがいる場合
+                if ($circle->owner_id == $userId){
+                    $nextOwner = $members->first();
+                    $circle->owner_id = $nextOwner->user_id;
+                    $circle->members_count = $members->count();
+                    $circle->save();
+                }
+            }
         });
 
-        return back()->with('status', 'サークルを退会しました');
+        return redirect()->route('circle')->with('status', 'サークルを退会しました');
     }
 
     public function update(Circle $circle, Request $request)

@@ -47,6 +47,7 @@
             <a class="btn role-owner" href="{{ route('circle.request',['circle' => $circle->circle_id]) }}">申請</a>
             <a class="btn role-owner role-member" href="{{ route('circle.dm',['circle' => $circle->circle_id]) }}">DM</a>
             <a class="btn role-owner role-member" href="{{ route('circle.post',['circle' => $circle->circle_id]) }}">投稿</a>
+            <a class="btn role-owner role-member" href="{{ route('circle.cancel',['circle' => $circle->circle_id]) }}">退会</a>
             <!-- 一般ユーザー専用 -->
               <form class = "btn role-guest" method="POST" action="{{ route('circle.join', ['circle' => $circle->circle_id ])}}" onsubmit="this.querySelector('button').disabled = true; this.querySelector('button').textContent = '送信中...';">
                 @csrf
