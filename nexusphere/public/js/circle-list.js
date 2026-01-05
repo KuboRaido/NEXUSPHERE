@@ -90,7 +90,7 @@
               <span class="name">${escapeHtml(circle.circle_name || '')}</span>
               <span class="sentence">${escapeHtml(circle.sentence || '')}</span>
             </div>
-            <span class="members">👥 ${circle.member_count ?? 0}人</span>
+            <span class="members">👥 ${circle.members_count ?? 0}人</span>
           </a>
         `;
 
