@@ -178,6 +178,87 @@ body {
   text-overflow: ellipsis;
 }
 
+/* プラスボタン */
+.plus-button {
+  position: fixed;
+  bottom: 80px;
+  right: 20px;
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+  font-size: 22px;
+  background: #ffffff;
+  border: none;
+  cursor: pointer;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.2);
+}
+
+/* モーダル背景 */
+.dm-modal {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0,0,0,0.5);
+
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+}
+
+/* モーダル本体 */
+.dm-modal-content {
+  background: white;
+  padding: 20px;
+  border-radius: 10px;
+  width: 90%;
+  max-width: 400px;
+  max-height: 70vh;
+  overflow-y: auto;
+}
+
+/* 非表示クラス */
+.hidden {
+  display: none;
+}
+
+/* 共通ボタン */
+.dm-modal-content button {
+  flex: 1;
+  padding: 12px 10px;
+  border-radius: 8px;
+  font-weight: bold;
+  transition: all 0.2s ease;
+  border: none;
+  cursor: pointer;
+}
+
+/* 作成ボタン */
+#createRoomBtn {
+  background: linear-gradient(135deg, #4facfe, #00f2fe);
+  color: white;
+}
+
+/* 閉じるボタン */
+#closeModalBtn {
+  background: #f0f0f0;
+  color: #333;
+}
+
+/* ホバー時 */
+#createRoomBtn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 10px rgba(79,172,254,0.4);
+}
+
+#closeModalBtn:hover {
+  background: #e0e0e0;
+}
+
+
+
 /* 時間と未読バッジ */
 .chat-meta {
   text-align: right;

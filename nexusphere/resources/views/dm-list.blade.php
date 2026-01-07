@@ -19,9 +19,29 @@
           </div>
           {{--検索結果表示--}}
           <ul id="search-results" class="search-results" style="display: none;"></ul>
+          <button id="openPopupBtn" class="plus-button">
+            <i class="fa-solid fa-plus"></i>
+          </button>
+
 
       <ul id="dm-list" class="dm-list" data-chat-url-template="{{url('/dm')}}?to=__ID__"></ul>
     
+        <div id="createDmModal" class="dm-modal hidden">
+          <div class="dm-modal-content">
+            <h3>グループDM作成</h3>
+
+            <div id="modalFriendList">
+              <!-- JSでここに友達一覧 -->
+            </div>
+
+            <div class="modal-buttons">
+              <button id="createRoomBtn">作成</button>
+              <button id="closeModalBtn">閉じる</button>
+            </div>
+          </div>
+        </div>
+
+
     <div class="footer-nav">
       <a href="/home" class="tab {{ request()->is('home') ? 'active' : '' }}"><i class="fa-solid fa-house"></i></a>
       <a href="/post" class="tab {{ request()->is('post') ? 'active' : '' }}"><i class="fas fa-paper-plane"></i></a>
