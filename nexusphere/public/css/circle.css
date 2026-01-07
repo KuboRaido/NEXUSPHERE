@@ -56,6 +56,13 @@ body {
   border-radius: 6px; 
 }
 
+#search-results,
+#search-results li {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
 .attach-btn {
   font-size: 26px;
   text-decoration: none;

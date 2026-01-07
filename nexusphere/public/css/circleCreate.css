@@ -36,8 +36,8 @@ body {
 
 /* 🖼️ 画像プレビュー（丸） */
 .image-preview {
-  width: 150px;
-  height: 150px;
+  width: 145px;
+  height: 145px;
   border-radius: 50%;
   background-color: #eee;
   display: flex;
@@ -60,17 +60,16 @@ body {
 }
 
 .image-preview img {
-  width: 100px; /* ← ここで丸の大きさ調整OK */
-  height: 100px;
+  width: 150px;
+  height: 150px;
   border-radius: 50%;
-  object-fit: cover;
-  border: 2px solid #ccc;
-  display: block;
-  background-color: #f8f8f8; /* 画像がないときの背景 */
-  font-size: 40px;
-  color: #aaa;
-  text-align: center;
-  line-height: 100px;
+  background-color: #eee;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  overflow: hidden;
+  margin: 20px auto;
+  position: relative;
 }
 
 .back-button {
