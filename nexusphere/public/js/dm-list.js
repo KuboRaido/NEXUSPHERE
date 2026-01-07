@@ -161,3 +161,108 @@ if(searchInput){
     }
   });
 }
+
+// ----- ここからグループDM作成用の追加 -----
+
+async function loadFriendList(){
+  const friendRoot = document.getElementById("modalFriendList");
+  if(!friendRoot) return;
+
+  friendRoot.innerHTML = "読み込み中...";
+
+  try{
+    const res = await fetch("/api/friends", {
+      headers: {'Accept':'application/json'},
+      credentials:'include'
+    });
+
+    const friends = await res.json();
+
+    if(friends.length === 0){
+      friendRoot.innerHTML = "友達がいません";
+      return;
+    }
+
+    friendRoot.innerHTML = "";
+
+    friends.forEach(f => {
+      const div = document.createElement("div");
+      div.className = "friend-item";
+
+      div.innerHTML = `
+        <input type="checkbox" value="${f.id}" class="modal-friend-check">
+        ${escapeHtml(f.name)}
+      `;
+
+      friendRoot.appendChild(div);
+    });
+
+  }catch(e){
+    console.error(e);
+    friendRoot.innerHTML = "友達一覧の取得に失敗しました";
+  }
+}
+
+function initDmModal(){
+
+  const openPopup = document.getElementById("openPopupBtn");
+  const closeModal = document.getElementById("closeModalBtn");
+  const modal = document.getElementById("createDmModal");
+
+  if(!openPopup || !closeModal || !modal) return;
+
+  openPopup.addEventListener("click", () => {
+    modal.classList.remove("hidden");
+    loadFriendList();
+  });
+
+  closeModal.addEventListener("click", () => {
+    modal.classList.add("hidden");
+  });
+
+  const createRoom = document.getElementById("createRoomBtn");
+  if(createRoom){
+
+    createRoom.addEventListener("click", async () => {
+
+      const checks = document.querySelectorAll(".modal-friend-check:checked");
+
+      let ids = [];
+      checks.forEach(c => ids.push(c.value));
+
+      if(ids.length === 0){
+        alert("ユーザーを選択してください");
+        return;
+      }
+
+      try{
+        await fetch("/dm/createRoom", {
+          method:"POST",
+          headers:{
+            "Content-Type":"application/json",
+            "Accept":"application/json",
+            "X-CSRF-TOKEN": document.querySelector('meta[name="csrf-token"]')?.content
+          },
+          credentials:'include',
+          body: JSON.stringify({ user_ids: ids })
+        });
+
+        modal.classList.add("hidden");
+        location.reload();
+
+      }catch(e){
+        console.error(e);
+        alert("グループ作成に失敗しました");
+      }
+
+    });
+
+  }
+
+}
+
+document.addEventListener("DOMContentLoaded", () => {
+  initDmModal();
+});
+
+// ----- 追加ここまで -----
