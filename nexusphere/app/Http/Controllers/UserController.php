@@ -19,14 +19,14 @@ class UserController extends Controller
     public function register(Request $request)
     {
         $request->validate([
-            'mail' =>'required|string|unique:users',
-            'password' =>'required|string|min:8|max:20|confirmed',
-            'name' =>'required|string|max:255',
-            'age' =>'required|integer|min:0|max:120',
-            'grade' =>'required|integer|min:1|max:4',
-            'subject' =>'required|string|max:255',
-            'major' =>'required|string|max:255',
-            'icon' =>'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
+            'mail' => ['required','email','unique:users,mail','regex:/@(edu.sba|edu.ssm|sba|ssm)\.ac\.jp$/'],
+            'password' => ['required','string','min:8','max:20','confirmed'],
+            'name' => [ 'required','string','max:255'],
+            'age' =>[ 'required','integer','min:0','max:120' ],
+            'grade' => [ 'required','integer','min:1','max:4' ],
+            'subject' =>[ 'required','string','max:255' ],
+            'major' =>[ 'required','string','max:255' ],
+            'icon' => [ 'nullable','image','mimes:jpeg,png,jpg,gif','max:2048' ],
         ]);
 
         $iconPath = null;

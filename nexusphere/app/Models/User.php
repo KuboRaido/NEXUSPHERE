@@ -42,4 +42,8 @@ class User extends Authenticatable
         }
         return asset('images/default-avatar.png');
     }
+
+    public function circleRequest(){
+        return $this->hasMany(Circle_requests::class,'circle_request_id','user_id');
+    }
 }

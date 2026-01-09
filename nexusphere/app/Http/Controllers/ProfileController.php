@@ -8,7 +8,6 @@ use App\Models\User;
 
 class ProfileController extends Controller
 {
-    // show logged-in user's profile
     public function profileFront()
     {
         $userId = Auth::id();

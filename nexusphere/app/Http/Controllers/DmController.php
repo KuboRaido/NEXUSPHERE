@@ -139,7 +139,7 @@ public function dmfront(Request $r){
    }
 
 # 会話ログ取得（バック）
-public function dmback(Request $request, ?int $partner=null){
+public function dmback(?int $partner=null){
    $me = Auth::id();
    abort_if(!$me, 401, 'Unauthenticated');
 
@@ -207,9 +207,7 @@ public function dmback(Request $request, ?int $partner=null){
             return[
             'id'        =>$dm->dm_id,
             'from_id'   =>$dm->sender_id,
-            //'circle_id' =>$dm->circle_id,
             'text'      =>$dm->message_text,
-            //'dm_key'    =>$dm->dm_key,
             'created_at'=>$dm->created_at?->toISOString(),
             'is_read'   =>$dm->is_read,
             'attachments'=>$dm->Images_and_videos->map(function($rec){

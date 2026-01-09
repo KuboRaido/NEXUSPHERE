@@ -51,12 +51,4 @@ document.addEventListener("DOMContentLoaded", function() {
     document.querySelectorAll('.role-guest').forEach(el => el.style.display = "");
   }
 
-  // ──────────── 参加ボタン押下時（一般ユーザー用） ────────────
-  document.querySelectorAll('.role-guest').forEach(btn => {
-    btn.addEventListener('click', function() {
-      alert("参加申請を送信しました"); // デモ用
-      btn.textContent = "参加申請済み";
-      btn.disabled = true;
-    });
-  });
 });
