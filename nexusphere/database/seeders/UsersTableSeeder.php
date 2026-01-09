@@ -15,10 +15,22 @@ class UsersTableSeeder extends Seeder
     public function run()
     {
       User::create([
+        'user_id' => 1,
+        'mail'    => 'a@sba.ac.jp',
+        'password'=> Hash::make('00000000'),
+        'name'    => 'a',
+        'age'     => 20,
+        'grade'   => 3,
+        'subject' => 'test',
+        'major'   => 'test',
+        'icon'    => null,
+      ]);
+
+      User::create([
         'user_id' => 2,
-        'mail'    => 'test@test',
-        'password'=> Hash::make('00000'),
-        'name'    => 'Test User',
+        'mail'    => 'b@sba.ac.jp',
+        'password'=> Hash::make('00000000'),
+        'name'    => 'b',
         'age'     => 20,
         'grade'   => 3,
         'subject' => 'test',
@@ -28,9 +40,9 @@ class UsersTableSeeder extends Seeder
 
       User::create([
         'user_id' => 3,
-        'mail'    => 'tests@tests',
-        'password'=> Hash::make('00000'),
-        'name'    => 'Test User',
+        'mail'    => 'c@sba.ac.jp',
+        'password'=> Hash::make('00000000'),
+        'name'    => 'c',
         'age'     => 20,
         'grade'   => 3,
         'subject' => 'test',
