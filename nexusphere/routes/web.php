@@ -10,7 +10,7 @@ use App\Http\Controllers\CircleController;
 
 Route::middleware('guest')->group(function(){
     Route::get('/newlogin',[UserController::class,'newLoginForm'])->name('newLogin');
-    Route::post('/newlogin',[UserController::class,'register']);
+    Route::post('/newlogin',[UserController::class,'register'])->name('register');
     Route::get('/',[LoginController::class,'showLoginForm'])->name('login');
     Route::post('/',[LoginController::class,'login']);
 });
