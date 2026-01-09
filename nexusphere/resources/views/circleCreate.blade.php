@@ -7,8 +7,8 @@
 </head>
 <body>
         <div class="header">
-         <a href="{{url('circle')}}" class="back-button">←</a>
-         <span class="title">Nexusphere</span>
+            <a href="{{url('circle')}}" class="back-button">←</a>
+            <span class="title">Nexusphere</span>
         </div>
         <div class="form-container">
 
@@ -19,6 +19,11 @@
                     <label for="image" class="image-label">
                         <span id="plus">＋</span>
                         <img id="preview-image" style="display:none;">
+                        <!-- @error('image')
+                            <div class="text-danger" style="color: red;">
+                                {{ $message }}
+                            </div>
+                        @enderror -->
                     </label>
                 </div>
             </div>
