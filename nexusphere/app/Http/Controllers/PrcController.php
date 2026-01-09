@@ -7,6 +7,7 @@ use Illuminate\Support\Facades\Auth;
 use App\Models\Images_and_videos;
 use App\Models\Prc;
 use App\Models\Nice;
+use App\Rules\NgWord;
 
 class PrcController extends Controller
 {
@@ -53,9 +54,9 @@ class PrcController extends Controller
     {
         // バリデーション
         $request->validate([
-            'sentence' => 'required|string|max:1000',
-            'images.*' => 'image|mimes:jpeg,png,jpg,gif,webp|max:5120', // 1枚最大5MB
-            'videos.*' => 'mimetypes:video/mp4,video/quicktime|max:30720',
+            'sentence' => ['required','string','max:1000',new NgWord],
+            'images.*' => ['image','mimes:jpeg,png,jpg,gif,webp','max:5120'], // 1枚最大5MB
+            'videos.*' => ['mimetypes:video/mp4,video/quicktime','max:30720'],
         ]);
 
         // 投稿作成（type:0 = 投稿）
@@ -106,9 +107,9 @@ class PrcController extends Controller
         $circle = $request->circle_id;
         // バリデーション
         $request->validate([
-            'sentence' => 'required|string|max:1000',
-            'images.*' => 'image|mimes:jpeg,png,jpg,gif,webp|max:5120', // 1枚最大5MB
-            'videos.*' => 'mimetypes:video/mp4,video/quicktime|max:30720',
+            'sentence' => ['required','string','max:1000',new NgWord],
+            'images.*' => ['image','mimes:jpeg,png,jpg,gif,webp','max:5120'], // 1枚最大5MB
+            'videos.*' => ['mimetypes:video/mp4,video/quicktime','max:30720'],
         ]);
 
         // 投稿作成（type:0 = 投稿）
@@ -159,7 +160,7 @@ class PrcController extends Controller
     public function comment(Request $request, $postId)
     {
         $request->validate([
-            'comment' => 'required|string|max:500',
+            'comment' => ['required','string','max:500',new NgWord]
         ]);
 
         $post = Prc::findOrFail($postId);

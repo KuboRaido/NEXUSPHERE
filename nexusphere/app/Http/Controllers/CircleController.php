@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Circle;
 use App\Models\Prc;
 use App\Models\Circle_requests;
+use App\Rules\NgWord;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
@@ -62,10 +63,13 @@ class CircleController extends Controller
     public function circleCreate(Request $request)
     {
         $data = $request->validate([
-            'name'        => 'required|string|max:255',
-            'sentence'    => 'required|string|max:255',
-            'image'       => 'required|image|mimes:jpeg,png,jpg,gif,webp|max:5120',
-            'category'    => 'nullable|string',
+            'name'        => ['required','string','max:255','unique:circles,circle_name',new NgWord],
+            'sentence'    => ['required','string','max:255',new NgWord],
+            'image'       => ['required','image','mimes:jpeg,png,jpg,gif,webp|max:5120'],
+            'category'    => ['nullable','string', new NgWord],
+        ],[
+            'image.required' => '画像を設定してください',
+            'name.unique'    => 'そのサークル名はすでに使用されております',
         ]);
 
         $iconPath = null;
@@ -197,9 +201,9 @@ class CircleController extends Controller
         abort_if(!Auth::id(), 401);
 
         $request->validate([
-            'circle_name' => 'nullable|string|max:255',
-            'sentence'    => 'nullable|string|max:255',
-            'icon'        => 'nullable|image|mimes:jpeg,png,jpg,gif,webp|max:5120',
+            'circle_name' => ['nullable','string','max:255'],
+            'sentence'    => ['nullable','string','max:255'],
+            'icon'        => ['nullable','image','mimes:jpeg,png,jpg,gif,webp','max:5120',new NgWord],
         ]);
 
         if ($request->hasFile('icon')) {
