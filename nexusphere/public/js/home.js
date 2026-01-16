@@ -25,6 +25,20 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 });
 
+// プロフィール遷移
+document.querySelectorAll('.js-profile-link').forEach(el => {
+  el.addEventListener('click', () => {
+    const userId = el.dataset.userId;
+    if (!userId) return;
+
+    if (userId === document.body.dataset.meId) {
+      location.href = '/profile';
+    } else {
+      location.href = `/profile/${userId}`;
+    }
+  });
+});
+
 // モーダル（画像拡大）
 function openModal(src) {
     const modal = document.createElement('div');
