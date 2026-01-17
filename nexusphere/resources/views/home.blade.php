@@ -83,25 +83,25 @@
                 </div>
             @endif
 
-            {{-- いいね --}}
-            <div class="post-actions">
-                <form method="POST" action="/posts/{{ $post->prc_id }}/like">
-                    @csrf
-                    <button type="submit" class="like-button">
-                        ❤️ <span class="like-count">{{ $post->nices->count() }}</span>
-                    </button>
-                </form>
+            <div class="post-footer">
+
+              {{-- いいね --}}
+              <form method="POST" action="/posts/{{ $post->prc_id }}/like">
+                  @csrf
+                   <button type="submit" class="like-button">
+                      ❤️ <span class="like-count">{{ $post->nices->count() }}</span>
+                   </button>
+              </form>
+
+              {{-- コメント入力 --}}
+              <form method="POST" action="/posts/{{ $post->prc_id }}/comment" class="comment-form">
+                  @csrf
+                  <input type="text" name="comment" placeholder="コメントを追加" required>
+                  <button type="submit">送信</button>
+              </form>
+
             </div>
 
-            {{-- コメント欄 --}}
-            <div class="comment-box">
-
-                {{-- コメント送信 --}}
-                <form method="POST" action="/posts/{{ $post->prc_id }}/comment">
-                    @csrf
-                    <input type="text" name="comment" placeholder="コメントを追加" required>
-                    <button type="submit">送信</button>
-                </form>
 
                 {{-- コメント一覧 --}}
                 @foreach ($post->comments as $comment)
