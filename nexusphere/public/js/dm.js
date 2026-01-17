@@ -162,7 +162,7 @@ document.addEventListener('DOMContentLoaded',()=>{
   } ;
 });
 
-//API
+//API 1対1のdmの会話履歴取得
 async function loadConversation(currentPartnerId) {
   if (!Number.isInteger(currentPartnerId)) return;
   setCurrentPartner(currentPartnerId);
@@ -207,6 +207,7 @@ async function loadConversation(currentPartnerId) {
   renderMessages();
 }
 
+// Circle内のDMの会話履歴取得API
 async function loadCircleConversation(circle_id){
   const res  = await fetch(`/api/v1/circle/${circle_id}/dm`, {
     headers: {Accept: 'application/json' },
@@ -214,6 +215,28 @@ async function loadCircleConversation(circle_id){
   });
 
   if(!res.ok) throw new Error(`会話取エラー: ${res.status}`);
+  const json = await res.json();
+  messages = mergeById(messages, json.dms || []).map(m => ({
+    id: m.id,
+    from: String(m.from_id),
+    to:   '',
+    text: m.text,
+    attachments: m.attachments || [],
+    timestamp: new Date(m.created_at),
+    pending: false,
+    isRead: Boolean(m.is_read),
+  }));
+  renderMessages();
+}
+
+// Groupの会話履歴取得API
+async function loadGroupConversation(group_id){
+  const res = await fetch(`/api/v1/group/${group_id}/dm`, {
+    headers: {Accept: 'application/json' },
+    credentials: 'include',
+  });
+
+  if(!res.ok) throw new Error(`会話ログエラー: ${res.status}`);
   const json = await res.json();
   messages = mergeById(messages, json.dms || []).map(m => ({
     id: m.id,
@@ -238,6 +261,12 @@ async function sendMessage() {
   const hasCircle = Number.isInteger(circle) && circle > 0;
   if(Number.isInteger(circle)) fd.append('circle_id', circle);
 
+  // グループIDの取得
+  const qs = new URLSearchParams(location.search);
+  const groupParam = qs.get('group_id');
+  const hasGroup = groupParam && /^\d+$/.test(groupParam);
+  if(hasGroup) fd.append('group_id', groupParam);
+
   const text = (input?.value ?? '').trim();
   const files = fileInput?.files ?  Array.from(fileInput.files) : [];
   if(input) input.value = '';
@@ -249,6 +278,8 @@ async function sendMessage() {
   let toId;
   if(recipientRaw === 'circle'){
     toId = circle;
+  } else if(hasGroup){
+    toId = parseInt(groupParam, 10);
   } else if (recipientRaw === '' || recipientRaw.toLowerCase() === 'me') {
     toId = meId;
   } else {
@@ -280,6 +311,12 @@ async function sendMessage() {
         headers: { 'Accept':'application/json', ...(token ? {'X-XSRF-TOKEN': token} : {}) },
         credentials:'include'
       });
+    } else if(hasGroup){
+      await fetch(`/api/v1/group/${groupParam}/dm`, {
+        method:'POST',
+        headers: { 'Accept':'application/json', ...(token ? {'X-XSRF-TOKEN': token} : {}) },
+        credentials:'include'
+      });
     } else {
         await fetch(`/api/v1/dm/${currentPartnerId}/read`, {
           method:'POST',
@@ -294,9 +331,13 @@ async function sendMessage() {
     let res, resd;
 
     const isCircleMode = Number.isInteger(circle) && circle > 0;
+    const isGroupMode = hasGroup;
+
     if (hadFiles) {
       if(isCircleMode){
         fd.append('circle_id', circle);
+      } else if(isGroupMode){
+        fd.append('group_id', groupParam);
       } else {
         fd.append('to', toId);
       }
@@ -309,7 +350,11 @@ async function sendMessage() {
         body:fd
       });
     } else {
-      const payload = isCircleMode ? {circle_id: circle, text} : {to: toId, text};
+      let payload;
+      if(isCircleMode) payload = {circle_id: circle, text};
+      else if(isGroupMode) payload = {group_id: groupParam, text};
+      else payload = {to: toId, text};
+
       res = await fetch('/api/v1/dm',{
         method: 'POST',
         headers:{'Accept':'application/json','Content-Type':'application/json',...(token ? {'X-XSRF-TOKEN':token} : {})},
@@ -343,13 +388,14 @@ document.addEventListener('DOMContentLoaded', async () => {
 
   await fetch('/sanctum/csrf-cookie', { credentials: 'include' });
 
-  const meId = getMeId();
-  const qs = new URLSearchParams(location.search);
-  const toParam = (qs.get('to') || '').trim();
-  const fileInput = document.getElementById('image-input');
+  const meId             = getMeId();
+  const qs               = new URLSearchParams(location.search);
+  const toParam          = (qs.get('to') || '').trim();
+  const fileInput        = document.getElementById('image-input');
   const previewContainer = document.getElementById('preview-area');
-  const circle = Number(document.getElementById('circle_id')?.value ?? '');
-  const isCircleMode = Number.isInteger(circle) && circle > 0;
+  const circle           = Number(document.getElementById('circle_id')?.value ?? '');
+  const group            = (qs.get('group_id') || '').trim();
+  const isCircleMode     = Number.isInteger(circle) && circle > 0;
 
   if(fileInput && previewContainer){
     fileInput.addEventListener('change', () => {
@@ -372,7 +418,13 @@ document.addEventListener('DOMContentLoaded', async () => {
   }
 
   let currentPartnerId;
-  if (toParam === '' || toParam.toLowerCase() === 'me') {
+  // group_xx 形式に対応
+  const isGroupMode = (group !== '');
+  let currentGroupId = null;
+
+  if (isGroupMode) {
+      currentGroupId = parseInt(group,10);
+  } else if (toParam === '' || toParam.toLowerCase() === 'me') {
     currentPartnerId = meId;
   } else if (/^\d+$/.test(toParam)) {
     currentPartnerId = parseInt(toParam, 10);
@@ -380,20 +432,21 @@ document.addEventListener('DOMContentLoaded', async () => {
     currentPartnerId = meId;
   }
 
-  if (toParam === '' || toParam.toLowerCase() === 'me') {
-    currentPartnerId = meId;
-  } else if (/^\d+$/.test(toParam)) {
-    currentPartnerId = parseInt(toParam, 10);
-  } else {
-    currentPartnerId = meId;
+  // setCurrentPartner は 1対1 の場合のみ設定（フォーム用）
+  if (currentPartnerId) {
+    setCurrentPartner(currentPartnerId);
   }
 
-  setCurrentPartner(currentPartnerId);
-
-  if(isCircleMode){
+  if (isCircleMode) {
     await loadCircleConversation(circle);
+    setInterval(() => loadCircleConversation(circle), 1000);
+  } else if (isGroupMode && Number.isInteger(currentGroupId)) {
+    // グループチャット読み込み
+    await loadGroupConversation(currentGroupId);
+    setInterval(() => loadGroupConversation(currentGroupId), 1000);
   } else {
     await loadConversation(currentPartnerId);
+    setInterval(() => loadConversation(currentPartnerId), 1000);
   }
   // タッチ端末かどうか
   const isTouch = window.matchMedia('(pointer: coarse)').matches;

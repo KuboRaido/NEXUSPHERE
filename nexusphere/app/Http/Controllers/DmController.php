@@ -10,7 +10,7 @@ use Illuminate\Support\Facades\DB;
 use App\Models\Dm;
 use App\Models\User;
 use App\Models\Circle;
-
+use App\Models\Group;
 
 class DmController extends Controller
 {
@@ -52,15 +52,16 @@ class DmController extends Controller
 
       # (a,b) = (min(sender,receiver),max(sender,receiver))ごとに最新行ID
       $lastPerPair = Dm::selectRaw(
-         'LEAST(sender_id,receiver_id) AS a,'.
-         'GREATEST(sender_id,receiver_id) AS b,'.
-         'MAX(dm_id) AS last_id'
+         'LEAST(sender_id,receiver_id) AS a,'.//ペアの一人目
+         'GREATEST(sender_id,receiver_id) AS b,'.//ペアの二人目
+         'MAX(dm_id) AS last_id'                //最新のメッセージID
       )
+      ->whereNull('circle_id')
+      ->whereNull('group_id')
       ->where(function ($q) use ($me) {
          $q->where('sender_id', $me)->orWhere('receiver_id', $me);
       })
       ->groupBy('a','b');
-
       # 最新メッセージを取得して新しい順に並べる
       $rows = Dm::from($dmTable . ' AS dms')
             ->joinSub($lastPerPair, 'lp', function ($join) {
@@ -87,6 +88,30 @@ class DmController extends Controller
          $partnerIds[] = $partnerId;
    }
 
+   //グループ取得
+   $myGroups = \App\Models\Group::whereHas('members', function($q) use ($me) {
+      $q->where('groupmembers.user_id', $me);
+   })->with(['latestMessage'])->get();
+
+   foreach ($myGroups as $g){
+      $lastTime = $g->latestMessage ?-> created_at ??  $g->created_at;
+
+      $list[] = [
+            'conversation_id' => 'group_' . $g->group_id,//Idをかぶらないようにする
+            'partner_id' => $g->group_id,
+            'partner_name' => $g->group_name, 
+            'partner_icon' => null,//グループ画像のURLがあれば設定
+            'last_message' => $g->latestMessage?->message_text ?? 'メッセージはありません',
+            'last_time'    => $lastTime?->toISOString(),
+            'is_group'     => true, //フロントで判別するためにフラグを立てる
+      ];
+   }
+
+   //usort ユーザー定義のルールで配列を並び替える関数
+   usort($list, function ($a,$b) {
+      return ($b['last_time'] ?? '') <=> ($a['last_time'] ?? '');
+   });
+
    $userPk = (new User)->getKeyName();
    $partnerIds[] = (int)$me;
    $users = User::whereIn($userPk, array_unique($partnerIds))
@@ -95,6 +120,8 @@ class DmController extends Controller
    $meUser = $users[(int)$me] ?? null;
    $meIcon = $this->avatarUrl($meUser);
    foreach($list as &$t){
+      if (!empty($t['is_group'])) continue; // グループの場合は名前などを上書きしない
+
       $u = $users[$t['partner_id']] ?? null;
       $t['partner_name'] = $u?->name ?? 'Unknown';
       $t['partner_icon'] = $u ? $this->avatarUrl($u) : ((int)$t['partner_id'] === (int)$me ? $meIcon : asset('images/default-avatar.png'));
@@ -221,12 +248,68 @@ public function dmback(?int $partner=null){
       ]);
    }
 
+   public function dmGroup(Group $group){
+      $m = Dm::where('group_id', $group->group_id)->whereNull('receiver_id')->orderBy('created_at')->get();
+
+      return response()->json([
+         'participants' => [
+            'me'     =>['id' => Auth::id()],
+            'group' =>['id' => $group->group_id, 'name' => $group->group_name],
+         ],
+         'dms' => $m->map(function (DM $dm){
+            return[
+            'id'        =>$dm->dm_id,
+            'from_id'   =>$dm->sender_id,
+            'text'      =>$dm->message_text,
+            'created_at'=>$dm->created_at?->toISOString(),
+            'is_read'   =>$dm->is_read,
+            'attachments'=>$dm->Images_and_videos->map(function($rec){
+                  return [
+                     'type'=>$rec->image ? 'image' : ($rec->video ? 'video' : 'file'),
+                     'url' =>Storage::url($rec->image ?: $rec->video),
+                  ];
+               }),
+            ];
+         }),
+      ]);
+   }
+
+   public function dmGroupCreate(Request $request){
+         $request->validate([
+            'group_name' => 'required|string|max:255',
+            'user_ids'   => 'required|array',
+            'user_ids.*' => 'integer|exists:users,user_id',
+         ]);
+
+         $meId = Auth::id();
+
+         $group = Group::create([
+            'group_name'    => $request->group_name,
+            'members_count' => 0,
+         ]);
+
+         // 作成者と選択メンバーをマージして登録
+         $memberIds = array_unique(array_merge([$meId], $request->user_ids));
+
+         // メンバーを一括追加
+         $group->members()->sync($memberIds);
+
+         // メンバー数更新
+         $group->update([
+            'members_count' => count($memberIds),
+         ]);
+
+         return response()->json(['ok' => true, 'message' => 'グループを作成しました。']);
+   
+   }
+
    public function dmsendback(Request $request)
    {
       $me = $request ->user()?->getAuthIdentifier() ?? Auth::id();
       abort_if(!$me, 401, 'Unauthenticated');
 
       $circle_id = $request -> integer('circle_id');
+      $group_id = $request -> integer('group_id');
       $userPk = (new User)->getKeyName();
 
       $baseRules = [
@@ -245,6 +328,18 @@ public function dmback(?int $partner=null){
          'user_id'      => $me,
          'circle_id'    => $circle_id,
       ]);
+      } elseif($group_id) {
+         $data = $request->validate($baseRules + [
+            'group_id' => ['required', 'integer', 'exists:groups,group_id'],
+         ]);
+
+         $dm = Dm::create([
+         'sender_id'    => $me,
+         'receiver_id'  => null,
+         'message_text' => $data['text'] ?? null,
+         'user_id'      => $me,
+         'group_id'     => $group_id,
+      ]);
       } else {
          $data = $request->validate($baseRules + [
             'to' => ['required', 'integer', "exists:users,{$userPk}"],
@@ -256,6 +351,7 @@ public function dmback(?int $partner=null){
          'message_text' => $data['text']??null,
          'user_id'      => $me,
          'circle_id'    => null,
+         'group_id'     => null,
          ]);
       }
 
@@ -298,6 +394,7 @@ public function dmback(?int $partner=null){
       }
       $partnerId = $partner->getKey();
       $circle = $req->integer('circle_id');
+      $group = $req->integer('group_id');
 
       if($circle > 0){
          $meId = $me->getKey();
@@ -320,6 +417,31 @@ public function dmback(?int $partner=null){
 
          $unread = DB::table('dms')
          ->where('circle_id', $circle)   // 相手から
+         ->when($last, fn($q) => $q->where('created_at', '>', $last))
+         ->count();
+
+         return response()->json(['ok'=>true, 'unread_count' => $unread]);
+      }elseif($group > 0){
+         $meId = $me->getKey();
+         DB::table('dm_reads')->upsert(
+         [[
+            'user_id'      => $meId, 
+            'group_id'    => $group,
+            'last_read_at' => now(),
+            'updated_at'   => now(),
+            'created_at'   => now(),
+         ]],
+         ['user_id','group_id'], //衝突キー（unique）
+         ['last_read_at','updated_at']//更新する列
+         );
+
+         $last = DB::table('dm_reads')
+         ->where('user_id', $meId)
+         ->where('group_id', $group)
+         ->value('last_read_at');
+
+         $unread = DB::table('dms')
+         ->where('group_id', $group)   // 相手から
          ->when($last, fn($q) => $q->where('created_at', '>', $last))
          ->count();
 

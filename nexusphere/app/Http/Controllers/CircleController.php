@@ -127,7 +127,7 @@ class CircleController extends Controller
     public function join(Circle $circle, Request $request)
     {
         $user = $request->user();
-        if($circle->members()->where('circle_users.circle_id', $circle->circle_id)->exists()){
+        if($circle->members()->where('circle_users.user_id', $user->user_id)->exists()){
             return back()->with('status', '既に参加済みのサークルです');
         }
 

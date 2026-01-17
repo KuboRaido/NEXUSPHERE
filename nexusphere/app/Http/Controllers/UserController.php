@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\User;
+use App\Jobs\SendVerificationEmail;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
@@ -34,7 +35,7 @@ class UserController extends Controller
             $iconPath = $request->file('icon')->store('icons', 'public');
         }
 
-        User::create([
+        $user=User::create([
             'mail' => $request->mail,
             'password' => Hash::make($request->password),
             'name' => $request->name,
@@ -45,7 +46,23 @@ class UserController extends Controller
             'icon' => $iconPath,
         ]);
 
+        SendVerificationEmail::dispatch($user);
+
         return redirect()->route('login')->with('success', '登録が完了しました！ログインしてください');
+    }
+
+    //新規登録時にメールが存在するか確認するよう
+    public function verifyEmail($user_id, $hash)
+    {
+        $user = User::findOrFail($user_id);
+
+        if (sha1($user->mail) === $hash) {
+            // メール確認完了日時を更新（カラムが存在する場合）
+            $user->forceFill(['email_verified_at' => now()])->save();
+            return redirect()->route('login')->with('success', 'メールアドレスの確認が完了しました。');
+        }
+
+        return redirect()->route('login')->with('error', '無効なリンクです。');
     }
 
     public function search(Request $request)
@@ -73,9 +90,25 @@ class UserController extends Controller
             return [
                 'user_id' => $u->user_id,
                 'name'    => $u->name,
-                // avatar_url アクセサがあれば優先して返す
                 'avatar'  => $u->avatar_url ?? ($u->icon ? Storage::url($u->icon) : null),
             ];
         })->values());
+    }
+
+    public function group()
+    {
+        $meId =Auth::id();
+        $User = User::query()
+                        ->where('user_id', '!=', $meId)
+                        ->orderBy('created_at','desc')
+                        ->get()
+                        ->map(fn ($u) =>
+            [
+                'id' => $u->user_id,
+                'name'    => $u->name,
+                //'icon'  => $u->avatar_url,
+            ]);
+
+        return response()->json($User->values());
     }
 }

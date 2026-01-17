@@ -11,6 +11,8 @@ use App\Http\Controllers\CircleController;
 Route::middleware('guest')->group(function(){
     Route::get('/newlogin',[UserController::class,'newLoginForm'])->name('newLogin');
     Route::post('/newlogin',[UserController::class,'register'])->name('register');
+    // メール確認用ルートを追加
+    Route::get('/email/verify/{user_id}/{hash}', [UserController::class, 'verifyEmail'])->name('verification.verify');
     Route::get('/',[LoginController::class,'showLoginForm'])->name('login');
     Route::post('/',[LoginController::class,'login']);
 });
