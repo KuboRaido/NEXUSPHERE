@@ -1,5 +1,5 @@
 /* ==============================
-   ベース設定
+   1. ベース設定
 ============================== */
 * {
     box-sizing: border-box;
@@ -15,42 +15,84 @@ html, body {
     color: #333;
 }
 
+
 /* ==============================
-   ヘッダー（中央固定）
+   2. ヘッダー（中央固定）
 ============================== */
 .site-header {
     width: 100%;
     padding: 20px 0;
-    background: transparent;
     display: flex;
-    justify-content: center; /* 💡 横中央揃え */
+    justify-content: center;
     align-items: center;
-    position: relative;
 }
 
 .header-inner {
     width: 100%;
-    text-align: center; /* 💡 テキスト中央寄せ */
+    text-align: center;
 }
 
 #site-title {
     font-size: 2rem;
     font-weight: 700;
-    color: #333;
 }
 
+.user-link {
+    text-decoration: none;
+    color: inherit;
+}
+
+
 /* ==============================
-   コンテナ
+   3. 検索エリア
+============================== */
+.search-area {
+    width: 100%;
+    padding: 15px;
+    background: #add8e6;
+    display: flex;
+    justify-content: center;
+}
+
+.search-area form {
+    width: 100%;
+    max-width: 600px;
+    display: flex;
+    gap: 10px;
+}
+
+.search-input {
+    flex: 1;
+    padding: 10px 12px;
+    border-radius: 8px;
+    border: 1px solid #ccc;
+}
+
+.search-btn {
+    padding: 10px 16px;
+    background-color: #ff69b4;
+    color: #fff;
+    border: none;
+    border-radius: 8px;
+    font-weight: bold;
+    cursor: pointer;
+}
+
+
+/* ==============================
+   4. メインコンテナ
 ============================== */
 .container {
     width: 100%;
     max-width: 600px;
     margin: 0 auto;
     padding: 1rem;
+    padding-bottom: 80px; /* フッター対策 */
 }
 
+
 /* ==============================
-   投稿フォーム
+   5. 投稿フォーム
 ============================== */
 form {
     width: 100%;
@@ -74,7 +116,6 @@ textarea {
 
 input[type="file"] {
     border: none;
-    background: none;
 }
 
 .btn-submit {
@@ -83,19 +124,19 @@ input[type="file"] {
     border: none;
     padding: 1rem;
     border-radius: 0.75rem;
-    font-size: 1rem;
     font-weight: 600;
     cursor: pointer;
-    transition: transform 0.2s ease-in-out, background-color 0.2s;
+    transition: 0.2s;
 }
 
 .btn-submit:hover {
-    transform: scale(1.03);
     background-color: #ff4d9a;
+    transform: scale(1.03);
 }
 
+
 /* ==============================
-   投稿カード
+   6. 投稿カード
 ============================== */
 .post {
     background: white;
@@ -113,17 +154,17 @@ input[type="file"] {
 
 .username {
     font-weight: bold;
-    color: #333;
     margin-left: 10px;
 }
 
 .post-content {
-    margin-bottom: 10px;
     line-height: 1.6;
+    margin-bottom: 10px;
 }
 
+
 /* ==============================
-   投稿画像
+   7. 投稿画像
 ============================== */
 .post-images {
     display: flex;
@@ -144,20 +185,86 @@ input[type="file"] {
     transform: scale(1.02);
 }
 
+
 /* ==============================
-   モーダル
+   8. 投稿フッター（いいね＋コメント入力）
+============================== */
+.post-footer {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-top: 10px;
+}
+
+/* いいねボタン */
+.like-button {
+    background: none;
+    border: none;
+    cursor: pointer;
+    font-size: inherit;
+    color: #aaa;
+    transition: color 0.2s ease;
+}
+
+.like-button.liked {
+    color: #e0245e;
+}
+
+.like-button.animate {
+    animation: like-pop 0.3s ease;
+}
+
+@keyframes like-pop {
+    0% { transform: scale(1); }
+    50% { transform: scale(1.25); }
+    100% { transform: scale(1); }
+}
+
+/* コメント入力 */
+.comment-form {
+    display: flex;
+    flex: 1;
+    gap: 6px;
+}
+
+.comment-form input {
+    flex: 1;
+    padding: 6px 8px;
+    border-radius: 6px;
+    border: 1px solid #ddd;
+}
+
+.comment-form button {
+    background-color: #ff69b4;
+    color: #fff;
+    border: none;
+    padding: 6px 10px;
+    border-radius: 6px;
+    cursor: pointer;
+}
+
+
+/* ==============================
+   9. コメント表示
+============================== */
+.comment {
+    margin: 10px 0;
+    padding-bottom: 8px;
+    border-bottom: 1px solid #eee;
+}
+
+
+/* ==============================
+   10. モーダル
 ============================== */
 .modal {
     display: none;
     position: fixed;
-    z-index: 9999;
-    left: 0;
-    top: 0;
-    width: 100vw;
-    height: 100vh;
+    inset: 0;
     background-color: rgba(0,0,0,0.8);
     justify-content: center;
     align-items: center;
+    z-index: 9999;
 }
 
 .modal img {
@@ -175,31 +282,44 @@ input[type="file"] {
     cursor: pointer;
 }
 
+
 /* ==============================
-   コメント欄
+   11. フッターナビ（固定）
 ============================== */
-.comment-box {
-    margin-top: 10px;
+.footer-nav {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    height: 60px;
+    background-color: #fff;
+    border-top: 1px solid #ddd;
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+    z-index: 100;
 }
 
-.comment-box input {
-    width: 80%;
-    padding: 0.5rem;
-    border-radius: 0.5rem;
-    border: 1px solid #e5e7eb;
+.footer-nav a {
+    color: #666;
+    font-size: 22px;
+    text-decoration: none;
+    transition: 0.2s;
 }
 
-.comment-box button {
-    background-color: #ff69b4;
-    color: white;
-    border: none;
-    padding: 0.5rem 1rem;
-    border-radius: 0.5rem;
-    cursor: pointer;
+.footer-nav a:hover,
+.footer-nav a.active {
+    color: #ff69b4;
+    transform: scale(1.1);
 }
+
+.footer-nav i {
+    pointer-events: none;
+}
+
 
 /* ==============================
-   スマホ対応
+   12. レスポンシブ
 ============================== */
 @media screen and (max-width: 768px) {
     #site-title {
@@ -207,86 +327,7 @@ input[type="file"] {
     }
 
     .container {
-        max-width: 100%;
         padding: 0.5rem;
+        padding-bottom: 80px;
     }
 }
-
-/* ==============================
-   フッターナビ（固定下部）
-============================== */
-.footer-nav {
-    position: fixed;
-    bottom: 0;
-    left: 0;
-    width: 100%;
-    background-color: #fff;
-    border-top: 1px solid #ddd;
-    display: flex;
-    justify-content: space-around;
-    align-items: center;
-    height: 60px;
-    z-index: 100;
-    box-shadow: 0 -2px 8px rgba(0, 0, 0, 0.05);
-}
-
-.footer-nav a {
-    color: #666;
-    text-decoration: none;
-    font-size: 22px;
-    transition: color 0.3s ease, transform 0.2s ease;
-}
-
-.footer-nav a:hover {
-    color: #ff69b4;
-    transform: scale(1.1);
-}
-
-.footer-nav a.active {
-    color: #ff69b4; /* アクティブなタブの色 */
-}
-
-/* アイコン整列用 */
-.footer-nav i {
-    pointer-events: none;
-}
-
-/* 投稿フォームや投稿リストがフッターに被らないように下マージン */
-.container {
-    padding-bottom: 80px;
-}
-
-/* 検索バー */
-.search-area {
-    width: 100%;
-    padding: 15px;
-    background: #add8e6 !important;
-    display: flex;
-    justify-content: center;
-}
-
-.search-area form {
-    width: 100%;
-    max-width: 600px;
-    display: flex;
-    gap: 10px;
-}
-
-.search-input {
-    flex-grow: 1;
-    padding: 10px 12px;
-    border-radius: 8px;
-    border: 1px solid #ccc;
-    font-size: 16px;
-}
-
-.search-btn {
-    padding: 10px 16px;
-    background-color: #ff69b4;
-    color: #fff;
-    border: none;
-    border-radius: 8px;
-    cursor: pointer;
-    font-weight: bold;
-}
-
