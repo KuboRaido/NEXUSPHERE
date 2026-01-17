@@ -22,6 +22,7 @@ return new class extends Migration
             $table->text('major');
             $table->text('icon')->nullable();
             $table->rememberToken();
+            $table->timestamp('email_verified_at')->nullable();
             $table->timestamps();
         });
     }

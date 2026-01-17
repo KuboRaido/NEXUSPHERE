@@ -18,15 +18,24 @@ class LoginController extends Controller
             'password'=>['required'],
         ]);
 
-    $remember = (bool) $request->boolean('remember');
+        $remember = (bool) $request->boolean('remember');
 
         if (Auth::attempt(['mail' => $credentials['mail'],'password' =>$credentials['password']],$remember)){
+            
+            // メール確認済みかチェック
+            if (Auth::user()->email_verified_at === null) {
+                Auth::logout(); // ログイン状態を解除
+                return back()->withErrors([
+                    'login_error' => 'メールアドレスの確認が完了していません。確認メールのリンクをクリックしてください。'
+                ])->onlyInput('mail');
+            }
+
             $request->session()->regenerate();
 
             if($request->wantsJson()){
                 return response()->json(['ok' => true, 'id' => Auth::id()]);
             }
-            return redirect()->intended(route('dm-list'));
+            return redirect()->intended(route('home'));
         }
 
         return back()->withErrors([

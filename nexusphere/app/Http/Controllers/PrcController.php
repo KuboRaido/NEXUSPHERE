@@ -20,12 +20,6 @@ class PrcController extends Controller
                     ->with(['comments', 'images'])
                     ->orderBy('created_at', 'desc');
 
-        // 検索ワードがある場合は sentence に対して LIKE 検索
-        if ($request->filled('search')) {
-            $keyword = $request->input('search');
-            $query->where('sentence', 'LIKE', "%{$keyword}%");
-        }
-
         $posts = $query->get();
 
         return view('circleProfile', compact('posts'));
@@ -34,6 +28,7 @@ class PrcController extends Controller
         if(empty($request -> circle_id)){
             // 投稿(type = 0) をベースにクエリ作成
             $query = Prc::where('type', 0)
+                    ->whereNull('circle_id')
                     ->with(['comments', 'images'])
                     ->orderBy('created_at', 'desc');
 
@@ -55,8 +50,8 @@ class PrcController extends Controller
         // バリデーション
         $request->validate([
             'sentence' => ['required','string','max:1000',new NgWord],
-            'images.*' => ['image','mimes:jpeg,png,jpg,gif,webp','max:5120'], // 1枚最大5MB
-            'videos.*' => ['mimetypes:video/mp4,video/quicktime','max:30720'],
+            'images.*' => ['image','mimes:jpeg,png,jpg,gif,webp','max:1024'], // 1枚最大5MB
+            'videos.*' => ['mimetypes:video/mp4,video/quicktime','max:51200'],
         ]);
 
         // 投稿作成（type:0 = 投稿）

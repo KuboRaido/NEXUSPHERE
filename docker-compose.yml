@@ -34,3 +34,26 @@ services:
       - ./docker/db/sql:/docker-entrypoint-initdb.d
     ports:
       - "127.0.0.1:8307:3306"
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "127.0.0.1", "-uroot", "-proot"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 30s #DB起動の猶予
+
+  mail-nexus:
+    container_name: mail-nexus
+    build:  ./docker/php  #app-nexusと同じDockerfileを使う
+    working_dir: /var/www/nexusphere
+    volumes:
+      - ./:/var/www   #app-nexusと同じパスに合わせないと同じファイルを使用できない
+      - ./docker/php/php.ini:/usr/local/etc/php/php.ini
+      - ./log:/var/log
+    depends_on:
+      db-nexus:  #自分のDBサービス名に合わせる
+        condition: service_healthy
+      app-nexus:
+        condition: service_started
+    restart: on-failure #接続失敗時に自動リトライ
+    #キューを監視して実行するコマンド
+    command: php artisan queue:work --verbose --tries=3 --timeout=90

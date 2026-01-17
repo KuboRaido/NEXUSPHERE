@@ -65,13 +65,18 @@
             <!-- 学科 -->
             <div>
                 <label for="subject" class="label-text">学科</label>
-                <input type="text" id="subject" name="subject" placeholder="学科を入力" class="input-field" required>
+                <select id="subject" name="subject" placeholder="学科を入力" class="input-field" required>
+                    <option value="" disabled selected>学科を選択してください</option>
+                    <option value="AI&テクノロジー科">AI&テクノロジー科</option>
+                </select>
             </div>
 
             <!-- 専攻 -->
             <div>
                 <label for="major" class="label-text">専攻</label>
-                <input type="text" id="major" name="major" placeholder="専攻を入力" class="input-field" required>
+                <select id="major" name="major" class="input-field" required>
+                    <option value="" disabled selected>先に学科を選択してください</option>
+                </select>
             </div>
 
             <!-- アイコン -->

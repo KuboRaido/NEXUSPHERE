@@ -8,6 +8,7 @@
   <meta name="default-avatar" content="{{ asset('images/default-avatar.png') }}">
   <script>window.DEFAULT_AVATAR_URL = "{{asset('images/default-avatar.png')}}"</script>
   <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="csrf-token" content="{{ csrf_token() }}">
 </head>
 <body>
     <div class="header">
@@ -29,6 +30,7 @@
         <div id="createDmModal" class="dm-modal hidden">
           <div class="dm-modal-content">
             <h3>グループDM作成</h3>
+            <input id="group_name" type="text" placeholder="グループ名を入力" autocomplete="off" />
 
             <div id="modalFriendList">
               <!-- JSでここに友達一覧 -->

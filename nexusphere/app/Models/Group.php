@@ -8,7 +8,7 @@ class Group extends Model
 {
     protected $table = 'groups';
     protected $primaryKey = 'group_id';
-    protected $fillable = ['group_id','group_name','circle_id'];
+    protected $fillable = ['group_id','group_name','circle_id', 'members_count'];
 
     public function circle(){
         return $this->belongsTo(Circle::class,'circle_id','circle_id');
@@ -16,5 +16,9 @@ class Group extends Model
 
     public function members(){
         return $this->belongsToMany(User::class,'groupmembers','group_id','user_id')->withTimestamps();
+    }
+
+    public function latestMessage(){
+        return $this->hasOne(Dm::class,'group_id','group_id')->latestOfMany('dm_id','max');
     }
 }
