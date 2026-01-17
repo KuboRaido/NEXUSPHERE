@@ -33,7 +33,14 @@
 
             {{-- 投稿者名 --}}
             <div class="post-header">
-                <span class="username">{{ $post->user_name }}</span>
+                <a href="{{ route('profile.other', $post->user->user_id) }}" class="user-link">
+                    <img src="{{ $post->user->icon
+                                 ? asset('storage/' . $post->user->icon)
+                                 : asset('images/default_icon.png') }}"
+                         class="user-icon"
+                         alt="icon">
+                    <span class="username">{{ $post->user->name }}</span>
+                </a>
             </div>
 
             {{-- 投稿内容 --}}
@@ -98,7 +105,15 @@
 
                 {{-- コメント一覧 --}}
                 @foreach ($post->comments as $comment)
-                    <p>💬 {{ $comment->sentence }}</p>
+                    <div class="comment">
+                        <a href="{{ route('profile.other', $comment->user->user_id) }}"
+                           class="user-link">
+                            <img src="{{ asset('storage/' . $comment->user->icon) }}"
+                                 class="user-icon small">
+                            <strong>{{ $comment->user->name }}</strong>
+                        </a>
+                        <span class="comment-text">{{ $comment->sentence }}</span>
+                    </div>
                 @endforeach
 
             </div>
