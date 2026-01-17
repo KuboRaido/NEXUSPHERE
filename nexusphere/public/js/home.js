@@ -50,3 +50,22 @@ function openModal(src) {
     document.body.appendChild(modal);
     modal.style.display = 'flex';
 }
+
+
+document.querySelectorAll('.like-button').forEach(button => {
+    button.addEventListener('click', () => {
+        button.classList.toggle('liked');
+    });
+});
+
+document.querySelectorAll('.like-button').forEach(button => {
+    button.addEventListener('click', () => {
+        // 色切り替え
+        button.classList.toggle('liked');
+
+        // アニメーション付与
+        button.classList.remove('animate');
+        void button.offsetWidth; // 再描画トリガー
+        button.classList.add('animate');
+    });
+});
