@@ -4,16 +4,19 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="csrf-token" content="{{ csrf_token() }}">
-    <title>nexusphere</title>
+    <title>サークルDM</title>
     <link rel="stylesheet" href="{{ asset('css/dm.css') }}">
     <meta name="default-avatar" content="{{ asset('images/default-avatar.png') }}">
     <script>window.DEFAULT_AVATAR_URL = "{{asset('images/default-avatar.png')}}"</script>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
 </head>
 <body>
     <!-- ヘッダー -->
-    <div class="header">
-        <span class="title">nexusphere</span>
-    </div>
+    <header class="site-header">
+        <div class="header-inner">
+            <h1 id="site-title">Nexusphere</h1>
+        </div>
+    </header>
     <div class="chat-container"> 
         <div class="chat-header">
         <a href="{{route('circle.profile',['circle' => $circle_id])}}" class="back-button">←</a>

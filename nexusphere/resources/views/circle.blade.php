@@ -8,12 +8,15 @@
   <meta name="default-avatar" content="{{ asset('images/default-club.png') }}">
   <script>window.DEFAULT_CLUB_ICON_URL = "{{ asset('images/default-club.png') }}";</script>
   <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
 </head>
   <body>
     <!-- ヘッダー -->
-      <div class="header">
-        <span class="title">Nexusphere</span>
-      </div>
+    <header class="site-header">
+        <div class="header-inner">
+            <h1 id="site-title">Nexusphere</h1>
+        </div>
+    </header>
       <div class=circle-container>
       <!-- 検索ボックス -->
       <div class="search-container">

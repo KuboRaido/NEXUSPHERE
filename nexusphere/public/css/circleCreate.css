@@ -1,24 +1,66 @@
+/* =========================
+   1. ベース
+========================= */
+* {
+  box-sizing: border-box;
+}
+
 body {
+  margin: 0;
   font-family: Arial, sans-serif;
   background-color: #add8e6;
   min-height: 100vh;
 }
 
-/* ヘッダー */
-.header {
-  background: #add8e6;
-  padding: 15px;
-  text-align: center;
-  font-size: 20px;
-  font-weight: bold;
+/* =========================
+   2. ヘッダー（戻る＋中央タイトル）
+========================= */
+.site-header {
+  width: 100%;
+  padding: 12px 8px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
 
-.title {
-  font-size: 20px;
-  font-weight: bold;
+.header-inner {
+  max-width: 600px;
+  width: 100%;
+  margin: 0 auto;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  position: relative;
 }
 
+/* 戻るボタン */
+.back-button {
+  position: absolute;
+  left: 0;
+
+  font-size: 22px;
+  color: #333;
+  text-decoration: none;
+  background: none;
+  border: none;
+  cursor: pointer;
+}
+
+/* タイトル */
+#site-title {
+  font-size: 2.05rem;
+  font-weight: 700;
+  margin: 0;
+  line-height: 1.2;
+}
+
+/* =========================
+   3. フォームコンテナ
+========================= */
 .form-container {
+  max-width: 600px;
   width: 90%;
   margin: 30px auto;
   padding: 20px;
@@ -27,14 +69,9 @@ body {
   box-shadow: 0 2px 8px rgba(0,0,0,0.15);
 }
 
-/* 📝 フォーム全体 */
-.form-container {
-  flex: 1;
-  padding: 10px;
-  overflow-y: auto;
-}
-
-/* 🖼️ 画像プレビュー（丸） */
+/* =========================
+   4. 画像プレビュー
+========================= */
 .image-preview {
   width: 145px;
   height: 145px;
@@ -48,41 +85,25 @@ body {
   position: relative;
 }
 
-/* ＋アイコン */
+.image-label {
+  cursor: pointer;
+}
+
 #plus {
   font-size: 80px;
   color: #aaa;
-}
-
-
-.image-label {
-  cursor: pointer;
 }
 
 .image-preview img {
   width: 150px;
   height: 150px;
   border-radius: 50%;
-  background-color: #eee;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  overflow: hidden;
-  margin: 20px auto;
-  position: relative;
+  object-fit: cover;
 }
 
-.back-button {
-  transform: translateY(-50%); /* ← 縦の中央に揃える */
-  font-size: 22px;
-  color: #333;
-  text-decoration: none;
-  cursor: pointer;
-  background: none;
-  border: none;
-}
-
-/* 🧩 各フォーム項目 */
+/* =========================
+   5. フォーム要素
+========================= */
 .form-group {
   margin-bottom: 15px;
   display: flex;
@@ -106,7 +127,9 @@ input[type="file"] {
   outline: none;
 }
 
-/* 🌸 送信ボタン（チャットのピンクボタンと統一） */
+/* =========================
+   6. 送信ボタン
+========================= */
 .submit-btn {
   width: 100%;
   height: 40px;
@@ -121,4 +144,18 @@ input[type="file"] {
 
 .submit-btn:hover {
   background-color: #ff4c9e;
+}
+
+/* =========================
+   7. レスポンシブ
+========================= */
+@media screen and (max-width: 768px) {
+  #site-title {
+    font-size: 1.6rem;
+  }
+
+  .form-container {
+    margin: 20px auto;
+    padding: 16px;
+  }
 }

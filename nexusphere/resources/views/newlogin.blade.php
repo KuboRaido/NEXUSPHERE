@@ -6,6 +6,8 @@
     <title>新規登録</title>
     <!-- Custom CSS -->
     <link rel="stylesheet" href="{{ asset('css/newlogin.css') }}">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+
 </head>
 <body>
     <div class="wrapper">
@@ -95,9 +97,9 @@
     </div>
 
         <!-- 登録ボタン --> 
+        <div class="button-row">
             <button type="submit" class="submit-button" form="register">登録</button>
-            <a href="{{ route('login') }}" class="cancel-button" style="text-decoration: none; display: inline-block; text-align: center;">戻る</a>
-
+            <a href="{{ route('login') }}" class="cancel-button">戻る</a>
         </div>
     <!-- Custom JavaScript -->
     <script src="{{ asset('js/newlogin.js') }}"></script>
