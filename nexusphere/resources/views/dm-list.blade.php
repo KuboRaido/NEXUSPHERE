@@ -7,13 +7,17 @@
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   <meta name="default-avatar" content="{{ asset('images/default-avatar.png') }}">
   <script>window.DEFAULT_AVATAR_URL = "{{asset('images/default-avatar.png')}}"</script>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="csrf-token" content="{{ csrf_token() }}">
 </head>
 <body>
-    <div class="header">
-      <span class="title">Nexusphere</span>
-    </div>
+    <header class="site-header">
+        <div class="header-inner">
+            <h1 id="site-title">Nexusphere</h1>
+        </div>
+    </header>
     <div class=dmlist-container>
           <div class="search-container">
             <input type="text" id="search-input" placeholder="ユーザーを検索..." />

@@ -8,6 +8,30 @@ body {
     margin: 0;
 }
 
+.site-header {
+    width: 100%;
+    padding: 20px 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.header-inner {
+    max-width: 600px;
+    margin: 0 auto;
+}
+
+
+#site-title {
+    font-size: 2rem;
+    font-weight: 700;
+}
+
+.user-link {
+    text-decoration: none;
+    color: inherit;
+}
+
 .wrapper {
     display: flex;
     flex-direction: column;
@@ -59,6 +83,7 @@ body {
 }
 
 .cancel-button {
+    text-decoration: none;
     padding: 1rem;
     background-color: #ff69b4;
     border: none;
@@ -125,6 +150,23 @@ body {
     display: none;
 }
 
+/* ボタン横並び */
+.button-row {
+    display: flex;
+    gap: 1rem;              /* ボタン間の余白 */
+    width: 100%;
+    max-width: 900px;
+    justify-content: center;
+    margin-top: 1.5rem;
+}
+
+.button-row .submit-button,
+.button-row .cancel-button {
+    flex: 1;                /* 横幅を揃える */
+    text-align: center;
+}
+
+
 /* 画面幅が600px以下（スマホサイズ）ならこのCSSが適用される */
 @media (max-width: 600px) {
     .form-container {
@@ -140,12 +182,6 @@ body {
         font-size: 1.5rem;
     }
 
-    .input-field,
-    .submit-button {
-        font-size: 1rem;
-        padding: 0.75rem;
-    }
-
     .icon-placeholder {
         width: 60px;
         height: 60px;
@@ -153,5 +189,18 @@ body {
     }
     .input-field{
         width: 90%;
+    }
+    .button-row {
+        gap: 0.5rem;
+        margin-top: 1rem;
+    }
+
+    .button-row .submit-button,
+    .button-row .cancel-button {
+        padding: 0.6rem;
+        font-size: 0.85rem;   /* ← ここ重要 */
+        border-radius: 0.6rem;
+        width: 100%;
+        max-width: 200px;
     }
 }

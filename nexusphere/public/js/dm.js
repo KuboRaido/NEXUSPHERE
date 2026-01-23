@@ -485,4 +485,42 @@ document.addEventListener('DOMContentLoaded', async () => {
       }
     });
   }
+   const menuBtn = document.getElementById("menu-btn");
+  const dropdown = document.getElementById("menu-dropdown");
+
+    menuBtn.addEventListener("click", () => {
+        dropdown.classList.toggle("hidden");
+    });
+
+    // 画面外クリックで閉じる
+    document.addEventListener("click", (e) => {
+        if (!menuBtn.contains(e.target) && !dropdown.contains(e.target)) {
+            dropdown.classList.add("hidden");
+        }
+    });
+
+    // ユーザー追加
+    document.getElementById("add-user-btn").addEventListener("click", () => {
+        alert("ユーザー追加処理を書く");
+        // 例: モーダル表示 or 別画面遷移
+    });
+
+    // 退会
+    document.getElementById("leave-chat-btn").addEventListener("click", () => {
+        if (!confirm("このチャットから退会しますか？")) return;
+
+        fetch("/dm/leave", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+                "X-CSRF-TOKEN": document.querySelector('meta[name="csrf-token"]').content
+            },
+            body: JSON.stringify({
+                partner_id: document.getElementById("recipientId").value
+            })
+        }).then(() => {
+            location.href = "/dmlist";
+        });
+    });
+
 });
