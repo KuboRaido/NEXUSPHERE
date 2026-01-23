@@ -4,21 +4,37 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="csrf-token" content="{{ csrf_token() }}">
-    <title>nexusphere</title>
+    <title>Nexusphere</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <link rel="stylesheet" href="{{ asset('css/dm.css') }}">
     <meta name="default-avatar" content="{{ asset('images/default-avatar.png') }}">
     <script>window.DEFAULT_AVATAR_URL = "{{asset('images/default-avatar.png')}}"</script>
 </head>
 <body>
     <!-- ヘッダー -->
-    <div class="header">
-      <span class="title">nexusphere</span>
-    </div>
-    <div class="chat-container"> 
-      <div class="chat-header">
-          <a href="{{url('dmlist')}}" class="back-button">←</a>
-          <span class="username">{{ $partnerName }}</span>
-      </div>
+        <header class="site-header">
+            <div class="header-inner">
+                <h1 id="site-title">Nexusphere</h1>
+            </div>
+        </header>
+        <div class="chat-container"> 
+        <div class="chat-header">
+            <!-- 左 -->
+            <a href="{{url('dmlist')}}" class="back-button">←</a>
+
+            <!-- 中央 -->
+            <span class="username">{{ $partnerName }}</span>
+
+            <!-- 右 -->
+            <div class="chat-header-right">
+                <button id="menu-btn" class="menu-btn">☰</button>
+
+                <div id="menu-dropdown" class="menu-dropdown hidden">
+                    <button id="add-user-btn">ユーザーを追加</button>
+                    <button id="leave-chat-btn" class="danger">退会する</button>
+                </div>
+            </div>
+        </div>
 
         <!-- チャットボックス -->
         <div id="chat-box" class="chat-box"></div>

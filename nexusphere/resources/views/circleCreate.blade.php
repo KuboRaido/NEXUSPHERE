@@ -4,12 +4,16 @@
     <meta charset="utf-8" />
     <title>クラブ作成</title>
     <link rel="stylesheet" href="{{ asset('css/circleCreate.css') }}">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+
 </head>
 <body>
-        <div class="header">
+    <header class="site-header">
+        <div class="header-inner">
             <a href="{{url('circle')}}" class="back-button">←</a>
-            <span class="title">Nexusphere</span>
+            <h1 id="site-title">Nexusphere</h1>
         </div>
+    </header>
         <div class="form-container">
 
             <!-- 🖼️ 画像プレビュー部分 -->
