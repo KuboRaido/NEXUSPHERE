@@ -35,10 +35,10 @@
             <div class="post-header">
                 <a href="{{ route('profile.other', $post->user->user_id) }}" class="user-link">
                     <img src="{{ $post->user->icon
-                                 ? asset('storage/' . $post->user->icon)
-                                 : asset('images/default_icon.png') }}"
-                         class="user-icon"
-                         alt="icon">
+                                ? asset('storage/' . $post->user->icon)
+                                : asset('images/default_icon.png') }}"
+                        class="user-icon"
+                        alt="icon">
                     <span class="username">{{ $post->user->name }}</span>
                 </a>
             </div>
@@ -64,16 +64,16 @@
                         {{-- 画像ならimgタグ --}}
                         @if (in_array($exetension, ['jpg', 'jpeg', 'png', 'webp', 'gif']))
                             <img src="{{ asset('storage/' . $filePath) }}"
-                                 alt="投稿画像"
-                                 class="post-image"
-                                 onclick="openModal(this.src)">
+                                alt="投稿画像"
+                                class="post-image"
+                                onclick="openModal(this.src)">
                         @endif
 
                         {{-- 動画ならvideoタグ --}}
                         @if (in_array($exetension, ['mp4', 'mov', 'webm']))
                             <video controls
-                                   class="post-video"
-                                   style="max-width: 100%; border-radius: 8px; margin-top: 10px;">
+                                class="post-video"
+                                style="max-width: 100%; border-radius: 8px; margin-top: 10px;">
                                 <source src="{{ asset('storage/' . $filePath) }}" type="video/{{ $exetension }}">
                                 お使いのブラウザは動画再生に対応していません。
                             </video>

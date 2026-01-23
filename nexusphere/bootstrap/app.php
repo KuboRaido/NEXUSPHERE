@@ -5,6 +5,8 @@ use Illuminate\Foundation\Configuration\Exceptions;
 use Illuminate\Foundation\Configuration\Middleware;
 use Illuminate\Support\Facades\Route;
 use Laravel\Sanctum\Http\Middleware\EnsureFrontendRequestsAreStateful;
+use Illuminate\Http\Exceptions\PostTooLargeException;
+use Illuminate\Http\Request;
 // use App\Http\Middleware\HandleInertiaRequests; // ← Inertia未使用ならコメントアウト
 
 return Application::configure(basePath: dirname(__DIR__))
@@ -35,6 +37,13 @@ return Application::configure(basePath: dirname(__DIR__))
             'auth'     => \App\Http\Middleware\Authenticate::class,
             'verified' => \Illuminate\Auth\Middleware\EnsureEmailIsVerified::class,
         ]);
+    })
+    ->withExceptions(function (Exceptions $exceptions) {
+    $exceptions->render(function (PostTooLargeException $e, Request $request) {
+        return redirect()->back()
+            ->withInput()
+            ->withErrors(['file_error' => 'ファイルサイズが大きすぎます。']);
+        });
     })
     ->withExceptions(function (Exceptions $exceptions) {
         $exceptions->renderable(function (\Illuminate\Auth\AuthenticationException $e, $request) {
