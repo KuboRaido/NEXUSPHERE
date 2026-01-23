@@ -10,17 +10,23 @@ body {
 /* =========================
    ヘッダー
 ========================= */
-.header {
-  background: #add8e6;
-  padding: 15px;
-  text-align: center;
-  font-size: 22px;
-  font-weight: bold;
+.site-header {
+    width: 100%;
+    padding: 0px 8px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
 }
 
-.title {
-  font-size: 2rem;
-  font-weight: bold;
+.header-inner {
+    max-width: 600px;
+    margin: 0 auto;
+}
+
+
+#site-title {
+    font-size: 2.05rem;
+    font-weight: 700;
 }
 
 /* =========================
