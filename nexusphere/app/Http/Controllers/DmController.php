@@ -160,7 +160,12 @@ class DmController extends Controller
 public function dmfront(Request $r){
       $to = $r->query('to');
       $partnerId = ($to === 'me' || $to === null) ? Auth::id() : (int) $to;
-      $partnerName = User::where('user_id', $partnerId)->value('name');
+      $group = $r->group_id;
+      if($group){
+         $partnerName = \App\Models\Group::where('group_id', $group)->value('group_name');
+      }else{
+         $partnerName = User::where('user_id', $partnerId)->value('name');
+      }
       return view('dm', compact('partnerId', 'partnerName'));
    }
 
@@ -301,6 +306,27 @@ public function dmback(?int $partner=null){
          return response()->json(['ok' => true, 'message' => 'グループを作成しました。']);
    
    }
+
+   // public function dmGroupJoin(Request $request){
+   //    $request->validate([
+   //          'group_name' => 'required|string|max:255',
+   //          'user_ids'   => 'required|array',
+   //          'user_ids.*' => 'integer|exists:users,user_id',
+   //       ]);
+
+   //    $meId = Auth::id();
+
+   //    // 作成者と選択メンバーをマージして登録
+   //    $memberIds = array_unique(array_merge([$meId], $request->user_ids));
+
+   //    // メンバーを一括追加
+   //    $group->members()->sync($memberIds);
+
+   //    // メンバー数更新
+   //    $group->update([
+   //       'members_count' => count($memberIds),
+   //    ]);
+   // }
 
    public function dmsendback(Request $request)
    {
