@@ -70,6 +70,8 @@
                 <select id="subject" name="subject" placeholder="学科を入力" class="input-field" required>
                     <option value="" disabled selected>学科を選択してください</option>
                     <option value="AI&テクノロジー科">AI&テクノロジー科</option>
+                    <option value="デジタルテクノロジー科">デジタルテクノロジー科</option>
+                    <option value="クリエイティブデザイン科">クリエイティブデザイン科</option>
                 </select>
             </div>
 

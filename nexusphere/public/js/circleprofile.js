@@ -1,7 +1,5 @@
 document.addEventListener("DOMContentLoaded", function() {
-
   // ──────────── ログアウトダイアログ処理 ────────────
-  
   const trigger       = document.getElementById("logout-trigger");
   const confirmLogout = document.getElementById("logout-confirm");
   const yes           = document.getElementById("logout-yes");
