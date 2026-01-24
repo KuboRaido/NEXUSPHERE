@@ -36,10 +36,10 @@ services:
       - "127.0.0.1:8307:3306"
     healthcheck:
       test: ["CMD", "mysqladmin", "ping", "-h", "127.0.0.1", "-uroot", "-proot"]
-      interval: 10s
-      timeout: 5s
-      retries: 5
-      start_period: 30s #DB起動の猶予
+      interval: 20s
+      timeout: 10s
+      retries: 10
+      start_period: 60s #DB起動の猶予
 
   mail-nexus:
     container_name: mail-nexus
