@@ -26,7 +26,6 @@
             <span class="username">{{ $partnerName }}</span>
 
             <!-- 右 -->
-            @if($group_id)
                 <div class="chat-header-right">
                     <button id="menu-btn" class="menu-btn">☰</button>
 
@@ -35,7 +34,6 @@
                         <button id="leave-chat-btn" class="danger">退会する</button>
                     </div>
                 </div>
-            @endif
         </div>
 
         <!-- チャットボックス -->
