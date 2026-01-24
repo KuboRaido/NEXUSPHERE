@@ -201,6 +201,11 @@ class PrcController extends Controller
     // 投稿フォーム表示
     public function post()
     {
-        return view('post');
+        $userId = Auth::id();
+        abort_if(!$userId, 401);
+
+        $post = Auth::user();
+        echo "<script>console.log(" . json_encode($post) . ");</script>";
+        return view('post',['post' => $post]);
     }
 }

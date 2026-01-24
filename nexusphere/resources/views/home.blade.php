@@ -35,11 +35,9 @@
             {{-- 投稿者名 --}}
             <div class="post-header">
                 <a href="{{ route('profile.other', $post->user->user_id) }}" class="user-link">
-                    <img src="{{ $post->user->icon
-                                ? asset('storage/' . $post->user->icon)
-                                : asset('images/default_icon.png') }}"
+                    <img src="{{ $post->user->avatar_url }}"
                         class="user-icon"
-                        alt="icon">
+                        alt="icon"></img>
                     <span class="username">{{ $post->user->name }}</span>
                 </a>
             </div>
@@ -86,20 +84,20 @@
 
             <div class="post-footer">
 
-              {{-- いいね --}}
-              <form method="POST" action="/posts/{{ $post->prc_id }}/like">
-                  @csrf
-                   <button type="submit" class="like-button">
-                      ❤️ <span class="like-count">{{ $post->nices->count() }}</span>
-                   </button>
-              </form>
+                {{-- いいね --}}
+                <form method="POST" action="/posts/{{ $post->prc_id }}/like">
+                    @csrf
+                    <button type="submit" class="like-button">
+                        ❤️ <span class="like-count">{{ $post->nices->count() }}</span>
+                    </button>
+                </form>
 
-              {{-- コメント入力 --}}
-              <form method="POST" action="/posts/{{ $post->prc_id }}/comment" class="comment-form">
-                  @csrf
-                  <input type="text" name="comment" placeholder="コメントを追加" required>
-                  <button type="submit">送信</button>
-              </form>
+                {{-- コメント入力 --}}
+                <form method="POST" action="/posts/{{ $post->prc_id }}/comment" class="comment-form">
+                    @csrf
+                    <input type="text" name="comment" placeholder="コメントを追加" required>
+                    <button type="submit">送信</button>
+                </form>
 
             </div>
 
@@ -108,9 +106,9 @@
                 @foreach ($post->comments as $comment)
                     <div class="comment">
                         <a href="{{ route('profile.other', $comment->user->user_id) }}"
-                           class="user-link">
+                            class="user-link">
                             <img src="{{ asset('storage/' . $comment->user->icon) }}"
-                                 class="user-icon small">
+                                    class="user-icon small">
                             <strong>{{ $comment->user->name }}</strong>
                         </a>
                         <span class="comment-text">{{ $comment->sentence }}</span>
