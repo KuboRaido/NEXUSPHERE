@@ -64,8 +64,8 @@ body {
 }
 
 .avatar-wrap{
-  width: 100px;   /* 2倍に拡大 */
-  height: 100px;  /* 2倍に拡大 */
+  width: 80px;   /* 2倍に拡大 */
+  height: 80px;  /* 2倍に拡大 */
   border-radius: 50%;
   overflow: hidden;
   background-color: #ddd; /* 画像がない時の背景 */
@@ -424,10 +424,17 @@ button[type="submit"]:hover {
   }
 
   /* ボタンをスマホ用に小さく */
-  .actions .btn {
-    padding: 4px 10px;
-    font-size: 13px;
-    white-space: nowrap;
+  .actions {
+    display: flex;
+    flex-wrap: wrap;        /* ← 折り返しON */
+    gap: 6px;
+    margin-top: 6px;
+  }
+
+  .actions .btn,
+  .actions .dm-btn {
+    width: calc(25% - 3px); /* ← 2列で均等 */
+    justify-content: center;
   }
 }
 
