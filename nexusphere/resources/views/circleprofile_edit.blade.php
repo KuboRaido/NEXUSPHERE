@@ -80,5 +80,6 @@
         </div>
       </form>
     </div>
+   <script src="{{ asset('js/circlepf_edit.js') }}"></script>
 </body>
 </html>
