@@ -104,7 +104,7 @@ class PrcController extends Controller
         $request->validate([
             'sentence' => ['required','string','max:1000',new NgWord],
             'images.*' => ['image','mimes:jpeg,png,jpg,gif,webp','max:5120'], // 1枚最大5MB
-            'videos.*' => ['mimetypes:video/mp4,video/quicktime','max:30720'],
+            'videos.*' => ['mimetypes:video/mp4,video/quicktime','max:512000'],
         ]);
 
         // 投稿作成（type:0 = 投稿）

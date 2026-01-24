@@ -119,7 +119,7 @@ async function loaddmlist(isBackground = false){
         // メッセージ更新
         const msgEl = li.querySelector('.chat-message');
         if(msgEl && msgEl.textContent !== (it.last_message || '')){
-             msgEl.textContent = it.last_message || '';
+            msgEl.textContent = it.last_message || '';
         }
 
         // 時刻更新

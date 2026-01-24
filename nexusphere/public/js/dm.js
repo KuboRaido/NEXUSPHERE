@@ -56,8 +56,8 @@ function mergeById(oldList, newList) {
     return entry;
   };
 
-  const map = new Map(oldList.map(m => [m.id, normalize(m)]));
-  for (const m of newList) map.set(m.id, normalize(m));
+  const map = new Map(oldList.map(m => [String(m.id), normalize(m)]));
+  for (const m of newList) map.set(String(m.id), normalize(m));
   return Array.from(map.values()).sort((a,b)=> a.timestamp - b.timestamp);
 }
 
@@ -65,18 +65,46 @@ function renderMessages() {
   const chatBox = document.getElementById('chat-box');
   if (!chatBox) return;
 
-  chatBox.querySelectorAll('.message-row').forEach(el => el.remove());
+  const isNearBottom = chatBox.scrollTop + chatBox.clientHeight >= chatBox.scrollHeight - 100;
 
-
-  const currentUserId = String(getMeId() ?? '');
+  const meId = String(getMeId() ?? '');
   const makeStatus = (mine, read) => (!mine ? '' : (read ? '既読' : '未読'));
 
-  for (const msg of messages){
-    const mine = (msg.from === currentUserId);
-    const status = makeStatus(mine, msg.isRead);
+  //表示すべきメッセージIDのセット
+  const validIds = new Set();
+    for(const msg of messages){
+      //メッセージを特定するためのIDを付与
+      const domId = `msg-${msg.id}`;
+      validIds.add(domId);
 
-    const row = document.createElement('div');
+      let row = document.getElementById(domId);
+      const mine = (msg.from === meId);
+      const status = makeStatus(mine, msg.isRead);
+      if(row){
+      //既存要素があれば更新のみ行う
+      //既存ステータスの更新チェック
+      const statusLabel = row.querySelector('.read-status');
+      //メッセージをしたのが自分でそのメッセージに既読がついていたら
+      if(status && statusLabel){
+        if(statusLabel.textContent !== status) statusLabel.textContent = status;
+      }else if(status && !statusLabel){
+        //未読だった場合
+        const bubble = row.querySelector('.massage-bubble');
+        if(bubble){
+          const label = document.createElement('span');
+            label.classNama = 'read-status';
+            label.textContent = status;
+            bubble.appendChild(label);
+          }
+        }else if(!status && statusLabel){
+          //ステータス不要になった場合
+          statusLabel.remove();
+        }
+      } else {
+    //新規作成
+    row = document.createElement('div');
     row.classList.add('message-row', mine ? 'from-me' : 'from-them');
+    row.id = domId;//メッセージ一つ一つにIdを持たせる
 
     const img = document.createElement('img');
     img.className = 'msg-avatar';
@@ -84,7 +112,7 @@ function renderMessages() {
     img.alt = '';
     img.onerror = () => { img.src = DEFAULT_AVATAR; };
     // アイコンを押したらプロフィールに飛べるようにする
-    const profileId =String(currentPartnerId);
+    const profileId = String(msg.from);
     // 相手のiconの画像にリンクを追加
     img.addEventListener('click', (e) => {
       e.preventDefault();
@@ -146,8 +174,8 @@ function renderMessages() {
     }
     chatBox.appendChild(row);
   }
-
-  chatBox.scrollTop = chatBox.scrollHeight; 
+}
+  //存在しなくなったメッセージを削除
 }
 
 document.addEventListener('DOMContentLoaded',()=>{
@@ -216,7 +244,8 @@ async function loadCircleConversation(circle_id){
 
   if(!res.ok) throw new Error(`会話取エラー: ${res.status}`);
   const json = await res.json();
-  messages = mergeById(messages, json.dms || []).map(m => ({
+  //マッピング処理をmergeByIdの「前」に行う
+  const newMessages = ( json.dms || []).map(m => ({
     id: m.id,
     from: String(m.from_id),
     to:   '',
@@ -226,6 +255,9 @@ async function loadCircleConversation(circle_id){
     pending: false,
     isRead: Boolean(m.is_read),
   }));
+
+  //ここで正規化済みの配列を渡す
+  messages = mergeById(messages, newMessages);
   renderMessages();
 }
 
@@ -238,7 +270,7 @@ async function loadGroupConversation(group_id){
 
   if(!res.ok) throw new Error(`会話ログエラー: ${res.status}`);
   const json = await res.json();
-  messages = mergeById(messages, json.dms || []).map(m => ({
+  const newMessages = ( json.dms || []).map(m => ({
     id: m.id,
     from: String(m.from_id),
     to:   '',
@@ -248,6 +280,8 @@ async function loadGroupConversation(group_id){
     pending: false,
     isRead: Boolean(m.is_read),
   }));
+
+  messages = mergeById(messages, newMessages);
   renderMessages();
 }
 
@@ -287,19 +321,7 @@ async function sendMessage() {
     if (!Number.isInteger(toId)) { alert('宛先は数字か "me"'); return; }
   }
 
-  // 画面に一時表示＋メッセージにファイルを送付させる
   const tempId = 'tmp_' + Date.now();
-  const tempAtt = [];
-  if(hadFiles){
-    files.forEach(f =>{
-    const url = URL.createObjectURL(f);
-    const type = f.type.startsWith('image/') ? 'image' : (f.type.startsWith('video/') ? 'video' : 'file');
-    if(type === 'image' || type === 'video')tempAtt.push({type, url, pending:true});
-  });
-  }
-  messages.push({id:tempId, from:String(getMeId()), to:String(toId), text, attachments:tempAtt, timestamp:new Date(), pending:true, isRead:false});
-  renderMessages();
-
 
   try {
     await fetch('/sanctum/csrf-cookie', {credentials:'include'});
@@ -474,9 +496,10 @@ document.addEventListener('DOMContentLoaded', async () => {
       }
 
       if (!isTouch && event.key === 'Enter') {
+        // デフォルトのsubmit動作等を防ぐ
+        event.preventDefault();
         const now = Date.now();
         if (now - lastEnterTime < 500) {
-          event.preventDefault();
           sendMessage();
           lastEnterTime = 0;
         } else {
