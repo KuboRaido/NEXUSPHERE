@@ -112,7 +112,7 @@ function renderMessages() {
     img.alt = '';
     img.onerror = () => { img.src = DEFAULT_AVATAR; };
     // アイコンを押したらプロフィールに飛べるようにする
-    const profileId =String(currentPartnerId);
+    const profileId = String(msg.from);
     // 相手のiconの画像にリンクを追加
     img.addEventListener('click', (e) => {
       e.preventDefault();

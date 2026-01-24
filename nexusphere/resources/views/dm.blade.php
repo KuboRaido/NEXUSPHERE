@@ -26,33 +26,35 @@
             <span class="username">{{ $partnerName }}</span>
 
             <!-- 右 -->
-            <div class="chat-header-right">
-                <button id="menu-btn" class="menu-btn">☰</button>
+            @if($group_id)
+                <div class="chat-header-right">
+                    <button id="menu-btn" class="menu-btn">☰</button>
 
-                <div id="menu-dropdown" class="menu-dropdown hidden">
-                    <button id="add-user-btn">ユーザーを追加</button>
-                    <button id="leave-chat-btn" class="danger">退会する</button>
+                    <div id="menu-dropdown" class="menu-dropdown hidden">
+                        <button id="add-user-btn">ユーザーを追加</button>
+                        <button id="leave-chat-btn" class="danger">退会する</button>
+                    </div>
                 </div>
-            </div>
+            @endif
         </div>
 
         <!-- チャットボックス -->
         <div id="chat-box" class="chat-box"></div>
         <!-- 入力フォーム（これが唯一のフォーム） -->
         <form id="chat-form" class="chat-form" autocomplete="off">
-          <input type="hidden" id="currentUserId" value="{{auth()->id()}}">
-          <input type="hidden" id="recipientId" value="{{ $partnerId }}">
+            <input type="hidden" id="currentUserId" value="{{auth()->id()}}">
+            <input type="hidden" id="recipientId" value="{{ $partnerId }}">
 
-          <div id="preview-area" class="preview-area"></div>
+            <div id="preview-area" class="preview-area"></div>
 
-          <div class="input-area">
-            <button type="button" id="attach-btn" class="attach-btn">＋</button>
-            <input type="file" id="image-input" accept="image/*,video/*" style="display:none;" multiple>
+            <div class="input-area">
+                <button type="button" id="attach-btn" class="attach-btn">＋</button>
+                <input type="file" id="image-input" accept="image/*,video/*" style="display:none;" multiple>
 
-            <input id="message-input" type="text" placeholder="メッセージを入力" autocomplete="off" enterkeyhint="send" />
+                <input id="message-input" type="text" placeholder="メッセージを入力" autocomplete="off" enterkeyhint="send" />
 
-            <button type="submit" class="send-btn">送信</button>
-          </div>
+                <button type="submit" class="send-btn">送信</button>
+            </div>
         </form>
     </div>
  <script src="{{ asset('js/dm.js') }}"></script>
