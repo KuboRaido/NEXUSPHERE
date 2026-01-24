@@ -101,7 +101,7 @@ class DmController extends Controller
             'partner_id' => $g->group_id,
             'partner_name' => $g->group_name, 
             'partner_icon' => null,//グループ画像のURLがあれば設定
-            'last_message' => $g->latestMessage?->message_text ?? '画像か動画が届いています',
+            'last_message' => $g->latestMessage?->message_text ?? '',
             'last_time'    => $lastTime?->toISOString(),
             'is_group'     => true, //フロントで判別するためにフラグを立てる
       ];
@@ -158,7 +158,6 @@ class DmController extends Controller
 
 # 会話画面（フロント）
 public function dmfront(Request $r){
-
       $to = $r->query('to');
       $partnerId = ($to === 'me' || $to === null) ? Auth::id() : (int) $to;
       $partnerName = User::where('user_id', $partnerId)->value('name');
@@ -220,7 +219,7 @@ public function dmback(?int $partner=null){
          ];
       }),
    ]);
-   }
+}
 
    public function dmCircleBack(Circle $circle){
       $m = Dm::where('circle_id', $circle->circle_id)->whereNull('receiver_id')->orderBy('created_at')->get();
