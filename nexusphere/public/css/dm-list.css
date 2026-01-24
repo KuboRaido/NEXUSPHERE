@@ -29,7 +29,7 @@ body {
 .dmlist-container {
   width: 90%;
   margin: 30px auto;
-  padding: 20px;
+
   background: #fff;
   border-radius: 15px;
   box-shadow: 0 2px 8px rgba(0,0,0,0.15);
@@ -104,10 +104,12 @@ body {
 .chat-item {
   display: flex;
   align-items: center;
-  padding: 18px 12px; /* ← 更にゆったり */
+  justify-content: flex-start; /* ← これで左端に寄る */
+  padding: 18px 12px;
   border-bottom: 1px solid #eee;
   cursor: pointer;
 }
+
 .chat-item:hover {
   background: #add8e6;
 }
@@ -116,8 +118,10 @@ body {
 .avatar {
   width: 60px;
   height: 60px;
-  margin-right: 10px;
+  margin-right: 10px; /* 右側の余白だけ */
+  margin-left: 0;      /* 左はゼロに */
 }
+
 
 .search-result-item a {
   display: flex;
@@ -156,7 +160,9 @@ body {
 .chat-content {
   flex: 1;
   overflow: hidden;
+  margin-left: 0; /* ←必要ならリセット */
 }
+
 .chat-name {
   font-weight: bold;
   font-size: 20px;
