@@ -4,7 +4,7 @@
 body {
   font-family: Arial, sans-serif;
   background-color: #add8e6;
-  min-height: 100vh;
+  min-height: 100%;
   margin: 0;
 }
 
@@ -34,12 +34,19 @@ body {
 ========================= */
 .chat-container {
   width: 90%;
+  height: calc(100% - 70px);
   margin: 30px auto;
   padding: 20px;
   background: #fff;
   border-radius: 15px;
   box-shadow: 0 2px 8px rgba(0,0,0,0.15);
 }
+
+.chat-box {
+  flex: 1;
+  overflow-y: auto;
+}
+
 
 /* =========================
    チャットヘッダー（完成形）
