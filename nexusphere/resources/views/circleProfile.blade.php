@@ -68,10 +68,22 @@
           @forelse($posts as $post)
             <article class="post">
               <div class="title">{{ $post->sentence ?? '(タイトルなし)' }}</div>
-              <div class="excerpt">{{ Str::limit($post->sentence ?? '', 120) }}</div>
-            </article>
-          @empty
-            <div class="no-posts">投稿はありません</div>
+              
+                {{-- 画像・動画がある場合ループして表示 --}}
+                @if($post->images->isNotEmpty())
+                    <div class="post-media" style="margin: 10px 0; display: flex; flex-wrap: wrap; gap: 10px;">
+                        @foreach($post->images as $media)
+                            @if($media->image)
+                                <img src="{{ Storage::url($media->image) }}" alt="画像" style="max-width: 200px; border-radius: 4px; object-fit: cover;">
+                            @elseif($media->video)
+                                <video src="{{ Storage::url($media->video) }}" controls style="max-width: 200px; border-radius: 4px;"></video>
+                            @endif
+                        @endforeach
+                    </div>
+                @endif
+              </article>
+            @empty
+              <div class="no-posts">投稿はありません</div>
           @endforelse
       </div>
     </div>

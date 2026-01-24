@@ -101,7 +101,7 @@ class DmController extends Controller
             'partner_id' => $g->group_id,
             'partner_name' => $g->group_name, 
             'partner_icon' => null,//グループ画像のURLがあれば設定
-            'last_message' => $g->latestMessage?->message_text ?? 'メッセージはありません',
+            'last_message' => $g->latestMessage?->message_text ?? '画像か動画が届いています',
             'last_time'    => $lastTime?->toISOString(),
             'is_group'     => true, //フロントで判別するためにフラグを立てる
       ];
