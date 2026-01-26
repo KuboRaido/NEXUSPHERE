@@ -47,7 +47,7 @@ class UserController extends Controller
             'major' => $request->major,
             'icon' => $iconPath,
         ]);
-
+    
         // SendVerificationEmail::dispatch($user);
         Mail::to($user->mail)->send(new VerificationEmail($user));
 
