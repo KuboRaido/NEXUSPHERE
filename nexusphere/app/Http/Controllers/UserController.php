@@ -34,7 +34,7 @@ class UserController extends Controller
 
         $iconPath = null;
         if ($request->hasFile('icon')) {
-            $iconPath = $request->file('icon')->store('icons', 'public');
+            $iconPath = $request->file('icon')->store('', 'direct');
         }
 
         $user=User::create([
