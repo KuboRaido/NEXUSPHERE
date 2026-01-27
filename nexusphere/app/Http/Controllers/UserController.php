@@ -5,9 +5,11 @@ namespace App\Http\Controllers;
 use App\Models\User;
 use App\Jobs\SendVerificationEmail;
 use App\Http\Controllers\Controller;
+use App\Mail\VerificationEmail;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Storage;
 
 class UserController extends Controller
@@ -32,7 +34,7 @@ class UserController extends Controller
 
         $iconPath = null;
         if ($request->hasFile('icon')) {
-            $iconPath = $request->file('icon')->store('icons', 'public');
+            $iconPath = $request->file('icon')->store('', 'direct');
         }
 
         $user=User::create([
@@ -45,8 +47,9 @@ class UserController extends Controller
             'major' => $request->major,
             'icon' => $iconPath,
         ]);
-
-        SendVerificationEmail::dispatch($user);
+    
+        // SendVerificationEmail::dispatch($user);
+        Mail::to($user->mail)->send(new VerificationEmail($user));
 
         return redirect()->route('login')->with('success', '登録が完了しました！ログインしてください');
     }

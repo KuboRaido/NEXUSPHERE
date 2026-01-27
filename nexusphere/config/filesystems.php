@@ -60,6 +60,27 @@ return [
             'report' => false,
         ],
 
+        'direct' => [
+            'driver'     => 'local',
+            'root'       => public_path() . '/icons',
+            'url'        => env('APP_URL').'/icons',
+            'visibility' => 'public',
+        ],
+
+        'post' => [
+            'driver'     => 'local',
+            'root'       => public_path() . '/post',
+            'url'        => env('APP_URL').'/post',
+            'visibility' => 'public',
+        ],
+
+        'dm' => [
+            'driver'     => 'local',
+            'root'       => public_path() . '/dm',
+            'url'        => env('APP_URL').'/dm',
+            'visibility' => 'public',
+        ],
+
     ],
 
     /*

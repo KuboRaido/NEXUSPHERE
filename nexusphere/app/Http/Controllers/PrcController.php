@@ -72,7 +72,7 @@ class PrcController extends Controller
             $images = array_slice($images, 0, 10);
 
             foreach ($images as $image) {
-                    $path = $image->store('post', 'public');
+                    $path = $image->store('', 'post');
                     // Images_and_videos のカラム名は 'image'
                     Images_and_videos::create([
                     'prc_id' => $post->prc_id,
@@ -85,7 +85,7 @@ class PrcController extends Controller
             $videos = $request->file('videos');
 
             foreach ($videos as $video) {
-                $path = $video->store('post_video', 'public');
+                $path = $video->store('', 'post');
 
                 Images_and_videos::create([
                     'prc_id' => $post->prc_id,
@@ -125,7 +125,7 @@ class PrcController extends Controller
             $images = is_array($fileInputs) ? $fileInputs : [$fileInputs];
             $images = array_slice($images, 0, 10);
             foreach ($images as $image) {
-                    $path = $image->store('post', 'public');
+                    $path = $image->store('', 'post');
                     // Images_and_videos のカラム名は 'image'
                     Images_and_videos::create([
                         'prc_id' => $post->prc_id,
@@ -139,7 +139,7 @@ class PrcController extends Controller
             $videos = $request->file('videos');
 
             foreach ($videos as $video) {
-                    $path = $video->store('post_video', 'public');
+                    $path = $video->store('', 'post');
 
                     Images_and_videos::create([
                         'prc_id' => $post->prc_id,
@@ -201,6 +201,11 @@ class PrcController extends Controller
     // 投稿フォーム表示
     public function post()
     {
-        return view('post');
+        $userId = Auth::id();
+        abort_if(!$userId, 401);
+
+        $post = Auth::user();
+        echo "<script>console.log(" . json_encode($post) . ");</script>";
+        return view('post',['post' => $post]);
     }
 }

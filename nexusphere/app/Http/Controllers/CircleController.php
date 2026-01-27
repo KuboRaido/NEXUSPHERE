@@ -74,7 +74,7 @@ class CircleController extends Controller
 
         $iconPath = null;
         if ($request->hasFile('image')) {
-            $iconPath = $request->file('image')->store('icons', 'public');
+            $iconPath = $request->file('image')->store('', 'direct');
         }
 
         DB::transaction(function () use ($data, $iconPath) {
@@ -207,7 +207,7 @@ class CircleController extends Controller
         ]);
 
         if ($request->hasFile('icon')) {
-            $path = $request->file('icon')->store('icons', 'public');
+            $path = $request->file('icon')->store('', 'direct');
             $circle->icon = $path; // ← icons/xxxx.png
         }
 

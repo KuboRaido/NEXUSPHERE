@@ -101,7 +101,7 @@ class DmController extends Controller
             'partner_id' => $g->group_id,
             'partner_name' => $g->group_name, 
             'partner_icon' => null,//グループ画像のURLがあれば設定
-            'last_message' => $g->latestMessage?->message_text ?? '画像か動画が届いています',
+            'last_message' => $g->latestMessage?->message_text ?? '',
             'last_time'    => $lastTime?->toISOString(),
             'is_group'     => true, //フロントで判別するためにフラグを立てる
       ];
@@ -158,10 +158,14 @@ class DmController extends Controller
 
 # 会話画面（フロント）
 public function dmfront(Request $r){
-
       $to = $r->query('to');
       $partnerId = ($to === 'me' || $to === null) ? Auth::id() : (int) $to;
-      $partnerName = User::where('user_id', $partnerId)->value('name');
+      $group = $r->group_id;
+      if($group){
+         $partnerName = \App\Models\Group::where('group_id', $group)->value('group_name');
+      }else{
+         $partnerName = User::where('user_id', $partnerId)->value('name');
+      }
       return view('dm', compact('partnerId', 'partnerName'));
    }
 
@@ -220,7 +224,7 @@ public function dmback(?int $partner=null){
          ];
       }),
    ]);
-   }
+}
 
    public function dmCircleBack(Circle $circle){
       $m = Dm::where('circle_id', $circle->circle_id)->whereNull('receiver_id')->orderBy('created_at')->get();
@@ -303,6 +307,27 @@ public function dmback(?int $partner=null){
    
    }
 
+   // public function dmGroupJoin(Request $request){
+   //    $request->validate([
+   //          'group_name' => 'required|string|max:255',
+   //          'user_ids'   => 'required|array',
+   //          'user_ids.*' => 'integer|exists:users,user_id',
+   //       ]);
+
+   //    $meId = Auth::id();
+
+   //    // 作成者と選択メンバーをマージして登録
+   //    $memberIds = array_unique(array_merge([$meId], $request->user_ids));
+
+   //    // メンバーを一括追加
+   //    $group->members()->sync($memberIds);
+
+   //    // メンバー数更新
+   //    $group->update([
+   //       'members_count' => count($memberIds),
+   //    ]);
+   // }
+
    public function dmsendback(Request $request)
    {
       $me = $request ->user()?->getAuthIdentifier() ?? Auth::id();
@@ -358,7 +383,7 @@ public function dmback(?int $partner=null){
       $attachments = [];
       if($request->hasFile('files')){
          foreach ($request->file('files') as $file){
-            $path  = $file->store('dm/'.date('Y/m/d'),'public');
+            $path  = $file->store(''.date('Y/m/d'),'dm');
             $mime  = $file->getMimeType();
             $isImg = str_starts_with($mime,'image/');
             $isMov = str_starts_with($mime,'video/');
