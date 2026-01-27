@@ -400,8 +400,6 @@ async function sendMessage() {
   } catch (err) {
     alert(err.message || '送信に失敗しました');
   }
-
-  
 }
 
 //起動
@@ -508,7 +506,7 @@ document.addEventListener('DOMContentLoaded', async () => {
       }
     });
   }
-   const menuBtn = document.getElementById("menu-btn");
+  const menuBtn = document.getElementById("menu-btn");
   const dropdown = document.getElementById("menu-dropdown");
 
     menuBtn.addEventListener("click", () => {
@@ -523,10 +521,10 @@ document.addEventListener('DOMContentLoaded', async () => {
     });
 
     // ユーザー追加
-    document.getElementById("add-user-btn").addEventListener("click", () => {
-        alert("ユーザー追加処理を書く");
-        // 例: モーダル表示 or 別画面遷移
-    });
+    // document.getElementById("add-user-btn").addEventListener("click", () => {
+    //     alert("ユーザー追加処理を書く");
+    //     例: モーダル表示 or 別画面遷移
+    // });
 
     // 退会
     document.getElementById("leave-chat-btn").addEventListener("click", () => {

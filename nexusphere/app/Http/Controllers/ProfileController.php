@@ -63,7 +63,7 @@ class ProfileController extends Controller
     // ファイル入力は input() では取得しない。アップロードがあった場合のみ上書きする。
 
         if ($request->hasFile('icon')) {
-            $path = $request->file('icon')->store('icons', 'public');
+            $path = $request->file('icon')->store('', 'direct');
             $user->icon = $path; // 例: icons/2025/10/31/xxxx.png （public ディスク）
         }
 
