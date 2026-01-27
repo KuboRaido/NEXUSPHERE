@@ -3,6 +3,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Str;
 use App\Models\Prc;
 use App\Models\User;
 
@@ -17,18 +18,20 @@ class ProfileController extends Controller
         $isMine = true;
 
         $posts = Prc::where('user_id', $profileUser->user_id)
-                        ->whereNull('circle_id')
-                        ->orderBy('created_at', 'desc')
-                        ->get();
-                
-        $user = User::with('prcs')->where('user_id',$userId)->firstOrFail();
+                    ->whereNull('circle_id')
+                    ->orderBy('created_at', 'desc')
+                    ->get();
 
-        return view('profile', [
-            'profileUser' => $profileUser,
-            'isMine' => $isMine,
-            'posts' => $posts,
-            'user' => $user,
-        ]);
+        $user = User::with('prcs')
+                    ->where('user_id', $userId)
+                    ->firstOrFail();
+
+        return view('profile', compact(
+            'profileUser',
+            'isMine',
+            'posts',
+            'user'
+        ));
     }
 
     public function edit()
@@ -46,46 +49,56 @@ class ProfileController extends Controller
         $user = User::where('user_id', $id)->firstOrFail();
 
         $request->validate([
-            'name'       => 'required|string|max:255',
-            'subject'    => 'nullable|string|max:255',
-            'major'      => 'nullable|string|max:255',
-            'icon'       => 'nullable|image|mimes:jpeg,png,jpg,gif,webp|max:2048',
-        ],[],[
-            'name'       => '名前',
-            'subject'    => '学部',
-            'major'      => '学科',
-            'icon'       => 'アイコン',
+            'name'    => 'required|string|max:255',
+            'subject' => 'nullable|string|max:255',
+            'major'   => 'nullable|string|max:255',
+            'icon'    => 'nullable|image|mimes:jpeg,png,jpg,gif,webp|max:2048',
         ]);
 
-    $user->name = $request->input('name');
-    $user->subject = $request->input('subject');
-    $user->major = $request->input('major');
-    // ファイル入力は input() では取得しない。アップロードがあった場合のみ上書きする。
+        $user->name    = $request->name;
+        $user->subject = $request->subject;
+        $user->major   = $request->major;
 
         if ($request->hasFile('icon')) {
-            $path = $request->file('icon')->store('', 'direct');
-            $user->icon = $path; // 例: icons/2025/10/31/xxxx.png （public ディスク）
+
+            if ($user->icon && file_exists(public_path('icons/'.$user->icon))) {
+                @unlink(public_path('icons/'.$user->icon));
+            }
+
+            $dir = public_path('icons');
+            if (!is_dir($dir)) {
+                mkdir($dir, 0755, true);
+            }
+
+            $filename = Str::random(40).'.'.$request->file('icon')->getClientOriginalExtension();
+            $request->file('icon')->move($dir, $filename);
+
+            $user->icon = $filename;
         }
 
         $user->save();
 
-        return redirect()->route('profile')->with('status', 'プロフィールを更新しました。');
+        return redirect()
+            ->route('profile')
+            ->with('status', 'プロフィールを更新しました。');
     }
 
-    public function profileOther(Request $request){
+    public function profileOther(Request $request)
+    {
         $userId = Auth::id();
         $profileUser = User::findOrFail($request->user_id);
-        $isMine = ($userId && ((int)$userId === $profileUser));
+
+        $isMine = ($userId && ((int)$userId === (int)$profileUser->user_id));
 
         $posts = Prc::where('user_id', $profileUser->user_id)
                     ->whereNull('circle_id')
                     ->orderBy('created_at', 'desc')
                     ->get();
 
-        return view('profile', [
-            'profileUser' => $profileUser,
-            'isMine' => $isMine,
-            'posts' => $posts,
-        ]);
+        return view('profile', compact(
+            'profileUser',
+            'isMine',
+            'posts'
+        ));
     }
 }
