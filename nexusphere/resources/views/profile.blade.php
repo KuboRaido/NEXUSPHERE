@@ -42,7 +42,7 @@
             <img
               class="avatar"
               src="{{ $profileUser->icon
-                  ? asset('icons/' . $profileUser->icon)
+                  ? asset('public/storage/icons/' . $profileUser->icon)
                   : asset('images/default-avatar.png') }}"
               alt="アイコン"
             >
@@ -86,9 +86,9 @@
                           <div class="post-media" style="margin: 10px 0; display: flex; flex-wrap: wrap; gap: 10px;">
                               @foreach($post->images as $media)
                                   @if($media->image)
-                                      <img src="{{ Storage::url($media->image) }}" alt="画像" style="max-width: 200px; border-radius: 4px; object-fit: cover;">
+                                      <img src="{{ asset('storage/post/' . $media->image) }}" alt="画像" style="max-width: 200px; border-radius: 4px; object-fit: cover;">
                                   @elseif($media->video)
-                                      <video src="{{ Storage::url($media->video) }}" controls style="max-width: 200px; border-radius: 4px;"></video>
+                                      <video src="{{ asset('storage/post/' . $media->video) }}" controls style="max-width: 200px; border-radius: 4px;"></video>
                                   @endif
                               @endforeach
                           </div>
