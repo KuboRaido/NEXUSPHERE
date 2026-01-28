@@ -35,7 +35,7 @@
             {{-- 投稿者名 --}}
             <div class="post-header">
                 <a href="{{ route('profile.other', $post->user->user_id) }}" class="user-link">
-                    <img src="{{ asset('storage/icons/' . $post->user->avatar_url )}}"
+                    <img src="{{ asset('storage/icons/' . $post->user->icon )}}"
                         class="user-icon"
                         alt="icon"></img>
                     <span class="username">{{ $post->user->name }}</span>
