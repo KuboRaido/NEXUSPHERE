@@ -34,7 +34,7 @@
           <p class="avatar-label">現在</p>
           <img
             src="{{ $circle->icon
-                  ? Storage::url($circle->icon)
+                  ? asset('storage/icons' . $circle->icon)
                   : asset('images/default-avatar.png') }}"
             class="avatar-preview"
           >
@@ -50,7 +50,7 @@
             <img
               id="preview"
               src="{{ $circle->icon
-                    ? Storage::url($circle->icon)
+                    ? asset('storage/icons' . $circle->icon)
                     : asset('images/default-avatar.png') }}"
               class="avatar-preview"
             >

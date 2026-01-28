@@ -63,7 +63,7 @@
 
                         {{-- 画像ならimgタグ --}}
                         @if (in_array($exetension, ['jpg', 'jpeg', 'png', 'webp', 'gif']))
-                            <img src="{{ asset('storage/' . $filePath) }}"
+                            <img src="{{ asset('storage/post/' . $filePath) }}"
                                 alt="投稿画像"
                                 class="post-image"
                                 onclick="openModal(this.src)">
@@ -74,7 +74,7 @@
                             <video controls
                                 class="post-video"
                                 style="max-width: 100%; border-radius: 8px; margin-top: 10px;">
-                                <source src="{{ asset('storage/' . $filePath) }}" type="video/{{ $exetension }}">
+                                <source src="{{ asset('storage/post/' . $filePath) }}" type="video/{{ $exetension }}">
                                 お使いのブラウザは動画再生に対応していません。
                             </video>
                         @endif
@@ -108,7 +108,7 @@
                     <div class="comment">
                         <a href="{{ route('profile.other', $comment->user->user_id) }}"
                             class="user-link">
-                            <img src="{{ asset('storage/' . $comment->user->icon) }}"
+                            <img src="{{ asset('storage/post' . $comment->user->icon) }}"
                                     class="user-icon small">
                             <strong>{{ $comment->user->name }}</strong>
                         </a>
