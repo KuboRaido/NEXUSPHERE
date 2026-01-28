@@ -201,9 +201,9 @@ class CircleController extends Controller
         abort_if(!Auth::id(), 401);
 
         $request->validate([
-            'circle_name' => ['nullable','string','max:255'],
-            'sentence'    => ['nullable','string','max:255'],
-            'icon'        => ['nullable','image','mimes:jpeg,png,jpg,gif,webp','max:5120',new NgWord],
+            'circle_name' => ['nullable','string','max:255',new NgWord],
+            'sentence'    => ['nullable','string','max:255',new NgWord],
+            'icon'        => ['nullable','image','mimes:jpeg,png,jpg,gif,webp','max:5120'],
         ]);
 
         if ($request->hasFile('icon')) {
