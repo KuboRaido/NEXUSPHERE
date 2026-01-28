@@ -9,6 +9,7 @@
     <link rel="stylesheet" href="{{ asset('css/dm.css') }}">
     <meta name="default-avatar" content="{{ asset('images/default-avatar.png') }}">
     <script>window.DEFAULT_AVATAR_URL = "{{asset('images/default-avatar.png')}}"</script>
+    <script>window.storageBaseUrl = "{{ asset('storage/icons') }}/"; </script>
 </head>
 <body>
     <!-- ヘッダー -->

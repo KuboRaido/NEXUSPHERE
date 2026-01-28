@@ -205,8 +205,12 @@ async function loadConversation(currentPartnerId) {
   }
   const json = await res.json();
 
-  ME_ICON = json?.participants?.me?.avatar || ME_ICON;
-  PARTNER_ICON = json?.participants?.partner?.avatar || PARTNER_ICON;
+  if (json?.participants?.me?.avatar) {
+    ME_ICON = window.storageBaseUrl + json.participants.me.avatar;
+  }
+  if (json?.participants?.partner?.avatar) {
+      PARTNER_ICON = window.storageBaseUrl + json.participants.partner.avatar;
+  }
 
   const newList = (json.dms || []).map(m => ({
     id: m.id,
