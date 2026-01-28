@@ -38,7 +38,7 @@ class User extends Authenticatable
             if(Str::startsWith($this->icon,['http://','https://','/'])){
                 return $this->icon;
             }
-            return Storage::url($this->icon);
+            return asset('storage/icons'. $this->icon);
         }
         return asset('images/default-avatar.png');
     }

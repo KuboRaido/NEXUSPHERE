@@ -33,7 +33,7 @@ class DmController extends Controller
       }
 
       if (Storage::disk('public')->exists($path)){
-         return Storage::url($path);
+         return asset('storage/icons' . $path);
       }
 
       return asset($path);
@@ -217,7 +217,7 @@ public function dmback(?int $partner=null){
             'is_read'   =>$is_read,
             'attachments'=>$m->Images_and_videos->map(function($rec){
                   $path = $rec->image ?: $rec->video;
-                  $url  = $path ? Storage::url($path) : null;
+                  $url  = $path ? asset('storage/dms' . $path) : null;
                   $type = $rec->image ? 'image' : ($rec->video ? 'video' : 'file');
                   return ['type'=>$type,'url' =>$url];
             })->values(),
@@ -244,7 +244,7 @@ public function dmback(?int $partner=null){
             'attachments'=>$dm->Images_and_videos->map(function($rec){
                   return [
                      'type'=>$rec->image ? 'image' : ($rec->video ? 'video' : 'file'),
-                     'url' =>Storage::url($rec->image ?: $rec->video),
+                     'url' =>asset('storage/dms' . $rec->image ?: $rec->video),
                   ];
                }),
             ];
@@ -270,7 +270,7 @@ public function dmback(?int $partner=null){
             'attachments'=>$dm->Images_and_videos->map(function($rec){
                   return [
                      'type'=>$rec->image ? 'image' : ($rec->video ? 'video' : 'file'),
-                     'url' =>Storage::url($rec->image ?: $rec->video),
+                     'url' =>asset('storage/dms' . $rec->image ?: $rec->video),
                   ];
                }),
             ];
