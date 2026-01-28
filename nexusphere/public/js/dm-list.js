@@ -159,7 +159,7 @@ async function loaddmlist(isBackground = false){
 
         li.innerHTML = `
           <a class="dm-link" href="${href}">
-            <img class="avatar" src="${iconUrl ? window.storageBaseUrl + '/' + user.iconUrl : DEFAULT_AVATAR}" alt="" onerror="this.src='${fallback}'">
+            <img class="avatar" src="${iconUrl ? window.storageBaseUrl + '/' + iconUrl : DEFAULT_AVATAR}" alt="" onerror="this.src='${fallback}'">
             <div class="chat-content">
               <div class="chat-name">${escapeHtml(it.partner_name || 'Unknown')}</div>
               <div class="chat-message">${escapeHtml(it.last_message || '')}</div>

@@ -57,7 +57,7 @@
 
           li.innerHTML = `
       <a class="circle-link" href="${resolveLink(circle.circle_id ?? circle.id)}">
-        <img src="${escapeHtml(circle.icon ? window.storageBaseUrl + '/' + circle.icon : '')}">
+        <img src="${circle.icon ? window.storageBaseUrl + '/' + circle.icon : window.DEFAULT_AVATAR_URL}">
         <div class="circle-text">
           <span class="name">${escapeHtml(circle.circle_name || '')}</span>
           <span class="sentence">${escapeHtml(circle.sentence || '')}</span>
@@ -85,7 +85,7 @@
 
         li.innerHTML = `
           <a class="circle-link" href="${resolveLink(circle.circle_id ?? circle.id)}">
-            <img src="${escapeHtml(circle.icon ? window.storageBaseUrl + '/' + circle.icon : '')}">
+            <img src="${circle.icon ? window.storageBaseUrl + '/' + circle.icon : Window.DEFAULT_AVATAR_URL}">
             <div class="circle-text">
               <span class="name">${escapeHtml(circle.circle_name || '')}</span>
               <span class="sentence">${escapeHtml(circle.sentence || '')}</span>
