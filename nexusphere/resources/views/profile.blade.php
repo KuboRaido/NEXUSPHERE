@@ -42,7 +42,7 @@
             <img
               class="avatar"
               src="{{ $profileUser->icon
-                  ? asset('public/storage/icons/' . $profileUser->icon)
+                  ? asset('storage/icons/' . $profileUser->icon)
                   : asset('images/default-avatar.png') }}"
               alt="アイコン"
             >
