@@ -76,8 +76,8 @@ return [
 
         'dm' => [
             'driver'     => 'local',
-            'root'       => public_path() . '/images/dms',
-            'url'        => env('APP_URL').'/images/dms',
+            'root'       => public_path() . '/storage/dms',
+            'url'        => env('APP_URL').'/storage/dms',
             'visibility' => 'public',
         ],
 
