@@ -39,9 +39,14 @@
 
         <div class="profile-body">
           <div class="avatar-wrap">
-            <img class="avatar" src="{{ $profileUser->avatar_url }}" alt="アイコン">
+            <img
+              class="avatar"
+              src="{{ $profileUser->icon
+                  ? asset('icons/' . $profileUser->icon)
+                  : asset('images/default-avatar.png') }}"
+              alt="アイコン"
+            >
           </div>
-
           <div class="main">
             <div class="name-row">
               <div>

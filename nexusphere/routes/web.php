@@ -26,6 +26,8 @@ Route::middleware('auth')->group(function () {
     Route::get('/profile/{user_id}',[ProfileController::class,'profileOther'])->name('profile.other'); //他人のプロフィール
     Route::post('/profile/logout',[LoginController::class,'logout'])->name('logout');
     Route::post('/profile',[ProfileController::class,'post'])->name('profile.post'); 
+    Route::put('/profile', [ProfileController::class, 'update'])->name('profile.update');
+
 
     Route::get('/post', [PrcController::class, 'post'])->name('post');
     Route::post('/post',[PrcController::class,'store'])->name('post.back');
