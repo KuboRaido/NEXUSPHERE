@@ -111,7 +111,7 @@ async function loaddmlist(isBackground = false){
       } else {
         href = `/dm?to=${partnerId}`;
       }
-      const iconUrl = it.partner_icon || DEFAULT_AVATAR;
+      const iconUrl = it.partner_icon ? windows.storageBaseUrl + '/' + it.partner_icon : DEFAULT_AVATAR;
       const unread = Number(it.unread_count || 0);
 
       if(li){
@@ -159,7 +159,7 @@ async function loaddmlist(isBackground = false){
 
         li.innerHTML = `
           <a class="dm-link" href="${href}">
-            <img class="avatar" src="${iconUrl}" alt="" onerror="this.src='${fallback}'">
+            <img class="avatar" src="${iconUrl ? window.storageBaseUrl + '/' + user.iconUrl : DEFAULT_AVATAR}" alt="" onerror="this.src='${fallback}'">
             <div class="chat-content">
               <div class="chat-name">${escapeHtml(it.partner_name || 'Unknown')}</div>
               <div class="chat-message">${escapeHtml(it.last_message || '')}</div>

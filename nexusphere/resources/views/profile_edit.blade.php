@@ -39,7 +39,7 @@
       <label>現在のアイコン</label>
       <div class="current-avatar">
         <img
-          src="{{ $user->icon ? asset('icons/'.$user->icon) : asset('images/default-avatar.png') }}"
+          src="{{ $user->icon ? asset('storage/icons/'.$user->icon) : asset('images/default-avatar.png') }}"
           alt="アイコン"
           class="avatar-preview"
         >
