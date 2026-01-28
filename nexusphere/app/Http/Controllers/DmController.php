@@ -383,7 +383,7 @@ public function dmback(?int $partner=null){
       $attachments = [];
       if($request->hasFile('files')){
          foreach ($request->file('files') as $file){
-            $path  = $file->store(''.date('Y/m/d'),'dm');
+            $path  = $file->store('','dm');
             $mime  = $file->getMimeType();
             $isImg = str_starts_with($mime,'image/');
             $isMov = str_starts_with($mime,'video/');
