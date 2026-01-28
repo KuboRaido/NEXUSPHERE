@@ -65,16 +65,6 @@ return [
             'root'       => public_path() . '/storage/icons',
             'url'        => env('APP_URL').'/storage/icons',
             'visibility' => 'public',
-            'permissions' => [
-                'file' => [
-                    'public' => 0644,
-                    'private' => 0600,
-                    ],
-                'dir' => [
-                    'public' => 0755,
-                    'private' => 0700,
-                    ],
-                ],
         ],
 
         'post' => [
@@ -82,16 +72,6 @@ return [
             'root'       => public_path() . '/storage/post',
             'url'        => env('APP_URL').'/storage/post',
             'visibility' => 'public',
-            'permissions' => [
-                'file' => [
-                    'public' => 0644,
-                    'private' => 0600,
-                    ],
-                'dir' => [
-                    'public' => 0755,
-                    'private' => 0700,
-                    ],
-                ],
         ],
 
         'dm' => [
@@ -99,16 +79,6 @@ return [
             'root'       => public_path() . '/storage/dm',
             'url'        => env('APP_URL').'/storage/dm',
             'visibility' => 'public',
-            'permissions' => [
-                'file' => [
-                    'public' => 0644,
-                    'private' => 0600,
-                    ],
-                'dir' => [
-                    'public' => 0755,
-                    'private' => 0700,
-                    ],
-                ],
         ],
 
     ],
