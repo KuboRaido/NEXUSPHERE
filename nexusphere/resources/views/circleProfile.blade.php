@@ -24,7 +24,9 @@
       <div class="avatar-wrap">
           <img
             class="avatar"
-            src="{{ $circle->icon? asset('storage/icons/'. $circle->icon) : asset('images/default-circle.png') }}"
+            src="{{ $circle->icon
+                    ? asset('storage/icons/' . $circle->icon)
+                    : asset('images/default-avatar.png') }}"
             alt="アイコン"
           >
 
