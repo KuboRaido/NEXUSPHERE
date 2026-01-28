@@ -62,22 +62,22 @@ return [
 
         'direct' => [
             'driver'     => 'local',
-            'root'       => public_path() . '/icons',
-            'url'        => env('APP_URL').'/icons',
+            'root'       => public_path() . '/storage/icons',
+            'url'        => env('APP_URL').'/storage/icons',
             'visibility' => 'public',
         ],
 
         'post' => [
             'driver'     => 'local',
-            'root'       => public_path() . '/post',
-            'url'        => env('APP_URL').'/post',
+            'root'       => public_path() . '/storage/post',
+            'url'        => env('APP_URL').'/storage/post',
             'visibility' => 'public',
         ],
 
         'dm' => [
             'driver'     => 'local',
-            'root'       => public_path() . '/dm',
-            'url'        => env('APP_URL').'/dm',
+            'root'       => public_path() . '/storage/dm',
+            'url'        => env('APP_URL').'/storage/dm',
             'visibility' => 'public',
         ],
 
