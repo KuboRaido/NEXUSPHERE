@@ -11,6 +11,10 @@
 
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="csrf-token" content="{{ csrf_token() }}">
+  <script>
+    // JSから参照できるベースURLを定義
+    window.storageBaseUrl = "{{ asset('storage/icons') }}";
+  </script>
 </head>
 <body>
     <header class="site-header">
