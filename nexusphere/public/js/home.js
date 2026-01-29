@@ -14,11 +14,6 @@ document.addEventListener('DOMContentLoaded', () => {
                 }
             });
 
-            if (!response.ok) {
-                alert('通信エラー');
-                return;
-            }
-
             const data = await response.json();
             button.querySelector('.like-count').textContent = data.like_count;
         });
@@ -27,16 +22,16 @@ document.addEventListener('DOMContentLoaded', () => {
 
 // プロフィール遷移
 document.querySelectorAll('.js-profile-link').forEach(el => {
-  el.addEventListener('click', () => {
+    el.addEventListener('click', () => {
     const userId = el.dataset.userId;
     if (!userId) return;
 
     if (userId === document.body.dataset.meId) {
-      location.href = '/profile';
+        location.href = '/profile';
     } else {
-      location.href = `/profile/${userId}`;
+        location.href = `/profile/${userId}`;
     }
-  });
+    });
 });
 
 // モーダル（画像拡大）

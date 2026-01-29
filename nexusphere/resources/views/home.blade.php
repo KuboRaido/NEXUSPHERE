@@ -107,7 +107,7 @@
                     <div class="comment">
                         <a href="{{ route('profile.other', $comment->user->user_id) }}"
                             class="user-link">
-                            <img src="{{ asset('storage/post/' . $comment->user->icon) }}"
+                                <img src="{{ asset('storage/icons/' . $comment->user->icon) }}"
                                     class="user-icon small">
                             <strong>{{ $comment->user->name }}</strong>
                         </a>
