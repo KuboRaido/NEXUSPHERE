@@ -11,7 +11,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
   <script>
     // JSから参照できるベースURLを定義
-    window.storageBaseUrl = "{{ asset('storage/icons') }}";
+    window.storageBaseUrl = "{{ asset('storage/icons/') }}";
   </script>
 </head>
   <body>

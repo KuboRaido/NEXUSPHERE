@@ -57,7 +57,7 @@ async function searchUsers(keyword){
     li.className = 'search-result-item';
     li.innerHTML = `
       <a class ="user-id" href="/dm?to=${user.user_id}">
-        <img class="icon" src="${user.icon ? (user.icon.startsWith('http') ? user.icon : window.storageBaseUrl + '/' + user.icon) : DEFAULT_AVATAR}" alt="" onerror="this.src='${DEFAULT_AVATAR}'">
+        <img class="icon" src="${user.icon|| DEFAULT_AVATAR}" alt="" onerror="this.src='${DEFAULT_AVATAR}'">
         <div class="search-content">
           <div class="search-name">${escapeHtml(user.name)}</div>
         </div>
