@@ -57,7 +57,7 @@ async function searchUsers(keyword){
     li.className = 'search-result-item';
     li.innerHTML = `
       <a class ="user-id" href="/dm?to=${user.user_id}">
-        <img class="icon" src="${user.icon ? window.storageBaseUrl + '/' + user.icon : DEFAULT_AVATAR}" alt="" onerror="this.src='${DEFAULT_AVATAR}'">
+        <img class="icon" src="${user.icon ? (user.icon.startsWith('http') ? user.icon : window.storageBaseUrl + '/' + user.icon) : DEFAULT_AVATAR}" alt="" onerror="this.src='${DEFAULT_AVATAR}'">
         <div class="search-content">
           <div class="search-name">${escapeHtml(user.name)}</div>
         </div>
@@ -159,7 +159,7 @@ async function loaddmlist(isBackground = false){
 
         li.innerHTML = `
           <a class="dm-link" href="${href}">
-            <img class="avatar" src="${iconUrl ? window.storageBaseUrl + '/' + iconUrl : DEFAULT_AVATAR}" alt="" onerror="this.src='${fallback}'">
+            <img class="avatar" src="${iconUrl}" alt="" onerror="this.src='${fallback}'">
             <div class="chat-content">
               <div class="chat-name">${escapeHtml(it.partner_name || 'Unknown')}</div>
               <div class="chat-message">${escapeHtml(it.last_message || '')}</div>
