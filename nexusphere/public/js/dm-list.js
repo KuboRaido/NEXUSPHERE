@@ -111,7 +111,7 @@ async function loaddmlist(isBackground = false){
       } else {
         href = `/dm?to=${partnerId}`;
       }
-      const iconUrl = it.partner_icon ? window.storageBaseUrl + '/' + it.partner_icon : DEFAULT_AVATAR;
+      const iconUrl = it.partner_icon ? it.partner_icon : DEFAULT_AVATAR;
       const unread = Number(it.unread_count || 0);
 
       if(li){
