@@ -33,7 +33,7 @@ class DmController extends Controller
       }
 
       if (Storage::disk('public')->exists($path)){
-         return asset('storage/icons' . $path);
+         return asset('storage/icons/' . $path);
       }
 
       return asset($path);

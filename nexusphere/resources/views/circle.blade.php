@@ -9,10 +9,10 @@
   <script>window.DEFAULT_CLUB_ICON_URL = "{{ asset('images/default-club.png') }}";</script>
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-  <script>
+  <!-- <script>
     // JSから参照できるベースURLを定義
     window.storageBaseUrl = "{{ asset('storage/icons/') }}";
-  </script>
+  </script> -->
 </head>
   <body>
     <!-- ヘッダー -->

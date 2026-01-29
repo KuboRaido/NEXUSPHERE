@@ -45,7 +45,7 @@ class CircleController extends Controller
                 'category'       => $circle->category,
                 'members_count'  => $circle->members_count,
                 'sentence'       => $circle->sentence,
-                'icon'           => $circle->icon ? asset('storage/icons' . $circle->icon) : null,
+                'icon'           => $circle->icon ? asset('storage/icons/' . $circle->icon) : null,
                 'role'           => $role,
             ];
         })->values();
@@ -112,7 +112,7 @@ class CircleController extends Controller
                             'circle_id'         =>  $request->circle_id,
                             'user_id'           =>  $request->user_id,
                             'user_name'         =>  $request->user?->name,
-                            'user_icon'         =>  $request->user?->icon ? asset('storage/icons' . $request->use->icon) : null,
+                            'user_icon'         =>  $request->user?->icon ? asset('storage/icons/' . $request->use->icon) : null,
                             'status'            =>  $request->status,
                         ];
                     });
