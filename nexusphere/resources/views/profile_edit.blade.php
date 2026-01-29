@@ -56,7 +56,7 @@
       <input id="name" type="text" name="name" value="{{ old('name', $user->name) }}">
     </div>
 
-    <div">
+    <div class="field">
       <label for="subject" class="label-text">学科</label>
         <select id="subject" name="subject" placeholder="学科を入力" class="input-field" required>
           <option value="" disabled selected>学科を選択してください</option>
@@ -66,7 +66,7 @@
         </select>
     </div>
 
-    <div">
+    <div class="field">
       <label for="major" class="label-text">専攻</label>
         <select id="major" name="major" class="input-field" required>
           <option value="" disabled selected>先に学科を選択してください</option>
