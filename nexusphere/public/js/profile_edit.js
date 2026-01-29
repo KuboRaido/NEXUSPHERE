@@ -46,7 +46,6 @@ document.addEventListener('DOMContentLoaded', () => {
         });
         //選択可能にする
         majorSelect.disabled = false;
-        majorSelect.selectedIndex = 0; // 先頭を選択状態に
     } else {
         //選ばれた学科に対応する専攻がない場合は無効化のまま
         majorSelect.innerHTML = '<option value="" disabled selected>専攻をありません</option>';
