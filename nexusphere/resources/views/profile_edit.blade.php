@@ -57,13 +57,20 @@
     </div>
 
     <div class="field">
-      <label for="subject">学科</label>
-      <input id="subject" type="text" name="subject" value="{{ old('subject', $user->subject) }}">
+      <label for="subject" class="label-text">学科</label>
+        <select id="subject" name="subject" placeholder="学科を入力" class="input-field" required>
+          <option value="" disabled selected>学科を選択してください</option>
+            <option value="AI&テクノロジー科">AI&テクノロジー科</option>
+            <option value="デジタルテクノロジー科">デジタルテクノロジー科</option>
+            <option value="クリエイティブデザイン科">クリエイティブデザイン科</option>
+        </select>
     </div>
 
     <div class="field">
-      <label for="major">専攻</label>
-      <input id="major" type="text" name="major" value="{{ old('major', $user->major) }}">
+      <label for="major" class="label-text">専攻</label>
+        <select id="major" name="major" class="input-field" required>
+          <option value="" disabled selected>先に学科を選択してください</option>
+        </select>
     </div>
 
     <div class="actions">
