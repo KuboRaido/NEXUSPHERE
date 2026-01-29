@@ -68,7 +68,7 @@
 
     <div class="field">
       <label for="major" class="label-text">専攻</label>
-        <select id="major" name="major" class="input-field" required>
+        <select id="major" name="major" class="input-field" required disabled>
           <option value="" disabled selected>先に学科を選択してください</option>
         </select>
     </div>
