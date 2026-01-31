@@ -51,6 +51,7 @@
             <div class="name-row">
               <div>
                 <div class="display-name">{{ $profileUser->name }}</div>
+                <div class="handle3">{{ $profileUser->grade}}</div>
                 <div class="handle">{{ $profileUser->subject }}</div>
                 <div class="handle2">{{ $profileUser->major }}</div>
               </div>
