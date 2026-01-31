@@ -43,6 +43,16 @@
         <input id="name" type="text" name="name" value="{{ old('name', $user->name) }}">
       </div>
 
+      <div>
+        <label for="grade">学年</label>
+        <select id="grade" name="grade" placeholder="学年を選択" class="input-field" required>
+          <option value="1"></option>
+          <option value="2"></option>
+          <option value="3"></option>
+          <option value="4"></option>
+        </select>
+      </div>
+
       <div class="field">
         <label for="subject" class="label-text">学科</label>
         <select id="subject" name="subject" placeholder="学科を入力" class="input-field" required>
