@@ -65,8 +65,6 @@ function renderMessages() {
   const chatBox = document.getElementById('chat-box');
   if (!chatBox) return;
 
-  const isNearBottom = chatBox.scrollTop + chatBox.clientHeight >= chatBox.scrollHeight - 100;
-
   const meId = String(getMeId() ?? '');
   const makeStatus = (mine, read) => (!mine ? '' : (read ? '既読' : '未読'));
 

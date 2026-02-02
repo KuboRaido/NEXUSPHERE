@@ -11,10 +11,6 @@
 
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="csrf-token" content="{{ csrf_token() }}">
-  <script>
-    // JSから参照できるベースURLを定義
-    // window.storageBaseUrl = "{{ asset('storage/icons/') }}";
-  </script>
 </head>
 <body>
     <header class="site-header">
@@ -39,6 +35,18 @@
           <div class="dm-modal-content">
             <h3>グループDM作成</h3>
             <input id="group_name" type="text" placeholder="グループ名を入力" autocomplete="off" />
+            <!-- アイコン -->
+            <div class="icon-upload-container">
+                <label class="label-text">アイコン</label>
+                <div class="icon-placeholder" id="iconPlaceholder">
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 16 16" width="40" height="40">
+                        <path d="M11 6a3 3 0 1 1-6 0 3 3 0 0 1 6 0"/>
+                        <path fill-rule="evenodd" d="M0 8a8 8 0 1 1 16 0A8 8 0 0 1 0 8m8-7a7 7 0 0 0-5.468 11.37C3.242 11.226 4.805 10 8 10s4.757 1.225 5.468 2.37A7 7 0 0 0 8 1"/>
+                    </svg>
+                    <img id="uploadedIcon" src="#" alt="Uploaded Icon" style="display: none;">
+                </div>
+                <input type="file" id="iconUpload" name="icon" accept="image/*" class="icon-upload-input">
+            </div> 
 
             <div id="modalFriendList">
               <!-- JSでここに友達一覧 -->
