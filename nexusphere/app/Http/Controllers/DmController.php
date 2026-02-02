@@ -11,6 +11,7 @@ use App\Models\Dm;
 use App\Models\User;
 use App\Models\Circle;
 use App\Models\Group;
+use App\Rules\NgWord;
 
 class DmController extends Controller
 {
@@ -280,15 +281,15 @@ public function dmback(?int $partner=null){
 
    public function dmGroupCreate(Request $request){
          $request->validate([
-            'group_name' => 'required|string|max:255',
+            'group_name' => ['required','string','max:255',new NgWord],
             'user_ids'   => 'required|array',
             'user_ids.*' => 'integer|exists:users,user_id',
             'icon' => [ 'nullable','image','mimes:jpeg,png,jpg,gif','max:2048' ],
          ]);
 
          $iconPath = null;
-         if ($request->hasFile('icon')) {
-            $iconPath = $request->file('icon')->store('', 'direct');
+         if ($request->hasFile('image')) {
+            $iconPath = $request->file('image')->store('', 'direct');
          }
 
          $meId = Auth::id();

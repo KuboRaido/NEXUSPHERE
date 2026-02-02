@@ -60,7 +60,6 @@ document.addEventListener("DOMContentLoaded", () => {
 
     //区分が選択｜変更されたら
     jobSelect.addEventListener('change', function(){
-        subjectSelect.innerHTML = '<option value="" disabled selected>学科を選択してください</option>';
         subjectSelect.disable = false;
     });
 });
