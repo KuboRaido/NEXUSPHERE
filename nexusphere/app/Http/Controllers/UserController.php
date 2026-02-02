@@ -30,6 +30,7 @@ class UserController extends Controller
             'subject' =>[ 'required','string','max:255' ],
             'major' =>[ 'required','string','max:255' ],
             'icon' => [ 'nullable','image','mimes:jpeg,png,jpg,gif','max:2048' ],
+            'job'  => ['required', 'string', 'max:2'],
         ]);
 
         $iconPath = null;
@@ -46,6 +47,7 @@ class UserController extends Controller
             'subject' => $request->subject,
             'major' => $request->major,
             'icon' => $iconPath,
+            'job' => $request->job,
         ]);
     
         // SendVerificationEmail::dispatch($user);

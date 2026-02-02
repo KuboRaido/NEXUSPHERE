@@ -84,19 +84,10 @@ body {
   white-space: nowrap;
 }
 
-.handle {
-  font-size: 14px;
-  color: #666;
-  white-space: nowrap;
-}
-
-.handle2 {
-  font-size: 14px;
-  color: #666;
-  white-space: nowrap;
-}
-
-.handle3 {
+.handle,
+.handle2,
+.handle3,
+.handle4{
   font-size: 14px;
   color: #666;
   white-space: nowrap;

@@ -44,6 +44,15 @@
       </div>
 
       <div>
+        <label for="job" class="label-text">区分</label>
+        <select id="job" name="job" placeholder="区分を選択" class="input-filed" required>
+          <option value="" disabled selected>区分を選択してください</option>
+          <option value="学生">学生</option>
+          <option value="講師">講師</option>
+          <option value="教員">教員</option>
+      </div>
+
+      <div>
         <label for="grade">学年</label>
         <select id="grade" name="grade" placeholder="学年を選択" class="input-field" required>
           <option value="1"></option>

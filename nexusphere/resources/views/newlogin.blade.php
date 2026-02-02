@@ -58,17 +58,31 @@
                 <input type="number" id="age" name="age" placeholder="年齢を入力" class="input-field" min="0" max="100" required>
             </div>
 
+            <div>
+                <label for="job" class="label-text">区分</label>
+                <select id="job" name="job" placeholder="区分を選択" class="input-filed" required>
+                    <option value="" disabled selected>区分を選択してください</option>
+                    <option value="学生">学生</option>
+                    <option value="講師">講師</option>
+                    <option value="教員">教員</option>
+            </div>
+
             <!-- 学年 -->
             <div>
-                <label for="grade" class="label-text">学年</label>
-                <input type="number" id="grade" name="grade" placeholder="学年を入力" class="input-field" min="1" max="4" required>
+                <label for="grade" class="label-text">学年 </label>
+                <select id="grade" name="grade" placeholder="学年を選択" class="input-filed" required>
+                    <option value="" disabled selected>学年を選択してください</option>
+                    <option value="1">1</option>
+                    <option value="2">2</option>
+                    <option value="3">3</option>
+                    <option value="4">4</option>
             </div>
 
             <!-- 学科 -->
             <div>
                 <label for="subject" class="label-text">学科</label>
-                <select id="subject" name="subject" placeholder="学科を入力" class="input-field" required>
-                    <option value="" disabled selected>学科を選択してください</option>
+                <select id="subject" name="subject" placeholder="学科を選択" class="input-field" required>
+                    <option value="" disabled selected>区分を学生にしてください</option>
                     <option value="AI&テクノロジー科">AI&テクノロジー科</option>
                     <option value="デジタルテクノロジー科">デジタルテクノロジー科</option>
                     <option value="クリエイティブデザイン科">クリエイティブデザイン科</option>

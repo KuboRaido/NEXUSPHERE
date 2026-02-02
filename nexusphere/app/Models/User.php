@@ -18,7 +18,7 @@ class User extends Authenticatable
     protected $primaryKey = 'user_id';
     public $incrementing = true;
     protected $keyType = 'int';
-    protected $fillable = ['name','mail','password','age','grade','subject','major','icon'];
+    protected $fillable = ['name','mail','password','age','grade','subject','major','icon','job'];
     protected $hidden = ['password','remember_token'];
 
     public function prcs()

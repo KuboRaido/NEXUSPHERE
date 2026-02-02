@@ -77,3 +77,14 @@ document.addEventListener('DOMContentLoaded', () => {
     }
     });
 });
+
+document.addEventListener("DOMContentLoaded", () => {
+    const jobSelect = document.getElementById('job');
+    const subjectSelect =document.getElementById('subject'); 
+
+    //区分が選択｜変更されたら
+    jobSelect.addEventListener('change', function(){
+        subjectSelect.innerHTML = '<option value="" disabled selected>学科を選択してください</option>';
+        subjectSelect.disable = false;
+    });
+});
