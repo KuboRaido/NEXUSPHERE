@@ -8,10 +8,8 @@ use App\Models\Circle_requests;
 use App\Rules\NgWord;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Database\QueryException;
-use Illuminate\Support\Facades\Redirect;
 
 class CircleController extends Controller
 {
