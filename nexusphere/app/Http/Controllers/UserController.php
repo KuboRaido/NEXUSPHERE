@@ -96,4 +96,21 @@ class UserController extends Controller
             ];
         })->values());
     }
+
+    //DM一覧のグループ作成画面の際のユーザー一覧のデータ送信に使用
+    public function group()
+    {
+        $meId =Auth::id();
+        $User = User::query()
+                        ->where('user_id', '!=', $meId)
+                        ->orderBy('created_at','desc')
+                        ->get()
+                        ->map(fn ($u) =>
+            [
+                'id' => $u->user_id,
+                'name'    => $u->name,
+            ]);
+
+        return response()->json($User->values());
+    }
 }
