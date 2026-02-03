@@ -50,6 +50,7 @@
           <option value="学生">学生</option>
           <option value="講師">講師</option>
           <option value="教員">教員</option>
+        </select>
       </div>
 
       <div>

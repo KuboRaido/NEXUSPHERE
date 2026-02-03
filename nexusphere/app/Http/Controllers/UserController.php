@@ -25,12 +25,11 @@ class UserController extends Controller
             'mail' => ['required','email','unique:users,mail','regex:/@(edu.sba|edu.ssm|sba|ssm)\.ac\.jp$/'],
             'password' => ['required','string','min:8','max:20','confirmed'],
             'name' => [ 'required','string','max:255'],
-            'age' =>[ 'required','integer','min:0','max:120' ],
-            'grade' => [ 'required','integer','min:1','max:4' ],
-            'subject' =>[ 'required','string','max:255' ],
-            'major' =>[ 'required','string','max:255' ],
-            'icon' => [ 'nullable','image','mimes:jpeg,png,jpg,gif','max:2048' ],
             'job'  => ['required', 'string', 'max:2'],
+            'grade' => [ 'required_if:job,学生|date','integer','min:1','max:4' ],
+            'subject' =>[ 'required_id:job,学生|date','string','max:255' ],
+            'major' =>[ 'required_id:job,学生|date','string','max:255' ],
+            'icon' => [ 'nullable','image','mimes:jpeg,png,jpg,gif','max:2048' ],
         ]);
 
         $iconPath = null;
