@@ -37,7 +37,7 @@
             <input id="group_name" type="text" placeholder="グループ名を入力" autocomplete="off" />
             <!-- アイコン -->
             <div class="form-group">
-                    <input type="file" id="image" name="image" accept="image/*" required onchange="previewImage(event)" style="display:none;">
+                    <input type="file" id="image" name="image" accept="image/*" required onchange="previewImage(event)" style="display:none;" />
             </div>
 
             <div id="modalFriendList">

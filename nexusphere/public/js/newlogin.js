@@ -80,10 +80,14 @@ document.addEventListener('DOMContentLoaded', () => {
 
 document.addEventListener("DOMContentLoaded", () => {
     const jobSelect = document.getElementById('job');
-    const subjectSelect =document.getElementById('subject'); 
+    const gradeSelect =document.getElementById('grade'); 
 
     //区分が選択｜変更されたら
     jobSelect.addEventListener('change', function(){
-        subjectSelect.disable = false;
+        if (this.value === "学生") {
+            gradeSelect.disabled = false;
+        } else {
+            gradeSelect.disabled = true;
+        }
     });
 });
