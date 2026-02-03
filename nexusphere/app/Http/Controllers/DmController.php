@@ -5,7 +5,6 @@ namespace App\Http\Controllers;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\DB;
 use App\Models\Dm;
 use App\Models\User;
@@ -105,6 +104,7 @@ class DmController extends Controller
             'last_message' => $g->latestMessage?->message_text ?? '',
             'last_time'    => $lastTime?->toISOString(),
             'is_group'     => true, //フロントで判別するためにフラグを立てる
+            'icon'         => $g->icon,
       ];
    }
 
@@ -288,8 +288,8 @@ public function dmback(?int $partner=null){
          ]);
 
          $iconPath = null;
-         if ($request->hasFile('image')) {
-            $iconPath = $request->file('image')->store('', 'direct');
+         if ($request->hasFile('icon')) {
+            $iconPath = $request->file('icon')->store('', 'direct');
          }
 
          $meId = Auth::id();

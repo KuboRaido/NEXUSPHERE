@@ -78,15 +78,6 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 });
 
-const grade = {
-    "学生" : [
-        "1",
-        "2",
-        "3",
-        "4",
-    ],
-};
-
 document.addEventListener("DOMContentLoaded", () => {
     const jobSelect = document.getElementById('job');
     const gradeSelect =document.getElementById('grade'); 
