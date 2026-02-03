@@ -10,8 +10,10 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
 </head>
 <body>
-    <header class="header">
-      <span class="title">{{ $profileUser->name }} profile</span>
+    <header class="site-header">
+        <div class="header-inner">
+            <h1 id="site-title">Nexusphere</h1>
+        </div>
 <!--ここからログアウトボタン-->
       @if($isMine)
         <button type="button" class="logout-btn" id="logout-trigger">ログアウト</button>
