@@ -55,7 +55,8 @@
 
       <div>
         <label for="grade">学年</label>
-        <select id="grade" name="grade" placeholder="学年を選択" class="input-field" required>
+        <select id="grade" name="grade" placeholder="学年を選択" class="input-field">
+          <option value="" disabled selected>学年を選してください</option>
           <option value="1"></option>
           <option value="2"></option>
           <option value="3"></option>
@@ -65,7 +66,7 @@
 
       <div class="field">
         <label for="subject" class="label-text">学科</label>
-        <select id="subject" name="subject" placeholder="学科を入力" class="input-field" required>
+        <select id="subject" name="subject" placeholder="学科を入力" class="input-field">
             <option value="" disabled selected>学科を選択してください</option>
             <option value="AI&テクノロジー科">AI&テクノロジー科</option>
             <option value="デジタルテクノロジー科">デジタルテクノロジー科</option>
@@ -75,7 +76,7 @@
 
       <div class="field">
             <label for="major" class="label-text">専攻</label>
-            <select id="major" name="major" class="input-field" required>
+            <select id="major" name="major" class="input-field">
                 <option value="" disabled selected>先に学科を選択してください</option>
             </select>
       </div>
