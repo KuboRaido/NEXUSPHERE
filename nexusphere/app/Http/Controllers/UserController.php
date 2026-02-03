@@ -96,21 +96,4 @@ class UserController extends Controller
             ];
         })->values());
     }
-
-    public function group()
-    {
-        $meId =Auth::id();
-        $User = User::query()
-                        ->where('user_id', '!=', $meId)
-                        ->orderBy('created_at','desc')
-                        ->get()
-                        ->map(fn ($u) =>
-            [
-                'id' => $u->user_id,
-                'name'    => $u->name,
-                //'icon'  => $u->avatar_url,
-            ]);
-
-        return response()->json($User->values());
-    }
 }

@@ -316,7 +316,7 @@ function initDmModal(){
         formData.append("icon" , groupIcon.files[0]);
       }
       try{
-        await fetch("/api/v1/dm/createRoom", {
+        const res = await fetch("/api/v1/dm/createRoom", {
           method:"POST",
           //送る内容は上記で作成したformData
           body: formData,
@@ -327,13 +327,18 @@ function initDmModal(){
             "X-CSRF-TOKEN": document.querySelector('meta[name="csrf-token"]')?.content
           }
           });
+        
+        if (!res.ok) {
+           const err = await res.json();
+           throw new Error(err.message || 'グループ作成に失敗しました');
+        }
 
         modal.classList.add("hidden");
         location.reload();
 
       }catch(e){
         console.error(e);
-        alert("グループ作成に失敗しました");
+        alert(e.message || "グループ作成に失敗しました");
       }
 
     });

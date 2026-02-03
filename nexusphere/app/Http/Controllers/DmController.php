@@ -96,11 +96,13 @@ class DmController extends Controller
    foreach ($myGroups as $g){
       $lastTime = $g->latestMessage ?-> created_at ??  $g->created_at;
 
+      $iconUrl = $g->icon ? asset('storage/icons/' . $g->icon) : asset('images/default-avatar.png');
+
       $list[] = [
             'conversation_id' => 'group_' . $g->group_id,//Idをかぶらないようにする
             'partner_id' => $g->group_id,
             'partner_name' => $g->group_name, 
-            'partner_icon' => null,//グループ画像のURLがあれば設定
+            'partner_icon' => $iconUrl,
             'last_message' => $g->latestMessage?->message_text ?? '',
             'last_time'    => $lastTime?->toISOString(),
             'is_group'     => true, //フロントで判別するためにフラグを立てる

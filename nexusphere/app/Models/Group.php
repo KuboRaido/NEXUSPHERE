@@ -19,17 +19,6 @@ class Group extends Model
         return $this->belongsToMany(User::class,'groupmembers','group_id','user_id')->withTimestamps();
     }
 
-    // public function getAvatarUrlAttribute(): string
-    // {
-    //     if(!empty($this->icon)){
-    //         if(Str::startsWith($this->icon,['http://','https://','/'])){
-    //             return $this->icon;
-    //         }
-    //         return asset('storage/icons/'. $this->icon);
-    //     }
-    //     return asset('images/default-avatar.png');
-    // }
-
     public function latestMessage(){
         return $this->hasOne(Dm::class,'group_id','group_id')->latestOfMany('dm_id','max');
     }
