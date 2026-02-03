@@ -260,6 +260,7 @@ async function loadFriendList(){
   }
 }
 
+//DMグループ作成
 function initDmModal(){
 
   const openPopup = document.getElementById("openPopupBtn");
