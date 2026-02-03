@@ -11,7 +11,7 @@ window.previewImage = function(e){
 }
 
 let DEFAULT_AVATAR = window.DEFAULT_AVATAR_URL || '/images/default-avatar.png';
-let ME_ICON = window.storageBaseUrl || DEFAULT_AVATAR;
+let ME_ICON = window.storageBaseUrl  || DEFAULT_AVATAR;
 let PARTNER_ICON = window.storageBaseUrl || DEFAULT_AVATAR;
 
 async function ensureXsrfReady() {
@@ -111,7 +111,7 @@ function renderMessages() {
     //メッセージのアイコンを作成
     const img = document.createElement('img');
     img.className = 'msg-avatar';
-    img.src = mine ? ME_ICON : (msg.icon || PARTNER_ICON);
+    img.src = msg.icon ? (window.storageBaseUrl + msg.icon) : PARTNER_ICON;
     img.alt = '';
     img.onerror = () => { img.src = DEFAULT_AVATAR; };
     // アイコンを押したらプロフィールに飛べるようにする
