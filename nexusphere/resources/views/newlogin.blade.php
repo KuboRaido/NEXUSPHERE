@@ -52,11 +52,6 @@
                 <input type="text" id="name" name="name" placeholder="本名を入力" class="input-field" required>
             </div>
 
-            <!-- 年齢 -->
-            <div>
-                <label for="age" class="label-text">年齢</label>
-                <input type="number" id="age" name="age" placeholder="年齢を入力" class="input-field" min="0" max="100" required>
-            </div>
 
             <div>
                 <label for="job" class="label-text">区分</label>
@@ -84,7 +79,7 @@
             <div>
                 <label for="subject" class="label-text">学科</label>
                 <select id="subject" name="subject" class="input-field" disabled>
-                    <option value="" disabled selected>区分を学生にしてください</option>
+                    <option value="" disabled selected>学科を専攻にしてください</option>
                     <option value="AI&テクノロジー科">AI&テクノロジー科</option>
                     <option value="デジタルテクノロジー科">デジタルテクノロジー科</option>
                     <option value="クリエイティブデザイン科">クリエイティブデザイン科</option>
