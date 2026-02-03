@@ -11,8 +11,8 @@ window.previewImage = function(e){
 }
 
 let DEFAULT_AVATAR = window.DEFAULT_AVATAR_URL || '/images/default-avatar.png';
-let ME_ICON = window.storageBaseUrl | DEFAULT_AVATAR;
-let PARTNER_ICON = window.storageBaseUrl | DEFAULT_AVATAR;
+let ME_ICON = window.storageBaseUrl || DEFAULT_AVATAR;
+let PARTNER_ICON = window.storageBaseUrl || DEFAULT_AVATAR;
 
 async function ensureXsrfReady() {
   await fetch('/sanctum/csrf-cookie', { credentials: 'include' });
@@ -61,6 +61,7 @@ function mergeById(oldList, newList) {
   return Array.from(map.values()).sort((a,b)=> a.timestamp - b.timestamp);
 }
 
+//メッセージデータを画面に表示する関数
 function renderMessages() {
   const chatBox = document.getElementById('chat-box');
   if (!chatBox) return;
@@ -73,10 +74,14 @@ function renderMessages() {
     for(const msg of messages){
       //メッセージを特定するためのIDを付与
       const domId = `msg-${msg.id}`;
+      //特定できたIDをリストに追加
       validIds.add(domId);
 
+      //特定したIDが画面上にあるか確認
       let row = document.getElementById(domId);
+      //そのメッセージの送信者が自分か相手か確認
       const mine = (msg.from === meId);
+      //上記の関数を使い既読の文字を決定
       const status = makeStatus(mine, msg.isRead);
       if(row){
       //既存要素があれば更新のみ行う
@@ -90,7 +95,7 @@ function renderMessages() {
         const bubble = row.querySelector('.massage-bubble');
         if(bubble){
           const label = document.createElement('span');
-            label.classNama = 'read-status';
+            label.className = 'read-status';
             label.textContent = status;
             bubble.appendChild(label);
           }
@@ -99,14 +104,14 @@ function renderMessages() {
           statusLabel.remove();
         }
       } else {
-    //新規作成
+    //特定したIDがまだ画面になかったら作成
     row = document.createElement('div');
     row.classList.add('message-row', mine ? 'from-me' : 'from-them');
     row.id = domId;//メッセージ一つ一つにIdを持たせる
-
+    //メッセージのアイコンを作成
     const img = document.createElement('img');
     img.className = 'msg-avatar';
-    img.src = mine ? ME_ICON : PARTNER_ICON;
+    img.src = mine ? ME_ICON : (msg.icon || PARTNER_ICON);
     img.alt = '';
     img.onerror = () => { img.src = DEFAULT_AVATAR; };
     // アイコンを押したらプロフィールに飛べるようにする
