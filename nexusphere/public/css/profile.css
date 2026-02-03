@@ -418,7 +418,6 @@ button[type="submit"]:hover {
 
 /*ログアウト確認ダイアログ*/
 .logout-btn {
-  margin-left: auto;
   padding: 6px 12px;
   background: #f05a5a;
   color: #fff;
