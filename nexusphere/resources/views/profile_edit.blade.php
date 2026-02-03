@@ -43,7 +43,7 @@
         <input id="name" type="text" name="name" value="{{ old('name', $user->name) }}">
       </div>
 
-      <div>
+      <div class="filed">
         <label for="job" class="label-text">区分</label>
         <select id="job" name="job" class="input-filed" required>
           <option value="" disabled selected>区分を選択してください</option>
@@ -53,7 +53,7 @@
         </select>
       </div>
 
-      <div>
+      <div class="filed">
         <label for="grade">学年</label>
         <select id="grade" name="grade" class="input-field" disabled>
           <option value="" disabled selected>学年を選してください</option>
