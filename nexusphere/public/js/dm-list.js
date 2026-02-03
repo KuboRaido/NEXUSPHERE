@@ -277,17 +277,23 @@ function initDmModal(){
     modal.classList.add("hidden");
   });
 
+  //DM一覧でグループを作成
   const createRoom = document.getElementById("createRoomBtn");
   if(createRoom){
 
     createRoom.addEventListener("click", async () => {
-
+      //グループ名を取得
       const groupNameInput = document.getElementById("group_name");
+      //グループ名が入力されていたら前後の空白を削除・名前が無ければ空白
       const groupName = groupNameInput ? groupNameInput.value.trim() : "";
-      
+      //アイコンを取得
+      const groupIcon = document.getElementById("iconUpload");
+      //グループに入れると選択した友達を取得
       const checks = document.querySelectorAll(".modal-friend-check:checked");
 
+      //選択した友達を入れるための箱を作成
       let ids = [];
+      //選択した友達を一人ずつ配列に追加
       checks.forEach(c => ids.push(c.value));
 
       if(!groupName){
@@ -300,20 +306,27 @@ function initDmModal(){
         return;
       }
 
+      //画像が含まれるためFormDataを使用
+      const formData = new FormData();
+      formData.append("group_name" , groupName);
+
+      //選択したユーザーの数だけ繰り返しFormDataに入れる
+      ids.forEach(id => formData.append("user_ids[]" , id));
+      if(groupIcon && groupIcon.files[0]){
+        formData.append("icon" , groupIcon.files[0]);
+      }
       try{
         await fetch("/api/v1/dm/createRoom", {
           method:"POST",
+          //送る内容は上記で作成したformData
+          body: formData,
+          //クッキー情報も一緒に送る　これが無いと誰から送られたものなのかわからないから
+          credentials: 'include',
+          //通信のメタ情報 X-CSRF-TOKEN:Laravelなどのフレームワークで必須の「セキュリティ通行手形」
           headers:{
-            "Content-Type":"application/json",
-            "Accept":"application/json",
             "X-CSRF-TOKEN": document.querySelector('meta[name="csrf-token"]')?.content
-          },
-          credentials:'include',
-          body: JSON.stringify({ 
-            group_name: groupName, 
-            user_ids: ids 
-          })
-        });
+          }
+          });
 
         modal.classList.add("hidden");
         location.reload();
