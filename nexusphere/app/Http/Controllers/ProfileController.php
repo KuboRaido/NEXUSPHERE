@@ -48,21 +48,24 @@ class ProfileController extends Controller
         $request->validate([
             'name'       => 'required|string|max:255',
             'subject'    => 'nullable|string|max:255',
+            'job'        => 'required|string|max:2',
             'grade'      => 'nullable|string|max:2',
             'major'      => 'nullable|string|max:255',
             'icon'       => 'nullable|image|mimes:jpeg,png,jpg,gif,webp|max:2048',
         ],[],[
             'name'       => '名前',
             'subject'    => '学部',
+            'job'        => '区分',
             'grade'      => '学年',
             'major'      => '学科',
             'icon'       => 'アイコン',
         ]);
 
-    $user->name = $request->input('name');
-    $user->subject = $request->input('subject');
-    $user->grade  = $request->input('grade');
-    $user->major = $request->input('major');
+    $user->name     = $request->input('name');
+    $user->subject  = $request->input('subject');
+    $user->job      = $request->input('job');
+    $user->grade    = $request->input('grade');
+    $user->major    = $request->input('major');
     // ファイル入力は input() では取得しない。アップロードがあった場合のみ上書きする。
 
         if ($request->hasFile('icon')) {

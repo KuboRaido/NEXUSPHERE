@@ -33,7 +33,7 @@ class DmController extends Controller
          return $path;
       }
 
-      if (Storage::disk('public')->exists($path)){
+      if (file_exists(public_path('icons/' . $path))){
          return asset('storage/icons/' . $path);
       }
 
@@ -426,60 +426,60 @@ public function dmback(?int $partner=null){
          return response()->json(['message' => 'Unauthenticated'], 401);
       }
       $partnerId = $partner->getKey();
-      // $circle = $req->integer('circle_id');
-      // $group = $req->integer('group_id');
+      $circle = $req->integer('circle_id');
+      $group = $req->integer('group_id');
 
-      // if($circle > 0){
-      //    $meId = $me->getKey();
-      //    DB::table('dm_reads')->upsert(
-      //    [[
-      //       'user_id'      => $meId, 
-      //       'circle_id'    => $circle,
-      //       'last_read_at' => now(),
-      //       'updated_at'   => now(),
-      //       'created_at'   => now(),
-      //    ]],
-      //    ['user_id','circle_id'], //衝突キー（unique）
-      //    ['last_read_at','updated_at']//更新する列
-      //    );
+      if($circle > 0){
+         $meId = $me->getKey();
+         DB::table('dm_reads')->upsert(
+         [[
+            'user_id'      => $meId, 
+            'circle_id'    => $circle,
+            'last_read_at' => now(),
+            'updated_at'   => now(),
+            'created_at'   => now(),
+         ]],
+         ['user_id','circle_id'], //衝突キー（unique）
+         ['last_read_at','updated_at']//更新する列
+         );
 
-      //    $last = DB::table('dm_reads')
-      //    ->where('user_id', $meId)
-      //    ->where('circle_id', $circle)
-      //    ->value('last_read_at');
+         $last = DB::table('dm_reads')
+         ->where('user_id', $meId)
+         ->where('circle_id', $circle)
+         ->value('last_read_at');
 
-      //    $unread = DB::table('dms')
-      //    ->where('circle_id', $circle)   // 相手から
-      //    ->when($last, fn($q) => $q->where('created_at', '>', $last))
-      //    ->count();
+         $unread = DB::table('dms')
+         ->where('circle_id', $circle)   // 相手から
+         ->when($last, fn($q) => $q->where('created_at', '>', $last))
+         ->count();
 
-      //    return response()->json(['ok'=>true, 'unread_count' => $unread]);
-      // }elseif($group > 0){
-      //    $meId = $me->getKey();
-      //    DB::table('dm_reads')->upsert(
-      //    [[
-      //       'user_id'      => $meId, 
-      //       'group_id'    => $group,
-      //       'last_read_at' => now(),
-      //       'updated_at'   => now(),
-      //       'created_at'   => now(),
-      //    ]],
-      //    ['user_id','group_id'], //衝突キー（unique）
-      //    ['last_read_at','updated_at']//更新する列
-      //    );
+         return response()->json(['ok'=>true, 'unread_count' => $unread]);
+      }elseif($group > 0){
+         $meId = $me->getKey();
+         DB::table('dm_reads')->upsert(
+         [[
+            'user_id'      => $meId, 
+            'group_id'    => $group,
+            'last_read_at' => now(),
+            'updated_at'   => now(),
+            'created_at'   => now(),
+         ]],
+         ['user_id','group_id'], //衝突キー（unique）
+         ['last_read_at','updated_at']//更新する列
+         );
 
-      //    $last = DB::table('dm_reads')
-      //    ->where('user_id', $meId)
-      //    ->where('group_id', $group)
-      //    ->value('last_read_at');
+         $last = DB::table('dm_reads')
+         ->where('user_id', $meId)
+         ->where('group_id', $group)
+         ->value('last_read_at');
 
-      //    $unread = DB::table('dms')
-      //    ->where('group_id', $group)   // 相手から
-      //    ->when($last, fn($q) => $q->where('created_at', '>', $last))
-      //    ->count();
+         $unread = DB::table('dms')
+         ->where('group_id', $group)   // 相手から
+         ->when($last, fn($q) => $q->where('created_at', '>', $last))
+         ->count();
 
-      //    return response()->json(['ok'=>true, 'unread_count' => $unread]);
-      // }
+         return response()->json(['ok'=>true, 'unread_count' => $unread]);
+      }
 
       if ($partnerId !== null){
             $meId = $me->getKey();
