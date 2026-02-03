@@ -11,8 +11,8 @@ window.previewImage = function(e){
 }
 
 let DEFAULT_AVATAR = window.DEFAULT_AVATAR_URL || '/images/default-avatar.png';
-let ME_ICON = DEFAULT_AVATAR;
-let PARTNER_ICON = DEFAULT_AVATAR;
+let ME_ICON = window.storageBaseUrl | DEFAULT_AVATAR;
+let PARTNER_ICON = window.storageBaseUrl | DEFAULT_AVATAR;
 
 async function ensureXsrfReady() {
   await fetch('/sanctum/csrf-cookie', { credentials: 'include' });
