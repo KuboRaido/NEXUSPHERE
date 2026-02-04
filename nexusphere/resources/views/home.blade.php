@@ -111,10 +111,10 @@
                             </a>
                             <span class="comment-text">{{ $comment->sentence }}</span>
                         @endforeach
+                        @if($post->comments->count() > 3)
+                            <button class="showMoreBtn">全てのコメントを見る</button>
+                        @endif
                     </div>
-                @if($post->comments->count() > 3)
-                    <button class="showMoreBtn">全てのコメントを見る</button>
-                @endif
 
             </div>
         </div>
