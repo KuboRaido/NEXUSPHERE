@@ -4,6 +4,12 @@ body {
   min-height: 100vh;
 }
 
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
 /* ヘッダー */
 .header {
   background: #add8e6;
