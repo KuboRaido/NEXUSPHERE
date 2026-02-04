@@ -36,12 +36,13 @@ body {
 
 
 .container {
-  width: 90%;
+  width: 100%;
+  max-width: 600px;
   margin: 30px auto;
-  padding: 25px;
+  padding: 0; /* 必要なら後で足す */
   background: #fff;
   border-radius: 15px;
-  box-shadow: 0 3px 10px rgba(0,0,0,0.15);
+  box-shadow: 0 2px 8px rgba(0,0,0,0.15);
 }
 
 h1 {

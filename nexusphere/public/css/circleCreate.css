@@ -60,10 +60,10 @@ body {
    3. フォームコンテナ
 ========================= */
 .form-container {
+  width: 100%;
   max-width: 600px;
-  width: 90%;
   margin: 30px auto;
-  padding: 20px;
+  padding: 0; /* 必要なら後で足す */
   background: #fff;
   border-radius: 15px;
   box-shadow: 0 2px 8px rgba(0,0,0,0.15);
