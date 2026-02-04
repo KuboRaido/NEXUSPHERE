@@ -4,7 +4,6 @@ document.addEventListener('DOMContentLoaded', () => {
 
     document.querySelectorAll('.like-button').forEach(button => {
         button.addEventListener('click', async () => {
-            const postId = button.dataset.postId;
 
             const response = await fetch('/home', {
                 method: 'POST',
@@ -64,3 +63,21 @@ document.querySelectorAll('.like-button').forEach(button => {
         button.classList.add('animate');
     });
 });
+
+//コメントを全表示させるためのボタンを表示&コメント全表示をやめさせるボタン
+document.querySelectorAll('showMoreBtn').forEach(btn => {
+    btn.addEventListener('click', function(){
+        //ボタンのすぐ上にあるリストを取得
+        const list = this.previousElementSibling;
+
+        //クラスのON/OFFを切り替え
+        list.classList.toggle('expanded');
+
+        //今の状態に合わせて文字を変える
+        if(list.classList.contains('expanded')){
+            this.textContent = '閉じる';
+        } else {
+            this.textContent = 'コメント全表示';
+        }
+    })
+})
