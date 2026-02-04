@@ -9,7 +9,7 @@ body {
 /* ヘッダー */
 .site-header {
   width: 100%;
-  padding: 0px 8px;
+  box-sizing:border-box;
   display: flex;
   justify-content: center;
   align-items: center;
@@ -42,6 +42,7 @@ body {
   display: flex;
   justify-content: center;   /* ← 中央寄せ */
   margin: 10px 0;
+  border-radius: 16px;
 }
 
 .search-container input {
