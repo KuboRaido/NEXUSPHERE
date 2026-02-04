@@ -11,11 +11,11 @@ body {
    ヘッダー
 ========================= */
 .site-header {
-    width: 100%;
-    padding: 0px 8px;
-    display: flex;
-    justify-content: center;
-    align-items: center;
+  width: 100%;
+  padding: 20px 0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
 
 .header-inner {
