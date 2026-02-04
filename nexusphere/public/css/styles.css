@@ -263,7 +263,7 @@ input[type="file"] {
 /* ==============================
    9. コメント表示
 ============================== */
-.comment {
+.comment-list {
     margin: 10px 0;
     padding-bottom: 8px;
     border-bottom: 1px solid #eee;
@@ -271,6 +271,22 @@ input[type="file"] {
 .comment-text {
     display: block;
     margin-left: 30px;
+}
+
+/* 3つ目以降のコメントを非表示 */
+.comment-list .comment:nth-child(n+4){
+    display: none;
+}
+
+/* コメント全表示の際に高さを制限してスクロール出来るようにする */
+.comment-list.expanded{
+    max-height: 300px;
+    overflow-y: auto; /*スクロール*/
+    border-top: 1px solid #eee;/*境界線*/
+}
+/* expandedクラスが付いたら全部表示 */
+.comment-list.expanded .comment:nth-child(n+4){
+    display: block;
 }
 
 
@@ -350,4 +366,16 @@ input[type="file"] {
         padding: 0.5rem;
         padding-bottom: 80px;
     }
+}
+
+/* 投稿作成画面 */
+.createPost{
+    width: 100%;
+    padding: 1.5rem;
+    margin-bottom: 1.5rem;
+    border-radius: 1.5rem;
+    flex-direction: column;
+    display: flex;
+    gap: 1rem;
+    background: #fff;
 }
