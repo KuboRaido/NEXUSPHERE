@@ -117,7 +117,6 @@
                 @if($post->comments->count() > 3)
                     <button class="showMoreBtn">全てのコメントを見る</button>
                 @endif
-            </div>
         </div>
     @endforeach
 
