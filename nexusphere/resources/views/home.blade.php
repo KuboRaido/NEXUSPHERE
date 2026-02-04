@@ -103,15 +103,15 @@
 
 
                 {{-- コメント一覧 --}}
-                @foreach ($post->comments as $comment)
                     <div class="comment-list">
-                        <a href="{{ route('profile.other', $comment->user->user_id) }}" class="user-link">
-                            <img src="{{ asset('storage/icons/' . $comment->user->icon) }}" class="user-icon small">
-                            <strong>{{ $comment->user->name }}</strong>
-                        </a>
-                        <span class="comment-text">{{ $comment->sentence }}</span>
+                        @foreach ($post->comments as $comment)
+                            <a href="{{ route('profile.other', $comment->user->user_id) }}" class="user-link">
+                                <img src="{{ asset('storage/icons/' . $comment->user->icon) }}" class="user-icon small">
+                                <strong>{{ $comment->user->name }}</strong>
+                            </a>
+                            <span class="comment-text">{{ $comment->sentence }}</span>
+                        @endforeach
                     </div>
-                @endforeach
                 @if($post->comments->count() > 3)
                     <button class="showMoreBtn">全てのコメントを見る</button>
                 @endif
