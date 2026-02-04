@@ -17,7 +17,7 @@ html, body {
 
 
 /* ==============================
-   2. ヘッダー（中央固定）
+    2. ヘッダー（中央固定）
 ============================== */
 .site-header {
     width: 100%;
@@ -36,18 +36,18 @@ html, body {
 #site-title {
     font-size: 2rem;
     font-weight: 700;
+    font-family: cursive;
 }
 
 .user-link {
     text-decoration: none;
     color: inherit;
-    align-items: center;
     display: flex;
 }
 
 
 /* ==============================
-   3. 検索エリア
+    3. 検索エリア
 ============================== */
 .search-area {
     width: 100%;
@@ -86,7 +86,7 @@ html, body {
 
 
 /* ==============================
-   4. メインコンテナ
+    4. メインコンテナ
 ============================== */
 .container {
     width: 100%;
@@ -97,14 +97,14 @@ html, body {
 
 
 /* ==============================
-   5. 投稿フォーム
+    5. 投稿フォーム
 ============================== */
-form {
+/* form {
     background: #fff;
     margin-bottom: 1.5rem;
     display: flex;
     gap: 1rem;
-}
+} */
 
 textarea {
     width: 100%;
@@ -173,7 +173,7 @@ input[type="file"] {
 .post-content {
     line-height: 1.6;
     margin-bottom: 10px;
-    margin-left: 20px;
+    margin-left: 50px;
 }
 
 
@@ -355,7 +355,7 @@ input[type="file"] {
 
 
 /* ==============================
-   12. レスポンシブ
+    12. レスポンシブ
 ============================== */
 @media screen and (max-width: 768px) {
     #site-title {

@@ -22,6 +22,7 @@ body {
 #site-title {
   font-size: 2.05rem;
   font-weight: 700;
+  font-family: cursive;
 }
 
 
@@ -172,9 +173,10 @@ body {
 .post {
   background: #fff;
   border-radius: 8px;
-  padding: 8px;
+  padding: 15px;
   box-shadow: 0 2px 8px rgba(0,0,0,0.05);
   margin-bottom: 10px;
+  justify-content: center;
 }
 
 .post .title {
