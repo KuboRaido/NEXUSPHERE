@@ -219,8 +219,7 @@ if(searchInput){
   });
 }
 
-// ----- ここからグループDM作成用の追加 -----
-
+//DMのグループ作成画面のuser一覧の取得
 async function loadFriendList(){
   const friendRoot = document.getElementById("modalFriendList");
   if(!friendRoot) return;
@@ -278,7 +277,6 @@ function initDmModal(){
     modal.classList.add("hidden");
   });
 
-  //DM一覧でグループを作成
   const createRoom = document.getElementById("createRoomBtn");
   if(createRoom){
 
@@ -347,4 +345,3 @@ document.addEventListener("DOMContentLoaded", () => {
   initDmModal();
 });
 
-// ----- 追加ここまで -----
