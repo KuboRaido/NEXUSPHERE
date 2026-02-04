@@ -224,7 +224,7 @@ function renderMessages() {
     //メッセージのアイコンを作成
     const img = document.createElement('img');
     img.className = 'msg-avatar';
-    img.src = msg.icon ? (window.storageBaseUrl + msg.icon) : PARTNER_ICON;
+    img.src = msg.icon;
     img.alt = '';
     img.onerror = () => { img.src = DEFAULT_AVATAR; };
     // アイコンを押したらプロフィールに飛べるようにする
