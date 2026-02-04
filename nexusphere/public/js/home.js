@@ -71,10 +71,10 @@ document.querySelectorAll('.showMoreBtn').forEach(btn => {
         const list = this.previousElementSibling;
 
         //クラスのON/OFFを切り替え
-        list.classList.toggle('.expanded');
+        list.classList.toggle('expanded');
 
         //今の状態に合わせて文字を変える
-        if(list.classList.contains('.expanded')){
+        if(list.classList.contains('expanded')){
             this.textContent = '閉じる';
         } else {
             this.textContent = '全てのコメントを見る';
