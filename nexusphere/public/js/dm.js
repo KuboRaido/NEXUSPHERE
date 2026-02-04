@@ -11,8 +11,8 @@ window.previewImage = function(e){
 }
 
 let DEFAULT_AVATAR = window.DEFAULT_AVATAR_URL || '/images/default-avatar.png';
-let ME_ICON = window.storageBaseUrl  || DEFAULT_AVATAR;
-let PARTNER_ICON = window.storageBaseUrl || DEFAULT_AVATAR;
+let ME_ICON = DEFAULT_AVATAR;
+let PARTNER_ICON = DEFAULT_AVATAR;
 
 async function ensureXsrfReady() {
   await fetch('/sanctum/csrf-cookie', { credentials: 'include' });
@@ -59,6 +59,119 @@ function mergeById(oldList, newList) {
   const map = new Map(oldList.map(m => [String(m.id), normalize(m)]));
   for (const m of newList) map.set(String(m.id), normalize(m));
   return Array.from(map.values()).sort((a,b)=> a.timestamp - b.timestamp);
+}
+
+document.addEventListener('DOMContentLoaded',()=>{
+  const attachBtn = document.getElementById('attach-btn');
+  const fileInput = document.getElementById('image-input');
+  if (attachBtn && fileInput){
+    attachBtn.addEventListener('click', (e) => {
+      e.preventDefault();
+      e.stopPropagation();
+      fileInput.click();
+    });
+  } ;
+});
+
+//API 1対1のdmの会話履歴取得
+async function loadConversation(currentPartnerId) {
+  if (!Number.isInteger(currentPartnerId)) return;
+  setCurrentPartner(currentPartnerId);
+
+  const res = await fetch(`/api/v1/dm/${currentPartnerId}`, {
+    headers: { 'Accept': 'application/json' },
+    credentials: 'include',
+  });
+  if(!res.ok){
+    console.error(`GET /api/v1/dm/${currentPartnerId} failed`, res.status);
+    throw new Error(`会話取得エラー: ${res.status}`);
+  }
+  const json = await res.json();
+
+  if (json?.participants?.me?.avatar) {
+    ME_ICON = json.participants.me.avatar;
+  }
+  if (json?.participants?.partner?.avatar) {
+      PARTNER_ICON = json.participants.partner.avatar;
+  }
+
+  const newList = (json.dms || []).map(m => ({
+    id: m.id,
+    from: String(m.from_id),
+    to:   String(m.to_id),
+    text: m.text,
+    attachments: m.attachments || [],
+    timestamp: new Date(m.created_at),
+    pending: false,
+    isRead: Boolean(m.is_read)
+  }));
+
+  await ensureXsrfReady();
+  await fetch(`/api/v1/dm/${currentPartnerId}/read`,{method:'POST',headers:{'Accept':'application/json', ...getXsrfHeader()},credentials:'include'}).catch(()=>{});
+
+  
+  document.addEventListener('visibilitychange', async()=>{
+    if(document.visibilityState === 'visible' && Number.isInteger(currentPartnerId)){
+      await ensureXsrfReady();
+      fetch(`/api/v1/dm/${currentPartnerId}/read`,{method:'POST',headers:{'Accept':'application/json', ...getXsrfHeader()},credentials:'include'}).catch(()=>{});
+    }
+  });
+  messages = mergeById(messages, newList);
+  window.messages = messages;
+
+  renderMessages();
+}
+
+// Circle内のDMの会話履歴取得API
+async function loadCircleConversation(circle_id){
+  const res  = await fetch(`/api/v1/circle/${circle_id}/dm`, {
+    headers: {Accept: 'application/json' },
+    credentials: 'include',
+  });
+
+  if(!res.ok) throw new Error(`会話取エラー: ${res.status}`);
+  const json = await res.json();
+  //マッピング処理をmergeByIdの「前」に行う
+  const newMessages = ( json.dms || []).map(m => ({
+    id: m.id,
+    from: String(m.from_id),
+    to:   '',
+    text: m.text,
+    icon: m.icon,
+    attachments: m.attachments || [],
+    timestamp: new Date(m.created_at),
+    pending: false,
+    isRead: Boolean(m.is_read),
+  }));
+
+  //ここで正規化済みの配列を渡す
+  messages = mergeById(messages, newMessages);
+  renderMessages();
+}
+
+// Groupの会話履歴取得API
+async function loadGroupConversation(group_id){
+  const res = await fetch(`/api/v1/group/${group_id}/dm`, {
+    headers: {Accept: 'application/json' },
+    credentials: 'include',
+  });
+
+  if(!res.ok) throw new Error(`会話ログエラー: ${res.status}`);
+  const json = await res.json();
+  const newMessages = ( json.dms || []).map(m => ({
+    id: m.id,
+    from: String(m.from_id),
+    to:   '',
+    text: m.text,
+    icon: m.icon,
+    attachments: m.attachments || [],
+    timestamp: new Date(m.created_at),
+    pending: false,
+    isRead: Boolean(m.is_read),
+  }));
+
+  messages = mergeById(messages, newMessages);
+  renderMessages();
 }
 
 //メッセージデータを画面に表示する関数
@@ -179,119 +292,6 @@ function renderMessages() {
   }
 }
   //存在しなくなったメッセージを削除
-}
-
-document.addEventListener('DOMContentLoaded',()=>{
-  const attachBtn = document.getElementById('attach-btn');
-  const fileInput = document.getElementById('image-input');
-  if (attachBtn && fileInput){
-    attachBtn.addEventListener('click', (e) => {
-      e.preventDefault();
-      e.stopPropagation();
-      fileInput.click();
-    });
-  } ;
-});
-
-//API 1対1のdmの会話履歴取得
-async function loadConversation(currentPartnerId) {
-  if (!Number.isInteger(currentPartnerId)) return;
-  setCurrentPartner(currentPartnerId);
-
-  const res = await fetch(`/api/v1/dm/${currentPartnerId}`, {
-    headers: { 'Accept': 'application/json' },
-    credentials: 'include',
-  });
-  if(!res.ok){
-    console.error(`GET /api/v1/dm/${currentPartnerId} failed`, res.status);
-    throw new Error(`会話取得エラー: ${res.status}`);
-  }
-  const json = await res.json();
-
-  if (json?.participants?.me?.avatar) {
-    ME_ICON = json.participants.me.avatar;
-  }
-  if (json?.participants?.partner?.avatar) {
-      PARTNER_ICON = json.participants.partner.avatar;
-  }
-
-  const newList = (json.dms || []).map(m => ({
-    id: m.id,
-    from: String(m.from_id),
-    to:   String(m.to_id),
-    text: m.text,
-    attachments: m.attachments || [],
-    timestamp: new Date(m.created_at),
-    pending: false,
-    isRead: Boolean(m.is_read)
-  }));
-
-  await ensureXsrfReady();
-  await fetch(`/api/v1/dm/${currentPartnerId}/read`,{method:'POST',headers:{'Accept':'application/json', ...getXsrfHeader()},credentials:'include'}).catch(()=>{});
-
-  
-  document.addEventListener('visibilitychange', async()=>{
-    if(document.visibilityState === 'visible' && Number.isInteger(currentPartnerId)){
-      await ensureXsrfReady();
-      fetch(`/api/v1/dm/${currentPartnerId}/read`,{method:'POST',headers:{'Accept':'application/json', ...getXsrfHeader()},credentials:'include'}).catch(()=>{});
-    }
-  });
-  messages = mergeById(messages, newList);
-  window.messages = messages;
-
-  renderMessages();
-}
-
-// Circle内のDMの会話履歴取得API
-async function loadCircleConversation(circle_id){
-  const res  = await fetch(`/api/v1/circle/${circle_id}/dm`, {
-    headers: {Accept: 'application/json' },
-    credentials: 'include',
-  });
-
-  if(!res.ok) throw new Error(`会話取エラー: ${res.status}`);
-  const json = await res.json();
-  //マッピング処理をmergeByIdの「前」に行う
-  const newMessages = ( json.dms || []).map(m => ({
-    id: m.id,
-    from: String(m.from_id),
-    to:   '',
-    text: m.text,
-    icon: m.icon,
-    attachments: m.attachments || [],
-    timestamp: new Date(m.created_at),
-    pending: false,
-    isRead: Boolean(m.is_read),
-  }));
-
-  //ここで正規化済みの配列を渡す
-  messages = mergeById(messages, newMessages);
-  renderMessages();
-}
-
-// Groupの会話履歴取得API
-async function loadGroupConversation(group_id){
-  const res = await fetch(`/api/v1/group/${group_id}/dm`, {
-    headers: {Accept: 'application/json' },
-    credentials: 'include',
-  });
-
-  if(!res.ok) throw new Error(`会話ログエラー: ${res.status}`);
-  const json = await res.json();
-  const newMessages = ( json.dms || []).map(m => ({
-    id: m.id,
-    from: String(m.from_id),
-    to:   '',
-    text: m.text,
-    icon: m.icon,
-    attachments: m.attachments || [],
-    timestamp: new Date(m.created_at),
-    pending: false,
-    isRead: Boolean(m.is_read),
-  }));
-
-  messages = mergeById(messages, newMessages);
-  renderMessages();
 }
 
 async function sendMessage() {
