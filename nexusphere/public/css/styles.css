@@ -41,6 +41,8 @@ html, body {
 .user-link {
     text-decoration: none;
     color: inherit;
+    align-items: center;
+    display: flex;
 }
 
 
@@ -87,7 +89,6 @@ html, body {
     width: 100%;
     max-width: 600px;
     margin: 0 auto;
-    padding: 1rem;
     padding-bottom: 80px; /* フッター対策 */
 }
 

@@ -5,17 +5,23 @@ body {
 }
 
 /* ヘッダー */
-.header {
-  background: #add8e6;
-  padding: 15px;
-  text-align: center;
-  font-size: 22px;
-  font-weight: bold;
+.site-header {
+  width: 100%;
+  box-sizing:border-box;
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
 
-.title {
-  font-size: 22px;
-  font-weight: bold;
+.header-inner {
+    max-width: 600px;
+    margin: 0 auto;
+}
+
+
+#site-title {
+  font-size: 2.05rem;
+  font-weight: 700;
 }
 
 
@@ -412,7 +418,6 @@ button[type="submit"]:hover {
 
 /*ログアウト確認ダイアログ*/
 .logout-btn {
-  margin-left: auto;
   padding: 6px 12px;
   background: #f05a5a;
   color: #fff;
