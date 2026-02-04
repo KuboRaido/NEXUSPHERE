@@ -230,7 +230,7 @@ public function dmback(?int $partner=null){
 }
 
    public function dmCircleBack(Circle $circle){
-      $m = Dm::where('circle_id', $circle->circle_id)->whereNull('receiver_id')->orderBy('created_at')->get();
+      $m = Dm::with('sender')->where('circle_id', $circle->circle_id)->whereNull('receiver_id')->orderBy('created_at')->get();
 
       return response()->json([
          'participants' => [
@@ -242,6 +242,7 @@ public function dmback(?int $partner=null){
             'id'        =>$dm->dm_id,
             'from_id'   =>$dm->sender_id,
             'text'      =>$dm->message_text,
+            'icon'      =>$this->avatarUrl($dm->sender),
             'created_at'=>$dm->created_at?->toISOString(),
             'is_read'   =>$dm->is_read,
             'attachments'=>$dm->Images_and_videos->map(function($rec){
@@ -256,7 +257,7 @@ public function dmback(?int $partner=null){
    }
 
    public function dmGroup(Group $group){
-      $m = Dm::where('group_id', $group->group_id)->whereNull('receiver_id')->orderBy('created_at')->get();
+      $m = Dm::with('sender')->where('group_id', $group->group_id)->whereNull('receiver_id')->orderBy('created_at')->get();
 
       return response()->json([
          'participants' => [
@@ -268,6 +269,7 @@ public function dmback(?int $partner=null){
             'id'        =>$dm->dm_id,
             'from_id'   =>$dm->sender_id,
             'text'      =>$dm->message_text,
+            'icon'      =>$this->avatarUrl($dm->sender),
             'created_at'=>$dm->created_at?->toISOString(),
             'is_read'   =>$dm->is_read,
             'attachments'=>$dm->Images_and_videos->map(function($rec){
