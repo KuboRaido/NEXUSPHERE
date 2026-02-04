@@ -27,7 +27,7 @@ class UserController extends Controller
             'grade' => [ 'required_if:job,学生|date','integer','min:1','max:4' ],
             'subject' =>[ 'required_id:job,学生|date','string','max:255' ],
             'major' =>[ 'required_id:job,学生|date','string','max:255' ],
-            'icon' => [ 'nullable','image','mimes:jpeg,png,jpg,gif','max:2048' ],
+            'icon' => [ 'nullable','image','max:2048' ],
         ]);
 
         $iconPath = null;

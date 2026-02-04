@@ -51,7 +51,7 @@ class ProfileController extends Controller
             'job'        => 'required|string|max:2',
             'grade'      => 'nullable|string|max:2',
             'major'      => 'nullable|string|max:255',
-            'icon'       => 'nullable|image|mimes:jpeg,png,jpg,gif,webp|max:2048',
+            'icon'       => 'nullable|image|max:2048',
         ],[],[
             'name'       => '名前',
             'subject'    => '学部',

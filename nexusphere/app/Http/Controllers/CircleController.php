@@ -63,7 +63,7 @@ class CircleController extends Controller
         $data = $request->validate([
             'name'        => ['required','string','max:255','unique:circles,circle_name',new NgWord],
             'sentence'    => ['required','string','max:255',new NgWord],
-            'image'       => ['required','image','mimes:jpeg,png,jpg,gif,webp|max:5120'],
+            'image'       => ['required','image','max:5120'],
             'category'    => ['nullable','string', new NgWord],
         ],[
             'image.required' => '画像を設定してください',
@@ -201,7 +201,7 @@ class CircleController extends Controller
         $request->validate([
             'circle_name' => ['nullable','string','max:255',new NgWord],
             'sentence'    => ['nullable','string','max:255',new NgWord],
-            'icon'        => ['nullable','image','mimes:jpeg,png,jpg,gif,webp','max:5120'],
+            'icon'        => ['nullable','image','max:5120'],
         ]);
 
         if ($request->hasFile('icon')) {
