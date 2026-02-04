@@ -288,7 +288,7 @@ public function dmback(?int $partner=null){
             'group_name' => ['required','string','max:255',new NgWord],
             'user_ids'   => 'required|array',
             'user_ids.*' => 'integer|exists:users,user_id',
-            'icon' => [ 'nullable','image','mimes:jpeg,png,jpg,gif','max:2048' ],
+            'icon' => [ 'nullable','image','max:2048' ],
          ]);
 
          $iconPath = null;
