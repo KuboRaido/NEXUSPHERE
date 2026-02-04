@@ -65,7 +65,7 @@ document.querySelectorAll('.like-button').forEach(button => {
 });
 
 //コメントを全表示させるためのボタンを表示&コメント全表示をやめさせるボタン
-document.querySelectorAll('showMoreBtn').forEach(btn => {
+document.querySelectorAll('.showMoreBtn').forEach(btn => {
     btn.addEventListener('click', function(){
         //ボタンのすぐ上にあるリストを取得
         const list = this.previousElementSibling;
