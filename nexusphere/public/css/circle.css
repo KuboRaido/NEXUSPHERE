@@ -60,6 +60,7 @@ body {
   background: #fff; 
   border-bottom: 1px solid #ddd; 
   gap: 12px; 
+  border-radius: 15px;
 } 
 .search-container input { 
   width: 65%; 
