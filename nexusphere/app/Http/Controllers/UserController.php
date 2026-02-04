@@ -92,7 +92,7 @@ class UserController extends Controller
             return [
                 'user_id' => $u->user_id,
                 'name'    => $u->name,
-                'avatar'  => $u->avatar_url ?? ($u->icon ? asset('storage/icons/' . $u->icon) : null),
+                'icon'  => $u->icon ?? ($u->icon ? asset('storage/icons/' . $u->icon) : null),
             ];
         })->values());
     }
