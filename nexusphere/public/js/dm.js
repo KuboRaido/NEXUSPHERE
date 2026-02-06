@@ -61,11 +61,123 @@ function mergeById(oldList, newList) {
   return Array.from(map.values()).sort((a,b)=> a.timestamp - b.timestamp);
 }
 
+document.addEventListener('DOMContentLoaded',()=>{
+  const attachBtn = document.getElementById('attach-btn');
+  const fileInput = document.getElementById('image-input');
+  if (attachBtn && fileInput){
+    attachBtn.addEventListener('click', (e) => {
+      e.preventDefault();
+      e.stopPropagation();
+      fileInput.click();
+    });
+  } ;
+});
+
+//API 1対1のdmの会話履歴取得
+async function loadConversation(currentPartnerId) {
+  if (!Number.isInteger(currentPartnerId)) return;
+  setCurrentPartner(currentPartnerId);
+
+  const res = await fetch(`/api/v1/dm/${currentPartnerId}`, {
+    headers: { 'Accept': 'application/json' },
+    credentials: 'include',
+  });
+  if(!res.ok){
+    console.error(`GET /api/v1/dm/${currentPartnerId} failed`, res.status);
+    throw new Error(`会話取得エラー: ${res.status}`);
+  }
+  const json = await res.json();
+
+  if (json?.participants?.me?.avatar) {
+    ME_ICON = json.participants.me.avatar;
+  }
+  if (json?.participants?.partner?.avatar) {
+      PARTNER_ICON = json.participants.partner.avatar;
+  }
+
+  const newList = (json.dms || []).map(m => ({
+    id: m.id,
+    from: String(m.from_id),
+    to:   String(m.to_id),
+    text: m.text,
+    attachments: m.attachments || [],
+    timestamp: new Date(m.created_at),
+    pending: false,
+    isRead: Boolean(m.is_read)
+  }));
+
+  await ensureXsrfReady();
+  await fetch(`/api/v1/dm/${currentPartnerId}/read`,{method:'POST',headers:{'Accept':'application/json', ...getXsrfHeader()},credentials:'include'}).catch(()=>{});
+
+  
+  document.addEventListener('visibilitychange', async()=>{
+    if(document.visibilityState === 'visible' && Number.isInteger(currentPartnerId)){
+      await ensureXsrfReady();
+      fetch(`/api/v1/dm/${currentPartnerId}/read`,{method:'POST',headers:{'Accept':'application/json', ...getXsrfHeader()},credentials:'include'}).catch(()=>{});
+    }
+  });
+  messages = mergeById(messages, newList);
+  window.messages = messages;
+
+  renderMessages();
+}
+
+// Circle内のDMの会話履歴取得API
+async function loadCircleConversation(circle_id){
+  const res  = await fetch(`/api/v1/circle/${circle_id}/dm`, {
+    headers: {Accept: 'application/json' },
+    credentials: 'include',
+  });
+
+  if(!res.ok) throw new Error(`会話取エラー: ${res.status}`);
+  const json = await res.json();
+  //マッピング処理をmergeByIdの「前」に行う
+  const newMessages = ( json.dms || []).map(m => ({
+    id: m.id,
+    from: String(m.from_id),
+    to:   '',
+    text: m.text,
+    icon: m.icon,
+    attachments: m.attachments || [],
+    timestamp: new Date(m.created_at),
+    pending: false,
+    isRead: Boolean(m.is_read),
+  }));
+
+  //ここで正規化済みの配列を渡す
+  messages = mergeById(messages, newMessages);
+  renderMessages();
+}
+
+// Groupの会話履歴取得API
+async function loadGroupConversation(group_id){
+  const res = await fetch(`/api/v1/group/${group_id}/dm`, {
+    headers: {Accept: 'application/json' },
+    credentials: 'include',
+  });
+
+  if(!res.ok) throw new Error(`会話ログエラー: ${res.status}`);
+  const json = await res.json();
+  const newMessages = ( json.dms || []).map(m => ({
+    id: m.id,
+    from: String(m.from_id),
+    to:   '',
+    text: m.text,
+    icon: m.icon,
+    attachments: m.attachments || [],
+    timestamp: new Date(m.created_at),
+    pending: false,
+    isRead: Boolean(m.is_read),
+  }));
+
+  messages = mergeById(messages, newMessages);
+  renderMessages();
+}
+
+//メッセージデータを画面に表示する関数
 function renderMessages() {
   const chatBox = document.getElementById('chat-box');
   if (!chatBox) return;
-
-  const isNearBottom = chatBox.scrollTop + chatBox.clientHeight >= chatBox.scrollHeight - 100;
 
   const meId = String(getMeId() ?? '');
   const makeStatus = (mine, read) => (!mine ? '' : (read ? '既読' : '未読'));
@@ -75,10 +187,14 @@ function renderMessages() {
     for(const msg of messages){
       //メッセージを特定するためのIDを付与
       const domId = `msg-${msg.id}`;
+      //特定できたIDをリストに追加
       validIds.add(domId);
 
+      //特定したIDが画面上にあるか確認
       let row = document.getElementById(domId);
+      //そのメッセージの送信者が自分か相手か確認
       const mine = (msg.from === meId);
+      //上記の関数を使い既読の文字を決定
       const status = makeStatus(mine, msg.isRead);
       if(row){
       //既存要素があれば更新のみ行う
@@ -92,7 +208,7 @@ function renderMessages() {
         const bubble = row.querySelector('.massage-bubble');
         if(bubble){
           const label = document.createElement('span');
-            label.classNama = 'read-status';
+            label.className = 'read-status';
             label.textContent = status;
             bubble.appendChild(label);
           }
@@ -101,14 +217,14 @@ function renderMessages() {
           statusLabel.remove();
         }
       } else {
-    //新規作成
+    //特定したIDがまだ画面になかったら作成
     row = document.createElement('div');
     row.classList.add('message-row', mine ? 'from-me' : 'from-them');
     row.id = domId;//メッセージ一つ一つにIdを持たせる
-
+    //メッセージのアイコンを作成
     const img = document.createElement('img');
     img.className = 'msg-avatar';
-    img.src = mine ? ME_ICON : PARTNER_ICON;
+    img.src = msg.icon;
     img.alt = '';
     img.onerror = () => { img.src = DEFAULT_AVATAR; };
     // アイコンを押したらプロフィールに飛べるようにする
@@ -176,113 +292,6 @@ function renderMessages() {
   }
 }
   //存在しなくなったメッセージを削除
-}
-
-document.addEventListener('DOMContentLoaded',()=>{
-  const attachBtn = document.getElementById('attach-btn');
-  const fileInput = document.getElementById('image-input');
-  if (attachBtn && fileInput){
-    attachBtn.addEventListener('click', (e) => {
-      e.preventDefault();
-      e.stopPropagation();
-      fileInput.click();
-    });
-  } ;
-});
-
-//API 1対1のdmの会話履歴取得
-async function loadConversation(currentPartnerId) {
-  if (!Number.isInteger(currentPartnerId)) return;
-  setCurrentPartner(currentPartnerId);
-
-  const res = await fetch(`/api/v1/dm/${currentPartnerId}`, {
-    headers: { 'Accept': 'application/json' },
-    credentials: 'include',
-  });
-  if(!res.ok){
-    console.error(`GET /api/v1/dm/${currentPartnerId} failed`, res.status);
-    throw new Error(`会話取得エラー: ${res.status}`);
-  }
-  const json = await res.json();
-
-  ME_ICON = json?.participants?.me?.avatar || ME_ICON;
-  PARTNER_ICON = json?.participants?.partner?.avatar || PARTNER_ICON;
-
-  const newList = (json.dms || []).map(m => ({
-    id: m.id,
-    from: String(m.from_id),
-    to:   String(m.to_id),
-    text: m.text,
-    attachments: m.attachments || [],
-    timestamp: new Date(m.created_at),
-    pending: false,
-    isRead: Boolean(m.is_read)
-  }));
-
-  await ensureXsrfReady();
-  await fetch(`/api/v1/dm/${currentPartnerId}/read`,{method:'POST',headers:{'Accept':'application/json', ...getXsrfHeader()},credentials:'include'}).catch(()=>{});
-
-  
-  document.addEventListener('visibilitychange', async()=>{
-    if(document.visibilityState === 'visible' && Number.isInteger(currentPartnerId)){
-      await ensureXsrfReady();
-      fetch(`/api/v1/dm/${currentPartnerId}/read`,{method:'POST',headers:{'Accept':'application/json', ...getXsrfHeader()},credentials:'include'}).catch(()=>{});
-    }
-  });
-  messages = mergeById(messages, newList);
-  window.messages = messages;
-
-  renderMessages();
-}
-
-// Circle内のDMの会話履歴取得API
-async function loadCircleConversation(circle_id){
-  const res  = await fetch(`/api/v1/circle/${circle_id}/dm`, {
-    headers: {Accept: 'application/json' },
-    credentials: 'include',
-  });
-
-  if(!res.ok) throw new Error(`会話取エラー: ${res.status}`);
-  const json = await res.json();
-  //マッピング処理をmergeByIdの「前」に行う
-  const newMessages = ( json.dms || []).map(m => ({
-    id: m.id,
-    from: String(m.from_id),
-    to:   '',
-    text: m.text,
-    attachments: m.attachments || [],
-    timestamp: new Date(m.created_at),
-    pending: false,
-    isRead: Boolean(m.is_read),
-  }));
-
-  //ここで正規化済みの配列を渡す
-  messages = mergeById(messages, newMessages);
-  renderMessages();
-}
-
-// Groupの会話履歴取得API
-async function loadGroupConversation(group_id){
-  const res = await fetch(`/api/v1/group/${group_id}/dm`, {
-    headers: {Accept: 'application/json' },
-    credentials: 'include',
-  });
-
-  if(!res.ok) throw new Error(`会話ログエラー: ${res.status}`);
-  const json = await res.json();
-  const newMessages = ( json.dms || []).map(m => ({
-    id: m.id,
-    from: String(m.from_id),
-    to:   '',
-    text: m.text,
-    attachments: m.attachments || [],
-    timestamp: new Date(m.created_at),
-    pending: false,
-    isRead: Boolean(m.is_read),
-  }));
-
-  messages = mergeById(messages, newMessages);
-  renderMessages();
 }
 
 async function sendMessage() {

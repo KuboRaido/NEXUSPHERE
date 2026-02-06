@@ -1,3 +1,9 @@
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
 body {
   font-family: Arial, sans-serif;
   background-color: #add8e6;
@@ -9,7 +15,7 @@ body {
 /* ヘッダー */
 .site-header {
   width: 100%;
-  padding: 0px 8px;
+  padding: 20px 0;
   display: flex;
   justify-content: center;
   align-items: center;
@@ -24,16 +30,20 @@ body {
 #site-title {
   font-size: 2.05rem;
   font-weight: 700;
+  font-family: cursive;
 }
 
-.dmlist-container {
-  width: 90%;
-  margin: 30px auto;
 
+.dmlist-container {
+  width: 100%;
+  max-width: 600px;
+  margin: 30px auto;
+  padding: 0; /* 必要なら後で足す */
   background: #fff;
   border-radius: 15px;
   box-shadow: 0 2px 8px rgba(0,0,0,0.15);
 }
+
 
 /* 検索欄 */
 .search-container {
@@ -42,6 +52,7 @@ body {
   display: flex;
   justify-content: center;   /* ← 中央寄せ */
   margin: 10px 0;
+  border-radius: 15px;
 }
 
 .search-container input {

@@ -10,8 +10,10 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
 </head>
 <body>
-    <header class="header">
-      <span class="title">{{ $profileUser->name }} profile</span>
+    <header class="site-header">
+        <div class="header-inner">
+            <h1 id="site-title">Nexusphere</h1>
+        </div>
 <!--ここからログアウトボタン-->
       @if($isMine)
         <button type="button" class="logout-btn" id="logout-trigger">ログアウト</button>
@@ -42,7 +44,7 @@
             <img
               class="avatar"
               src="{{ $profileUser->icon
-                  ? asset('icons/' . $profileUser->icon)
+                  ? asset('storage/icons/' . $profileUser->icon)
                   : asset('images/default-avatar.png') }}"
               alt="アイコン"
             >
@@ -51,6 +53,8 @@
             <div class="name-row">
               <div>
                 <div class="display-name">{{ $profileUser->name }}</div>
+                <div class="handle3">{{ $profileUser->job}}</div>
+                <div class="handle4">{{ $profileUser->grade}}</div>
                 <div class="handle">{{ $profileUser->subject }}</div>
                 <div class="handle2">{{ $profileUser->major }}</div>
               </div>
@@ -86,9 +90,9 @@
                           <div class="post-media" style="margin: 10px 0; display: flex; flex-wrap: wrap; gap: 10px;">
                               @foreach($post->images as $media)
                                   @if($media->image)
-                                      <img src="{{ Storage::url($media->image) }}" alt="画像" style="max-width: 200px; border-radius: 4px; object-fit: cover;">
+                                      <img src="{{ asset('storage/post/' . $media->image) }}" alt="画像" style="max-width: 200px; border-radius: 4px; object-fit: cover;">
                                   @elseif($media->video)
-                                      <video src="{{ Storage::url($media->video) }}" controls style="max-width: 200px; border-radius: 4px;"></video>
+                                      <video src="{{ asset('storage/post/' . $media->video) }}" controls style="max-width: 200px; border-radius: 4px;"></video>
                                   @endif
                               @endforeach
                           </div>

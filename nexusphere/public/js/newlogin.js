@@ -77,3 +77,23 @@ document.addEventListener('DOMContentLoaded', () => {
     }
     });
 });
+
+document.addEventListener("DOMContentLoaded", () => {
+    const jobSelect = document.getElementById('job');
+    const gradeSelect =document.getElementById('grade'); 
+    const subjectSelect = document.getElementById('subject');
+    const majorSelect = document.getElementById('major');
+
+    //区分が選択｜変更されたら
+    jobSelect.addEventListener('change', function(){
+        if (this.value === "学生") {
+            gradeSelect.disabled = false;
+            subjectSelect.disabled = false;
+            majorSelect.disabled = false;
+        } else {
+            gradeSelect.disabled = true;
+            subjectSelect.disabled = true;
+            majorSelect.disabled = true;
+        }
+    });
+});

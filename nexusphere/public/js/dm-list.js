@@ -57,7 +57,7 @@ async function searchUsers(keyword){
     li.className = 'search-result-item';
     li.innerHTML = `
       <a class ="user-id" href="/dm?to=${user.user_id}">
-        <img class="icon" src="${user.icon || DEFAULT_AVATAR}" alt="" onerror="this.src='${DEFAULT_AVATAR}'">
+        <img class="icon" src="${user.icon || DEFAULT_AVATAR}">
         <div class="search-content">
           <div class="search-name">${escapeHtml(user.name)}</div>
         </div>
@@ -111,7 +111,7 @@ async function loaddmlist(isBackground = false){
       } else {
         href = `/dm?to=${partnerId}`;
       }
-      const iconUrl = it.partner_icon || DEFAULT_AVATAR;
+      const iconUrl = it.partner_icon ? it.partner_icon : DEFAULT_AVATAR;
       const unread = Number(it.unread_count || 0);
 
       if(li){
@@ -219,8 +219,7 @@ if(searchInput){
   });
 }
 
-// ----- ここからグループDM作成用の追加 -----
-
+//DMのグループ作成画面のuser一覧の取得
 async function loadFriendList(){
   const friendRoot = document.getElementById("modalFriendList");
   if(!friendRoot) return;
@@ -260,6 +259,7 @@ async function loadFriendList(){
   }
 }
 
+//DMグループ作成
 function initDmModal(){
 
   const openPopup = document.getElementById("openPopupBtn");
@@ -281,13 +281,18 @@ function initDmModal(){
   if(createRoom){
 
     createRoom.addEventListener("click", async () => {
-
+      //グループ名を取得
       const groupNameInput = document.getElementById("group_name");
+      //グループ名が入力されていたら前後の空白を削除・名前が無ければ空白
       const groupName = groupNameInput ? groupNameInput.value.trim() : "";
-      
+      //アイコンを取得
+      const groupIcon = document.getElementById("iconUpload");
+      //グループに入れると選択した友達を取得
       const checks = document.querySelectorAll(".modal-friend-check:checked");
 
+      //選択した友達を入れるための箱を作成
       let ids = [];
+      //選択した友達を一人ずつ配列に追加
       checks.forEach(c => ids.push(c.value));
 
       if(!groupName){
@@ -300,27 +305,34 @@ function initDmModal(){
         return;
       }
 
+      //画像が含まれるためFormDataを使用
+      const formData = new FormData();
+      formData.append("group_name" , groupName);
+
+      //選択したユーザーの数だけ繰り返しFormDataに入れる
+      ids.forEach(id => formData.append("user_ids[]" , id));
+      if(groupIcon && groupIcon.files[0]){
+        formData.append("icon" , groupIcon.files[0]);
+      }
       try{
-        await fetch("/api/v1/dm/createRoom", {
+          await fetch("/api/v1/dm/createRoom", {
           method:"POST",
+          //送る内容は上記で作成したformData
+          body: formData,
+          //クッキー情報も一緒に送る　これが無いと誰から送られたものなのかわからないから
+          credentials: 'include',
+          //通信のメタ情報 X-CSRF-TOKEN:Laravelなどのフレームワークで必須の「セキュリティ通行手形」
           headers:{
-            "Content-Type":"application/json",
-            "Accept":"application/json",
             "X-CSRF-TOKEN": document.querySelector('meta[name="csrf-token"]')?.content
-          },
-          credentials:'include',
-          body: JSON.stringify({ 
-            group_name: groupName, 
-            user_ids: ids 
-          })
-        });
+          }
+          });
 
         modal.classList.add("hidden");
         location.reload();
 
       }catch(e){
         console.error(e);
-        alert("グループ作成に失敗しました");
+        alert(e.message || "グループ作成に失敗しました");
       }
 
     });
@@ -333,4 +345,3 @@ document.addEventListener("DOMContentLoaded", () => {
   initDmModal();
 });
 
-// ----- 追加ここまで -----
