@@ -44,7 +44,7 @@ body {
     border-radius: 1.5rem; /* 角を丸くする */
     box-shadow: 0 10px 15px rgba(0, 0, 0, 0.1);
     width: 100%;
-    max-width: 900px;
+    max-width: 400px;
     box-sizing: border-box;
     display: flex;
     flex-direction: column;
@@ -151,7 +151,7 @@ body {
     display: flex;
     gap: 3rem;
     width: 100%;
-    max-width: 520px;
+    max-width: 400px;
     justify-content: center;
     margin-top: 1.5rem;
 }
