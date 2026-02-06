@@ -25,11 +25,7 @@ body {
 #site-title {
     font-size: 2rem;
     font-weight: 700;
-}
-
-.user-link {
-    text-decoration: none;
-    color: inherit;
+    font-family: cursive;
 }
 
 .wrapper {
@@ -57,13 +53,13 @@ body {
 
 .input-field {
     width: 100%;
-    padding: 0.75rem 1rem;
     border: 1px solid #e5e7eb;
-    border-radius: 0.75rem; /* 角を丸くする */
-    background-color: #ffffff; /* 入力フィールドの背景色を白に設定 */
+    border-radius: 0.75rem;
+    background-color: #ffffff;
     font-size: 1rem;
     outline: none;
     transition: border-color 0.2s;
+    padding: 10px;
 }
 
 .input-field:focus {
@@ -153,9 +149,9 @@ body {
 /* ボタン横並び */
 .button-row {
     display: flex;
-    gap: 1rem;              /* ボタン間の余白 */
+    gap: 3rem;
     width: 100%;
-    max-width: 900px;
+    max-width: 520px;
     justify-content: center;
     margin-top: 1.5rem;
 }
