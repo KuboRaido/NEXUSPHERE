@@ -35,7 +35,7 @@
             {{-- 投稿者名 --}}
             <div class="post-header">
                 <a href="{{ route('profile.other', $post->user->user_id) }}" class="user-link">
-                    <img src="{{ $post->user->avatar_url }}"
+                    <img src="{{ asset('storage/icons/' . $post->user->icon )}}"
                         class="user-icon"
                         alt="icon"></img>
                     <span class="username">{{ $post->user->name }}</span>
@@ -62,7 +62,7 @@
 
                         {{-- 画像ならimgタグ --}}
                         @if (in_array($exetension, ['jpg', 'jpeg', 'png', 'webp', 'gif']))
-                            <img src="{{ asset('storage/' . $filePath) }}"
+                            <img src="{{ asset('storage/post/' . $filePath) }}"
                                 alt="投稿画像"
                                 class="post-image"
                                 onclick="openModal(this.src)">
@@ -73,7 +73,7 @@
                             <video controls
                                 class="post-video"
                                 style="max-width: 100%; border-radius: 8px; margin-top: 10px;">
-                                <source src="{{ asset('storage/' . $filePath) }}" type="video/{{ $exetension }}">
+                                <source src="{{ asset('storage/post/' . $filePath) }}" type="video/{{ $exetension }}">
                                 お使いのブラウザは動画再生に対応していません。
                             </video>
                         @endif
@@ -103,19 +103,20 @@
 
 
                 {{-- コメント一覧 --}}
-                @foreach ($post->comments as $comment)
-                    <div class="comment">
-                        <a href="{{ route('profile.other', $comment->user->user_id) }}"
-                            class="user-link">
-                            <img src="{{ asset('storage/' . $comment->user->icon) }}"
-                                    class="user-icon small">
-                            <strong>{{ $comment->user->name }}</strong>
-                        </a>
-                        <span class="comment-text">{{ $comment->sentence }}</span>
+                    <div class="comment-list">
+                        @foreach ($post->comments as $comment)
+                            <div class="comment">
+                                <a href="{{ route('profile.other', $comment->user->user_id) }}" class="user-link">
+                                    <img src="{{ asset('storage/icons/' . $comment->user->icon) }}" class="user-icon small">
+                                    <strong>{{ $comment->user->name }}</strong>
+                                </a>
+                                <span class="comment-text">{{ $comment->sentence }}</span>
+                            </div>
+                        @endforeach
                     </div>
-                @endforeach
-
-            </div>
+                @if($post->comments->count() > 3)
+                    <button class="showMoreBtn">全てのコメントを見る</button>
+                @endif
         </div>
     @endforeach
 

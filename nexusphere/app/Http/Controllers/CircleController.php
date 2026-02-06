@@ -8,10 +8,8 @@ use App\Models\Circle_requests;
 use App\Rules\NgWord;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Database\QueryException;
-use Illuminate\Support\Facades\Redirect;
 
 class CircleController extends Controller
 {
@@ -45,7 +43,7 @@ class CircleController extends Controller
                 'category'       => $circle->category,
                 'members_count'  => $circle->members_count,
                 'sentence'       => $circle->sentence,
-                'icon'           => $circle->icon ? Storage::url($circle->icon) : null,
+                'icon'           => $circle->icon ? asset('storage/icons/' . $circle->icon) : null,
                 'role'           => $role,
             ];
         })->values();
@@ -65,7 +63,7 @@ class CircleController extends Controller
         $data = $request->validate([
             'name'        => ['required','string','max:255','unique:circles,circle_name',new NgWord],
             'sentence'    => ['required','string','max:255',new NgWord],
-            'image'       => ['required','image','mimes:jpeg,png,jpg,gif,webp|max:5120'],
+            'image'       => ['required','image','max:5120'],
             'category'    => ['nullable','string', new NgWord],
         ],[
             'image.required' => '画像を設定してください',
@@ -112,7 +110,7 @@ class CircleController extends Controller
                             'circle_id'         =>  $request->circle_id,
                             'user_id'           =>  $request->user_id,
                             'user_name'         =>  $request->user?->name,
-                            'user_icon'         =>  $request->user?->icon ? Storage::url($request->use->icon) : null,
+                            'user_icon'         =>  $request->user?->icon ? asset('storage/icons/' . $request->use->icon) : null,
                             'status'            =>  $request->status,
                         ];
                     });
@@ -201,9 +199,9 @@ class CircleController extends Controller
         abort_if(!Auth::id(), 401);
 
         $request->validate([
-            'circle_name' => ['nullable','string','max:255'],
-            'sentence'    => ['nullable','string','max:255'],
-            'icon'        => ['nullable','image','mimes:jpeg,png,jpg,gif,webp','max:5120',new NgWord],
+            'circle_name' => ['nullable','string','max:255',new NgWord],
+            'sentence'    => ['nullable','string','max:255',new NgWord],
+            'icon'        => ['nullable','image','max:5120'],
         ]);
 
         if ($request->hasFile('icon')) {

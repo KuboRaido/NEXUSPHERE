@@ -5,12 +5,12 @@ namespace App\Http\Controllers;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\DB;
 use App\Models\Dm;
 use App\Models\User;
 use App\Models\Circle;
 use App\Models\Group;
+use App\Rules\NgWord;
 
 class DmController extends Controller
 {
@@ -32,8 +32,8 @@ class DmController extends Controller
          return $path;
       }
 
-      if (Storage::disk('public')->exists($path)){
-         return Storage::url($path);
+      if (file_exists(public_path('icons/' . $path))){
+         return asset('storage/icons/' . $path);
       }
 
       return asset($path);
@@ -96,14 +96,17 @@ class DmController extends Controller
    foreach ($myGroups as $g){
       $lastTime = $g->latestMessage ?-> created_at ??  $g->created_at;
 
+      $iconUrl = $g->icon ? asset('storage/icons/' . $g->icon) : asset('images/default-avatar.png');
+
       $list[] = [
             'conversation_id' => 'group_' . $g->group_id,//Idをかぶらないようにする
             'partner_id' => $g->group_id,
             'partner_name' => $g->group_name, 
-            'partner_icon' => null,//グループ画像のURLがあれば設定
+            'partner_icon' => $iconUrl,
             'last_message' => $g->latestMessage?->message_text ?? '',
             'last_time'    => $lastTime?->toISOString(),
             'is_group'     => true, //フロントで判別するためにフラグを立てる
+            'icon'         => $g->icon,
       ];
    }
 
@@ -217,7 +220,7 @@ public function dmback(?int $partner=null){
             'is_read'   =>$is_read,
             'attachments'=>$m->Images_and_videos->map(function($rec){
                   $path = $rec->image ?: $rec->video;
-                  $url  = $path ? Storage::url($path) : null;
+                  $url  = $path ? asset('storage/dms/' . $path) : null;
                   $type = $rec->image ? 'image' : ($rec->video ? 'video' : 'file');
                   return ['type'=>$type,'url' =>$url];
             })->values(),
@@ -227,7 +230,7 @@ public function dmback(?int $partner=null){
 }
 
    public function dmCircleBack(Circle $circle){
-      $m = Dm::where('circle_id', $circle->circle_id)->whereNull('receiver_id')->orderBy('created_at')->get();
+      $m = Dm::with('sender')->where('circle_id', $circle->circle_id)->whereNull('receiver_id')->orderBy('created_at')->get();
 
       return response()->json([
          'participants' => [
@@ -239,12 +242,13 @@ public function dmback(?int $partner=null){
             'id'        =>$dm->dm_id,
             'from_id'   =>$dm->sender_id,
             'text'      =>$dm->message_text,
+            'icon'      =>$this->avatarUrl($dm->sender),
             'created_at'=>$dm->created_at?->toISOString(),
             'is_read'   =>$dm->is_read,
             'attachments'=>$dm->Images_and_videos->map(function($rec){
                   return [
                      'type'=>$rec->image ? 'image' : ($rec->video ? 'video' : 'file'),
-                     'url' =>Storage::url($rec->image ?: $rec->video),
+                     'url' =>asset('storage/dms/' . $rec->image ?: $rec->video),
                   ];
                }),
             ];
@@ -253,7 +257,7 @@ public function dmback(?int $partner=null){
    }
 
    public function dmGroup(Group $group){
-      $m = Dm::where('group_id', $group->group_id)->whereNull('receiver_id')->orderBy('created_at')->get();
+      $m = Dm::with('sender')->where('group_id', $group->group_id)->whereNull('receiver_id')->orderBy('created_at')->get();
 
       return response()->json([
          'participants' => [
@@ -265,12 +269,13 @@ public function dmback(?int $partner=null){
             'id'        =>$dm->dm_id,
             'from_id'   =>$dm->sender_id,
             'text'      =>$dm->message_text,
+            'icon'      =>$this->avatarUrl($dm->sender),
             'created_at'=>$dm->created_at?->toISOString(),
             'is_read'   =>$dm->is_read,
             'attachments'=>$dm->Images_and_videos->map(function($rec){
                   return [
                      'type'=>$rec->image ? 'image' : ($rec->video ? 'video' : 'file'),
-                     'url' =>Storage::url($rec->image ?: $rec->video),
+                     'url' =>asset('storage/dms/' . $rec->image ?: $rec->video),
                   ];
                }),
             ];
@@ -280,16 +285,23 @@ public function dmback(?int $partner=null){
 
    public function dmGroupCreate(Request $request){
          $request->validate([
-            'group_name' => 'required|string|max:255',
+            'group_name' => ['required','string','max:255',new NgWord],
             'user_ids'   => 'required|array',
             'user_ids.*' => 'integer|exists:users,user_id',
+            'icon' => [ 'nullable','image','max:2048' ],
          ]);
+
+         $iconPath = null;
+         if ($request->hasFile('icon')) {
+            $iconPath = $request->file('icon')->store('', 'direct');
+         }
 
          $meId = Auth::id();
 
          $group = Group::create([
             'group_name'    => $request->group_name,
             'members_count' => 0,
+            'icon'          => $iconPath,
          ]);
 
          // 作成者と選択メンバーをマージして登録
@@ -383,7 +395,7 @@ public function dmback(?int $partner=null){
       $attachments = [];
       if($request->hasFile('files')){
          foreach ($request->file('files') as $file){
-            $path  = $file->store(''.date('Y/m/d'),'dm');
+            $path  = $file->store('','dm');
             $mime  = $file->getMimeType();
             $isImg = str_starts_with($mime,'image/');
             $isMov = str_starts_with($mime,'video/');

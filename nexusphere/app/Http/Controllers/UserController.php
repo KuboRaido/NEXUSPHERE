@@ -3,14 +3,12 @@
 namespace App\Http\Controllers;
 
 use App\Models\User;
-use App\Jobs\SendVerificationEmail;
 use App\Http\Controllers\Controller;
 use App\Mail\VerificationEmail;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Mail;
-use Illuminate\Support\Facades\Storage;
 
 class UserController extends Controller
 {
@@ -25,11 +23,11 @@ class UserController extends Controller
             'mail' => ['required','email','unique:users,mail','regex:/@(edu.sba|edu.ssm|sba|ssm)\.ac\.jp$/'],
             'password' => ['required','string','min:8','max:20','confirmed'],
             'name' => [ 'required','string','max:255'],
-            'age' =>[ 'required','integer','min:0','max:120' ],
-            'grade' => [ 'required','integer','min:1','max:4' ],
-            'subject' =>[ 'required','string','max:255' ],
-            'major' =>[ 'required','string','max:255' ],
-            'icon' => [ 'nullable','image','mimes:jpeg,png,jpg,gif','max:2048' ],
+            'job'  => ['required', 'string', 'max:2'],
+            'grade' => [ 'required_if:job,学生|date','integer','min:1','max:4' ],
+            'subject' =>[ 'required_id:job,学生|date','string','max:255' ],
+            'major' =>[ 'required_id:job,学生|date','string','max:255' ],
+            'icon' => [ 'nullable','image','max:2048' ],
         ]);
 
         $iconPath = null;
@@ -46,6 +44,7 @@ class UserController extends Controller
             'subject' => $request->subject,
             'major' => $request->major,
             'icon' => $iconPath,
+            'job' => $request->job,
         ]);
     
         // SendVerificationEmail::dispatch($user);
@@ -93,11 +92,12 @@ class UserController extends Controller
             return [
                 'user_id' => $u->user_id,
                 'name'    => $u->name,
-                'avatar'  => $u->avatar_url ?? ($u->icon ? Storage::url($u->icon) : null),
+                'icon'  => $u->icon ? asset('storage/icons/' . $u->icon) : null,
             ];
         })->values());
     }
 
+    //DM一覧のグループ作成画面の際のユーザー一覧のデータ送信に使用
     public function group()
     {
         $meId =Auth::id();
@@ -109,7 +109,6 @@ class UserController extends Controller
             [
                 'id' => $u->user_id,
                 'name'    => $u->name,
-                //'icon'  => $u->avatar_url,
             ]);
 
         return response()->json($User->values());

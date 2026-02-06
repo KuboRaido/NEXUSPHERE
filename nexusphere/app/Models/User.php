@@ -5,9 +5,7 @@ namespace App\Models;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
-use Illuminate\Database\Eloquent\Model;
 use Laravel\Sanctum\HasApiTokens;
-use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
 
 class User extends Authenticatable
@@ -18,7 +16,7 @@ class User extends Authenticatable
     protected $primaryKey = 'user_id';
     public $incrementing = true;
     protected $keyType = 'int';
-    protected $fillable = ['name','mail','password','age','grade','subject','major','icon'];
+    protected $fillable = ['name','mail','password','age','grade','subject','major','icon','job'];
     protected $hidden = ['password','remember_token'];
 
     public function prcs()
@@ -38,7 +36,7 @@ class User extends Authenticatable
             if(Str::startsWith($this->icon,['http://','https://','/'])){
                 return $this->icon;
             }
-            return Storage::url($this->icon);
+            return asset('storage/icons/'. $this->icon);
         }
         return asset('images/default-avatar.png');
     }

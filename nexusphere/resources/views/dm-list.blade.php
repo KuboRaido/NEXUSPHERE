@@ -35,6 +35,11 @@
           <div class="dm-modal-content">
             <h3>グループDM作成</h3>
             <input id="group_name" type="text" placeholder="グループ名を入力" autocomplete="off" />
+            <!-- アイコン -->
+            <div class="icon-upload-container">
+                <label class="label-text">アイコン</label>
+                <input type="file" id="iconUpload" name="icon" accept="image/*" class="icon-upload-input">
+            </div> 
 
             <div id="modalFriendList">
               <!-- JSでここに友達一覧 -->
