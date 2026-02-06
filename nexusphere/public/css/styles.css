@@ -51,25 +51,23 @@ html, body {
 ============================== */
 .search-area {
     width: 100%;
-    padding: 15px;
     background: #add8e6;
     display: flex;
     justify-content: center;
 }
 
 .search-area form {
-    width: 100%;
-    max-width: 600px;
-    display: flex;
+    max-width: 700px;
     gap: 10px;
     flex-direction: column;
-    padding: 1.5rem;
+    margin-bottom: 2rem;
     border-radius: 1.5rem;
 }
 
 .search-input {
     flex: 1;
-    padding: 10px 12px;
+    padding:12px;
+    width: 33rem;
     border-radius: 8px;
     border: 1px solid #ccc;
 }
@@ -163,6 +161,7 @@ input[type="file"] {
 .user-icon.small {
     width: 30px;
     height: 30px;
+    margin-right: 1.3rem;
 }
 
 .username {
@@ -264,13 +263,13 @@ input[type="file"] {
    9. コメント表示
 ============================== */
 .comment-list {
+    margin-top: 2rem;
     margin: 10px 0;
-    padding-bottom: 8px;
-    border-bottom: 1px solid #eee;
 }
 .comment-text {
     display: block;
-    margin-left: 30px;
+    margin-left: 3.3rem;
+    margin-bottom: 1rem;
 }
 
 /* 3つ目以降のコメントを非表示 */
@@ -282,11 +281,17 @@ input[type="file"] {
 .comment-list.expanded{
     max-height: 300px;
     overflow-y: auto; /*スクロール*/
-    border-top: 1px solid #eee;/*境界線*/
 }
 /* expandedクラスが付いたら全部表示 */
 .comment-list.expanded .comment:nth-child(n+4){
     display: block;
+}
+
+.showMoreBtn{
+    background-color: #fff;
+    border: none;
+    cursor: pointer;
+    margin-left: 1rem;
 }
 
 

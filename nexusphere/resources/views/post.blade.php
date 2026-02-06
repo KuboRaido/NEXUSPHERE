@@ -20,7 +20,7 @@
 
     <main class="container">
         {{-- 投稿フォーム --}}
-        <form method="POST" action="{{ route('post.back') }}" enctype="multipart/form-data">
+        <form method="POST" action="{{ route('post.back') }}" enctype="multipart/form-data" class="createPost">
             @csrf
             <textarea name="sentence" placeholder="いまどうしてる？" required></textarea>
             <div id="preview-container"></div>
