@@ -220,35 +220,38 @@ input[type="file"] {
     bottom: 0;
     left: 0;
     width: 100%;
+    height: 60px;
     background-color: #fff;
     border-top: 1px solid #ddd;
     display: flex;
     justify-content: space-around;
     align-items: center;
-    height: 60px;
     z-index: 100;
-    box-shadow: 0 -2px 8px rgba(0, 0, 0, 0.05);
 }
 
 .footer-nav a {
-    color: #666;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
     text-decoration: none;
-    font-size: 22px;
-    transition: color 0.3s ease, transform 0.2s ease;
+    color: #666;
+    transition: 0.2s;
 }
 
-.footer-nav a:hover {
+.footer-nav a:hover,
+.footer-nav a.active {
     color: #ff69b4;
     transform: scale(1.1);
 }
 
-.footer-nav a.active {
-    color: #ff69b4; /* アクティブなタブの色 */
+.footer-nav i {
+    font-size: 20px;
 }
 
-/* アイコン整列用 */
-.footer-nav i {
-    pointer-events: none;
+.footer-nav span {
+    font-size: 11px;
+    margin-top: 4px;
+
 }
 
 /* 投稿フォームや投稿リストがフッターに被らないように下マージン */
