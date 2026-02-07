@@ -304,6 +304,11 @@ button[type="submit"]:hover {
 .footer-nav a.active {
   color: #ff69b4; /* アクティブなタブの色 */
 }
+
+.footer-nav span {
+  font-size: 15px;
+}
+
 /* 投稿カードのアクション */
 .post-actions {
   display: flex;
