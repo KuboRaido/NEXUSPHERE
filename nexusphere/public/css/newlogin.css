@@ -50,7 +50,12 @@ body {
     gap: 1.25rem; /* 要素間のスペース */
 }
 
+.form-container > form > div {
+    width: 100%;
+}
+
 .input-field {
+    width: 100%;
     border: 1px solid #e5e7eb;
     border-radius: 0.75rem;
     background-color: #ffffff;
