@@ -311,6 +311,10 @@ button[type="submit"]:hover {
   pointer-events: none;
 }
 
+.footer-nav span {
+  font-size: 15px;
+}
+
 /* 投稿カード */
 .post {
   background: #fff;

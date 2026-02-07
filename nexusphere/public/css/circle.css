@@ -219,8 +219,8 @@ body {
   pointer-events: none;
 }
 
-.footer-nav{
-  font-size: 24px;
+.footer-nav span {
+  font-size: 15px;
 }
 
 /* =========================
