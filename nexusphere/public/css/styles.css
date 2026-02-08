@@ -378,6 +378,13 @@ input[type="file"] {
         padding: 0.5rem;
         padding-bottom: 80px;
     }
+    .search-input{
+        flex: 1;
+        padding: 12px;
+        width: 200px;
+        border-radius: 8px;
+        border: 1px solid #ccc;
+    }
 }
 
 /* 投稿作成画面 */
