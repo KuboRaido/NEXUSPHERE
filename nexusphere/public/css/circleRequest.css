@@ -20,22 +20,34 @@ body {
 ========================= */
 .site-header {
   width: 100%;
-  padding: 8px 12px;
+  padding: 20px 0;
+  background: transparent;
   display: flex;
-  justify-content: center;
-}
-
-.header-inner {
-  width: 100%;
-  max-width: 600px;
-  display: flex;
+  justify-content: center; /* 💡 横中央揃え */
   align-items: center;
   position: relative;
 }
 
+.header-inner {
+  max-width: 600px;
+  width: 100%;
+  margin: 0 auto;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+}
+
+/* タイトル */
+#site-title {
+  font-size: 2rem;
+  font-weight: 700;
+  font-family: cursive;
+}
+
 /* 戻るボタン */
 .back-button {
-  font-size: 20px;
+  font-size: 30px;
   text-decoration: none;
   color: #333;
   flex-shrink: 0;
@@ -164,6 +176,46 @@ body {
   font-size: 14px;
   padding: 20px 0;
 }
+
+.footer-nav {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  height: 60px;
+  background-color: #fff;
+  border-top: 1px solid #ddd;
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+  z-index: 100;
+}
+
+.footer-nav a {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-decoration: none;
+  color: #666;
+  transition: 0.2s;
+}
+
+.footer-nav a:hover,
+.footer-nav a.active {
+  color: #ff69b4;
+  transform: scale(1.1);
+}
+
+.footer-nav i {
+  font-size: 20px;
+}
+
+.footer-nav span {
+  font-size: 11px;
+  margin-top: 4px;
+
+}
+
 
 /* =========================
   スマホ微調整

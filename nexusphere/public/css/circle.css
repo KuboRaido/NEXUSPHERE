@@ -21,20 +21,19 @@ body {
   padding: 20px 0;
   display: flex;
   justify-content: center;
+  align-items: center;
 }
 
 .header-inner {
-  width: 100%;
   max-width: 600px;
   margin: 0 auto;
 }
 
 
-
 #site-title {
-    font-size: 2rem;
-    font-weight: 700;
-    font-family: cursive;
+  font-size: 2rem;
+  font-weight: 700;
+  font-family: cursive;
 }
 
 /* =========================
