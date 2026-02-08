@@ -18,6 +18,7 @@ class ProfileController extends Controller
 
         $posts = Prc::where('user_id', $profileUser->user_id)
                         ->whereNull('circle_id')
+                        ->whereNull('parent_id')
                         ->orderBy('created_at', 'desc')
                         ->get();
                 

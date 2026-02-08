@@ -170,7 +170,7 @@ class PrcController extends Controller
     }
 
     // いいね(POST /posts/{prc_id}/like)
-    public function like(Request $request, $postId)
+    public function like($postId)
     {
         $userId = Auth::id();
         abort_if(!$userId, 401, 'Unauthenticated');
