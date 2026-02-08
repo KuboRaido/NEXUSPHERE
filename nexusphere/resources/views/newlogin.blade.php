@@ -59,7 +59,7 @@
 
             <div>
                 <label for="job" class="label-text">区分</label>
-                <select id="job" name="job" class="input-field" required>
+                <select id="job" name="job" class="selection-field" required>
                     <option value="" disabled selected>区分を選択してください</option>
                     <option value="学生">学生</option>
                     <option value="講師">講師</option>
@@ -70,7 +70,7 @@
             <!-- 学年 -->
             <div>
                 <label for="grade" class="label-text">学年 </label>
-                <select id="grade" name="grade" class="input-field" disabled>
+                <select id="grade" name="grade" class="selection-field" disabled>
                     <option value="" disabled selected>学年を選択してください</option>
                     <option value="1">1</option>
                     <option value="2">2</option>
@@ -82,7 +82,7 @@
             <!-- 学科 -->
             <div>
                 <label for="subject" class="label-text">学科</label>
-                <select id="subject" name="subject" class="input-field" disabled>
+                <select id="subject" name="subject" class="selection-field" disabled>
                     <option value="" disabled selected>学科を専攻にしてください</option>
                     <option value="AI&テクノロジー科">AI&テクノロジー科</option>
                     <option value="デジタルテクノロジー科">デジタルテクノロジー科</option>
@@ -93,7 +93,7 @@
             <!-- 専攻 -->
             <div>
                 <label for="major" class="label-text">専攻</label>
-                <select id="major" name="major" class="input-field" disabled>
+                <select id="major" name="major" class="selection-field" disabled>
                     <option value="" disabled selected>先に学科を選択してください</option>
                 </select>
             </div>
