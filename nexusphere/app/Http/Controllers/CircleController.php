@@ -110,7 +110,6 @@ class CircleController extends Controller
                             'circle_id'         =>  $request->circle_id,
                             'user_id'           =>  $request->user_id,
                             'user_name'         =>  $request->user?->name,
-                            'user_icon'         =>  $request->user?->icon ? asset('storage/icons/' . $request->use->icon) : null,
                             'status'            =>  $request->status,
                         ];
                     });
