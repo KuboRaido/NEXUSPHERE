@@ -372,7 +372,9 @@ input[type="file"] {
 @media screen and (max-width: 768px) {
     #site-title {
         font-size: 1.6rem;
+        /* font-family: ; */
     }
+    
 
     .container {
         padding: 0.5rem;
@@ -381,9 +383,17 @@ input[type="file"] {
     .search-input{
         flex: 1;
         padding: 12px;
-        width: 200px;
+        width: 300px;
         border-radius: 8px;
         border: 1px solid #ccc;
+    }
+    .comment-form input {
+    flex: 1;
+    padding: 12px;
+    width: 250px;
+    font-size: 16px;
+    border-radius: 6px;
+    border: 1px solid #ddd;
     }
 }
 
