@@ -64,6 +64,16 @@ body {
     padding: 10px;
     font-size: 1rem;
 }
+.selection-field {
+    width: 100%;
+    border: 1px solid #e5e7eb;
+    border-radius: 0.75rem;
+    background-color: #ffffff;
+    outline: none;
+    box-sizing: border-box;
+    padding: 10px;
+    font-size: 1rem;
+}
 
 .input-field:focus {
     border-color: #a78bfa; /* フォーカス時のボーダー色 */
