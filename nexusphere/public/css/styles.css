@@ -342,9 +342,11 @@ input[type="file"] {
 }
 
 .footer-nav a {
-    color: #666;
-    font-size: 22px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
     text-decoration: none;
+    color: #666;
     transition: 0.2s;
 }
 
@@ -355,9 +357,14 @@ input[type="file"] {
 }
 
 .footer-nav i {
-    pointer-events: none;
+    font-size: 20px;
 }
 
+.footer-nav span {
+    font-size: 11px;
+    margin-top: 4px;
+
+}
 
 /* ==============================
     12. レスポンシブ

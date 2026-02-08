@@ -11,7 +11,11 @@
 </head>
 <body>
     <div class="wrapper">
-    <h1 class="title">Nexusphere</h1>
+        <header class="site-header">
+            <div class="header-inner">
+                <h1 id="site-title">Nexusphere</h1>
+            </div>
+        </header>
     <div class="form-container">
         <h1 class="header-text">新規登録</h1>
         @if ($errors->any())
