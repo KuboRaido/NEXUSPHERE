@@ -108,6 +108,7 @@ body {
   overflow: auto;
   margin-bottom: 60px; /* フッターナビ分のスペース確保 */
   list-style: none;
+  padding: 10px;
 }
 /* チャットボックス（相手リスト用） */
 #chat-box {
