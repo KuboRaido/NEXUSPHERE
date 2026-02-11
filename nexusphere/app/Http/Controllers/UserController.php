@@ -25,8 +25,8 @@ class UserController extends Controller
             'name' => [ 'required','string','max:255'],
             'job'  => ['required', 'string', 'max:2'],
             'grade' => [ 'required_if:job,学生|date','integer','min:1','max:4' ],
-            'subject' =>[ 'required_id:job,学生|date','string','max:255' ],
-            'major' =>[ 'required_id:job,学生|date','string','max:255' ],
+            'subject' =>[ 'required_if:job,学生|date','string','max:255' ],
+            'major' =>[ 'required_if:job,学生|date','string','max:255' ],
             'icon' => [ 'nullable','image','max:2048' ],
         ]);
 
@@ -39,7 +39,6 @@ class UserController extends Controller
             'mail' => $request->mail,
             'password' => Hash::make($request->password),
             'name' => $request->name,
-            'age' => $request->age,
             'grade' => $request->grade,
             'subject' => $request->subject,
             'major' => $request->major,
