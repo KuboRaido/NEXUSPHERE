@@ -88,6 +88,13 @@ body {
   border-radius: 50%;
 }
 
+.circle-name,
+.circle-desc {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
 
 .name-set {
   display: flex;
@@ -106,7 +113,7 @@ body {
 .circle-desc {
   font-size: 13px;
   color: #555;
-  max-width: 260px;
+  max-width: 180px;
   line-height: 1.4;
 }
 
@@ -153,7 +160,7 @@ body {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  padding: 6px 15px;
+  padding: 4px 9px;
   font-size: 15px;
   border-radius: 8px;
   background: #ff69b4;
@@ -407,7 +414,7 @@ button[type="submit"]:hover {
     display: inline-flex;
     align-items: center;
     justify-content: center;
-    padding: 4px 12px;
+    padding: 2px 7px;
     font-size: 12px;
     border-radius: 8px;
     background: #ff69b4;
@@ -434,7 +441,7 @@ button[type="submit"]:hover {
   /* 説明は下に残す（少し小さく） */
   .circle-desc {
     font-size: 12px;
-    max-width: 220px;
+    max-width: 60px;
   }
 
   /* ボタンを右寄せ */
