@@ -88,7 +88,7 @@ async function loadConversation(currentPartnerId) {
   }
   const json = await res.json();
 
-  const meId = String(getMeId());
+  const meId = getMeId();
 
   if (json?.me?.icon) {
     ME_ICON = json.me.icon;
@@ -410,7 +410,7 @@ async function sendMessage() {
         attachments:resd.attachments || [],
         timestamp: new Date(resd.created_at), 
         pending: false,
-        icon: m.icon,
+        icon: resd.icon,
 
     };
     renderMessages();
