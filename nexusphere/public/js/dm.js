@@ -88,6 +88,8 @@ async function loadConversation(currentPartnerId) {
   }
   const json = await res.json();
 
+  const meId = String(getMeId());
+
   if (json?.participants?.me?.avatar) {
     ME_ICON = json.participants.me.avatar;
   }
@@ -101,7 +103,7 @@ async function loadConversation(currentPartnerId) {
     to:   String(m.to_id),
     text: m.text,
     attachments: m.attachments || [],
-    icon: (String(m.from_id) === meId) ? json.participants.me.avatar : json.participants.partner.avatar,
+    icon: (String(m.from_id) === meId) ? (json.participants.me.icon || ME_ICON) : (json.participants.partner.icon || PARTNER_ICON),
     timestamp: new Date(m.created_at),
     pending: false,
     isRead: Boolean(m.is_read)
@@ -225,7 +227,7 @@ function renderMessages() {
     //メッセージのアイコンを作成
     const img = document.createElement('img');
     img.className = 'msg-avatar';
-    img.src = msg.icon;
+    img.src = msg.icon || DEFAULT_AVATAR;
     img.alt = '';
     img.onerror = () => { img.src = DEFAULT_AVATAR; };
     // アイコンを押したらプロフィールに飛べるようにする
