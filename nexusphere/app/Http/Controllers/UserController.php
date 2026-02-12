@@ -72,7 +72,7 @@ class UserController extends Controller
                 // SendVerificationEmail::dispatch($user);
                 Mail::to($user->mail)->send(new VerificationEmail($user));
         
-                return redirect()->route('login')->with('success', '登録が完了しました！ログインしてください');
+                return redirect()->route('login')->with('success', '登録が完了しました。認証メールが学校用のメールに届くので確認してください');
     }
     //新規登録時にメールが存在するか確認するよう
     public function verifyEmail($user_id, $hash)

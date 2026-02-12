@@ -101,6 +101,7 @@ async function loadConversation(currentPartnerId) {
     to:   String(m.to_id),
     text: m.text,
     attachments: m.attachments || [],
+    icon: (String(m.from_id) === meId) ? json.participants.me.avatar : json.participants.partner.avatar,
     timestamp: new Date(m.created_at),
     pending: false,
     isRead: Boolean(m.is_read)
