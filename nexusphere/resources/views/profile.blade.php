@@ -89,7 +89,7 @@
                   {{-- 投稿者名 --}}
                   <div class="post-header">
                       <a href="{{ route('profile.other', $post->user->user_id) }}" class="user-link">
-                          <img src="{{ asset('storage/icons/' . $post->user->icon )}}"
+                          <img src="{{ $post->user->avatar_url }}"
                               class="user-icon"
                               alt="icon">
                           <span class="username">{{ $post->user->name }}</span>
@@ -150,7 +150,7 @@
                       @foreach ($post->comments as $comment)
                           <div class="comment">
                               <a href="{{ route('profile.other', $comment->user->user_id) }}" class="user-link">
-                                  <img src="{{ asset('storage/icons/' . $comment->user->icon) }}" class="user-icon small">
+                                  <img src="{{ $comment->user->avatar_url }}" class="user-icon small">
                                   <strong>{{ $comment->user->name }}</strong>
                               </a>
                               <span class="comment-text">{{ $comment->sentence }}</span>
