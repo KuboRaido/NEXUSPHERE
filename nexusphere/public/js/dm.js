@@ -90,11 +90,11 @@ async function loadConversation(currentPartnerId) {
 
   const meId = String(getMeId());
 
-  if (json?.participants?.me?.avatar) {
-    ME_ICON = json.participants.me.avatar;
+  if (json?.me?.icon) {
+    ME_ICON = json.me.icon;
   }
-  if (json?.participants?.partner?.avatar) {
-      PARTNER_ICON = json.participants.partner.avatar;
+  if (json?.partner?.icon) {
+      PARTNER_ICON = json.partner.icon;
   }
 
   const newList = (json.dms || []).map(m => ({
@@ -103,7 +103,7 @@ async function loadConversation(currentPartnerId) {
     to:   String(m.to_id),
     text: m.text,
     attachments: m.attachments || [],
-    icon: (String(m.from_id) === meId) ? (json.participants.me.icon || ME_ICON) : (json.participants.partner.icon || PARTNER_ICON),
+    icon: (m.from_id === meId) ? (json.me.icon || ME_ICON) : (json.partner.icon || PARTNER_ICON),
     timestamp: new Date(m.created_at),
     pending: false,
     isRead: Boolean(m.is_read)
