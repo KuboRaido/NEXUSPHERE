@@ -36,7 +36,7 @@ class DmController extends Controller
          return asset('storage/icons/' . $path);
       }
 
-      return $u ? $u->avatar_url : asset('images/default-avatar.png');
+      return asset($path);
    }
    # DM一覧（フロント）
    public function dmlistfront(){

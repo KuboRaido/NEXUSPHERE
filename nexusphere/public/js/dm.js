@@ -403,9 +403,15 @@ async function sendMessage() {
     const idx = messages.findIndex(m => m.id === tempId);
     if (idx !== -1) {
       messages[idx] = {
-        id: resd.id,from:String(resd.from_id),to:String(resd.to_id),
-        text: resd.text,attachments:resd.attachments || [],
-        timestamp: new Date(resd.created_at), pending: false
+        id: resd.id,
+        from:String(resd.from_id),
+        to:String(resd.to_id),
+        text: resd.text,
+        attachments:resd.attachments || [],
+        timestamp: new Date(resd.created_at), 
+        pending: false,
+        icon: m.icon,
+
     };
     renderMessages();
     }
