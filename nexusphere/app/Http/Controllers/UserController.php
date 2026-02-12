@@ -20,38 +20,37 @@ class UserController extends Controller
     public function register(Request $request)
     {
         $request->validate([
-            'mail' => ['required','email','unique:users,mail','regex:/@(edu.sba|edu.ssm|sba|ssm)\.ac\.jp$/'],
-            'password' => ['required','string','min:8','max:20','confirmed'],
-            'name' => [ 'required','string','max:255'],
-            'job'  => ['required', 'string', 'max:2'],
-            'grade' => [ 'required_if:job,学生|date','integer','min:1','max:4' ],
-            'subject' =>[ 'required_if:job,学生|date','string','max:255' ],
-            'major' =>[ 'required_if:job,学生|date','string','max:255' ],
-            'icon' => [ 'nullable','image','max:2048' ],
-        ]);
-
-        $iconPath = null;
-        if ($request->hasFile('icon')) {
-            $iconPath = $request->file('icon')->store('', 'direct');
-        }
-
-        $user=User::create([
-            'mail' => $request->mail,
-            'password' => Hash::make($request->password),
-            'name' => $request->name,
-            'grade' => $request->grade,
-            'subject' => $request->subject,
-            'major' => $request->major,
-            'icon' => $iconPath,
-            'job' => $request->job,
-        ]);
-    
-        // SendVerificationEmail::dispatch($user);
-        Mail::to($user->mail)->send(new VerificationEmail($user));
-
-        return redirect()->route('login')->with('success', '登録が完了しました！ログインしてください');
+                    'mail' => ['required','email','unique:users,mail','regex:/@(edu.sba|edu.ssm|sba|ssm)\.ac\.jp$/'],
+                    'password' => ['required','string','min:8','max:20','confirmed'],
+                    'name' => [ 'required','string','max:255'],
+                    'job'  => ['required', 'string', 'max:2'],
+                    'grade' => [ 'required_if:job,学生|date','integer','min:1','max:4' ],
+                    'subject' =>[ 'required_if:job,学生|date','string','max:255' ],
+                    'major' =>[ 'required_if:job,学生|date','string','max:255' ],
+                    'icon' => [ 'nullable','image','max:2048' ],
+                ]);
+        
+                $iconPath = null;
+                if ($request->hasFile('icon')) {
+                    $iconPath = $request->file('icon')->store('', 'direct');
+                }
+        
+                $user=User::create([
+                    'mail' => $request->mail,
+                    'password' => Hash::make($request->password),
+                    'name' => $request->name,
+                    'grade' => $request->grade,
+                    'subject' => $request->subject,
+                    'major' => $request->major,
+                    'icon' => $iconPath,
+                    'job' => $request->job,
+                ]);
+        
+                // SendVerificationEmail::dispatch($user);
+                Mail::to($user->mail)->send(new VerificationEmail($user));
+        
+                return redirect()->route('login')->with('success', '登録が完了しました！ログインしてください');
     }
-
     //新規登録時にメールが存在するか確認するよう
     public function verifyEmail($user_id, $hash)
     {
