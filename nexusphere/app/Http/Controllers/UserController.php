@@ -28,14 +28,36 @@ class UserController extends Controller
                     'subject' =>[ 'required_if:job,学生|date','string','max:255' ],
                     'major' =>[ 'required_if:job,学生|date','string','max:255' ],
                     'icon' => [ 'nullable','image','max:2048' ],
+                ],[
+                    'mail.required'      => 'メールアドレスは必ず入力してください',
+                    'mail.unique'        => 'そのメールアドレスは既に登録されています',
+                    'icon.max'           => '画像が大きすぎます.5MB以下にしてください',
+                    'password.confirmed' => 'パスワードが再入力したものと合っていません。',
                 ]);
-        
+
                 $iconPath = null;
                 if ($request->hasFile('icon')) {
                     $iconPath = $request->file('icon')->store('', 'direct');
                 }
-        
-                $user=User::create([
+
+                $user = User::where('mail', $request->mail)->first();
+
+                if($user){
+                    if($user->email_verified_at){
+                        return back()->withErrors(['mail' => 'このメールアドレスは既に登録されています'])->withInput();
+                    }
+
+                    $user->update([
+                        'password' => Hash::make($request->password),
+                        'name' => $request->name,
+                        'grade' => $request->grade,
+                        'subject' => $request->subject,
+                        'major' => $request->major,
+                        'icon' => $iconPath,
+                        'job' => $request->job,
+                    ]);
+                }else{
+                    $user=User::create([
                     'mail' => $request->mail,
                     'password' => Hash::make($request->password),
                     'name' => $request->name,
@@ -45,6 +67,7 @@ class UserController extends Controller
                     'icon' => $iconPath,
                     'job' => $request->job,
                 ]);
+                }
         
                 // SendVerificationEmail::dispatch($user);
                 Mail::to($user->mail)->send(new VerificationEmail($user));

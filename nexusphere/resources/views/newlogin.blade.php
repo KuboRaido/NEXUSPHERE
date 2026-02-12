@@ -45,7 +45,7 @@
 
             <!-- パスワード -->
             <div>
-                <label for="password" class="label-text">パスワード</label>
+                <label for="password" class="label-text">パスワード 8桁以上</label>
                 <input type="password" id="password" name="password" placeholder="パスワードを入力" class="input-field" required>
                 <input type="password" id="password_confirmation" name="password_confirmation" placeholder="パスワードを再入力" class="input-field" required>
             </div>
