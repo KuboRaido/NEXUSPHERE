@@ -88,12 +88,10 @@ async function loadConversation(currentPartnerId) {
   }
   const json = await res.json();
 
-  const meId = getMeId();
-
-  if (json?.me?.icon) {
+  if (json?.participants?.me?.avatar) {
     ME_ICON = json.participants.me.avatar;
   }
-  if (json?.partner?.icon) {
+  if (json?.participants?.partner?.avatar) {
       PARTNER_ICON = json.participants.partner.avatar;
   }
 
@@ -103,7 +101,6 @@ async function loadConversation(currentPartnerId) {
     to:   String(m.to_id),
     text: m.text,
     attachments: m.attachments || [],
-    icon: (m.from_id === meId) ? ME_ICON : PARTNER_ICON,
     timestamp: new Date(m.created_at),
     pending: false,
     isRead: Boolean(m.is_read)
@@ -227,7 +224,7 @@ function renderMessages() {
     //メッセージのアイコンを作成
     const img = document.createElement('img');
     img.className = 'msg-avatar';
-    img.src = msg.icon || DEFAULT_AVATAR;
+    img.src = msg.icon;
     img.alt = '';
     img.onerror = () => { img.src = DEFAULT_AVATAR; };
     // アイコンを押したらプロフィールに飛べるようにする
@@ -403,15 +400,9 @@ async function sendMessage() {
     const idx = messages.findIndex(m => m.id === tempId);
     if (idx !== -1) {
       messages[idx] = {
-        id: resd.id,
-        from:String(resd.from_id),
-        to:String(resd.to_id),
-        text: resd.text,
-        attachments:resd.attachments || [],
-        timestamp: new Date(resd.created_at), 
-        pending: false,
-        icon: resd.icon,
-
+        id: resd.id,from:String(resd.from_id),to:String(resd.to_id),
+        text: resd.text,attachments:resd.attachments || [],
+        timestamp: new Date(resd.created_at), pending: false
     };
     renderMessages();
     }
