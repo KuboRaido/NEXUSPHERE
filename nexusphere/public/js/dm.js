@@ -100,6 +100,7 @@ async function loadConversation(currentPartnerId) {
     from: String(m.from_id),
     to:   String(m.to_id),
     text: m.text,
+    icon: (m.from_id ? ME_ICON : PARTNER_ICON),
     attachments: m.attachments || [],
     timestamp: new Date(m.created_at),
     pending: false,
