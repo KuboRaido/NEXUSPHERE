@@ -68,12 +68,12 @@
                     <a class="dm-btn" href="{{ url('/dm') }}?to={{ $isMine ? 'me' : $profileUser->user_id }}">DM</a>
               </div>
             </div>
-            <div class="portfolio-section">
+            <!-- <div class="portfolio-section">
               <button class="portfolio-toggle"><i class="fa-solid fa-chevron-down"></i>
             </button>
             <div class="portfolio-content">
                 <ul></ul>
-              </div>
+              </div> -->
             </div>
           </div>
         </div>
