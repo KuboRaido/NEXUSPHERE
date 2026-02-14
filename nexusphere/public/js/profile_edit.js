@@ -72,4 +72,14 @@ document.addEventListener("DOMContentLoaded", () => {
             majorSelect.disabled = true;
         }
     });
+
+    const selects = ['name'];
+    selects.forEach(id => {
+        const el = document.getElementById(id);
+        const saved = localStorage.getItem('form_' + id);
+        if(saved) el.value = saved;
+        el.addEventListener('change', function() {
+            localStorage.setItem('form_' + id, this.value);
+        })
+    });
 });
