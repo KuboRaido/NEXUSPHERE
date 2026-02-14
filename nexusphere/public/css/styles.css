@@ -175,11 +175,14 @@ input[type="file"] {
     line-height: 1.6;
     margin-bottom: 10px;
     margin-left: 50px;
+    overflow-wrap: break-word; /* 長い単語でも折り返す */
+    word-wrap: break-word;     /* 旧ブラウザ用 */
+    white-space: pre-wrap;     /* 改行を維持しつつ自動折り返し */
 }
 
 
 /* ==============================
-   7. 投稿画像
+    7. 投稿画像
 ============================== */
 .post-images {
     display: flex;
@@ -202,7 +205,7 @@ input[type="file"] {
 
 
 /* ==============================
-   8. 投稿フッター（いいね＋コメント入力）
+    8. 投稿フッター（いいね＋コメント入力）
 ============================== */
 .post-footer {
     display: flex;
@@ -272,6 +275,9 @@ input[type="file"] {
     display: block;
     margin-left: 3.3rem;
     margin-bottom: 1rem;
+    overflow-wrap: break-word; /* 長い単語でも折り返す */
+    word-wrap: break-word;     /* 旧ブラウザ用 */
+    white-space: pre-wrap;     /* 改行を維持しつつ自動折り返し */
 }
 
 /* 3つ目以降のコメントを非表示 */
