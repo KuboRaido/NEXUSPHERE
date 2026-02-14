@@ -108,6 +108,9 @@ body {
   font-weight: bold;
   margin-top: 6px;
   color: #333;
+  overflow-wrap: break-word; /* 長い単語でも折り返す */
+  word-wrap: break-word;     /* 旧ブラウザ用 */
+  white-space: pre-wrap;     /* 改行を維持しつつ自動折り返し */
 }
 
 .circle-desc {
@@ -468,6 +471,21 @@ button[type="submit"]:hover {
   .footer-nav span {
     font-size: 11px;
     margin-top: 4px;
+  }
+  .circle-name {
+    max-width: 60px; /* 必要に応じて調整 */
+    font-size: 8px;
+    font-weight: bold;
+    margin-top: 6px;
+    color: #333;
+    overflow-wrap: break-word; /* 長い単語でも折り返す */
+    word-wrap: break-word;     /* 旧ブラウザ用 */
+    white-space: pre-wrap;     /* 改行を維持しつつ自動折り返し */
+  }
+  .title {
+    font-size: 22px;
+    font-weight: bold;
+    max-width: 60px;
   }
 }
 
