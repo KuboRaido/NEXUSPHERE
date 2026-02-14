@@ -1,5 +1,5 @@
 /* ==============================
-   1. ベース設定
+    1. ベース設定
 ============================== */
 * {
     box-sizing: border-box;
@@ -178,7 +178,7 @@ html, body {
 }
 
 /* =========================
-   投稿 or コンテンツ欄
+    投稿 or コンテンツ欄
 ========================= */
 .content {
   flex: 1;
@@ -207,7 +207,7 @@ html, body {
 }
 
 /* =========================
-   チャットボックス系
+    チャットボックス系
 ========================= */
 #chat-box {
   height: 400px;
@@ -427,6 +427,19 @@ button[type="submit"] {
 
   .circle-item .name {
     font-size: 14px;
+  }
+
+  .avatar {
+    object-fit: cover;
+  }
+
+  button[type="submit"] {
+    color: #000000;
+    border: none;
+    border-radius: 20px;
+    cursor: pointer;
+    font-weight: bold;
+    transition: 0.3s;
   }
 }
 
