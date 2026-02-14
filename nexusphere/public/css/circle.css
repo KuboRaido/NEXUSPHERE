@@ -224,7 +224,7 @@ body {
 }
 
 /* =========================
-   レスポンシブ
+  レスポンシブ
 ========================= */
 @media screen and (max-width: 600px) {
   .circle-item .circle-link img {
