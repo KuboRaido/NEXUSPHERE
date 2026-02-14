@@ -330,7 +330,7 @@ button[type="submit"]:hover {
 }
 
 /* =========================
-   レイアウトその他
+    レイアウトその他
 ========================= */
 .main {
   display: flex;
@@ -485,7 +485,6 @@ button[type="submit"]:hover {
   .title {
     font-size: 22px;
     font-weight: bold;
-    max-width: 60px;
   }
 }
 

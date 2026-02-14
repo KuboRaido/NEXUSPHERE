@@ -203,8 +203,8 @@ public function dmback(?int $partner=null){
    
    return response()->json([
       'participants' => [
-         'me'     =>['id'=>$meUser->$userPk, 'name'=>$meUser->name, 'avatar'=>$meUser->avatar_url],
-         'partner'=>['id'=>$partnerUser->$userPk, 'name'=>$partnerUser->name,'avatar'=>$partnerUser->avatar_url]
+         'me'     =>['id'=>$meUser->$userPk, 'name'=>$meUser->name, 'icon'=>$meUser->avatar_url],
+         'partner'=>['id'=>$partnerUser->$userPk, 'name'=>$partnerUser->name,'icon'=>$partnerUser->avatar_url]
       ],
       'dms' => $messages->map(function($m) use ($partnerReadAt, $meUser, $userPk){
          $isMine = ((int) $m->sender_id === (int) $meUser->$userPk);

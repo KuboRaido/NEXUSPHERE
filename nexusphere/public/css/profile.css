@@ -97,6 +97,7 @@ html, body {
   background-color: #ccc;
   background-size: cover;
   background-position: center;
+  object-fit: cover;
 }
 
 .display-name {

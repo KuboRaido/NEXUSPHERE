@@ -88,11 +88,11 @@ async function loadConversation(currentPartnerId) {
   }
   const json = await res.json();
 
-  if (json?.participants?.me?.avatar) {
-    ME_ICON = json.participants.me.avatar;
+  if (json?.participants?.me?.icon) {
+    ME_ICON = json.participants.me.icon;
   }
-  if (json?.participants?.partner?.avatar) {
-      PARTNER_ICON = json.participants.partner.avatar;
+  if (json?.participants?.partner?.icon) {
+      PARTNER_ICON = json.participants.partner.icon;
   }
 
   const newList = (json.dms || []).map(m => ({
