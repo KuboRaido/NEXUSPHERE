@@ -88,6 +88,13 @@ body {
   border-radius: 50%;
 }
 
+.circle-name,
+.circle-desc {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
 
 .name-set {
   display: flex;
@@ -101,12 +108,15 @@ body {
   font-weight: bold;
   margin-top: 6px;
   color: #333;
+  overflow-wrap: break-word; /* 長い単語でも折り返す */
+  word-wrap: break-word;     /* 旧ブラウザ用 */
+  white-space: pre-wrap;     /* 改行を維持しつつ自動折り返し */
 }
 
 .circle-desc {
   font-size: 13px;
   color: #555;
-  max-width: 260px;
+  max-width: 180px;
   line-height: 1.4;
 }
 
@@ -153,7 +163,7 @@ body {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  padding: 6px 15px;
+  padding: 4px 9px;
   font-size: 15px;
   border-radius: 8px;
   background: #ff69b4;
@@ -279,31 +289,39 @@ button[type="submit"]:hover {
   bottom: 0;
   left: 0;
   width: 100%;
+  height: 60px;
   background-color: #fff;
   border-top: 1px solid #ddd;
   display: flex;
   justify-content: space-around;
   align-items: center;
-  height: 60px;
   z-index: 100;
-  box-shadow: 0 -2px 8px rgba(0, 0, 0, 0.05);
 }
 
 .footer-nav a {
-  color: #666;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
   text-decoration: none;
-  font-size: 22px;
-  transition: color 0.3s ease, transform 0.2s ease;
+  color: #666;
+  transition: 0.2s;
 }
 
-.footer-nav a:hover {
+.footer-nav a:hover,
+.footer-nav a.active {
   color: #ff69b4;
   transform: scale(1.1);
 }
 
-.footer-nav a.active {
-  color: #ff69b4; /* アクティブなタブの色 */
+.footer-nav i {
+  font-size: 20px;
 }
+
+.footer-nav span {
+  font-size: 11px;
+  margin-top: 4px;
+}
+
 /* 投稿カードのアクション */
 .post-actions {
   display: flex;
@@ -312,7 +330,7 @@ button[type="submit"]:hover {
 }
 
 /* =========================
-   レイアウトその他
+    レイアウトその他
 ========================= */
 .main {
   display: flex;
@@ -382,6 +400,10 @@ button[type="submit"]:hover {
 }
 
 @media screen and (max-width: 768px) {
+  .container {
+    max-width: 350px;
+  }
+  
   .circle-item img {
     width: 50px;
     height: 50px;
@@ -395,7 +417,7 @@ button[type="submit"]:hover {
     display: inline-flex;
     align-items: center;
     justify-content: center;
-    padding: 4px 12px;
+    padding: 2px 7px;
     font-size: 12px;
     border-radius: 8px;
     background: #ff69b4;
@@ -422,7 +444,7 @@ button[type="submit"]:hover {
   /* 説明は下に残す（少し小さく） */
   .circle-desc {
     font-size: 12px;
-    max-width: 220px;
+    max-width: 60px;
   }
 
   /* ボタンを右寄せ */
@@ -445,6 +467,24 @@ button[type="submit"]:hover {
   .actions .dm-btn {
     width: calc(25% - 3px); /* ← 2列で均等 */
     justify-content: center;
+  }
+  .footer-nav span {
+    font-size: 11px;
+    margin-top: 4px;
+  }
+  .circle-name {
+    max-width: 60px; /* 必要に応じて調整 */
+    font-size: 8px;
+    font-weight: bold;
+    margin-top: 6px;
+    color: #333;
+    overflow-wrap: break-word; /* 長い単語でも折り返す */
+    word-wrap: break-word;     /* 旧ブラウザ用 */
+    white-space: pre-wrap;     /* 改行を維持しつつ自動折り返し */
+  }
+  .title {
+    font-size: 22px;
+    font-weight: bold;
   }
 }
 

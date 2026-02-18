@@ -14,7 +14,7 @@ body {
 }
 
 /* =========================
-   ヘッダー
+    ヘッダー
 ========================= */
 .site-header {
   width: 100%;
@@ -25,19 +25,19 @@ body {
 }
 
 .header-inner {
-    max-width: 600px;
-    margin: 0 auto;
+  max-width: 600px;
+  margin: 0 auto;
 }
 
 
 #site-title {
-    font-size: 2rem;
-    font-weight: 700;
-    font-family: cursive;
+  font-size: 2rem;
+  font-weight: 700;
+  font-family: cursive;
 }
 
 /* =========================
-   コンテナ
+    コンテナ
 ========================= */
 .circle-container {
   width: 100%;
@@ -51,7 +51,7 @@ body {
 }
 
 /* =========================
-   検索
+    検索
 ========================= */
 .search-container { 
   display: flex; 
@@ -85,7 +85,7 @@ body {
 }
 
 /* =========================
-   サークル一覧
+    サークル一覧
 ========================= */
 .circle-list,
 .circle-section {
@@ -156,7 +156,7 @@ body {
 }
 
 /* =========================
-   タブ
+    タブ
 ========================= */
 .circle-tabs {
   display: flex;
@@ -172,6 +172,7 @@ body {
   border: none;
   font-size: 16px;
   cursor: pointer;
+  white-space: nowrap;
 }
 
 .tab-btn.active {
@@ -188,38 +189,42 @@ body {
   bottom: 0;
   left: 0;
   width: 100%;
+  height: 60px;
   background-color: #fff;
   border-top: 1px solid #ddd;
   display: flex;
   justify-content: space-around;
   align-items: center;
-  height: 60px;
   z-index: 100;
-  box-shadow: 0 -2px 8px rgba(0,0,0,0.05);
 }
 
 .footer-nav a {
-  color: #666;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
   text-decoration: none;
-  font-size: 22px;
-  transition: color 0.3s ease, transform 0.2s ease;
+  color: #666;
+  transition: 0.2s;
 }
 
-.footer-nav a:hover {
+.footer-nav a:hover,
+.footer-nav a.active {
   color: #ff69b4;
   transform: scale(1.1);
 }
 
-.footer-nav a.active {
-  color: #ff69b4;
+.footer-nav i {
+  font-size: 20px;
 }
 
-.footer-nav i {
-  pointer-events: none;
+.footer-nav span {
+  font-size: 11px;
+  margin-top: 4px;
+
 }
 
 /* =========================
-   レスポンシブ
+  レスポンシブ
 ========================= */
 @media screen and (max-width: 600px) {
   .circle-item .circle-link img {
