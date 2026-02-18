@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\RegisterUserRequest;
 use App\Models\User;
 use App\Http\Controllers\Controller;
 use App\Mail\VerificationEmail;
@@ -17,26 +18,12 @@ class UserController extends Controller
         return view('newlogin');
     }
 
-    public function register(Request $request)
+    public function register(RegisterUserRequest $request)
     {
-        $request->validate([
-                    'mail' => ['required','email','unique:users,mail','regex:/@(edu.sba|edu.ssm|sba|ssm)\.ac\.jp$/'],
-                    'password' => ['required','string','min:8','max:20','confirmed'],
-                    'name' => [ 'required','string','max:255'],
-                    'job'  => ['required', 'string', 'max:2'],
-                    'grade' => [ 'required_if:job,学生|date','integer','min:1','max:4' ],
-                    'subject' =>[ 'required_if:job,学生|date','string','max:255' ],
-                    'major' =>[ 'required_if:job,学生|date','string','max:255' ],
-                    'icon' => [ 'nullable','image','max:2048' ],
-                ],[
-                    'mail.required'      => 'メールアドレスは必ず入力してください',
-                    'mail.unique'        => 'そのメールアドレスは既に登録されています',
-                    'icon.max'           => '画像が大きすぎます.5MB以下にしてください',
-                    'password.confirmed' => 'パスワードが再入力したものと合っていません。',
-                ]);
+        $request->validated();
 
-                $iconPath = null;
-                if ($request->hasFile('icon')) {
+        $iconPath = null;
+        if ($request->hasFile('icon')) {
                     $iconPath = $request->file('icon')->store('', 'direct');
                 }
 
