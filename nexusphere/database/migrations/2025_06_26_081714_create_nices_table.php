@@ -13,17 +13,11 @@ return new class extends Migration
     {
         Schema::create('nices', function (Blueprint $table) {
             $table->id('nice_id');
-            $table->integer('prc_id')->unique();
-            $table->integer('user_id')->unique();
+            $table->integer('prc_id');
+            $table->integer('user_id');
             $table->timestamps();
-        });
-    }
 
-    /**
-     * Reverse the migrations.
-     */
-    public function down(): void
-    {
-        Schema::dropIfExists('nices');
+            $table->unique(['prc_id', 'user_id']);
+        });
     }
 };

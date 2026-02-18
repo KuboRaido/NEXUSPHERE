@@ -23,6 +23,12 @@ class Dm extends Model
     public function parent() {return $this->belongsTo(self::class,'parent_id','dm_id');}#このメッセージの”親（直上のコメント）”
     public function replies() {return $this->hasMany(self::class,'parent_id','dm_id');}#このメッセージの"子"
 
+    public function circle(){
+        return $this->belongsTo(Circle_user::class,'circle_id','circle_id');
+    }
+    public function group(){
+        return $this->belongTo(groupmember::class,'group_id','group_id');
+    }
     public function sender(){
         return $this->belongsTo(User::class,'sender_id','user_id');
     }
@@ -34,17 +40,33 @@ class Dm extends Model
     protected static function booted()
     {
         static::saving(function (Dm $dm){
-            if (!isset($dm->sender_id, $dm->receiver_id)){
-                throw new \InvalidArgumentException('sender_idとreceiver_idは必須です。');
+            if(!empty($dm->circle_id)){
+                $circle = $dm->circle_id;
+
+                $dm->circle_id = $circle;
+
+                return;
+            } elseif(!empty($dm->group_id)){
+                $group = $dm->group_id;
+
+                $dm->group_id = $group;
+
+                return;
+            }
+            
+            if(isset($dm->sender_id, $dm->receiver_id)){
+                $a = (int) $dm->sender_id;
+                $b = (int) $dm->receiver_id;
+                $low = min($a,$b);
+                $high = max($a,$b);
+
+                $dm->dm_key = "{$low}-{$high}";
+
+                return;
             }
 
-            $a = (int) $dm->sender_id;
-            $b = (int) $dm->receiver_id;
-            $low = min($a,$b);
-            $high = max($a,$b);
+            throw new \InvalidArgumentException('sender_idとreceiver_idは必須です。');
 
-            $dm->dm_key = "{$low}-{$high}";
-            
         });
     }
 

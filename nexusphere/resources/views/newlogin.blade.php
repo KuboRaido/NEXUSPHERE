@@ -6,10 +6,16 @@
     <title>新規登録</title>
     <!-- Custom CSS -->
     <link rel="stylesheet" href="{{ asset('css/newlogin.css') }}">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+
 </head>
 <body>
     <div class="wrapper">
-    <h1 class="title">Nexusphere</h1>
+        <header class="site-header">
+            <div class="header-inner">
+                <h1 id="site-title">Nexusphere</h1>
+            </div>
+        </header>
     <div class="form-container">
         <h1 class="header-text">新規登録</h1>
         @if ($errors->any())
@@ -29,49 +35,67 @@
         </div>
     @endif
 
-        <form method="POST" action="{{ route('newLogin') }}" enctype="multipart/form-data">
+        <form id='register' method="POST" action="{{ route('register') }}" enctype="multipart/form-data">
             @csrf
             <!-- メールアドレス -->
             <div>
-                <label for="email" class="label-text">メールアドレス</label>
-                <input type="email" id="mail" name="mail" placeholder="メールアドレスを入力" class="input-field" required>
+                <label for="email" class="label-text">学校用のメールアドレス</label>
+                <input type="email" id="mail" name="mail" placeholder="学校用のメールアドレスを入力" class="input-field" required>
             </div>
 
             <!-- パスワード -->
             <div>
-                <label for="password" class="label-text">パスワード</label>
+                <label for="password" class="label-text">パスワード 8桁以上</label>
                 <input type="password" id="password" name="password" placeholder="パスワードを入力" class="input-field" required>
                 <input type="password" id="password_confirmation" name="password_confirmation" placeholder="パスワードを再入力" class="input-field" required>
             </div>
 
             <!-- 名前 -->
             <div>
-                <label for="name" class="label-text">名前</label>
-                <input type="text" id="name" name="name" placeholder="名前を入力" class="input-field" required>
+                <label for="name" class="label-text">本名</label>
+                <input type="text" id="name" name="name" placeholder="本名を入力" class="input-field" required>
             </div>
 
-            <!-- 年齢 -->
+
             <div>
-                <label for="age" class="label-text">年齢</label>
-                <input type="number" id="age" name="age" placeholder="年齢を入力" class="input-field" min="0" max="100" required>
+                <label for="job" class="label-text">区分</label>
+                <select id="job" name="job" class="input-field" required>
+                    <option value="" disabled selected>区分を選択してください</option>
+                    <option value="学生">学生</option>
+                    <option value="講師">講師</option>
+                    <option value="教員">教員</option>
+                </select>
             </div>
 
             <!-- 学年 -->
             <div>
-                <label for="grade" class="label-text">学年</label>
-                <input type="number" id="grade" name="grade" placeholder="学年を入力" class="input-field" min="1" max="4" required>
+                <label for="grade" class="label-text">学年 </label>
+                <select id="grade" name="grade" class="input-field" disabled>
+                    <option value="" disabled selected>学年を選択してください</option>
+                    <option value="1">1</option>
+                    <option value="2">2</option>
+                    <option value="3">3</option>
+                    <option value="4">4</option>
+                </select>
             </div>
 
             <!-- 学科 -->
             <div>
                 <label for="subject" class="label-text">学科</label>
-                <input type="text" id="subject" name="subject" placeholder="学科を入力" class="input-field" required>
+                <select id="subject" name="subject" class="input-field" disabled>
+                    <option value="" disabled selected>学科を専攻にしてください</option>
+                    <option value="AI&テクノロジー科">AI&テクノロジー科</option>
+                    <option value="デジタルテクノロジー科">デジタルテクノロジー科</option>
+                    <option value="クリエイティブデザイン科">クリエイティブデザイン科</option>
+                </select>
             </div>
 
             <!-- 専攻 -->
             <div>
                 <label for="major" class="label-text">専攻</label>
-                <input type="text" id="major" name="major" placeholder="専攻を入力" class="input-field" required>
+                <select id="major" name="major" class="input-field" disabled>
+                    <option value="" disabled selected>先に学科を選択してください</option>
+                </select>
             </div>
 
             <!-- アイコン -->
@@ -85,13 +109,15 @@
                     <img id="uploadedIcon" src="#" alt="Uploaded Icon" style="display: none;">
                 </div>
                 <input type="file" id="iconUpload" name="icon" accept="image/*" class="icon-upload-input">
-            </div>
-
-            <!-- 登録ボタン -->
-            <button type="submit" class="submit-button">登録</button>
+            </div>          
         </form>
     </div>
 
+        <!-- 登録ボタン --> 
+        <div class="button-row">
+            <button type="submit" class="submit-button" form="register">登録</button>
+            <a href="{{ route('login') }}" class="cancel-button">戻る</a>
+        </div>
     <!-- Custom JavaScript -->
     <script src="{{ asset('js/newlogin.js') }}"></script>
 </body>

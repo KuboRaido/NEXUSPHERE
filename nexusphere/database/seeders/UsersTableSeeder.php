@@ -15,27 +15,36 @@ class UsersTableSeeder extends Seeder
     public function run()
     {
       User::create([
-        'user_id' => 2,
-        'mail'    => 'test@test',
-        'password'=> Hash::make('00000'),
-        'name'    => 'Test User',
-        'age'     => 20,
-        'grade'   => 3,
-        'subject' => 'test',
-        'major'   => 'test',
-        'icon'    => null,
+        'user_id'             => 100,
+        'mail'                => 'a@sba.ac.jp',
+        'password'            => Hash::make('00000000'),
+        'name'                => 'Guest1',
+        'job'                 => '講師',
+        'icon'                => null,
+        'email_verified_at'   => '2026-01-15 02:48:25',
       ]);
 
       User::create([
-        'user_id' => 3,
-        'mail'    => 'tests@tests',
-        'password'=> Hash::make('00000'),
-        'name'    => 'Test User',
-        'age'     => 20,
-        'grade'   => 3,
-        'subject' => 'test',
-        'major'   => 'test',
+        'user_id' => 101,
+        'mail'    => 'b@sba.ac.jp',
+        'password'=> Hash::make('00000000'),
+        'name'    => 'Guest2',
+        'job'     => '教員',
         'icon'    => null,
+        'email_verified_at'   => '2026-01-15 02:48:25',
+      ]);
+
+      User::create([
+        'user_id' => 102,
+        'mail'    => 'c@sba.ac.jp',
+        'password'=> Hash::make('00000000'),
+        'name'    => 'Guest3',
+        'grade'   => 2,
+        'job'     => '学生',
+        'subject' => 'AI&テクノロジー学科',
+        'major'   => 'AI専攻',
+        'icon'    => null,
+        'email_verified_at'   => '2026-01-15 02:48:25',
       ]);
     }
 }

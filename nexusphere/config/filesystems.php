@@ -60,6 +60,27 @@ return [
             'report' => false,
         ],
 
+        'direct' => [
+            'driver'     => 'local',
+            'root'       => public_path() . '/storage/icons',
+            'url'        => env('APP_URL').'/storage/icons',
+            'visibility' => 'public',
+        ],
+
+        'post' => [
+            'driver'     => 'local',
+            'root'       => public_path() . '/storage/post',
+            'url'        => env('APP_URL').'/storage/post',
+            'visibility' => 'public',
+        ],
+
+        'dm' => [
+            'driver'     => 'local',
+            'root'       => public_path() . '/storage/dms',
+            'url'        => env('APP_URL').'/storage/dms',
+            'visibility' => 'public',
+        ],
+
     ],
 
     /*
