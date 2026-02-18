@@ -5,6 +5,7 @@
   <meta name="viewport" content="width=device-width,initial-scale=1">
   <title>プロフィール編集</title>
   <link rel="stylesheet" href="{{ asset('css/circleprofile_edit.css') }}">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   <meta name="default-avatar" content="{{ asset('images/default-avatar.png') }}">
   <script>window.DEFAULT_AVATAR_URL = "{{asset('images/default-avatar.png')}}"</script>
@@ -24,22 +25,48 @@
 
       <form method="POST" action="{{ route('circle-update', $circle->circle_id) }}" enctype="multipart/form-data">
         @csrf
+    <div class="field">
+      <label>アイコン</label>
 
-        <div class="field">
-          <label>現在のアイコン</label>
-          <div class="current-avatar">
-            <img src="{{ $circle->icon }}" alt="アイコン" class="avatar-preview">
-          </div>
+      <div class="avatar-row">
+        <!-- 現在 -->
+        <div class="avatar-box">
+          <p class="avatar-label">現在</p>
+          <img
+            src="{{ $circle->icon
+                  ? asset('storage/icons/' . $circle->icon)
+                  : asset('images/default-avatar.png') }}"
+            class="avatar-preview"
+          >
         </div>
 
-      <div class="field">
-        <label for="image">アイコン</label>
-        <input id="image" type="file" name="image" accept="image/*">
+        <div class="arrow">→</div>
+
+        <!-- 新しい（クリックで選択） -->
+        <div class="avatar-box">
+          <p class="avatar-label">新しい</p>
+
+          <label for="image" class="avatar-click">
+            <img
+              id="preview"
+              src="{{ $circle->icon
+                    ? asset('storage/icons/' . $circle->icon)
+                    : asset('images/default-avatar.png') }}"
+              class="avatar-preview"
+            >
+          </label>
+        </div>
       </div>
 
-      <div class="name">
-        <label for="name">名前</label>
-        <input id="name" type="text" name="name" value="{{ old('name', $circle->circle_name) }}">
+      <!-- 実体の file input（隠す） -->
+      <input id="image" type="file" name="image" accept="image/*" hidden>
+    </div>
+
+
+
+      <div class="circle_name">
+        <label for="circle_name">名前</label>
+        <input id="circle_name" type="text" name="circle_name" value="{{ old('circle_name', $circle->circle_name) }}">
       </div>
 
       <div class="explain">
@@ -53,5 +80,6 @@
         </div>
       </form>
     </div>
+   <script src="{{ asset('js/circlepf_edit.js') }}"></script>
 </body>
 </html>

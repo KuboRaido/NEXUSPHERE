@@ -14,7 +14,9 @@ return new class extends Migration
         Schema::create('dm_reads', function (Blueprint $table) {
             $table->id();
             $table->foreignId('user_id')->constrained('users','user_id')->cascadeOnDelete();
-            $table->foreignId('partner_id')->constrained('users','user_id')->cascadeOnDelete();
+            $table->foreignId('partner_id')->nullable()->constrained('users','user_id')->cascadeOnDelete();
+            $table->foreignId('circle_id')->nullable()->constrained('circles','circle_id')->cascadeOnDelete();
+            $table->foreignId('group_id')->nullable()->constrained('groups','group_id')->cascadeOnDelete();
             $table->timestamp('last_read_at')->nullable();
             $table->timestamps();
 

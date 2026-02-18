@@ -65,7 +65,8 @@ h1 {
 }
 
 .field input[type="text"],
-.field input[type="file"] {
+.field input[type="file"],
+.filed select {
   padding: 8px;
   font-size: 14px;
   border-radius: 6px;

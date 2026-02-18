@@ -7,26 +7,41 @@ use Illuminate\Support\Facades\Auth;
 use App\Models\Images_and_videos;
 use App\Models\Prc;
 use App\Models\Nice;
+use App\Rules\NgWord;
 
 class PrcController extends Controller
 {
     // 投稿一覧（検索対応）
     public function index(Request $request)
     {
+        if(!empty($request->circle_id)){
         // 投稿(type = 0) をベースにクエリ作成
         $query = Prc::where('type', 0)
                     ->with(['comments', 'images'])
                     ->orderBy('created_at', 'desc');
 
-        // 検索ワードがある場合は sentence に対して LIKE 検索
-        if ($request->filled('search')) {
-            $keyword = $request->input('search');
-            $query->where('sentence', 'LIKE', "%{$keyword}%");
-        }
-
         $posts = $query->get();
 
-        return view('home', compact('posts'));
+        return view('circleProfile', compact('posts'));
+        }
+
+        if(empty($request -> circle_id)){
+            // 投稿(type = 0) をベースにクエリ作成
+            $query = Prc::where('type', 0)
+                    ->whereNull('circle_id')
+                    ->with(['comments', 'images'])
+                    ->orderBy('created_at', 'desc');
+
+            // 検索ワードがある場合は sentence に対して LIKE 検索
+            if ($request->filled('search')) {
+                $keyword = $request->input('search');
+                $query->where('sentence', 'LIKE', "%{$keyword}%");
+            }
+
+            $posts = $query->get();
+
+            return view('home', compact('posts'));
+        }
     }
 
     // 投稿作成（テキスト＋画像最大10枚）
@@ -34,18 +49,18 @@ class PrcController extends Controller
     {
         // バリデーション
         $request->validate([
-            'sentence' => 'required|string|max:1000',
-            'images.*' => 'image|mimes:jpeg,png,jpg,gif,webp|max:5120', // 1枚最大5MB
-            'videos.*' => 'mimetypes:video/mp4,video/quicktime|max:30720',
+            'sentence' => ['required','string','max:1000',new NgWord],
+            'images.*' => ['image','max:1024'], // 1枚最大5MB
+            'videos.*' => ['mimetypes:video/mp4,video/quicktime','max:51200'],
         ]);
 
         // 投稿作成（type:0 = 投稿）
-        $post = Prc::create([
+            $post = Prc::create([
             'user_id' => Auth::id(),
             'sentence' => $request->input('sentence'),
             'type' => 0,
-        ]);
-
+            ]);
+        
         // 画像保存（最大10枚）
         $fileInputs = [];
         if ($request->hasFile('images')) {
@@ -55,13 +70,14 @@ class PrcController extends Controller
         if (!empty($fileInputs)) {
             $images = is_array($fileInputs) ? $fileInputs : [$fileInputs];
             $images = array_slice($images, 0, 10);
+
             foreach ($images as $image) {
-                $path = $image->store('post', 'public');
-                // Images_and_videos のカラム名は 'image'
-                Images_and_videos::create([
+                    $path = $image->store('', 'post');
+                    // Images_and_videos のカラム名は 'image'
+                    Images_and_videos::create([
                     'prc_id' => $post->prc_id,
                     'image' => $path,
-                ]);
+                    ]);
             }
         }
 
@@ -69,7 +85,7 @@ class PrcController extends Controller
             $videos = $request->file('videos');
 
             foreach ($videos as $video) {
-                $path = $video->store('post_video', 'public');
+                $path = $video->store('', 'post');
 
                 Images_and_videos::create([
                     'prc_id' => $post->prc_id,
@@ -81,11 +97,65 @@ class PrcController extends Controller
         return redirect()->back();
     }
 
+    public function circleStore(Request $request){
+
+        $circle = $request->circle_id;
+        // バリデーション
+        $request->validate([
+            'sentence' => ['required','string','max:1000',new NgWord],
+            'images.*' => ['image','max:5120'], // 1枚最大5MB
+            'videos.*' => ['mimetypes:video/mp4,video/quicktime','max:512000'],
+        ]);
+
+        // 投稿作成（type:0 = 投稿）
+            $post = Prc::create([
+            'user_id' => Auth::id(),
+            'sentence' => $request->input('sentence'),
+            'circle_id' => $request->input('circle_id'),
+            'type' => 0,
+        ]);
+        
+        // 画像保存（最大10枚）
+        $fileInputs = [];
+        if ($request->hasFile('images')) {
+            $fileInputs = $request->file('images');
+        }
+
+        if (!empty($fileInputs)) {
+            $images = is_array($fileInputs) ? $fileInputs : [$fileInputs];
+            $images = array_slice($images, 0, 10);
+            foreach ($images as $image) {
+                    $path = $image->store('', 'post');
+                    // Images_and_videos のカラム名は 'image'
+                    Images_and_videos::create([
+                        'prc_id' => $post->prc_id,
+                        'image' => $path,
+                        'circle_id' => $request->circle_id,
+                    ]);
+            }
+        }
+
+        if ($request->hasFile('videos')) {
+            $videos = $request->file('videos');
+
+            foreach ($videos as $video) {
+                    $path = $video->store('', 'post');
+
+                    Images_and_videos::create([
+                        'prc_id' => $post->prc_id,
+                        'video'  => $path,
+                        'circle_id' => $request->circle_id,
+                    ]);
+            }
+        }
+
+        return redirect()->route('circle.profile',['circle' => $circle]);
+    }
     // コメント作成
     public function comment(Request $request, $postId)
     {
         $request->validate([
-            'comment' => 'required|string|max:500',
+            'comment' => ['required','string','max:500',new NgWord]
         ]);
 
         $post = Prc::findOrFail($postId);
@@ -100,7 +170,7 @@ class PrcController extends Controller
     }
 
     // いいね(POST /posts/{prc_id}/like)
-    public function like(Request $request, $postId)
+    public function like($postId)
     {
         $userId = Auth::id();
         abort_if(!$userId, 401, 'Unauthenticated');
@@ -131,6 +201,11 @@ class PrcController extends Controller
     // 投稿フォーム表示
     public function post()
     {
-        return view('post');
+        $userId = Auth::id();
+        abort_if(!$userId, 401);
+
+        $post = Auth::user();
+        echo "<script>console.log(" . json_encode($post) . ");</script>";
+        return view('post',['post' => $post]);
     }
 }

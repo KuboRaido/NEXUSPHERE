@@ -1,5 +1,3 @@
-// dm-chat.js --- 会話ページ用（#chat-box があるページだけで動く）
-
 // グローバル状態
 let messages = window.messages || [];
 window.messages = messages;
@@ -58,39 +56,189 @@ function mergeById(oldList, newList) {
     return entry;
   };
 
-  const map = new Map(oldList.map(m => [m.id, normalize(m)]));
-  for (const m of newList) map.set(m.id, normalize(m));
+  const map = new Map(oldList.map(m => [String(m.id), normalize(m)]));
+  for (const m of newList) map.set(String(m.id), normalize(m));
   return Array.from(map.values()).sort((a,b)=> a.timestamp - b.timestamp);
 }
 
+document.addEventListener('DOMContentLoaded',()=>{
+  const attachBtn = document.getElementById('attach-btn');
+  const fileInput = document.getElementById('image-input');
+  if (attachBtn && fileInput){
+    attachBtn.addEventListener('click', (e) => {
+      e.preventDefault();
+      e.stopPropagation();
+      fileInput.click();
+    });
+  } ;
+});
+
+//API 1対1のdmの会話履歴取得
+async function loadConversation(currentPartnerId) {
+  if (!Number.isInteger(currentPartnerId)) return;
+  setCurrentPartner(currentPartnerId);
+
+  const res = await fetch(`/api/v1/dm/${currentPartnerId}`, {
+    headers: { 'Accept': 'application/json' },
+    credentials: 'include',
+  });
+  if(!res.ok){
+    console.error(`GET /api/v1/dm/${currentPartnerId} failed`, res.status);
+    throw new Error(`会話取得エラー: ${res.status}`);
+  }
+  const json = await res.json();
+
+  if (json?.participants?.me?.icon) {
+    ME_ICON = json.participants.me.icon;
+  }
+  if (json?.participants?.partner?.icon) {
+      PARTNER_ICON = json.participants.partner.icon;
+  }
+
+  const newList = (json.dms || []).map(m => ({
+    id: m.id,
+    from: String(m.from_id),
+    to:   String(m.to_id),
+    text: m.text,
+    icon: (m.from_id ? ME_ICON : PARTNER_ICON),
+    attachments: m.attachments || [],
+    timestamp: new Date(m.created_at),
+    pending: false,
+    isRead: Boolean(m.is_read)
+  }));
+
+  await ensureXsrfReady();
+  await fetch(`/api/v1/dm/${currentPartnerId}/read`,{method:'POST',headers:{'Accept':'application/json', ...getXsrfHeader()},credentials:'include'}).catch(()=>{});
+
+  
+  document.addEventListener('visibilitychange', async()=>{
+    if(document.visibilityState === 'visible' && Number.isInteger(currentPartnerId)){
+      await ensureXsrfReady();
+      fetch(`/api/v1/dm/${currentPartnerId}/read`,{method:'POST',headers:{'Accept':'application/json', ...getXsrfHeader()},credentials:'include'}).catch(()=>{});
+    }
+  });
+  messages = mergeById(messages, newList);
+  window.messages = messages;
+
+  renderMessages();
+}
+
+// Circle内のDMの会話履歴取得API
+async function loadCircleConversation(circle_id){
+  const res  = await fetch(`/api/v1/circle/${circle_id}/dm`, {
+    headers: {Accept: 'application/json' },
+    credentials: 'include',
+  });
+
+  if(!res.ok) throw new Error(`会話取エラー: ${res.status}`);
+  const json = await res.json();
+  //マッピング処理をmergeByIdの「前」に行う
+  const newMessages = ( json.dms || []).map(m => ({
+    id: m.id,
+    from: String(m.from_id),
+    to:   '',
+    text: m.text,
+    icon: m.icon,
+    attachments: m.attachments || [],
+    timestamp: new Date(m.created_at),
+    pending: false,
+    isRead: Boolean(m.is_read),
+  }));
+
+  //ここで正規化済みの配列を渡す
+  messages = mergeById(messages, newMessages);
+  renderMessages();
+}
+
+// Groupの会話履歴取得API
+async function loadGroupConversation(group_id){
+  const res = await fetch(`/api/v1/group/${group_id}/dm`, {
+    headers: {Accept: 'application/json' },
+    credentials: 'include',
+  });
+
+  if(!res.ok) throw new Error(`会話ログエラー: ${res.status}`);
+  const json = await res.json();
+  const newMessages = ( json.dms || []).map(m => ({
+    id: m.id,
+    from: String(m.from_id),
+    to:   '',
+    text: m.text,
+    icon: m.icon,
+    attachments: m.attachments || [],
+    timestamp: new Date(m.created_at),
+    pending: false,
+    isRead: Boolean(m.is_read),
+  }));
+
+  messages = mergeById(messages, newMessages);
+  renderMessages();
+}
+
+//メッセージデータを画面に表示する関数
 function renderMessages() {
   const chatBox = document.getElementById('chat-box');
   if (!chatBox) return;
 
-  chatBox.querySelectorAll('.message-row').forEach(el => el.remove());
-
-  const currentUserId = String(getMeId() ?? '');
+  const meId = String(getMeId() ?? '');
   const makeStatus = (mine, read) => (!mine ? '' : (read ? '既読' : '未読'));
 
-  for (const msg of messages){
-    const mine = (msg.from === currentUserId);
-    const status = makeStatus(mine, msg.isRead);
+  //表示すべきメッセージIDのセット
+  const validIds = new Set();
+    for(const msg of messages){
+      //メッセージを特定するためのIDを付与
+      const domId = `msg-${msg.id}`;
+      //特定できたIDをリストに追加
+      validIds.add(domId);
 
-    const row = document.createElement('div');
+      //特定したIDが画面上にあるか確認
+      let row = document.getElementById(domId);
+      //そのメッセージの送信者が自分か相手か確認
+      const mine = (msg.from === meId);
+      //上記の関数を使い既読の文字を決定
+      const status = makeStatus(mine, msg.isRead);
+      if(row){
+      //既存要素があれば更新のみ行う
+      //既存ステータスの更新チェック
+      const statusLabel = row.querySelector('.read-status');
+      //メッセージをしたのが自分でそのメッセージに既読がついていたら
+      if(status && statusLabel){
+        if(statusLabel.textContent !== status) statusLabel.textContent = status;
+      }else if(status && !statusLabel){
+        //未読だった場合
+        const bubble = row.querySelector('.massage-bubble');
+        if(bubble){
+          const label = document.createElement('span');
+            label.className = 'read-status';
+            label.textContent = status;
+            bubble.appendChild(label);
+          }
+        }else if(!status && statusLabel){
+          //ステータス不要になった場合
+          statusLabel.remove();
+        }
+      } else {
+    //特定したIDがまだ画面になかったら作成
+    row = document.createElement('div');
     row.classList.add('message-row', mine ? 'from-me' : 'from-them');
-
+    row.id = domId;//メッセージ一つ一つにIdを持たせる
+    //メッセージのアイコンを作成
     const img = document.createElement('img');
     img.className = 'msg-avatar';
-    img.src = mine ? ME_ICON : PARTNER_ICON;
+    img.src = msg.icon;
     img.alt = '';
     img.onerror = () => { img.src = DEFAULT_AVATAR; };
     // アイコンを押したらプロフィールに飛べるようにする
-    const profileId = (mine ? String(getMeId()) : String(msg.from || window.currentPartnerId || ''));
+    const profileId = String(msg.from);
     // 相手のiconの画像にリンクを追加
     img.addEventListener('click', (e) => {
       e.preventDefault();
       if(!profileId) return;
-      location.href = `/profile/${encodeURIComponent(profileId)}`;
+      if(profileId === String(getMeId())){
+        location.href = `/profile`;
+      } else  {
+        location.href = `/profile/${profileId}`;
+      }
     })
     const bubble = document.createElement('div');
     bubble.className = 'message-bubble';
@@ -143,72 +291,25 @@ function renderMessages() {
     }
     chatBox.appendChild(row);
   }
-
-  chatBox.scrollTop = chatBox.scrollHeight; 
 }
-
-document.addEventListener('DOMContentLoaded',()=>{
-  const attachBtn = document.getElementById('attach-btn');
-  const fileInput = document.getElementById('image-input');
-  if (attachBtn && fileInput){
-    attachBtn.addEventListener('click', (e) => {
-      e.preventDefault();
-      e.stopPropagation();
-      fileInput.click();
-    });
-  } ;
-});
-
-//API
-async function loadConversation(currentPartnerId) {
-  if (!Number.isInteger(currentPartnerId)) return;
-  setCurrentPartner(currentPartnerId);
-
-  const res = await fetch(`/api/v1/dm/${currentPartnerId}`, {
-    headers: { 'Accept': 'application/json' },
-    credentials: 'include',
-  });
-  if(!res.ok){
-    console.error(`GET /api/v1/dm/${currentPartnerId} failed`, res.status);
-    throw new Error(`会話取得エラー: ${res.status}`);
-  }
-  const json = await res.json();
-
-  ME_ICON = json?.participants?.me?.avatar || ME_ICON;
-  PARTNER_ICON = json?.participants?.partner?.avatar || PARTNER_ICON;
-
-  const newList = (json.dms || []).map(m => ({
-    id: m.id,
-    from: String(m.from_id),
-    to:   String(m.to_id),
-    text: m.text,
-    attachments: m.attachments || [],
-    timestamp: new Date(m.created_at),
-    pending: false,
-    isRead: Boolean(m.is_read)
-  }));
-
-  await ensureXsrfReady();
-  await fetch(`/api/v1/dm/${currentPartnerId}/read`,{method:'POST',headers:{'Accept':'application/json', ...getXsrfHeader()},credentials:'include'}).catch(()=>{});
-
-  
-  document.addEventListener('visibilitychange', async()=>{
-    if(document.visibilityState === 'visible' && Number.isInteger(currentPartnerId)){
-      await ensureXsrfReady();
-      fetch(`/api/v1/dm/${currentPartnerId}/read`,{method:'POST',headers:{'Accept':'application/json', ...getXsrfHeader()},credentials:'include'}).catch(()=>{});
-    }
-  });
-  messages = mergeById(messages, newList);
-  window.messages = messages;
-
-  renderMessages();
+  //存在しなくなったメッセージを削除
 }
 
 async function sendMessage() {
   const meId = getMeId();
+  const fd = new FormData();
   const recipientRaw = String(document.getElementById('recipientId')?.value ?? '').trim();
   const input = document.getElementById('message-input');
   const fileInput = document.getElementById('image-input');
+  const circle = Number(document.getElementById('circle_id')?.value ?? '');
+  const hasCircle = Number.isInteger(circle) && circle > 0;
+  if(Number.isInteger(circle)) fd.append('circle_id', circle);
+
+  // グループIDの取得
+  const qs = new URLSearchParams(location.search);
+  const groupParam = qs.get('group_id');
+  const hasGroup = groupParam && /^\d+$/.test(groupParam);
+  if(hasGroup) fd.append('group_id', groupParam);
 
   const text = (input?.value ?? '').trim();
   const files = fileInput?.files ?  Array.from(fileInput.files) : [];
@@ -219,44 +320,59 @@ async function sendMessage() {
   if (!text && !hadFiles) return;
   //自分にメッセージを送れる
   let toId;
-  if (recipientRaw === '' || recipientRaw.toLowerCase() === 'me') {
+  if(recipientRaw === 'circle'){
+    toId = circle;
+  } else if(hasGroup){
+    toId = parseInt(groupParam, 10);
+  } else if (recipientRaw === '' || recipientRaw.toLowerCase() === 'me') {
     toId = meId;
   } else {
     toId = Number.parseInt(recipientRaw, 10);
     if (!Number.isInteger(toId)) { alert('宛先は数字か "me"'); return; }
   }
 
-  // 画面に一時表示＋メッセージにファイルを送付させる
   const tempId = 'tmp_' + Date.now();
-  const tempAtt = [];
-  if(hadFiles){
-    files.forEach(f =>{
-    const url = URL.createObjectURL(f);
-    const type = f.type.startsWith('image/') ? 'image' : (f.type.startsWith('video/') ? 'video' : 'file');
-    if(type === 'image' || type === 'video')tempAtt.push({type, url, pending:true});
-  });
-  }
-  messages.push({id:tempId, from:String(getMeId()), to:String(toId), text, attachments:tempAtt, timestamp:new Date(), pending:true, isRead:false});
-  renderMessages();
-
 
   try {
     await fetch('/sanctum/csrf-cookie', {credentials:'include'});
     const token = decodeURIComponent((document.cookie.match(/XSRF-TOKEN=([^;]+)/)||[])[1] || '');
 
-    await fetch(`/api/v1/dm/${currentPartnerId}/read`, {
-      method:'POST',
-      headers: { 'Accept':'application/json', ...(token ? {'X-XSRF-TOKEN': token} : {}) },
-      credentials:'include'
-    });
+    if(hasCircle){
+        await fetch(`/api/v1/circle/${circle}/dm`, {
+        method:'POST',
+        headers: { 'Accept':'application/json', ...(token ? {'X-XSRF-TOKEN': token} : {}) },
+        credentials:'include'
+      });
+    } else if(hasGroup){
+      await fetch(`/api/v1/group/${groupParam}/dm`, {
+        method:'POST',
+        headers: { 'Accept':'application/json', ...(token ? {'X-XSRF-TOKEN': token} : {}) },
+        credentials:'include'
+      });
+    } else {
+        await fetch(`/api/v1/dm/${currentPartnerId}/read`, {
+          method:'POST',
+          headers: { 'Accept':'application/json', ...(token ? {'X-XSRF-TOKEN': token} : {}) },
+          credentials:'include'
+        });
+    }
 
     const previewContainer = document.getElementById('preview-area');
     if(previewContainer) previewContainer.innerHTML = '';
 
     let res, resd;
+
+    const isCircleMode = Number.isInteger(circle) && circle > 0;
+    const isGroupMode = hasGroup;
+
     if (hadFiles) {
-      const fd = new FormData();
-      fd.append('to',toId);
+      if(isCircleMode){
+        fd.append('circle_id', circle);
+      } else if(isGroupMode){
+        fd.append('group_id', groupParam);
+      } else {
+        fd.append('to', toId);
+      }
       if(text)fd.append('text',text);
       files.forEach(f => fd.append('files[]',f));
       res = await fetch('/api/v1/dm', {
@@ -266,11 +382,16 @@ async function sendMessage() {
         body:fd
       });
     } else {
+      let payload;
+      if(isCircleMode) payload = {circle_id: circle, text};
+      else if(isGroupMode) payload = {group_id: groupParam, text};
+      else payload = {to: toId, text};
+
       res = await fetch('/api/v1/dm',{
         method: 'POST',
         headers:{'Accept':'application/json','Content-Type':'application/json',...(token ? {'X-XSRF-TOKEN':token} : {})},
         credentials:'include',
-        body:JSON.stringify({to:toId,text})
+        body: JSON.stringify(payload),
       });
     }
     try {resd = await res.json();} catch(_) {}
@@ -289,8 +410,6 @@ async function sendMessage() {
   } catch (err) {
     alert(err.message || '送信に失敗しました');
   }
-
-  
 }
 
 //起動
@@ -299,11 +418,14 @@ document.addEventListener('DOMContentLoaded', async () => {
 
   await fetch('/sanctum/csrf-cookie', { credentials: 'include' });
 
-  const meId = getMeId();
-  const qs = new URLSearchParams(location.search);
-  const toParam = (qs.get('to') || '').trim();
-  const fileInput = document.getElementById('image-input');
+  const meId             = getMeId();
+  const qs               = new URLSearchParams(location.search);
+  const toParam          = (qs.get('to') || '').trim();
+  const fileInput        = document.getElementById('image-input');
   const previewContainer = document.getElementById('preview-area');
+  const circle           = Number(document.getElementById('circle_id')?.value ?? '');
+  const group            = (qs.get('group_id') || '').trim();
+  const isCircleMode     = Number.isInteger(circle) && circle > 0;
 
   if(fileInput && previewContainer){
     fileInput.addEventListener('change', () => {
@@ -326,7 +448,13 @@ document.addEventListener('DOMContentLoaded', async () => {
   }
 
   let currentPartnerId;
-  if (toParam === '' || toParam.toLowerCase() === 'me') {
+  // group_xx 形式に対応
+  const isGroupMode = (group !== '');
+  let currentGroupId = null;
+
+  if (isGroupMode) {
+      currentGroupId = parseInt(group,10);
+  } else if (toParam === '' || toParam.toLowerCase() === 'me') {
     currentPartnerId = meId;
   } else if (/^\d+$/.test(toParam)) {
     currentPartnerId = parseInt(toParam, 10);
@@ -334,9 +462,22 @@ document.addEventListener('DOMContentLoaded', async () => {
     currentPartnerId = meId;
   }
 
-  setCurrentPartner(currentPartnerId);
-  await loadConversation(currentPartnerId);
+  // setCurrentPartner は 1対1 の場合のみ設定（フォーム用）
+  if (currentPartnerId) {
+    setCurrentPartner(currentPartnerId);
+  }
 
+  if (isCircleMode) {
+    await loadCircleConversation(circle);
+    setInterval(() => loadCircleConversation(circle), 1000);
+  } else if (isGroupMode && Number.isInteger(currentGroupId)) {
+    // グループチャット読み込み
+    await loadGroupConversation(currentGroupId);
+    setInterval(() => loadGroupConversation(currentGroupId), 1000);
+  } else {
+    await loadConversation(currentPartnerId);
+    setInterval(() => loadConversation(currentPartnerId), 1000);
+  }
   // タッチ端末かどうか
   const isTouch = window.matchMedia('(pointer: coarse)').matches;
 
@@ -363,9 +504,10 @@ document.addEventListener('DOMContentLoaded', async () => {
       }
 
       if (!isTouch && event.key === 'Enter') {
+        // デフォルトのsubmit動作等を防ぐ
+        event.preventDefault();
         const now = Date.now();
         if (now - lastEnterTime < 500) {
-          event.preventDefault();
           sendMessage();
           lastEnterTime = 0;
         } else {
@@ -374,4 +516,42 @@ document.addEventListener('DOMContentLoaded', async () => {
       }
     });
   }
+  const menuBtn = document.getElementById("menu-btn");
+  const dropdown = document.getElementById("menu-dropdown");
+
+    menuBtn.addEventListener("click", () => {
+        dropdown.classList.toggle("hidden");
+    });
+
+    // 画面外クリックで閉じる
+    document.addEventListener("click", (e) => {
+        if (!menuBtn.contains(e.target) && !dropdown.contains(e.target)) {
+            dropdown.classList.add("hidden");
+        }
+    });
+
+    // ユーザー追加
+    // document.getElementById("add-user-btn").addEventListener("click", () => {
+    //     alert("ユーザー追加処理を書く");
+    //     例: モーダル表示 or 別画面遷移
+    // });
+
+    // 退会
+    document.getElementById("leave-chat-btn").addEventListener("click", () => {
+        if (!confirm("このチャットから退会しますか？")) return;
+
+        fetch("/dm/leave", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+                "X-CSRF-TOKEN": document.querySelector('meta[name="csrf-token"]').content
+            },
+            body: JSON.stringify({
+                partner_id: document.getElementById("recipientId").value
+            })
+        }).then(() => {
+            location.href = "/dmlist";
+        });
+    });
+
 });

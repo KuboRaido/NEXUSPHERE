@@ -9,6 +9,7 @@
   <meta name="default-avatar" content="{{ asset('images/default-avatar.png') }}">
   <script>window.DEFAULT_AVATAR_URL = "{{asset('images/default-avatar.png')}}"</script>
   <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
 </head>
 <body>
    <header class="header">
@@ -43,13 +44,41 @@
       </div>
 
       <div class="field">
-        <label for="subject">学科</label>
-        <input id="subject" type="text" name="subject" value="{{ old('subject', $user->subject) }}">
+        <label for="job" class="label-text">区分</label>
+        <select id="job" name="job" class="input-filed" required>
+          <option value="" disabled selected>区分を選択してください</option>
+          <option value="学生">学生</option>
+          <option value="講師">講師</option>
+          <option value="教員">教員</option>
+        </select>
       </div>
 
       <div class="field">
-        <label for="major">専攻</label>
-        <input id="major" type="text" name="major" value="{{ old('major', $user->major) }}">
+        <label for="grade">学年</label>
+        <select id="grade" name="grade" class="input-field" disabled>
+          <option value="" disabled selected>学年を選してください</option>
+          <option value="1">1</option>
+          <option value="2">2</option>
+          <option value="3">3</option>
+          <option value="4">4</option>
+        </select>
+      </div>
+
+      <div class="field">
+        <label for="subject" class="label-text">学科</label>
+        <select id="subject" name="subject" class="input-field" disabled>
+            <option value="" disabled selected>学科を選択してください</option>
+            <option value="AI&テクノロジー科">AI&テクノロジー科</option>
+            <option value="デジタルテクノロジー科">デジタルテクノロジー科</option>
+            <option value="クリエイティブデザイン科">クリエイティブデザイン科</option>
+        </select>
+      </div>
+
+      <div class="field">
+            <label for="major" class="label-text">専攻</label>
+            <select id="major" name="major" class="input-field" disabled>
+                <option value="" disabled selected>先に学科を選択してください</option>
+            </select>
       </div>
 
         <div class="actions">
@@ -58,5 +87,6 @@
         </div>
       </form>
     </div>
+    <script src="{{ asset('js/profile_edit.js') }}"></script>
 </body>
 </html>
