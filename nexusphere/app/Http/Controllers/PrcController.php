@@ -50,7 +50,7 @@ class PrcController extends Controller
         // バリデーション
         $request->validate([
             'sentence' => ['required','string','max:1000',new NgWord],
-            'images.*' => ['image','max:1024'], // 1枚最大5MB
+            'images.*' => ['image','max:5120'], // 1枚最大5MB
             'videos.*' => ['mimetypes:video/mp4,video/quicktime','max:51200'],
         ]);
 
