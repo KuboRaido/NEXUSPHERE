@@ -39,6 +39,11 @@
                         class="user-icon"
                         alt="icon"></img>
                     <span class="username">{{ $post->user->name }}</span>
+                @if ($post->created_at->gt(now()->subWeek()))
+                    <time class="post_time">{{ $post->created_at->diffForHumans() }}</time>
+                @else
+                    <time class="post_time">{{ $post->created_at->format('Y年m月d日') }}</time>
+                @endif
                 </a>
             </div>
 
