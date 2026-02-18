@@ -47,7 +47,6 @@ html, body {
     display: flex;
 }
 
-
 /* ==============================
     3. 検索エリア
 ============================== */
@@ -145,12 +144,22 @@ input[type="file"] {
     padding: 15px;
     border-radius: 1.5rem;
     box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    position: relative;
 }
 
 .post-header {
     display: flex;
     align-items: center;
     margin-bottom: 10px;
+}
+
+.post_time{
+    position: absolute; /* ← 絶対配置 */
+    top: 15px;          /* 上端からの距離（.postのpaddingに合わせる） */
+    right: 15px;        /* 右端からの距離 */
+    font-size: 0.85rem; /* 少し小さめに */
+    color: #353535;        /* 目立ちすぎない色に */
+    white-space: nowrap; /* 日付が変に改行されないように */
 }
 
 .user-icon {
@@ -418,6 +427,15 @@ input[type="file"] {
         border: none;
         cursor: pointer;
         margin-left: 1rem;
+    }
+    
+    .post_time{
+        position: absolute; /* ← 絶対配置 */
+        top: 15px;          /* 上端からの距離（.postのpaddingに合わせる） */
+        right: 15px;        /* 右端からの距離 */
+        font-size: 0.85rem; /* 少し小さめに */
+        color: #353535;        /* 目立ちすぎない色に */
+        white-space: nowrap; /* 日付が変に改行されないように */
     }
 }
 
