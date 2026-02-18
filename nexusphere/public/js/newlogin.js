@@ -96,4 +96,18 @@ document.addEventListener("DOMContentLoaded", () => {
             majorSelect.disabled = true;
         }
     });
+
+    // 対象のselect要素
+  const selects = ['mail', 'password', 'password_confirmation', 'name'];
+  selects.forEach(id => {
+    const el = document.getElementById(id);
+    if (!el) return;
+    // 値を復元
+    const saved = localStorage.getItem('form_' + id);
+    if (saved) el.value = saved;
+    // 変更時に保存
+    el.addEventListener('change', function() {
+        localStorage.setItem('form_' + id, this.value);
+    });
+    });
 });

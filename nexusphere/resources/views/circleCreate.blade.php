@@ -10,7 +10,6 @@
 <body>
     <header class="site-header">
         <div class="header-inner">
-            <a href="{{url('circle')}}" class="back-button">←</a>
             <h1 id="site-title">Nexusphere</h1>
         </div>
     </header>
@@ -54,8 +53,10 @@
                     <label for="description">説明（必須）</label>
                     <textarea id="description" name="sentence" rows="5" maxlength="500" required></textarea>
                 </div>
-
-                <button type="submit" class="submit-btn">作成する</button>
+                <div class="button-row">
+                    <button type="submit" class="submit-btn">作成</button>
+                    <a href="{{url('circle')}}" class="back-button">戻る</a>
+                </div>       
             </form>
         </div>
     <script src="{{ asset('js/circleCreate.js') }}"></script>

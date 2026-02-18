@@ -1,6 +1,7 @@
 <?php
 namespace App\Http\Controllers;
 
+use App\Http\Requests\UpdateProfileRequest;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use App\Models\Prc;
@@ -18,6 +19,7 @@ class ProfileController extends Controller
 
         $posts = Prc::where('user_id', $profileUser->user_id)
                         ->whereNull('circle_id')
+                        ->whereNull('parent_id')
                         ->orderBy('created_at', 'desc')
                         ->get();
                 
@@ -38,34 +40,20 @@ class ProfileController extends Controller
         return view('profile_edit', compact('user'));
     }
 
-    public function update(Request $request)
+    public function update(UpdateProfileRequest $request)
     {
+        $request->validated();
+        
         $id = Auth::id();
         abort_if(!$id, 401);
 
         $user = User::where('user_id', $id)->firstOrFail();
 
-        $request->validate([
-            'name'       => 'required|string|max:255',
-            'subject'    => 'nullable|string|max:255',
-            'job'        => 'required|string|max:2',
-            'grade'      => 'nullable|string|max:2',
-            'major'      => 'nullable|string|max:255',
-            'icon'       => 'nullable|image|max:2048',
-        ],[],[
-            'name'       => '名前',
-            'subject'    => '学部',
-            'job'        => '区分',
-            'grade'      => '学年',
-            'major'      => '学科',
-            'icon'       => 'アイコン',
-        ]);
-
-    $user->name     = $request->input('name');
-    $user->subject  = $request->input('subject');
-    $user->job      = $request->input('job');
-    $user->grade    = $request->input('grade');
-    $user->major    = $request->input('major');
+        $user->name     = $request->input('name');
+        $user->subject  = $request->input('subject');
+        $user->job      = $request->input('job');
+        $user->grade    = $request->input('grade');
+        $user->major    = $request->input('major');
     // ファイル入力は input() では取得しない。アップロードがあった場合のみ上書きする。
 
         if ($request->hasFile('icon')) {

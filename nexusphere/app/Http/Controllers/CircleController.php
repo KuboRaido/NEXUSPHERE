@@ -7,6 +7,7 @@ use App\Models\Prc;
 use App\Models\Circle_requests;
 use App\Rules\NgWord;
 use Illuminate\Http\Request;
+use App\Http\Requests\StoreCircleRequest;    
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Database\QueryException;
@@ -58,17 +59,9 @@ class CircleController extends Controller
     }
 
     //サークル作成処理
-    public function circleCreate(Request $request)
+    public function circleCreate(StoreCircleRequest $request)
     {
-        $data = $request->validate([
-            'name'        => ['required','string','max:255','unique:circles,circle_name',new NgWord],
-            'sentence'    => ['required','string','max:255',new NgWord],
-            'image'       => ['required','image','max:5120'],
-            'category'    => ['nullable','string', new NgWord],
-        ],[
-            'image.required' => '画像を設定してください',
-            'name.unique'    => 'そのサークル名はすでに使用されております',
-        ]);
+        $data = $request->validated();
 
         $iconPath = null;
         if ($request->hasFile('image')) {
@@ -110,7 +103,6 @@ class CircleController extends Controller
                             'circle_id'         =>  $request->circle_id,
                             'user_id'           =>  $request->user_id,
                             'user_name'         =>  $request->user?->name,
-                            'user_icon'         =>  $request->user?->icon ? asset('storage/icons/' . $request->use->icon) : null,
                             'status'            =>  $request->status,
                         ];
                     });
@@ -144,7 +136,9 @@ class CircleController extends Controller
 
     public function approve(Circle $circle, Circle_requests $circle_request)
     {
-        $this->authorize('manage', $circle);
+        if($circle->owner_id !== Auth::id()){
+            abort(403);
+        }
         $members = $circle->members()->orderBy('created_at')->get();
         DB::transaction(function () use ($circle_request) {
             $circle_request->update(['status' => 'approved']);
@@ -197,6 +191,9 @@ class CircleController extends Controller
     public function update(Circle $circle, Request $request)
     {
         abort_if(!Auth::id(), 401);
+        if($circle->owner_id !== Auth::id()){
+            abort(403);
+        }
 
         $request->validate([
             'circle_name' => ['nullable','string','max:255',new NgWord],

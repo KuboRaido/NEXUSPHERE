@@ -11,7 +11,11 @@
 </head>
 <body>
     <div class="wrapper">
-    <h1 class="title">Nexusphere</h1>
+        <header class="site-header">
+            <div class="header-inner">
+                <h1 id="site-title">Nexusphere</h1>
+            </div>
+        </header>
     <div class="form-container">
         <h1 class="header-text">新規登録</h1>
         @if ($errors->any())
@@ -41,7 +45,7 @@
 
             <!-- パスワード -->
             <div>
-                <label for="password" class="label-text">パスワード</label>
+                <label for="password" class="label-text">パスワード 8桁以上</label>
                 <input type="password" id="password" name="password" placeholder="パスワードを入力" class="input-field" required>
                 <input type="password" id="password_confirmation" name="password_confirmation" placeholder="パスワードを再入力" class="input-field" required>
             </div>

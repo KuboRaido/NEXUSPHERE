@@ -88,11 +88,11 @@ async function loadConversation(currentPartnerId) {
   }
   const json = await res.json();
 
-  if (json?.participants?.me?.avatar) {
-    ME_ICON = json.participants.me.avatar;
+  if (json?.participants?.me?.icon) {
+    ME_ICON = json.participants.me.icon;
   }
-  if (json?.participants?.partner?.avatar) {
-      PARTNER_ICON = json.participants.partner.avatar;
+  if (json?.participants?.partner?.icon) {
+      PARTNER_ICON = json.participants.partner.icon;
   }
 
   const newList = (json.dms || []).map(m => ({
@@ -100,6 +100,7 @@ async function loadConversation(currentPartnerId) {
     from: String(m.from_id),
     to:   String(m.to_id),
     text: m.text,
+    icon: (m.from_id ? ME_ICON : PARTNER_ICON),
     attachments: m.attachments || [],
     timestamp: new Date(m.created_at),
     pending: false,

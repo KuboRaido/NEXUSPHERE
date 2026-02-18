@@ -1,10 +1,12 @@
 /* ==============================
-   1. ベース設定
+    1. ベース設定
 ============================== */
 * {
     box-sizing: border-box;
     margin: 0;
     padding: 0;
+    white-space: nowrap;
+
 }
 
 html, body {
@@ -135,7 +137,7 @@ input[type="file"] {
 
 
 /* ==============================
-   6. 投稿カード
+    6. 投稿カード
 ============================== */
 .post {
     background: white;
@@ -173,11 +175,14 @@ input[type="file"] {
     line-height: 1.6;
     margin-bottom: 10px;
     margin-left: 50px;
+    overflow-wrap: break-word; /* 長い単語でも折り返す */
+    word-wrap: break-word;     /* 旧ブラウザ用 */
+    white-space: pre-wrap;     /* 改行を維持しつつ自動折り返し */
 }
 
 
 /* ==============================
-   7. 投稿画像
+    7. 投稿画像
 ============================== */
 .post-images {
     display: flex;
@@ -200,7 +205,7 @@ input[type="file"] {
 
 
 /* ==============================
-   8. 投稿フッター（いいね＋コメント入力）
+    8. 投稿フッター（いいね＋コメント入力）
 ============================== */
 .post-footer {
     display: flex;
@@ -260,7 +265,7 @@ input[type="file"] {
 
 
 /* ==============================
-   9. コメント表示
+    9. コメント表示
 ============================== */
 .comment-list {
     margin-top: 2rem;
@@ -270,6 +275,9 @@ input[type="file"] {
     display: block;
     margin-left: 3.3rem;
     margin-bottom: 1rem;
+    overflow-wrap: break-word; /* 長い単語でも折り返す */
+    word-wrap: break-word;     /* 旧ブラウザ用 */
+    white-space: pre-wrap;     /* 改行を維持しつつ自動折り返し */
 }
 
 /* 3つ目以降のコメントを非表示 */
@@ -296,7 +304,7 @@ input[type="file"] {
 
 
 /* ==============================
-   10. モーダル
+    10. モーダル
 ============================== */
 .modal {
     display: none;
@@ -325,7 +333,7 @@ input[type="file"] {
 
 
 /* ==============================
-   11. フッターナビ（固定）
+    11. フッターナビ（固定）
 ============================== */
 .footer-nav {
     position: fixed;
@@ -342,9 +350,11 @@ input[type="file"] {
 }
 
 .footer-nav a {
-    color: #666;
-    font-size: 22px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
     text-decoration: none;
+    color: #666;
     transition: 0.2s;
 }
 
@@ -355,9 +365,14 @@ input[type="file"] {
 }
 
 .footer-nav i {
-    pointer-events: none;
+    font-size: 20px;
 }
 
+.footer-nav span {
+    font-size: 11px;
+    margin-top: 4px;
+
+}
 
 /* ==============================
     12. レスポンシブ
@@ -365,11 +380,44 @@ input[type="file"] {
 @media screen and (max-width: 768px) {
     #site-title {
         font-size: 1.6rem;
+        /* font-family: ; */
     }
+    
 
     .container {
         padding: 0.5rem;
         padding-bottom: 80px;
+    }
+    .search-input{
+        flex: 1;
+        padding: 12px;
+        width: 300px;
+        border-radius: 8px;
+        border: 1px solid #ccc;
+    }
+    .comment-form input {
+    flex: 1;
+    padding: 12px;
+    width: 20px;
+    font-size: 16px;
+    border-radius: 6px;
+    border: 1px solid #ddd;
+    }
+
+    .like-button {
+        background: none;
+        border: none;
+        cursor: pointer;
+        font-size: 20px;
+        color: #aaa;
+        transition: color 0.2s ease;
+    }
+
+    .showMoreBtn{
+        background-color: #fff;
+        border: none;
+        cursor: pointer;
+        margin-left: 1rem;
     }
 }
 

@@ -35,7 +35,7 @@
             {{-- 投稿者名 --}}
             <div class="post-header">
                 <a href="{{ route('profile.other', $post->user->user_id) }}" class="user-link">
-                    <img src="{{ asset('storage/icons/' . $post->user->icon )}}"
+                    <img src="{{ $post->user->avatar_url }}"
                         class="user-icon"
                         alt="icon"></img>
                     <span class="username">{{ $post->user->name }}</span>
@@ -107,7 +107,7 @@
                         @foreach ($post->comments as $comment)
                             <div class="comment">
                                 <a href="{{ route('profile.other', $comment->user->user_id) }}" class="user-link">
-                                    <img src="{{ asset('storage/icons/' . $comment->user->icon) }}" class="user-icon small">
+                                    <img src="{{ $comment->user->avatar_url }}" class="user-icon small">
                                     <strong>{{ $comment->user->name }}</strong>
                                 </a>
                                 <span class="comment-text">{{ $comment->sentence }}</span>
@@ -123,11 +123,11 @@
 </main>
 
     <div class="footer-nav">
-        <a href="/home" class="tab {{ request()->is('home') ? 'active' : '' }}"><i class="fa-solid fa-house"></i></a>
-        <a href="/post" class="tab {{ request()->is('post') ? 'active' : '' }}"><i class="fas fa-paper-plane"></i></a>
-        <a href="/dmlist" class="tab {{ request()->is('dmlist') ? 'active' : '' }}"><i class="fa-solid fa-comment"></i></a>
-        <a href="/profile" class="tab {{ request()->is('profile') ? 'active' : '' }}"><i class="fa-solid fa-user"></i></a>
-        <a href="/circle" class="tab {{ request()->is('circle') ? 'active' : '' }}"><i class="fa-solid fa-cube"></i></a>
+        <a href="/home" class="tab {{ request()->is('home') ? 'active' : '' }}"><i class="fa-solid fa-house"></i><span>ホーム</span></a>
+        <a href="/post" class="tab {{ request()->is('post') ? 'active' : '' }}"><i class="fas fa-paper-plane"></i><span>投稿</span></a>
+        <a href="/dmlist" class="tab {{ request()->is('dmlist') ? 'active' : '' }}"><i class="fa-solid fa-comment"></i><span>DM</span></a>
+        <a href="/profile" class="tab {{ request()->is('profile') ? 'active' : '' }}"><i class="fa-solid fa-user"></i><span>プロフィール</span></a>
+        <a href="/circle" class="tab {{ request()->is('circle') ? 'active' : '' }}"><i class="fa-solid fa-cube"></i><span>サークル</span></a>
     </div>
 
     <script src="{{ asset('js/home.js') }}"></script>
