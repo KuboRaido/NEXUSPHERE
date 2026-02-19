@@ -30,6 +30,9 @@ return Application::configure(basePath: dirname(__DIR__))
         // Inertia使うときだけ：
         // $middleware->web(append: [ HandleInertiaRequests::class ]);
 
+        $middleware->web(append: [
+            \App\Http\Middleware\AccessLogger::class,
+        ]);
         // SPA + Sanctum（Cookie認証）を使うなら推奨
         $middleware->appendToGroup('api', EnsureFrontendRequestsAreStateful::class);
 
