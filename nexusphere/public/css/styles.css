@@ -47,6 +47,10 @@ html, body {
     display: flex;
 }
 
+.comment .user-link {
+    align-items: flex-start;
+}
+
 /* ==============================
     3. 検索エリア
 ============================== */
@@ -299,10 +303,32 @@ input[type="file"] {
     max-height: 300px;
     overflow-y: auto; /*スクロール*/
 }
+
 /* expandedクラスが付いたら全部表示 */
 .comment-list.expanded .comment:nth-child(n+4){
     display: block;
 }
+
+.comment_head{
+    display: flex;
+    align-items:flex-start;
+    justify-content:space-between;
+    gap:8pxz;
+}
+
+.user_name{
+    display: inline-block;
+    min-width: 0;
+    line-height: 1.2;
+    margin-top: 1px;
+}
+
+.comment_time{
+        margin-left:auto;
+        font-size: 0.85rem; /* 少し小さめに */
+        color: #353535;        /* 目立ちすぎない色に */
+        white-space: nowrap; /* 日付が変に改行されないように */
+    }
 
 .showMoreBtn{
     background-color: #fff;
@@ -380,7 +406,18 @@ input[type="file"] {
 .footer-nav span {
     font-size: 11px;
     margin-top: 4px;
+}
 
+/* 投稿作成画面 */
+.createPost{
+    width: 100%;
+    padding: 1.5rem;
+    margin-bottom: 1.5rem;
+    border-radius: 1.5rem;
+    flex-direction: column;
+    display: flex;
+    gap: 1rem;
+    background: #fff;
 }
 
 /* ==============================
@@ -437,16 +474,13 @@ input[type="file"] {
         color: #353535;        /* 目立ちすぎない色に */
         white-space: nowrap; /* 日付が変に改行されないように */
     }
-}
 
-/* 投稿作成画面 */
-.createPost{
-    width: 100%;
-    padding: 1.5rem;
-    margin-bottom: 1.5rem;
-    border-radius: 1.5rem;
-    flex-direction: column;
-    display: flex;
-    gap: 1rem;
-    background: #fff;
+    .comment_time{
+        position: absolute; /* ← 絶対配置 */
+        top: 15px;          /* 上端からの距離（.postのpaddingに合わせる） */
+        right: 15px;        /* 右端からの距離 */
+        font-size: 0.85rem; /* 少し小さめに */
+        color: #353535;        /* 目立ちすぎない色に */
+        white-space: nowrap; /* 日付が変に改行されないように */
+    }
 }
