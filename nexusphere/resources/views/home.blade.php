@@ -2,7 +2,6 @@
 <html lang="ja">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>ホーム</title>
     <meta name="csrf-token" content="{{ csrf_token() }}">
@@ -111,10 +110,17 @@
                     <div class="comment-list">
                         @foreach ($post->comments as $comment)
                             <div class="comment">
-                                <a href="{{ route('profile.other', $comment->user->user_id) }}" class="user-link">
-                                    <img src="{{ $comment->user->avatar_url }}" class="user-icon small">
-                                    <strong>{{ $comment->user->name }}</strong>
-                                </a>
+                                <div class="comment_head">
+                                    <a href="{{ route('profile.other', $comment->user->user_id) }}" class="user-link">
+                                        <img src="{{ $comment->user->avatar_url }}" class="user-icon small">
+                                        <strong class="user_name">{{ $comment->user->name }}</strong>
+                                    </a>
+                                    @if ($comment->created_at->gt(now()->subWeek()))
+                                            <time class="comment_time">{{ $comment->created_at->diffForHumans() }}</time>
+                                    @else
+                                            <time class="comment_time">{{ $comment->created_at->format('Y年m月d日') }}</time>
+                                    @endif
+                                </div>
                                 <span class="comment-text">{{ $comment->sentence }}</span>
                             </div>
                         @endforeach
