@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Circle;
 use App\Models\Prc;
+use App\Models\Circle_user;
 use App\Models\Circle_requests;
 use App\Rules\NgWord;
 use Illuminate\Http\Request;
@@ -88,6 +89,15 @@ class CircleController extends Controller
         });
 
         return redirect()->route('circle')->with('status', 'サークルを作成しました。');
+    }
+
+    public function circleMember(Circle $circle){
+        $members = $circle->members()
+                    ->select('users.user_id', 'users.name', 'users.grade', 'users.job')
+                    ->orderByDesc('circle_users.created_at')
+                    ->get();
+
+        return view('circlemer',['members' => $members]);
     }
 
     public function circleRequest(Circle $circle)
