@@ -30,7 +30,7 @@
                             <td>{{ $member->grade }}年</td>
                             <td>{{ $member->job }}</td>
                             <td>
-                                <a href="{{ route('profile', $member->user_id) }}" class="btn btn-sm btn-outline-primary">
+                                <a href="{{ route('profile.other', $member->user_id) }}" class="btn btn-sm btn-outline-primary">
                                     詳細を見る
                                 </a>
                             </td>
