@@ -42,6 +42,7 @@ Route::middleware('auth')->group(function () {
     Route::get('circle/{circle}/post',[CircleController::class,'circlePostFront'])->name('circle.post');
     Route::get('circle/{circle}/edit',[CircleController::class,'circleEdit'])->name('circle.edit');
     Route::get('circle/{circle}/dm',[CircleController::class,'circleDmFront'])->name('circle.dm');
+    Route::get('circle/{circle}/member',[CircleController::class,'circleMember'])->name('circle.member');
     Route::get('circle/{circle}/cancel',[CircleController::class,'circleCancel'])->name('circle.cancel');
     Route::get('circle/{circle}/request',[CircleController::class,'circleRequest'])->name('circle.request');
     Route::post('circle/{circle}',[CircleController::class,'join'])->name('circle.join');
