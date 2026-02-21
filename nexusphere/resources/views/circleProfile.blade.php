@@ -89,7 +89,7 @@
                   </div>
 
                   {{-- 投稿内容 --}}
-                  <div class="post-content">{{ $post->sentence }}</div>
+                  <div class="post-content">{!! \App\Support\TextHelper::linkify($post->sentence ?? '') !!}</div>
 
                   {{-- メディア (画像 or 動画) --}}
                   @if ($post->images && $post->images->count() > 0)
@@ -152,7 +152,7 @@
                                             <time class="comment_time">{{ $comment->created_at->format('Y年m月d日') }}</time>
                                     @endif
                                 </div>
-                                <span class="comment-text">{{ $comment->sentence }}</span>
+                                <span class="comment-text">{!! \App\Support\TextHelper::linkify($comment->sentence ?? '') !!}</span>
                             </div>
                       @endforeach
                   </div>
