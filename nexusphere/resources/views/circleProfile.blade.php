@@ -5,6 +5,7 @@
   <meta name="viewport" content="width=device-width,initial-scale=1" />
   <title>プロフィール</title>
   <link rel="stylesheet" href="{{ asset('css/circlepf.css') }}">
+  <link rel="stylesheet" href="{{ asset('css/styles.css') }}">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   <script> window.USER_ROLE = "{{ $role }}";</script>
@@ -48,6 +49,8 @@
             <!-- オーナー専用 -->
             <a class="btn role-owner" href="{{ route('circle.edit',['circle' => $circle->circle_id]) }}">編集</a>
             <a class="btn role-owner" href="{{ route('circle.request',['circle' => $circle->circle_id]) }}">申請</a>
+            <!--メンバー-->
+            <a class="btn role-owner role-member" href="{{ route('circle.member',['circle' => $circle->circle_id]) }}">メンバー</a>
             <a class="btn role-owner role-member" href="{{ route('circle.dm',['circle' => $circle->circle_id]) }}">DM</a>
             <a class="btn role-owner role-member" href="{{ route('circle.post',['circle' => $circle->circle_id]) }}">投稿</a>
             <a class="btn role-owner role-member" href="{{ route('circle.cancel',['circle' => $circle->circle_id]) }}">退会</a>
@@ -68,22 +71,95 @@
         <h4>最近の投稿</h4>
 
           @forelse($posts as $post)
-            <article class="post">
-              <div class="title">{{ $post->sentence ?? '(タイトルなし)' }}</div>
-              
-                {{-- 画像・動画がある場合ループして表示 --}}
-                @if($post->images->isNotEmpty())
-                    <div class="post-media" style="margin: 10px 0; display: flex; flex-wrap: wrap; gap: 10px;">
-                        @foreach($post->images as $media)
-                            @if($media->image)
-                                <img src="{{ asset('storage/post/' . $media->image) }}" alt="画像" style="max-width: 200px; border-radius: 4px; object-fit: cover;">
-                            @elseif($media->video)
-                                <video src="{{ asset('storage/post/' . $media->video) }}" controls style="max-width: 200px; border-radius: 4px;"></video>
-                            @endif
-                        @endforeach
-                    </div>
-                @endif
-              </article>
+            {{-- ホーム画面と同じレイアウトで表示 --}}
+              <div class="post" data-post-id="{{ $post->prc_id }}">
+                  {{-- 投稿者名 --}}
+                  <div class="post-header">
+                      <a href="{{ route('profile.other', $post->user->user_id) }}" class="user-link">
+                          <img src="{{ $post->user->avatar_url }}"
+                              class="user-icon"
+                              alt="icon">
+                          <span class="username">{{ $post->user->name }}</span>
+                        @if ($post->created_at->gt(now()->subWeek()))
+                          <time class="post_time">{{ $post->created_at->diffForHumans() }}</time>
+                        @else
+                          <time class="post_time">{{ $post->created_at->format('Y年m月d日') }}</time>
+                        @endif
+                      </a>
+                  </div>
+
+                  {{-- 投稿内容 --}}
+                  <div class="post-content">{{ $post->sentence }}</div>
+
+                  {{-- メディア (画像 or 動画) --}}
+                  @if ($post->images && $post->images->count() > 0)
+                      <div class="post-images">
+                          @foreach ($post->images as $media)
+                              @php
+                                  $filePath = $media->image ?? $media->video;
+                                  $exetension = strtolower(pathinfo($filePath, PATHINFO_EXTENSION));
+                              @endphp
+
+                              {{-- 画像 --}}
+                              @if (in_array($exetension, ['jpg', 'jpeg', 'png', 'webp', 'gif']))
+                                  <img src="{{ asset('storage/post/' . $filePath) }}"
+                                      alt="投稿画像"
+                                      class="post-image"
+                                      onclick="openModal(this.src)">
+                              @endif
+
+                              {{-- 動画 --}}
+                              @if (in_array($exetension, ['mp4', 'mov', 'webm']))
+                                  <video controls
+                                      class="post-video"
+                                      style="max-width: 100%; border-radius: 8px; margin-top: 10px;">
+                                      <source src="{{ asset('storage/post/' . $filePath) }}" type="video/{{ $exetension }}">
+                                  </video>
+                              @endif
+                          @endforeach
+                      </div>
+                  @endif
+
+                  <div class="post-footer">
+                      {{-- いいね --}}
+                      <form method="POST" action="/posts/{{ $post->prc_id }}/like">
+                          @csrf
+                          <button type="submit" class="like-button">
+                              ❤️ <span class="like-count">{{ $post->nices->count() }}</span>
+                          </button>
+                      </form>
+
+                      {{-- コメント入力 --}}
+                      <form method="POST" action="/posts/{{ $post->prc_id }}/comment" class="comment-form">
+                          @csrf
+                          <input type="text" name="comment" placeholder="コメントを追加" required>
+                          <button type="submit">送信</button>
+                      </form>
+                  </div>
+
+                  {{-- コメント一覧 --}}
+                  <div class="comment-list">
+                      @foreach ($post->comments as $comment)
+                          <div class="comment">
+                                <div class="comment_head">
+                                    <a href="{{ route('profile.other', $comment->user->user_id) }}" class="user-link">
+                                        <img src="{{ $comment->user->avatar_url }}" class="user-icon small">
+                                        <strong class="user_name">{{ $comment->user->name }}</strong>
+                                    </a>
+                                    @if ($comment->created_at->gt(now()->subWeek()))
+                                            <time class="comment_time">{{ $comment->created_at->diffForHumans() }}</time>
+                                    @else
+                                            <time class="comment_time">{{ $comment->created_at->format('Y年m月d日') }}</time>
+                                    @endif
+                                </div>
+                                <span class="comment-text">{{ $comment->sentence }}</span>
+                            </div>
+                      @endforeach
+                  </div>
+                  @if($post->comments->count() > 3)
+                      <button class="showMoreBtn">全てのコメントを見る</button>
+                  @endif
+              </div>
             @empty
               <div class="no-posts">投稿はありません</div>
           @endforelse
