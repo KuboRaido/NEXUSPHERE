@@ -170,7 +170,7 @@ class PrcController extends Controller
     }
 
     // いいね(POST /posts/{prc_id}/like)
-    public function like($postId)
+    public function like(Request $request, $postId)
     {
         $userId = Auth::id();
         abort_if(!$userId, 401, 'Unauthenticated');
@@ -186,15 +186,27 @@ class PrcController extends Controller
         if ($existing) {
             // ❌ すでに存在 → 削除（いいね解除）
             $existing->delete();
+            $liked = false;
         } else {
             // ❤️ 存在しない → 新規作成
             Nice::firstOrCreate([
                 'prc_id' => $post->prc_id,
                 'user_id' => $userId,
             ]);
+
+            $liked = true;
         }
 
-        return redirect()->back();
+        $likeCount = Nice::where('prc_id', $post->prc_id)->count();
+        if($request->expectsJson()){
+            return response()->json([
+                'liked' => $liked,
+                'like_count' => $likeCount,
+            ]);
+        }
+
+
+        return back();
     }
 
 
