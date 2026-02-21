@@ -194,6 +194,8 @@ input[type="file"] {
 }
 
 
+
+
 /* ==============================
     7. 投稿画像
 ============================== */
@@ -244,6 +246,9 @@ input[type="file"] {
 .like-button.animate {
     animation: like-pop 0.3s ease;
 }
+
+.like-button .like-icon { color: transparent; -webkit-text-stroke: 1.6px #f29ab1; }
+.like-button.liked .like-icon { color: #e74c3c; -webkit-text-stroke: 0; }
 
 @keyframes like-pop {
     0% { transform: scale(1); }

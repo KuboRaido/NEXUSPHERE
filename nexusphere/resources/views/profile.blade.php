@@ -135,10 +135,12 @@
 
                   <div class="post-footer">
                       {{-- いいね --}}
-                      <form method="POST" action="/posts/{{ $post->prc_id }}/like">
+                      @php $liked = $post->nices->contains('user_id', auth()->id()); @endphp
+                      <form method="POST" action="/posts/{{ $post->prc_id }}/like" class="js-like-form">
                           @csrf
-                          <button type="submit" class="like-button">
-                              ❤️ <span class="like-count">{{ $post->nices->count() }}</span>
+                          <button type="submit" class="like-button {{ $liked ? 'liked' : '' }}">
+                              <i class="{{ $liked ? 'fa-solid' : 'fa-regular' }} fa-heart like-icon"></i>
+                              <span class="like-count">{{ $post->nices->count() }}</span>
                           </button>
                       </form>
 
