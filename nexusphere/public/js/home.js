@@ -1,20 +1,43 @@
 // いいね非同期
 document.addEventListener('DOMContentLoaded', () => {
-    const csrfToken = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
+    const csrfToken = document.querySelector('meta[name="csrf-token"]')?.getAttribute('content');
 
-    document.querySelectorAll('.like-button').forEach(button => {
-        button.addEventListener('click', async () => {
+    document.querySelectorAll('.js-like-form').forEach((form) => {
+        form.addEventListener('submit', async (e) => {
+            e.preventDefault();
 
-            const response = await fetch('/home', {
-                method: 'POST',
-                headers: {
-                    'X-CSRF-TOKEN': csrfToken,
-                    'Content-Type': 'application/json'
-                }
-            });
+            const btn = form.querySelector('.like-button');
+            const countEl = form.querySelector('.like-count');
+            const icon = form.querySelector('.like-icon');
+            if (!btn || !countEl || !icon) return;
 
-            const data = await response.json();
-            button.querySelector('.like-count').textContent = data.like_count;
+            btn.disabled = true;
+            try {
+                const response = await fetch(form.action, {
+                    method: 'POST',
+                    headers: {
+                        'X-CSRF-TOKEN': csrfToken,
+                        'Accept': 'application/json',
+                    },
+                    credentials: 'same-origin',
+                });
+
+                if (!response.ok) throw new Error(`HTTP ${response.status}`);
+                const data = await response.json();
+
+                countEl.textContent = data.like_count;
+                btn.classList.toggle('liked', !!data.liked);
+                icon.classList.toggle('fa-solid', !!data.liked);
+                icon.classList.toggle('fa-regular', !data.liked);
+
+                btn.classList.remove('animate');
+                void btn.offsetWidth;
+                btn.classList.add('animate');
+            } catch (_) {
+                alert('いいねの更新に失敗しました');
+            } finally {
+                btn.disabled = false;
+            }
         });
     });
 });
@@ -45,24 +68,6 @@ function openModal(src) {
     modal.style.display = 'flex';
 }
 
-
-document.querySelectorAll('.like-button').forEach(button => {
-    button.addEventListener('click', () => {
-        button.classList.toggle('liked');
-    });
-});
-
-document.querySelectorAll('.like-button').forEach(button => {
-    button.addEventListener('click', () => {
-        // 色切り替え
-        button.classList.toggle('liked');
-
-        // アニメーション付与
-        button.classList.remove('animate');
-        void button.offsetWidth; // 再描画トリガー
-        button.classList.add('animate');
-    });
-});
 
 //コメントを全表示させるためのボタンを表示&コメント全表示をやめさせるボタン
 document.querySelectorAll('.showMoreBtn').forEach(btn => {
