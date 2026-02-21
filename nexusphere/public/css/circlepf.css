@@ -267,18 +267,13 @@ input[type="file"] {
 
 /* 投稿ボタン */
 button[type="submit"] {
-  background-color: #ff69b4;
-  color: #fff;
+  color: #000000;
   border: none;
   padding: 8px 16px;
   border-radius: 20px;
   cursor: pointer;
   font-weight: bold;
   transition: 0.3s;
-}
-
-button[type="submit"]:hover {
-  background-color: #ff69b4;
 }
 
 /* =========================
