@@ -69,6 +69,7 @@ html, body {
   background: #fff;
   border-radius: 15px;
   box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+  position: relative;
 }
 
 .profile-card {
@@ -266,21 +267,60 @@ button[type="submit"] {
   transition: 0.3s;
 }
 
-/* =========================
-  フッターナビ
-========================= */
+/* ==============================
+    11. フッターナビ（固定）
+============================== */
+
+.hamburger {
+  position: fixed;
+  top: 15px;
+  left: 15px;
+  border: none;
+  font-size: 30px;
+  cursor: pointer;
+  z-index: 1300;
+}
+
+/* サイドバー（← classを footer-nav に変更） */
 .footer-nav {
   position: fixed;
-  bottom: 0;
-  left: 0;
-  width: 100%;
-  height: 60px;
-  background-color: #fff;
-  border-top: 1px solid #ddd;
+  top: 0;
+  left: -250px; /* 初期は隠す */
+  width: 140px;
+  height: 100vh;
+  background: white;
   display: flex;
-  justify-content: space-around;
+  flex-direction: column;
+  padding-top: 60px;
+  transition: left 0.3s ease;
+  z-index: 1200;
+}
+
+/* 開いた状態 */
+.footer-nav.active {
+  left: 0;
+}
+
+/* タブ */
+.footer-nav .tab {
+  padding: 40px 20px;
+  text-decoration: none;
+  display: flex;
   align-items: center;
-  z-index: 100;
+  gap: 8px;   /* ← アイコンと文字の間 */
+}
+
+/* オーバーレイ */
+.overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.4);
+  display: none;
+  z-index: 1100;
+}
+
+.overlay.active {
+  display: block;
 }
 
 .footer-nav a {
@@ -305,7 +345,6 @@ button[type="submit"] {
 .footer-nav span {
   font-size: 11px;
   margin-top: 4px;
-
 }
 
 /* 投稿カード */
@@ -440,6 +479,55 @@ button[type="submit"] {
     cursor: pointer;
     font-weight: bold;
     transition: 0.3s;
+  }
+  /* ハンバーガーいらない */
+  .hamburger {
+    display: none;
+  }
+
+  /* サイドバーを下フッターに変形 */
+  .footer-nav {
+    left: 0;              /* 横スライド無効 */
+    top: auto;
+    bottom: 0;
+    width: 100%;
+    height: 60px;
+    flex-direction: row;  /* 横並び */
+    justify-content: space-around;
+    align-items: center;
+    padding-top: 0;
+  }
+  /* ← ここが超重要 */
+  .footer-nav a {
+    flex: 1;                 /* 均等分割 */
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-decoration: none;
+    color: #666;
+  }
+
+  .footer-nav .tab{
+    padding: 0;              /* タブの余白調整 */
+  }
+
+  .footer-nav i {
+    font-size: 20px;
+    margin-bottom: 2px;
+  }
+
+  .footer-nav span {
+    font-size: 11px;
+  }
+  /* activeいらない */
+  .footer-nav.active {
+    left: 0;
+  }
+
+  /* オーバーレイ不要 */
+  .overlay {
+    display: none !important;
   }
 }
 
