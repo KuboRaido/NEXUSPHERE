@@ -287,9 +287,10 @@ button[type="submit"] {
     font-size: 30px;
     cursor: pointer;
     z-index: 1300;
+    background: transparent; 
 }
 
-/* サイドバー（← classを footer-nav に変更） */
+/* サイドバー */
 .footer-nav {
     position: fixed;
     top: 0;
@@ -354,7 +355,6 @@ button[type="submit"] {
     font-size: 11px;
     margin-top: 4px;
 }
-
 
 /* 投稿カードのアクション */
 .post-actions {

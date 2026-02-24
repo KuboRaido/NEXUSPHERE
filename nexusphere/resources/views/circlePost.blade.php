@@ -19,6 +19,9 @@
     </header>
 
     <main class="container">
+        <button id="menuBtn" class= "hamburger">
+            <i class="fa-solid fa-bars"></i>
+        </button>
         {{-- 投稿フォーム --}}
         <form method="POST" action="{{ route('circlePost.back',['circle' => $circle]) }}" enctype="multipart/form-data">
             @csrf
@@ -44,7 +47,7 @@
         </form>
     </main>
 
-    <div class="footer-nav">
+    <div id="sidebar" class="footer-nav">
         <a href="/home" class="tab {{ request()->is('home') ? 'active' : '' }}"><i class="fa-solid fa-house"></i><span>ホーム</span></a>
         <a href="/post" class="tab {{ request()->is('post') ? 'active' : '' }}"><i class="fas fa-paper-plane"></i><span>投稿</span></a>
         <a href="/dmlist" class="tab {{ request()->is('dmlist') ? 'active' : '' }}"><i class="fa-solid fa-comment"></i><span>DM</span></a>
@@ -151,6 +154,22 @@
                 }
             }
         });
+        document.addEventListener("DOMContentLoaded", function () {
+            const sidebar = document.getElementById("sidebar");
+            const menuBtn = document.getElementById("menuBtn");
+            const overlay = document.getElementById("overlay");
+
+            menuBtn.addEventListener("click", function () {
+                sidebar.classList.toggle("active");
+                overlay.classList.toggle("active");
+            });
+
+            overlay.addEventListener("click", function () {
+                sidebar.classList.remove("active");
+                overlay.classList.remove("active");
+            });
+        });
+
     </script>
 </body>
 </html>

@@ -27,7 +27,9 @@ html, body {
     display: flex;
     justify-content: center;
     align-items: center;
+    position: relative;
 }
+
 
 .header-inner {
     max-width: 600px;
@@ -385,9 +387,10 @@ input[type="file"] {
     font-size: 30px;
     cursor: pointer;
     z-index: 1300;
+    background: transparent; 
 }
 
-/* サイドバー（← classを footer-nav に変更） */
+/* サイドバー */
 .footer-nav {
     position: fixed;
     top: 0;

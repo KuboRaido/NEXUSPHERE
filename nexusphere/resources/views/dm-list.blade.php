@@ -19,11 +19,11 @@
         </div>
     </header>
 
-            <botton id="menuBtn" class= "hamburger">
+        <botton id="menuBtn" class= "hamburger">
             <i class="fa-solid fa-bars"></i>
         </botton>
 
-    <div class=dmlist-container>
+    <main class=dmlist-container>
           <div class="search-container">
             <input type="text" id="search-input" placeholder="ユーザーを検索..." />
           </div>
@@ -56,8 +56,7 @@
             </div>
           </div>
         </div>
-
-
+    </main>
     <div id="sidebar" class="footer-nav">
         <a href="/home" class="tab {{ request()->is('home') ? 'active' : '' }}"><i class="fa-solid fa-house"></i><span>ホーム</span></a>
         <a href="/post" class="tab {{ request()->is('post') ? 'active' : '' }}"><i class="fas fa-paper-plane"></i><span>投稿</span></a>
