@@ -16,6 +16,11 @@
         <div class="header-inner">
             <h1 id="site-title">Nexusphere</h1>
         </div>
+
+      <button id="menuBtn" class="hamburger">
+        <i class="fa-solid fa-bars"></i>
+      </button>
+
 <!--ここからログアウトボタン-->
       @if($isMine)
         <button type="button" class="logout-btn" id="logout-trigger">ログアウト</button>
@@ -39,11 +44,6 @@
 <!--ここまで-->
 
     <main class="container">
-
-      <button id="menuBtn" class="hamburger">
-        <i class="fa-solid fa-bars"></i>
-      </button>
-
       <section class="profile-card" aria-label="ユーザープロフィール">
 
         <div class="profile-body">

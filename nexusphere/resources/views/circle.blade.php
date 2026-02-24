@@ -23,9 +23,9 @@
     </header>
     
       <div class=circle-container>
-        <botton id="menuBtn" class= "hamburger">
+        <button id="menuBtn" class= "hamburger">
             <i class="fa-solid fa-bars"></i>
-        </botton>
+        </button>
       <!-- 検索ボックス -->
         <div class="search-container">
           <input type="text" id="search-input" placeholder="サークルを検索..." />

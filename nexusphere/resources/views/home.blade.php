@@ -27,9 +27,9 @@
 
 <main class="container">
 
-    <botton id="menuBtn" class= "hamburger">
+    <button id="menuBtn" class= "hamburger">
         <i class="fa-solid fa-bars"></i>
-    </botton>
+    </button>
 
     {{-- 投稿一覧（閲覧専用） --}}
     @foreach($posts as $post)
