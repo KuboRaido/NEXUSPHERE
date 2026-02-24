@@ -64,16 +64,35 @@
 
 
 
-      <div class="circle_name">
+      <div class="field">
         <label for="circle_name">名前</label>
         <input id="circle_name" type="text" name="circle_name" value="{{ old('circle_name', $circle->circle_name) }}">
       </div>
 
-      <div class="explain">
+     <div class="field">
+        <label for="circle_type" class="label-text">サークルタイプ</label>
+        <select id="circle_type" name="circle_type" class="input-field">
+            <option value="" selected>サークルのタイプを選択してください</option>
+            <option value="ゆるく楽しむ系">ゆるく楽しむ系</option>
+            <option value="本気でやる系">本気でやる系</option>
+            <option value="勉強・研究系">勉強・研究系</option>
+            <option value="イベント・告知系">イベント・告知系</option>
+        </select>
+      </div>
+      <div class="field">
         <label for="sentence">サークル説明</label>
         <input id="sentence" type="text" name="sentence" value="{{ old('sentence', $circle->sentence) }}">
       </div>
-
+      <div class="field">
+        <label for="activity_frequency" class="label-text">活動頻度</label>
+        <select id="activity_frequency" name="activity_frequency" class="input-field" disabled>
+          <option value="" disabled selected>まずタイプを選択してください</option>
+        </select>
+      </div>
+      <div class="field">
+        <label for="hashtags">ハッシュタグ欄</label>
+        <input id="hashtags" type="text" name="hashtags">
+      </div>
         <div class="actions">
           <button type="submit" class="btn">保存</button>
           <a href="{{ route('circle.profile', $circle->circle_id) }}" class="btn secondary">戻る</a>

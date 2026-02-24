@@ -40,18 +40,34 @@
                 </div>
 
                 <div class="form-group">
-                    <label for="name">クラブ名（必須）</label>
+                    <label for="name">サークル名</label>
                     <input type="text" id="name" name="name" maxlength="30" required>
                 </div>
 
                 <div class="form-group">
-                    <label for="category">カテゴリ（必須）</label>
-                    <input type="text" id="category" name="category" maxlength="30" required>
+                    <label for="circle_type" class="label-text">サークルタイプ</label>
+                    <select id="circle_type" name="circle_type" class="input-field">
+                        <option value="" selected>サークルのタイプを選択してください</option>
+                        <option value="ゆるく楽しむ系">ゆるく楽しむ系</option>
+                        <option value="本気でやる系">本気でやる系</option>
+                        <option value="勉強・研究系">勉強・研究系</option>
+                        <option value="イベント・告知系">イベント・告知系</option>
+                    </select>
                 </div>
 
                 <div class="form-group">
-                    <label for="description">説明（必須）</label>
+                    <label for="description">サークル説明</label>
                     <textarea id="description" name="sentence" rows="5" maxlength="500" required></textarea>
+                </div>
+                <div class="form-group">
+                    <label for="activity_frequency" class="label-text">活動頻度</label>
+                    <select id="activity_frequency" name="activity_frequency" class="input-field" disabled>
+                    <option value="" disabled selected>まずタイプを選択してください</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="hashtags">ハッシュタグ欄</label>
+                    <input id="hashtags" type="text" name="hashtags">
                 </div>
                 <div class="button-row">
                     <button type="submit" class="submit-btn">作成</button>

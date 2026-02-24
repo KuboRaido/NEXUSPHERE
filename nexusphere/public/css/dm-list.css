@@ -400,53 +400,53 @@ body {
   }
 
   /* ハンバーガーいらない */
-    .hamburger {
-        display: none;
-    }
+  .hamburger {
+      display: none;
+  }
 
-    /* サイドバーを下フッターに変形 */
-    .footer-nav {
-        left: 0;              /* 横スライド無効 */
-        top: auto;
-        bottom: 0;
-        width: 100%;
-        height: 60px;
-        flex-direction: row;  /* 横並び */
-        justify-content: space-around;
-        align-items: center;
-        padding-top: 0;
-    }
-    /* ← ここが超重要 */
-    .footer-nav a {
-        flex: 1;                 /* 均等分割 */
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        justify-content: center;
-        text-decoration: none;
-        color: #666;
-    }
+  /* サイドバーを下フッターに変形 */
+  .footer-nav {
+    left: 0;              /* 横スライド無効 */
+    top: auto;
+    bottom: 0;
+    width: 100%;
+    height: 60px;
+    flex-direction: row;  /* 横並び */
+    justify-content: space-around;
+    align-items: center;
+    padding-top: 0;
+  }
+  /* ← ここが超重要 */
+  .footer-nav a {
+    flex: 1;                 /* 均等分割 */
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-decoration: none;
+    color: #666;
+  }
 
-    .footer-nav .tab{
-        padding: 0;              /* タブの余白調整 */
-    }
+  .footer-nav .tab{
+    padding: 0;              /* タブの余白調整 */
+  }
 
-    .footer-nav i {
-        font-size: 20px;
-        margin-bottom: 2px;
-    }
+  .footer-nav i {
+    font-size: 20px;
+    margin-bottom: 2px;
+  }
 
-    .footer-nav span {
-        font-size: 11px;
-    }
-    /* activeいらない */
-    .footer-nav.active {
-        left: 0;
-    }
+  .footer-nav span {
+    font-size: 11px;
+  }
+  /* activeいらない */
+  .footer-nav.active {
+    left: 0;
+  }
 
-    /* オーバーレイ不要 */
-    .overlay {
-        display: none !important;
-    }
+  /* オーバーレイ不要 */
+  .overlay {
+    display: none !important;
+  }
 
 }
