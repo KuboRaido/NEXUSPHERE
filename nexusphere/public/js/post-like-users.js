@@ -36,7 +36,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     const toIconUrl = (icon) => {
         if (!icon) return '/images/default-avatar.png';
-        if (icon.startsWith('https') || icon.startsWith('/')) return icon;
+        if (icon.startsWith('http') || icon.startsWith('/')) return icon;
         return `/storage/icons/${icon}`;
     };
 
