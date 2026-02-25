@@ -155,7 +155,7 @@ input[type="file"] {
 }
 
 .post-header {
-    display: flex;
+    /* display: flex; */
     align-items: center;
     margin-bottom: 10px;
 }
@@ -252,6 +252,44 @@ input[type="file"] {
 
 .like-button .like-icon { color: transparent; -webkit-text-stroke: 1.6px #f29ab1; }
 .like-button.liked .like-icon { color: #e74c3c; -webkit-text-stroke: 0; }
+
+.js-like-form {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.like-count-btn {
+    border: 1px solid #ffffff;
+    background: #fff;
+    color: #555;
+    border-radius: 9999px;
+    height: 32px;
+    display: inline-flex;
+    align-items: center;
+    cursor: pointer;
+    line-height: 1;
+    transition: background-color .2s ease, border-color .2s ease, transform .12s ease;
+}
+
+.like-count-btn:hover {
+    background: #fff5f9;
+    border-color: #ffffff;
+}
+
+.like-count-btn:active {
+    transform: scale(.97);
+}
+
+.like-count-btn:focus-visible {
+    outline: 2px solid #f29ab1;
+    outline-offset: 2px;
+}
+
+.like-count-btn .like-count {
+    font-weight: 700;
+    font-size: 0.95rem;
+}
 
 @keyframes like-pop {
     0% { transform: scale(1); }
@@ -468,6 +506,67 @@ input[type="file"] {
     background: #fff;
 }
 
+/*いいねした人ダイアログ*/
+.like-users-modal{
+    display:none;
+    position:fixed;
+    inset:0;
+    background:rgba(0,0,0,.45);
+    z-index:9999;
+    align-items:center;
+    justify-content:center;
+}
+.like-users-modal.is-open{ display:flex; }
+
+.like-users-dialog{
+    background:#fff;
+    width:min(92vw,420px);
+    max-height:70vh;
+    border-radius:12px;
+    overflow:hidden;
+}
+.like-users-head{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    padding:12px 14px;
+    border-bottom:1px solid #eee;
+}
+.like-users-close{
+    border:none;
+    background:none;
+    font-size:20px;
+    cursor:pointer;
+}
+.like-users-list{
+    list-style:none;
+    margin:0;
+    padding:0;
+    max-height:58vh;
+    overflow:auto;
+}
+.like-user-row{
+    display:flex;
+    align-items:center;
+    gap:10px;
+    padding:10px 14px;
+    border-bottom:1px solid #f3f3f3;
+}
+.like-user-row img{
+    width:32px;
+    height:32px;
+    border-radius:50%;
+    object-fit:cover;
+}
+.like-user-empty{ padding:14px; }
+.like-user-link{
+    display:flex;
+    align-items:center;
+    gap:10px;
+    width:100%;
+    color:inherit;
+    text-decoration:none;
+}
 /* ==============================
     12. レスポンシブ
 ============================== */
