@@ -680,4 +680,11 @@ input[type="file"] {
     .overlay {
         display: none !important;
     }
+
+    .comment_time{
+        margin-left:auto;
+        font-size: 0.85rem; /* 少し小さめに */
+        color: #353535;        /* 目立ちすぎない色に */
+        white-space: nowrap; /* 日付が変に改行されないように */
+    }
 }
