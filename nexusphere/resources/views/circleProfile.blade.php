@@ -6,6 +6,7 @@
   <title>プロフィール</title>
   <link rel="stylesheet" href="{{ asset('css/circlepf.css') }}">
   <link rel="stylesheet" href="{{ asset('css/styles.css') }}">
+  <meta name="csrf-token" content="{{ csrf_token() }}">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   <script> window.USER_ROLE = "{{ $role }}";</script>
@@ -132,6 +133,8 @@
                           @csrf
                           <button type="submit" class="like-button {{ $liked ? 'liked' : '' }}">
                               <i class="{{ $liked ? 'fa-solid' : 'fa-regular' }} fa-heart like-icon"></i>
+                          </button>
+                          <button type="button" data-url="{{ route('posts.likes', $post->prc_id )}}" class="like-count-btn js-like-users-trigger">
                               <span class="like-count">{{ $post->nices->count() }}</span>
                           </button>
                       </form>
@@ -187,6 +190,16 @@
 
   <div id="overlay" class="overlay"></div>
 <!-- JS読み込み -->
+<script src="{{ asset('js/post-like-users.js') }}"></script>
 <script src="{{ asset('js/circleprofile.js') }}"></script>
+<div id="like-users-modal" class="like-users-modal" aria-hidden="true">
+        <div class="like-users-dialog" role="dialog" aria-modal="true" aria-labelledby="like-users-title">
+            <div class="like-users-head">
+                <strong id="like-users-title">いいねした人</strong>
+                <button type="button" id="like-users-close" class="like-users-close">✖</button>
+            </div>
+            <ul id="like-users-list" class="like-users-list"></ul>
+        </div>
+    </div>
 </body>
 </html>

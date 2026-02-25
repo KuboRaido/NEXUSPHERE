@@ -35,6 +35,8 @@ Route::middleware('auth')->group(function () {
 
     Route::get('/home',[PrcController::class,'index'])->name('home');
 
+    Route::get('/post/{postId}/likes',[PrcController::class,'likedUser'])->name('posts.likes');
+
     Route::get('circle',[CircleController::class,'circleFront'])->name('circle');
     Route::post('circle',[CircleController::class,'circleCreate']);
     Route::get('circle/create',[CircleController::class,'circleCreateFront'])->name('circle.create');

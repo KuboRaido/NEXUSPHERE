@@ -195,26 +195,6 @@ body {
   padding: 10px;
 }
 
-.post {
-  background: #fff;
-  border-radius: 8px;
-  padding: 8px;
-  box-shadow: 0 2px 8px rgba(0,0,0,0.05);
-  margin-bottom: 10px;
-  position: relative;
-}
-
-.post .title {
-  font-weight: bold;
-  font-size: 14px;
-  margin-bottom: 4px;
-}
-
-.post .excerpt {
-  color: #666;
-  font-size: 12px;
-}
-
 /* =========================
    チャットボックス
 ========================= */
@@ -269,7 +249,6 @@ input[type="file"] {
 button[type="submit"] {
   color: #000000;
   border: none;
-  padding: 8px 16px;
   border-radius: 20px;
   cursor: pointer;
   font-weight: bold;
@@ -375,7 +354,7 @@ button[type="submit"] {
 }
 
 .name-row {
-  display: flex;
+  /* display: flex; */
   gap: 8px;
   align-items: center;
 }
