@@ -146,7 +146,7 @@
                           <button type="submit" class="like-button {{ $liked ? 'liked' : '' }}">
                               <i class="{{ $liked ? 'fa-solid' : 'fa-regular' }} fa-heart like-icon"></i>
                           </button>
-                          <button type="button" data-url="{{ route('posts.likes', $post->prc_id )}}" class="like-count-btn js-like-users-trigger">
+                          <button type="button" data-url="/post/{{$post->prc_id}}/likes" class="like-count-btn js-like-users-trigger">
                               <span class="like-count">{{ $post->nices->count() }}</span>
                           </button>
                       </form>
