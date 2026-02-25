@@ -27,6 +27,10 @@
 
 <main class="container">
 
+    <button id="menuBtn" class= "hamburger">
+        <i class="fa-solid fa-bars"></i>
+    </button>
+
     {{-- 投稿一覧（閲覧専用） --}}
     @foreach($posts as $post)
         <div class="post" data-post-id="{{ $post->prc_id }}">
@@ -136,7 +140,7 @@
 
 </main>
 
-    <div class="footer-nav">
+    <div id="sidebar" class="footer-nav">
         <a href="/home" class="tab {{ request()->is('home') ? 'active' : '' }}"><i class="fa-solid fa-house"></i><span>ホーム</span></a>
         <a href="/post" class="tab {{ request()->is('post') ? 'active' : '' }}"><i class="fas fa-paper-plane"></i><span>投稿</span></a>
         <a href="/dmlist" class="tab {{ request()->is('dmlist') ? 'active' : '' }}"><i class="fa-solid fa-comment"></i><span>DM</span></a>
@@ -145,6 +149,8 @@
     </div>
 
     <script src="{{ asset('js/post-like-users.js') }}"></script>
+    <div id="overlay" class="overlay"></div>
+
     <script src="{{ asset('js/home.js') }}"></script>
 
     <div id="like-users-modal" class="like-users-modal" aria-hidden="true">
