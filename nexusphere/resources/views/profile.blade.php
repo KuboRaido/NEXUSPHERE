@@ -140,6 +140,8 @@
                           @csrf
                           <button type="submit" class="like-button {{ $liked ? 'liked' : '' }}">
                               <i class="{{ $liked ? 'fa-solid' : 'fa-regular' }} fa-heart like-icon"></i>
+                          </button>
+                          <button type="button" data-url="{{ route('posts.likes', $post->prc_id )}}" class="like-count-btn js-like-users-trigger">
                               <span class="like-count">{{ $post->nices->count() }}</span>
                           </button>
                       </form>
@@ -190,6 +192,16 @@
       <a href="/profile" class="tab {{ request()->is('profile') ? 'active' : '' }}"><i class="fa-solid fa-user"></i><span>プロフィール</span></a>
       <a href="/circle" class="tab {{ request()->is('circle') ? 'active' : '' }}"><i class="fa-solid fa-cube"></i><span>サークル</span></a>
     </div>
+  <script src="{{ asset('js/post-like-users.js') }}"></script>
   <script src="{{ asset('js/profile.js') }}"></script>
+  <div id="like-users-modal" class="like-users-modal" aria-hidden="true">
+        <div class="like-users-dialog" role="dialog" aria-modal="true" aria-labelledby="like-users-title">
+            <div class="like-users-head">
+                <strong id="like-users-title">いいねした人</strong>
+                <button type="button" id="like-users-close" class="like-users-close">✖</button>
+            </div>
+            <ul id="like-users-list" class="like-users-list"></ul>
+        </div>
+    </div>
 </body>
 </html>
