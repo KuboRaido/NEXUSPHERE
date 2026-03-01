@@ -98,8 +98,9 @@ document.addEventListener("DOMContentLoaded", () => {
     });
 
     // 対象のselect要素
-  const selects = ['mail', 'password', 'password_confirmation', 'name'];
-  selects.forEach(id => {
+    const selects = ['mail', 'password', 'password_confirmation', 'name'];
+    // 現在処理している中身が一時的に入る引数
+    selects.forEach(id => {
     const el = document.getElementById(id);
     if (!el) return;
     // 値を復元
