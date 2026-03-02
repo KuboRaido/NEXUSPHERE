@@ -50,10 +50,6 @@ document.addEventListener("DOMContentLoaded", function() {
   }
 
 });
-<<<<<<< HEAD
-
-=======
->>>>>>> origin/main
 document.addEventListener("DOMContentLoaded", function () {
     const sidebar = document.getElementById("sidebar");
     const menuBtn = document.getElementById("menuBtn");
@@ -68,8 +64,4 @@ document.addEventListener("DOMContentLoaded", function () {
         sidebar.classList.remove("active");
         overlay.classList.remove("active");
     });
-<<<<<<< HEAD
 });
-=======
-});
->>>>>>> origin/main
