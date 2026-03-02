@@ -209,6 +209,23 @@ class PrcController extends Controller
         return back();
     }
 
+    public function likedUser($postId)
+    {
+        $likedUser = Nice::where('prc_id', $postId)
+                        ->with('user:user_id,name,icon')
+                        ->get()
+                        ->map(function ($nice) {
+                            return[
+                                'user_id' => $nice->user?->user_id,
+                                'name'    => $nice->user?->name,
+                                'icon'    => $nice->user?->icon,
+                            ];
+                        })
+                        ->filter(fn ($u) => !is_null($u['user_id']))
+                        ->values();
+
+        return response()->json($likedUser);
+    }
 
     // 投稿フォーム表示
     public function post()

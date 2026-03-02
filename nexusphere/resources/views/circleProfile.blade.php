@@ -6,6 +6,7 @@
   <title>プロフィール</title>
   <link rel="stylesheet" href="{{ asset('css/circlepf.css') }}">
   <link rel="stylesheet" href="{{ asset('css/styles.css') }}">
+  <meta name="csrf-token" content="{{ csrf_token() }}">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   <script> window.USER_ROLE = "{{ $role }}";</script>
@@ -74,102 +75,9 @@
     <div class="content">
       <div class="left">
         <h4>最近の投稿</h4>
-
-          @forelse($posts as $post)
-            {{-- ホーム画面と同じレイアウトで表示 --}}
-              <div class="post" data-post-id="{{ $post->prc_id }}">
-                  {{-- 投稿者名 --}}
-                  <div class="post-header">
-                      <a href="{{ route('profile.other', $post->user->user_id) }}" class="user-link">
-                          <img src="{{ $post->user->avatar_url }}"
-                              class="user-icon"
-                              alt="icon">
-                          <span class="username">{{ $post->user->name }}</span>
-                        @if ($post->created_at->gt(now()->subWeek()))
-                          <time class="post_time">{{ $post->created_at->diffForHumans() }}</time>
-                        @else
-                          <time class="post_time">{{ $post->created_at->format('Y年m月d日') }}</time>
-                        @endif
-                      </a>
-                  </div>
-
-                  {{-- 投稿内容 --}}
-                  <div class="post-content">{!! \App\Support\TextHelper::linkify($post->sentence ?? '') !!}</div>
-
-                  {{-- メディア (画像 or 動画) --}}
-                  @if ($post->images && $post->images->count() > 0)
-                      <div class="post-images">
-                          @foreach ($post->images as $media)
-                              @php
-                                  $filePath = $media->image ?? $media->video;
-                                  $exetension = strtolower(pathinfo($filePath, PATHINFO_EXTENSION));
-                              @endphp
-
-                              {{-- 画像 --}}
-                              @if (in_array($exetension, ['jpg', 'jpeg', 'png', 'webp', 'gif']))
-                                  <img src="{{ asset('storage/post/' . $filePath) }}"
-                                      alt="投稿画像"
-                                      class="post-image"
-                                      onclick="openModal(this.src)">
-                              @endif
-
-                              {{-- 動画 --}}
-                              @if (in_array($exetension, ['mp4', 'mov', 'webm']))
-                                  <video controls
-                                      class="post-video"
-                                      style="max-width: 100%; border-radius: 8px; margin-top: 10px;">
-                                      <source src="{{ asset('storage/post/' . $filePath) }}" type="video/{{ $exetension }}">
-                                  </video>
-                              @endif
-                          @endforeach
-                      </div>
-                  @endif
-
-                  <div class="post-footer">
-                      {{-- いいね --}}
-                      @php $liked = $post->nices->contains('user_id', auth()->id()); @endphp
-                      <form method="POST" action="/posts/{{ $post->prc_id }}/like" class="js-like-form">
-                          @csrf
-                          <button type="submit" class="like-button {{ $liked ? 'liked' : '' }}">
-                              <i class="{{ $liked ? 'fa-solid' : 'fa-regular' }} fa-heart like-icon"></i>
-                              <span class="like-count">{{ $post->nices->count() }}</span>
-                          </button>
-                      </form>
-
-                      {{-- コメント入力 --}}
-                      <form method="POST" action="/posts/{{ $post->prc_id }}/comment" class="comment-form">
-                          @csrf
-                          <input type="text" name="comment" placeholder="コメントを追加" required>
-                          <button type="submit">送信</button>
-                      </form>
-                  </div>
-
-                  {{-- コメント一覧 --}}
-                  <div class="comment-list">
-                      @foreach ($post->comments as $comment)
-                          <div class="comment">
-                                <div class="comment_head">
-                                    <a href="{{ route('profile.other', $comment->user->user_id) }}" class="user-link">
-                                        <img src="{{ $comment->user->avatar_url }}" class="user-icon small">
-                                        <strong class="user_name">{{ $comment->user->name }}</strong>
-                                    </a>
-                                    @if ($comment->created_at->gt(now()->subWeek()))
-                                            <time class="comment_time">{{ $comment->created_at->diffForHumans() }}</time>
-                                    @else
-                                            <time class="comment_time">{{ $comment->created_at->format('Y年m月d日') }}</time>
-                                    @endif
-                                </div>
-                                <span class="comment-text">{!! \App\Support\TextHelper::linkify($comment->sentence ?? '') !!}</span>
-                            </div>
-                      @endforeach
-                  </div>
-                  @if($post->comments->count() > 3)
-                      <button class="showMoreBtn">全てのコメントを見る</button>
-                  @endif
-              </div>
-            @empty
-              <div class="no-posts">投稿はありません</div>
-          @endforelse
+          @foreach($posts as $post)
+              <x-post-card :post="$post" />
+          @endforeach
       </div>
     </div>
 
@@ -187,6 +95,16 @@
 
   <div id="overlay" class="overlay"></div>
 <!-- JS読み込み -->
+<script src="{{ asset('js/module/post-like-users.js') }}"></script>
 <script src="{{ asset('js/circleprofile.js') }}"></script>
+<div id="like-users-modal" class="like-users-modal" aria-hidden="true">
+        <div class="like-users-dialog" role="dialog" aria-modal="true" aria-labelledby="like-users-title">
+            <div class="like-users-head">
+                <strong id="like-users-title">いいねした人</strong>
+                <button type="button" id="like-users-close" class="like-users-close">✖</button>
+            </div>
+            <ul id="like-users-list" class="like-users-list"></ul>
+        </div>
+    </div>
 </body>
 </html>
