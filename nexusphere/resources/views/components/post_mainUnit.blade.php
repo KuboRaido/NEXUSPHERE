@@ -1,19 +1,44 @@
-@props(['post'])
-<div {{ $attributes->merge(['class' => 'post']) }} data-post-id="{{ $post->prc_id }}">
+@props(['post','deletePost','user_id' => true])
+<div {{ $attributes -> merge(['class' => 'post']) }} data-post-id="{{ $post->prc_id }}">
 
             {{-- 投稿者名 --}}
             <div class="post-header">
-                <a href="{{ route('profile.other', $post->user->user_id) }}" class="user-link">
+                <a href="{{ $post->user->user_id === auth()->id() ? route('profile') : route('profile.other', $post->user->user_id)}}" class="user-link">
                     <img src="{{ $post->user->avatar_url }}"
                         class="user-icon"
                         alt="icon"></img>
                     <span class="username">{{ $post->user->name }}</span>
-                @if ($post->created_at->gt(now()->subWeek()))
-                    <time class="post_time">{{ $post->created_at->diffForHumans() }}</time>
-                @else
-                    <time class="post_time">{{ $post->created_at->format('Y年m月d日') }}</time>
-                @endif
                 </a>
+
+                {{-- 右上のメタ情報（削除ボタン＋日時） --}}
+                <div class="post-meta">
+                    @if( $deletePost && $user_id)
+                        <button id="delete-post-trigger-{{ $post->prc_id }}" class="delete-post-trigger post-delete-btn" data-post-id="{{ $post->prc_id }}">削除</button>
+                    @endif
+                    
+                    @if ($post->created_at->gt(now()->subWeek()))
+                        <time class="post-time-text">{{ $post->created_at->diffForHumans() }}</time>
+                    @else
+                        <time class="post-time-text">{{ $post->created_at->format('Y年m月d日') }}</time>
+                    @endif
+                </div>
+
+                @if($deletePost)
+                    <div id="delete-post-confirm-{{ $post->prc_id }}" class="delete-post-confirm" hidden>
+                        <div class="delete-post-dialog">
+                            <p>この投稿を削除しますか？</p>
+                            <div class="delete-post-actions">
+                                {{-- 削除用フォーム（ルート設定が必要です） --}}
+                                <form method="POST" action="/post/{{ $post->prc_id }}/delete" style="display:inline;">
+                                    @csrf
+                                    @method('DELETE')
+                                    <button type="submit" class="delete-post-yes">はい</button>
+                                </form>
+                                <button type="button" class="delete-post-no" data-post-id="{{ $post->prc_id }}">いいえ</button>
+                            </div>
+                        </div>
+                    </div>
+                @endif
             </div>
 
             {{-- 投稿内容 --}}
@@ -84,7 +109,7 @@
                         @foreach ($post->comments as $comment)
                             <div class="comment">
                                 <div class="comment_head">
-                                    <a href="{{ route('profile.other', $comment->user->user_id) }}" class="user-link">
+                                    <a href="{{ $comment->user->user_id === auth()->id() ? route('profile') : route('profile.other', $comment->user->user_id)}}" class="user-link">
                                         <img src="{{ $comment->user->avatar_url }}" class="user-icon small">
                                         <strong class="user_name">{{ $comment->user->name }}</strong>
                                     </a>

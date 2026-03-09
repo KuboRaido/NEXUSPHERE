@@ -30,6 +30,7 @@ class ProfileController extends Controller
             'isMine' => $isMine,
             'posts' => $posts,
             'user' => $user,
+            'userId' => $userId,
         ]);
     }
 

@@ -1,96 +1,113 @@
-document.addEventListener('DOMContentLoaded', () => {
-  const form = document.querySelector('#chat-box form');
-  const imageInput = document.getElementById('image');
-  const previewContainer = document.getElementById('preview-container');
+document.addEventListener('DOMContentLoaded', function() {
+            const imageInput = document.querySelector('input[name="images[]"]');
+            const videoInput = document.querySelector('input[name="videos[]"]');
+            const previewContainer = document.getElementById('preview-container');
 
-  let selectedFiles = [];
+            // プレビューエリアのスタイル調整
+            previewContainer.style.display = 'flex';
+            previewContainer.style.flexWrap = 'wrap';
+            previewContainer.style.gap = '10px';
+            previewContainer.style.marginTop = '10px';
 
-  // 画像選択
-  imageInput.addEventListener('change', () => {
-    const files = Array.from(imageInput.files);
-    selectedFiles = selectedFiles.concat(files);
-    imageInput.value = ''; // 次回選択用にクリア
-    updatePreviews();
-  });
+            function updatePreview() {
+                previewContainer.innerHTML = ''; // 一旦クリア
 
-  // プレビュー更新
-  function updatePreviews() {
-    previewContainer.innerHTML = '';
-    selectedFiles.forEach((file, index) => {
-      const reader = new FileReader();
-      reader.onload = (e) => {
-        const imgWrapper = document.createElement('div');
-        imgWrapper.style.position = 'relative';
-        imgWrapper.style.display = 'inline-block';
-        imgWrapper.style.margin = '5px';
+                // 画像処理
+                if (imageInput.files && imageInput.files.length > 0) {
+                    Array.from(imageInput.files).forEach(file => {
+                        const reader = new FileReader();
+                        reader.onload = function(e) {
+                            const img = document.createElement('img');
+                            img.src = e.target.result;
+                            img.style.width = '100px';
+                            img.style.height = '100px';
+                            img.style.objectFit = 'cover';
+                            img.style.borderRadius = '8px';
+                            previewContainer.appendChild(img);
+                        }
+                        reader.readAsDataURL(file);
+                    });
+                }
 
-        const img = document.createElement('img');
-        img.src = e.target.result;
-        img.style.maxWidth = '60px';
-        img.style.maxHeight = '60px';
-        img.style.borderRadius = '10px';
-        imgWrapper.appendChild(img);
+                // 動画処理
+                if (videoInput.files && videoInput.files.length > 0) {
+                    Array.from(videoInput.files).forEach(file => {
+                        const video = document.createElement('video');
+                        video.src = URL.createObjectURL(file);
+                        video.style.height = '120px'; // 高さを固定
+                        video.style.borderRadius = '8px';
+                        video.controls = true; // 再生コントロールを表示
+                        previewContainer.appendChild(video);
+                    });
+                }
+            }
 
-        const removeBtn = document.createElement('button');
-        removeBtn.textContent = '×';
-        removeBtn.style.position = 'absolute';
-        removeBtn.style.top = '0px';
-        removeBtn.style.right = '0px';
-        removeBtn.style.background = 'rgba(0,0,0,0.5)';
-        removeBtn.style.color = 'white';
-        removeBtn.style.border = 'none';
-        removeBtn.style.borderRadius = '50%';
-        removeBtn.style.width = '20px';
-        removeBtn.style.height = '20px';
-        removeBtn.style.cursor = 'pointer';
-        removeBtn.addEventListener('click', () => {
-          selectedFiles.splice(index, 1);
-          updatePreviews();
+            // 画像選択時のイベント
+            imageInput.addEventListener('change', function() {
+                updatePreview();
+                checkFileSize();
+            });
+            // 動画選択時のイベント
+            videoInput.addEventListener('change', function() {
+                updatePreview();
+                checkFileSize();
+            });
+
+            // ファイルサイズチェック機能
+            function checkFileSize() {
+                const MAX_SIZE_MB = 500; // サーバー側の設定に合わせる(500MB)
+                const MAX_SIZE_BYTES = MAX_SIZE_MB * 1024 * 1024;
+                const submitButton = document.querySelector('.btn-submit');
+                
+                // エラーメッセージ表示用の要素を取得または作成
+                let errorContainer = document.getElementById('file-size-error');
+                if (!errorContainer) {
+                    errorContainer = document.createElement('div');
+                    errorContainer.id = 'file-size-error';
+                    errorContainer.style.color = '#e74c3c'; // 赤色
+                    errorContainer.style.fontSize = '0.9rem';
+                    errorContainer.style.marginTop = '10px';
+                    errorContainer.style.fontWeight = 'bold';
+                    // 送信ボタンの前に挿入
+                    submitButton.parentNode.insertBefore(errorContainer, submitButton);
+                }
+
+                let totalSize = 0;
+                
+                if (imageInput.files) {
+                    Array.from(imageInput.files).forEach(file => totalSize += file.size);
+                }
+                if (videoInput.files) {
+                    Array.from(videoInput.files).forEach(file => totalSize += file.size);
+                }
+
+                if (totalSize > MAX_SIZE_BYTES) {
+                    const currentSizeMB = (totalSize / (1024 * 1024)).toFixed(1);
+                    errorContainer.textContent = `合計ファイルサイズが上限(${MAX_SIZE_MB}MB)を超えています。現在のサイズ: ${currentSizeMB}MB`;
+                    submitButton.disabled = true;
+                    submitButton.style.opacity = '0.5';
+                    submitButton.style.cursor = 'not-allowed';
+                } else {
+                    errorContainer.textContent = '';
+                    submitButton.disabled = false;
+                    submitButton.style.opacity = '1';
+                    submitButton.style.cursor = 'pointer';
+                }
+            }
         });
 
-        imgWrapper.appendChild(removeBtn);
-        previewContainer.appendChild(imgWrapper);
-      };
-      reader.readAsDataURL(file);
+        document.addEventListener("DOMContentLoaded", function () {
+        const sidebar = document.getElementById("sidebar");
+        const menuBtn = document.getElementById("menuBtn");
+        const overlay = document.getElementById("overlay");
+
+        menuBtn.addEventListener("click", function () {
+            sidebar.classList.toggle("active");
+            overlay.classList.toggle("active");
+        });
+
+        overlay.addEventListener("click", function () {
+            sidebar.classList.remove("active");
+            overlay.classList.remove("active");
+        });
     });
-  }
-
-  // フォーム送信
-  form.addEventListener('submit', (e) => {
-    e.preventDefault();
-
-    const formData = new FormData(form);
-    // selectedFiles 配列を images[] として追加（imageInput をクリアしている実装に対応）
-    selectedFiles.forEach(f => formData.append('images[]', f));
-
-    const csrfInput = document.querySelector('input[name="_token"]');
-    const csrfToken = csrfInput ? csrfInput.value : null;
-
-    fetch(form.action || '/post', { method: 'POST', body: formData , headers: csrfToken ? {'X-CSRF-TOKEN': csrfToken} : {} ,credentials: 'same-origin' })
-      .then(res => {
-        if(!res.ok) throw new Error('Http' + res.status);
-        alert('投稿しました');
-        window.location.reload();
-      })
-      .catch(err => {
-        console.error('投稿エラー', err);
-        alert('投稿に失敗しました');
-      });
-  });
-});
-
-document.addEventListener("DOMContentLoaded", function () {
-    const sidebar = document.getElementById("sidebar");
-    const menuBtn = document.getElementById("menuBtn");
-    const overlay = document.getElementById("overlay");
-
-    menuBtn.addEventListener("click", function () {
-        sidebar.classList.toggle("active");
-        overlay.classList.toggle("active");
-    });
-
-    overlay.addEventListener("click", function () {
-        sidebar.classList.remove("active");
-        overlay.classList.remove("active");
-    });
-});
