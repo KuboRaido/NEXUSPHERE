@@ -14,17 +14,6 @@ class PrcController extends Controller
     // 投稿一覧（検索対応）
     public function index(Request $request)
     {
-        if(!empty($request->circle_id)){
-        // 投稿(type = 0) をベースにクエリ作成
-        $query = Prc::where('type', 0)
-                    ->with(['comments', 'images'])
-                    ->orderBy('created_at', 'desc');
-
-        $posts = $query->get();
-
-        return view('circleProfile', compact('posts'));
-        }
-
         if(empty($request -> circle_id)){
             // 投稿(type = 0) をベースにクエリ作成
             $query = Prc::where('type', 0)
@@ -95,6 +84,18 @@ class PrcController extends Controller
         }
 
         return redirect()->back();
+    }
+
+    public function delete($postId)
+    {
+        $post = Prc::where("prc_id", $postId)->first();
+        
+        // 投稿が存在し、かつ自分の投稿である場合のみ削除
+        if($post && $post->user_id == Auth::id()){
+            $post->delete();
+        }
+
+        return back();
     }
 
     public function circleStore(Request $request){

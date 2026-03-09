@@ -88,7 +88,11 @@
           <div class="left">
             <h4>最近の投稿</h4>
               @foreach($posts as $post)
-                  <x-post-card :post="$post" />
+                  @if($isMine)
+                    <x-post_mainUnit :post="$post" :user_id="$userId" :deletePost="true"/>
+                  @else
+                    <x-post_mainUnit :post="$post" :deletePost="false"/>
+                  @endif
               @endforeach
           </div>
         </div>
@@ -102,18 +106,10 @@
         <a href="/profile" class="tab {{ request()->is('profile') ? 'active' : '' }}"><i class="fa-solid fa-user"></i><span>プロフィール</span></a>
         <a href="/circle" class="tab {{ request()->is('circle') ? 'active' : '' }}"><i class="fa-solid fa-cube"></i><span>サークル</span></a>
     </div>
-  <script src="{{ asset('js/module/post-like-users.js') }}"></script>
+  <script src="{{ asset('js/module/post_mainUnit.js') }}"></script>
 
     <div id="overlay" class="overlay"></div>
   <script src="{{ asset('js/profile.js') }}"></script>
-  <div id="like-users-modal" class="like-users-modal" aria-hidden="true">
-        <div class="like-users-dialog" role="dialog" aria-modal="true" aria-labelledby="like-users-title">
-            <div class="like-users-head">
-                <strong id="like-users-title">いいねした人</strong>
-                <button type="button" id="like-users-close" class="like-users-close">✖</button>
-            </div>
-            <ul id="like-users-list" class="like-users-list"></ul>
-        </div>
-    </div>
+    <x-like-users-modal />
 </body>
 </html>
