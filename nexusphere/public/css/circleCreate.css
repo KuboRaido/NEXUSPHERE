@@ -1,0 +1,177 @@
+/* =========================
+   1. ベース
+========================= */
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  margin: 0;
+  font-family: Arial, sans-serif;
+  background-color: #add8e6;
+  min-height: 100vh;
+}
+
+/* =========================
+   2. ヘッダー（戻る＋中央タイトル）
+========================= */
+.site-header {
+  width: 100%;
+  padding: 20px 0;
+  background: transparent;
+  display: flex;
+  justify-content: center; /* 💡 横中央揃え */
+  align-items: center;
+  position: relative;
+}
+
+.header-inner {
+  max-width: 600px;
+  width: 100%;
+  margin: 0 auto;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+}
+
+/* タイトル */
+#site-title {
+  font-size: 2rem;
+  font-weight: 700;
+  font-family: cursive;
+}
+
+/* =========================
+   3. フォームコンテナ
+========================= */
+.form-container {
+  width: 100%;
+  max-width: 600px;
+  margin: 30px auto;
+  padding: 30px; /* 必要なら後で足す */
+  background: #fff;
+  border-radius: 15px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+}
+
+/* =========================
+   4. 画像プレビュー
+========================= */
+.image-preview {
+  width: 145px;
+  height: 145px;
+  border-radius: 50%;
+  background-color: #eee;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  overflow: hidden;
+  margin: 20px auto;
+  position: relative;
+}
+
+.image-label {
+  cursor: pointer;
+}
+
+#plus {
+  font-size: 80px;
+  color: #aaa;
+}
+
+.image-preview img {
+  width: 150px;
+  height: 150px;
+  border-radius: 50%;
+  object-fit: cover;
+}
+
+/* =========================
+   5. フォーム要素
+========================= */
+.form-group {
+  margin-bottom: 15px;
+  display: flex;
+  flex-direction: column;
+}
+
+label {
+  font-weight: bold;
+  margin-bottom: 5px;
+  font-size: 14px;
+  color: #333;
+}
+
+input[type="text"],
+textarea,
+input[type="file"] {
+  padding: 8px 10px;
+  border: 1px solid #ccc;
+  border-radius: 10px;
+  font-size: 14px;
+  outline: none;
+}
+
+/* =========================
+   6. 送信ボタン
+========================= */
+.submit-btn {
+  padding: 1rem;
+  background-color: #ff69b4; /* ボタンの色をff69b4に設定 */
+  color: white;
+  border: none;
+  border-radius: 0.75rem; /* 角を丸くする */
+  font-size: 1.125rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: transform 0.2s ease-in-out, background-color 0.2s;
+}
+
+.back-button {
+  text-decoration: none;
+  padding: 1rem;
+  background-color: #ff69b4; /* ボタンの色をff69b4に設定 */
+  color: white;
+  border: none;
+  border-radius: 0.75rem; /* 角を丸くする */
+  font-size: 1.125rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: transform 0.2s ease-in-out, background-color 0.2s;;
+}
+
+.submit-btn:hover {
+  transform: scale(1.03); /* ホバー時に少し膨らむ */
+  background-color: #ff4d9a; /* ホバー時のボタンの色を少し濃くする */
+}
+
+.button-row {
+  display: flex;
+  gap: 3rem;
+  width: 100%;
+  justify-content: center;
+  margin-top: 1.5rem;
+}
+
+.button-row .submit-btn,
+.button-row .back-button {
+  flex: 1;                /* 横幅を揃える */
+  text-align: center;
+}
+
+/* =========================
+   7. レスポンシブ
+========================= */
+@media screen and (max-width: 768px) {
+  #site-title {
+    font-size: 1.6rem;
+  }
+
+  .form-container {
+    margin: 20px auto;
+    padding: 16px;
+  }
+}

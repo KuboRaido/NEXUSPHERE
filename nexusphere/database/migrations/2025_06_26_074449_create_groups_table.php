@@ -14,6 +14,8 @@ return new class extends Migration
         Schema::create('groups', function (Blueprint $table) {
             $table->id('group_id');
             $table->string('group_name')->unique();
+            $table->foreignId('circle_id')->nullable()->constrained('circles','circle_id')->cascadeOnDelete();
+            $table->integer('members_count')->default(0);
             $table->timestamps();
         });
     }
@@ -23,6 +25,9 @@ return new class extends Migration
      */
     public function down(): void
     {
+        Schema::table('dms',function(\Illuminate\Database\Schema\Blueprint $table){
+            $table->dropForeign(['group_id']);
+        });
         Schema::dropIfExists('groups');
     }
 };

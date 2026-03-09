@@ -1,0 +1,810 @@
+/* ==============================
+    1. ベース設定
+============================== */
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+    white-space: nowrap;
+
+}
+
+html, body {
+    width: 100%;
+    overflow-x: hidden;
+    font-family: 'Inter', sans-serif;
+    background-color: #add8e6;
+    color: #000
+}
+
+
+/* ==============================
+    2. ヘッダー（中央固定）
+============================== */
+.site-header {
+    width: 100%;
+    padding: 20px 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    position: relative;
+}
+
+
+.header-inner {
+    max-width: 600px;
+    margin: 0 auto;
+}
+
+
+#site-title {
+    font-size: 2rem;
+    font-weight: 700;
+    font-family: cursive;
+}
+
+.user-link {
+    text-decoration: none;
+    color: inherit;
+    display: flex;
+}
+
+.comment .user-link {
+    align-items: flex-start;
+}
+
+/* ==============================
+    3. 検索エリア
+============================== */
+.search-area {
+    width: 100%;
+    background: #add8e6;
+    display: flex;
+    justify-content: center;
+}
+
+.search-area form {
+    max-width: 700px;
+    gap: 10px;
+    flex-direction: column;
+    margin-bottom: 2rem;
+    border-radius: 1.5rem;
+}
+
+.search-input {
+    flex: 1;
+    padding:12px;
+    width: 33rem;
+    border-radius: 8px;
+    border: 1px solid #ccc;
+}
+
+.search-btn {
+    padding: 10px 16px;
+    background-color: #ff69b4;
+    color: #fff;
+    border: none;
+    border-radius: 8px;
+    font-weight: bold;
+    cursor: pointer;
+}
+
+
+/* ==============================
+    4. メインコンテナ
+============================== */
+.container {
+    width: 100%;
+    max-width: 600px;
+    margin: 0 auto;
+    padding-bottom: 80px; /* フッター対策 */
+    position: relative;
+}
+
+
+/* ==============================
+    5. 投稿フォーム
+============================== */
+/* form {
+    background: #fff;
+    margin-bottom: 1.5rem;
+    display: flex;
+    gap: 1rem;
+} */
+
+textarea {
+    width: 100%;
+    padding: 0.75rem;
+    border-radius: 0.75rem;
+    border: 1px solid #e5e7eb;
+    font-size: 1rem;
+    resize: vertical;
+}
+
+input[type="file"] {
+    border: none;
+}
+
+.btn-submit {
+    background-color: #ff69b4;
+    color: white;
+    border: none;
+    padding: 1rem;
+    border-radius: 0.75rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: 0.2s;
+}
+
+.btn-submit:hover {
+    background-color: #ff4d9a;
+    transform: scale(1.03);
+}
+
+
+/* ==============================
+    6. 投稿カード
+============================== */
+.post {
+    background: white;
+    margin-bottom: 20px;
+    padding: 15px;
+    border-radius: 1.5rem;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    position: relative;
+}
+
+.post-header {
+    /* display: flex; */
+    align-items: center;
+    margin-bottom: 10px;
+}
+
+.post_time{
+    position: absolute; /* ← 絶対配置 */
+    top: 15px;          /* 上端からの距離（.postのpaddingに合わせる） */
+    right: 15px;        /* 右端からの距離 */
+    font-size: 0.85rem; /* 少し小さめに */
+    color: #353535;        /* 目立ちすぎない色に */
+    white-space: nowrap; /* 日付が変に改行されないように */
+}
+
+.user-icon {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    object-fit: cover;
+}
+
+.user-icon.small {
+    width: 30px;
+    height: 30px;
+    margin-right: 1.3rem;
+}
+
+.username {
+    font-weight: bold;
+    margin-left: 10px;
+}
+
+.post-content {
+    line-height: 1.6;
+    margin-bottom: 10px;
+    margin-left: 50px;
+    overflow-wrap: break-word; /* 長い単語でも折り返す */
+    white-space: pre-wrap;     /* 改行を維持しつつ自動折り返し */
+    word-break: break-word;    /* 長い単語やURLを適切に折り返し、日本語は自然に */
+    max-width: 100%;           /* 画面幅最大まで */
+}
+
+/* リンクがある場合は画面幅に合わせて折り返す */
+.post-content a {
+    white-space: normal;       /* 親のwhite-spaceを継承せず、折り返しを許可 */
+    word-break: break-all;     /* リンクは強制的に折り返す */
+}
+
+/* 投稿上部右側のメタ情報エリア（日時・削除ボタン） */
+.post-meta {
+    position: absolute;
+    top: 15px;
+    right: 15px;
+    display: flex;
+    align-items: center;
+    gap: 10px; /* ボタンと日時の間隔 */
+}
+
+/* 削除ボタン（編集ボタン風の見た目） */
+.post-delete-btn {
+    text-decoration: none;
+    background: #ff69b4; /* 背景色（他のボタンと合わせる） */
+    color: white;
+    font-size: 11px;     /* 日時より少し小さめに */
+    border-radius: 6px;
+    padding: 4px 8px;
+    cursor: pointer;
+    border: none;
+    transition: opacity 0.2s;
+}
+
+.post-delete-btn:hover {
+    opacity: 0.8;
+}
+
+/* 日時テキスト（post_timeの絶対配置を除去したもの） */
+.post-time-text {
+    font-size: 0.85rem;
+    color: #353535;
+    white-space: nowrap;
+}
+
+/* 削除確認モーダル（画面全体を覆う） */
+.delete-post-confirm {
+    position: fixed;       /* 画面に対して固定 */
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5); /* 半透明の黒背景 */
+    z-index: 10000;        /* 最前面に表示 */
+    display: flex;         /* 中央寄せ用 */
+    justify-content: center;
+    align-items: center;
+}
+/* hidden属性がある場合は強制的に非表示にする */
+.delete-post-confirm[hidden] {
+    display: none !important;
+}
+
+/* ダイアログ本体（白い箱） */
+.delete-post-dialog {
+    background: #fff;
+    padding: 20px;
+    border-radius: 8px;
+    text-align: center;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.2);
+    min-width: 300px;      /* 最低限の幅を確保 */
+}
+
+/* ボタンの並び */
+.delete-post-actions {
+    margin-top: 15px;
+    display: flex;
+    justify-content: center;
+    gap: 15px;
+}
+
+/* 削除実行ボタン（はい） */
+.delete-post-yes {
+    background-color: #ff4d4d; /* 警告色（赤） */
+    color: #fff;
+    border: none;
+    border-radius: 6px;
+    padding: 8px 24px;
+    font-size: 14px;
+    cursor: pointer;
+    font-weight: bold;
+    transition: opacity 0.2s;
+}
+.delete-post-yes:hover {
+    opacity: 0.8;
+}
+
+/* キャンセルボタン（いいえ） */
+.delete-post-no {
+    background-color: #e5e7eb; /* グレー */
+    color: #374151;
+    border: none;
+    border-radius: 6px;
+    padding: 8px 24px;
+    font-size: 14px;
+    cursor: pointer;
+    font-weight: bold;
+    transition: background-color 0.2s;
+}
+.delete-post-no:hover {
+    background-color: #d1d5db;
+}
+
+
+
+/* ==============================
+    7. 投稿画像
+============================== */
+.post-images {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+}
+
+.post-image {
+    width: 100%;
+    max-height: 400px;
+    object-fit: cover;
+    border-radius: 1rem;
+    cursor: pointer;
+    transition: 0.3s;
+}
+
+.post-image:hover {
+    transform: scale(1.02);
+}
+
+
+/* ==============================
+    8. 投稿フッター（いいね＋コメント入力）
+============================== */
+.post-footer {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-top: 10px;
+}
+
+/* いいねボタン */
+.like-button {
+    background: none;
+    border: none;
+    cursor: pointer;
+    font-size: 20px;
+    color: #aaa;
+    transition: color 0.2s ease;
+}
+
+.like-button.liked {
+    color: #e0245e;
+}
+
+.like-button.animate {
+    animation: like-pop 0.3s ease;
+}
+
+.like-button .like-icon { color: transparent; -webkit-text-stroke: 1.6px #f29ab1; }
+.like-button.liked .like-icon { color: #e74c3c; -webkit-text-stroke: 0; }
+
+.js-like-form {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.like-count-btn {
+    border: 1px solid #ffffff;
+    background: #fff;
+    color: #555;
+    border-radius: 9999px;
+    height: 32px;
+    display: inline-flex;
+    align-items: center;
+    cursor: pointer;
+    line-height: 1;
+    transition: background-color .2s ease, border-color .2s ease, transform .12s ease;
+}
+
+.like-count-btn:hover {
+    background: #fff5f9;
+    border-color: #ffffff;
+}
+
+.like-count-btn:active {
+    transform: scale(.97);
+}
+
+.like-count-btn:focus-visible {
+    outline: 2px solid #f29ab1;
+    outline-offset: 2px;
+}
+
+.like-count-btn .like-count {
+    font-weight: 700;
+    font-size: 0.95rem;
+}
+
+@keyframes like-pop {
+    0% { transform: scale(1); }
+    50% { transform: scale(1.25); }
+    100% { transform: scale(1); }
+}
+
+/* コメント入力 */
+.comment-form {
+    display: flex;
+    flex: 1;
+    gap: 6px;
+}
+
+.comment-form input {
+    flex: 1;
+    padding: 12px;
+    width: 25rem;
+    font-size: 16px;
+    border-radius: 6px;
+    border: 1px solid #ddd;
+}
+
+.comment-form button {
+    background-color: #ff69b4;
+    color: #fff;
+    border: none;
+    padding: 6px 10px;
+    border-radius: 6px;
+    cursor: pointer;
+}
+
+
+/* ==============================
+    9. コメント表示
+============================== */
+.comment-list {
+    margin-top: 2rem;
+    margin: 10px 0;
+}
+.comment-text {
+    display: block;
+    margin-left: 3.3rem;
+    margin-bottom: 1rem;
+    overflow-wrap: break-word; /* 長い単語でも折り返す */
+    white-space: pre-wrap;     /* 改行を維持しつつ自動折り返し */
+    word-break: break-word;    /* 長い単語やURLを適切に折り返し、日本語は自然に */
+}
+
+/* リンクがある場合は画面幅に合わせて折り返す */
+.comment-text a {
+    white-space: normal;
+    word-break: break-all;
+}
+
+/* リンクがある場合は画面幅に合わせて折り返す */
+.comment-text a {
+    white-space: normal;
+    word-break: break-all;
+}
+
+/* 3つ目以降のコメントを非表示 */
+.comment-list .comment:nth-child(n+4){
+    display: none;
+}
+
+/* コメント全表示の際に高さを制限してスクロール出来るようにする */
+.comment-list.expanded{
+    max-height: 300px;
+    overflow-y: auto; /*スクロール*/
+}
+
+/* expandedクラスが付いたら全部表示 */
+.comment-list.expanded .comment:nth-child(n+4){
+    display: block;
+}
+
+.comment_head{
+    display: flex;
+    align-items:flex-start;
+    justify-content:space-between;
+    gap:8pxz;
+}
+
+.user_name{
+    display: inline-block;
+    min-width: 0;
+    line-height: 1.2;
+    margin-top: 1px;
+}
+
+.comment_time{
+        margin-left:auto;
+        font-size: 0.85rem; /* 少し小さめに */
+        color: #353535;        /* 目立ちすぎない色に */
+        white-space: nowrap; /* 日付が変に改行されないように */
+    }
+
+.showMoreBtn{
+    background-color: #fff;
+    border: none;
+    cursor: pointer;
+    margin-left: 1rem;
+}
+
+
+/* ==============================
+    10. モーダル
+============================== */
+.modal {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background-color: rgba(0,0,0,0.8);
+    justify-content: center;
+    align-items: center;
+    z-index: 9999;
+}
+
+.modal img {
+    max-width: 90%;
+    max-height: 90%;
+    border-radius: 1rem;
+}
+
+.modal-close {
+    position: absolute;
+    top: 20px;
+    right: 30px;
+    color: white;
+    font-size: 30px;
+    cursor: pointer;
+}
+
+
+/* ==============================
+    11. フッターナビ（固定）
+============================== */
+
+.hamburger {
+    position: fixed;
+    top: 15px;
+    left: 15px;
+    border: none;
+    font-size: 30px;
+    cursor: pointer;
+    z-index: 1300;
+    background: transparent; 
+}
+
+/* サイドバー */
+.footer-nav {
+    position: fixed;
+    top: 0;
+    left: -250px; /* 初期は隠す */
+    width: 140px;
+    height: 100vh;
+    background: white;
+    display: flex;
+    flex-direction: column;
+    padding-top: 60px;
+    transition: left 0.3s ease;
+    z-index: 1200;
+}
+
+/* 開いた状態 */
+.footer-nav.active {
+    left: 0;
+}
+
+/* タブ */
+.footer-nav .tab {
+    padding: 40px 20px;
+    text-decoration: none;
+    display: flex;
+    align-items: center;
+    gap: 8px;   /* ← アイコンと文字の間 */
+}
+
+/* オーバーレイ */
+.overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.4);
+    display: none;
+    z-index: 1100;
+}
+
+.overlay.active {
+    display: block;
+}
+
+.footer-nav a {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-decoration: none;
+    color: #666;
+    transition: 0.2s;
+}
+
+.footer-nav a:hover,
+.footer-nav a.active {
+    color: #ff69b4;
+    transform: scale(1.1);
+}
+
+.footer-nav i {
+    font-size: 20px;
+}
+
+.footer-nav span {
+    font-size: 11px;
+    margin-top: 4px;
+}
+
+/* 投稿作成画面 */
+.createPost{
+    width: 100%;
+    padding: 1.5rem;
+    margin-bottom: 1.5rem;
+    border-radius: 1.5rem;
+    flex-direction: column;
+    display: flex;
+    gap: 1rem;
+    background: #fff;
+}
+
+/*いいねした人ダイアログ*/
+.like-users-modal{
+    display:none;
+    position:fixed;
+    inset:0;
+    background:rgba(0,0,0,.45);
+    z-index:9999;
+    align-items:center;
+    justify-content:center;
+}
+.like-users-modal.is-open{ display:flex; }
+
+.like-users-dialog{
+    background:#fff;
+    width:min(92vw,420px);
+    max-height:70vh;
+    border-radius:12px;
+    overflow:hidden;
+}
+.like-users-head{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    padding:12px 14px;
+    border-bottom:1px solid #eee;
+}
+.like-users-close{
+    border:none;
+    background:none;
+    font-size:20px;
+    cursor:pointer;
+}
+.like-users-list{
+    list-style:none;
+    margin:0;
+    padding:0;
+    max-height:58vh;
+    overflow:auto;
+}
+.like-user-row{
+    display:flex;
+    align-items:center;
+    gap:10px;
+    padding:10px 14px;
+    border-bottom:1px solid #f3f3f3;
+}
+.like-user-row img{
+    width:32px;
+    height:32px;
+    border-radius:50%;
+    object-fit:cover;
+}
+.like-user-empty{ padding:14px; }
+.like-user-link{
+    display:flex;
+    align-items:center;
+    gap:10px;
+    width:100%;
+    color:inherit;
+    text-decoration:none;
+}
+/* ==============================
+    12. レスポンシブ
+============================== */
+@media screen and (max-width: 768px) {
+    #site-title {
+        font-size: 1.6rem;
+        /* font-family: ; */
+    }
+    
+
+    .container {
+        padding: 0.5rem;
+        padding-bottom: 80px;
+    }
+    .search-input{
+        flex: 1;
+        padding: 12px;
+        width: 300px;
+        border-radius: 8px;
+        border: 1px solid #ccc;
+    }
+    .comment-form input {
+        flex: 1;
+        padding: 12px;
+        width: 20px;
+        font-size: 16px;
+        border-radius: 6px;
+        border: 1px solid #ddd;
+    }
+
+    .like-button {
+        background: none;
+        border: none;
+        cursor: pointer;
+        font-size: 20px;
+        color: #aaa;
+        transition: color 0.2s ease;
+    }
+
+    .showMoreBtn{
+        background-color: #fff;
+        border: none;
+        cursor: pointer;
+        margin-left: 1rem;
+    }
+    
+    .post_time{
+        position: absolute; /* ← 絶対配置 */
+        top: 15px;          /* 上端からの距離（.postのpaddingに合わせる） */
+        right: 15px;        /* 右端からの距離 */
+        font-size: 0.85rem; /* 少し小さめに */
+        color: #353535;        /* 目立ちすぎない色に */
+        white-space: nowrap; /* 日付が変に改行されないように */
+    }
+
+    .comment_time{
+        position: absolute; /* ← 絶対配置 */
+        top: 15px;          /* 上端からの距離（.postのpaddingに合わせる） */
+        right: 15px;        /* 右端からの距離 */
+        font-size: 0.85rem; /* 少し小さめに */
+        color: #353535;        /* 目立ちすぎない色に */
+        white-space: nowrap; /* 日付が変に改行されないように */
+    }
+
+   /* ハンバーガーいらない */
+    .hamburger {
+        display: none;
+    }
+
+    /* サイドバーを下フッターに変形 */
+    .footer-nav {
+        left: 0;              /* 横スライド無効 */
+        top: auto;
+        bottom: 0;
+        width: 100%;
+        height: 60px;
+        flex-direction: row;  /* 横並び */
+        justify-content: space-around;
+        align-items: center;
+        padding-top: 0;
+    }
+    /* ← ここが超重要 */
+    .footer-nav a {
+        flex: 1;                 /* 均等分割 */
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        text-decoration: none;
+        color: #666;
+    }
+
+    .footer-nav .tab{
+        padding: 0;              /* タブの余白調整 */
+    }
+
+    .footer-nav i {
+        font-size: 20px;
+        margin-bottom: 2px;
+    }
+
+    .footer-nav span {
+        font-size: 11px;
+    }
+    /* activeいらない */
+    .footer-nav.active {
+        left: 0;
+    }
+
+    /* オーバーレイ不要 */
+    .overlay {
+        display: none !important;
+    }
+
+    .comment_time{
+        margin-left:auto;
+        font-size: 0.85rem; /* 少し小さめに */
+        color: #353535;        /* 目立ちすぎない色に */
+        white-space: nowrap; /* 日付が変に改行されないように */
+    }
+}

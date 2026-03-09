@@ -1,0 +1,350 @@
+/* =========================
+   基本
+========================= */
+body {
+  font-family: Arial, sans-serif;
+  background-color: #add8e6;
+  min-height: 100vh;
+}
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+/* =========================
+    ヘッダー
+========================= */
+.site-header {
+  width: 100%;
+  padding: 20px 0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.header-inner {
+  max-width: 600px;
+  margin: 0 auto;
+}
+
+
+#site-title {
+  font-size: 2rem;
+  font-weight: 700;
+  font-family: cursive;
+}
+
+/* =========================
+    コンテナ
+========================= */
+.circle-container {
+  width: 100%;
+  max-width: 600px;
+  margin: 30px auto;
+  padding: 0; /* 必要なら後で足す */
+  background: #fff;
+  border-radius: 15px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+
+}
+
+/* =========================
+    検索
+========================= */
+.search-container { 
+  display: flex; 
+  justify-content: center; 
+  align-items: center; 
+  padding: 12px; 
+  background: #fff; 
+  border-bottom: 1px solid #ddd; 
+  gap: 12px; 
+  border-radius: 15px;
+} 
+.search-container input { 
+  width: 65%; 
+  max-width: 450px; 
+  padding: 10px; 
+  border: 1px solid #ccc; 
+  border-radius: 6px; 
+}
+
+#search-results,
+#search-results li {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.attach-btn {
+  font-size: 26px;
+  text-decoration: none;
+  color: #ff69b4;
+}
+
+/* =========================
+    サークル一覧
+========================= */
+.circle-list,
+.circle-section {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+/* 🔴 最重要：横並び＆幅管理 */
+.circle-item .circle-link {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+  padding: 5px;
+  background: #fff;
+  margin-bottom: 10px;
+  border-radius: 10px;
+  text-decoration: none;
+  color: inherit;
+  transition: 0.2s;
+}
+
+/* アイコン */
+.circle-item .circle-link img {
+  width: 65px;
+  height: 65px;
+  border-radius: 50%;
+  object-fit: cover;
+  flex-shrink: 0;
+}
+
+/* 🔴 テキスト全体を横いっぱいに */
+.circle-text {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  flex: 1;        /* ← これを追加 */
+  min-width: 0;   /* ← テキスト省略対策（超重要） */
+}
+
+/* サークル名（左固定） */
+.circle-item .circle-link .name {
+  font-size: 18px;
+  font-weight: bold;
+  color: #000;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* 🔴 人数（右端固定） */
+.members {
+  margin-left: auto;
+  color: #000;
+  font-size: 20px;
+  font-weight: bold;
+  padding: 6px;
+  border-radius: 4px;
+  white-space: nowrap;
+}
+
+.circle-item .circle-link:hover {
+  background: #eef7ff;
+}
+
+.circle-item .circle-link:hover .name {
+  color: #4CAF50;
+}
+
+/* =========================
+    タブ
+========================= */
+.circle-tabs {
+  display: flex;
+  margin: 10px 0;
+  border-bottom: 1px solid #ccc;
+}
+
+.tab-btn {
+  flex: 1;
+  padding: 12px 0;
+  text-align: center;
+  background: #f4f4f4;
+  border: none;
+  font-size: 16px;
+  cursor: pointer;
+  white-space: nowrap;
+}
+
+.tab-btn.active {
+  background: #fff;
+  border-bottom: 3px solid #3498db;
+  font-weight: bold;
+}
+
+/* =========================
+   フッターナビ
+========================= */
+.hamburger {
+    position: fixed;
+    top: 15px;
+    left: 15px;
+    border: none;
+    font-size: 30px;
+    cursor: pointer;
+    z-index: 1300;
+    background: transparent; 
+}
+
+/* サイドバー */
+.footer-nav {
+    position: fixed;
+    top: 0;
+    left: -250px; /* 初期は隠す */
+    width: 140px;
+    height: 100vh;
+    background: white;
+    display: flex;
+    flex-direction: column;
+    padding-top: 60px;
+    transition: left 0.3s ease;
+    z-index: 1200;
+}
+
+/* 開いた状態 */
+.footer-nav.active {
+    left: 0;
+}
+
+/* タブ */
+.footer-nav .tab {
+    padding: 40px 20px;
+    text-decoration: none;
+    display: flex;
+    align-items: center;
+    gap: 8px;   /* ← アイコンと文字の間 */
+}
+
+/* オーバーレイ */
+.overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.4);
+    display: none;
+    z-index: 1100;
+}
+
+.overlay.active {
+    display: block;
+}
+
+.footer-nav a {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-decoration: none;
+    color: #666;
+    transition: 0.2s;
+}
+
+.footer-nav a:hover,
+.footer-nav a.active {
+    color: #ff69b4;
+    transform: scale(1.1);
+}
+
+.footer-nav i {
+    font-size: 20px;
+}
+
+.footer-nav span {
+    font-size: 11px;
+    margin-top: 4px;
+}
+
+/* =========================
+  レスポンシブ
+========================= */
+@media screen and (max-width: 600px) {
+  .circle-item .circle-link img {
+    width: 55px;
+    height: 55px;
+  }
+
+  .circle-item .circle-link .name {
+    font-size: 16px;
+  }
+
+  .circle-text {
+    display: flex;
+    flex-direction: column; /* ← これが一番重要 */
+    gap: 4px;
+  }
+
+  .circle-container {
+  width: 80%;
+  margin: 30px auto;
+  padding: 25px;
+  background: #fff;
+  border-radius: 15px;
+  box-shadow: 0 3px 10px rgba(0,0,0,0.15);
+  
+}
+
+.sentence {
+    white-space: normal;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+
+  /* ハンバーガーいらない */
+    .hamburger {
+        display: none;
+    }
+
+    /* サイドバーを下フッターに変形 */
+    .footer-nav {
+        left: 0;              /* 横スライド無効 */
+        top: auto;
+        bottom: 0;
+        width: 100%;
+        height: 60px;
+        flex-direction: row;  /* 横並び */
+        justify-content: space-around;
+        align-items: center;
+        padding-top: 0;
+    }
+    /* ← ここが超重要 */
+    .footer-nav a {
+        flex: 1;                 /* 均等分割 */
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        text-decoration: none;
+        color: #666;
+    }
+
+    .footer-nav .tab{
+        padding: 0;              /* タブの余白調整 */
+    }
+
+    .footer-nav i {
+        font-size: 20px;
+        margin-bottom: 2px;
+    }
+
+    .footer-nav span {
+        font-size: 11px;
+    }
+    /* activeいらない */
+    .footer-nav.active {
+        left: 0;
+    }
+
+    /* オーバーレイ不要 */
+    .overlay {
+        display: none !important;
+    }
+}
