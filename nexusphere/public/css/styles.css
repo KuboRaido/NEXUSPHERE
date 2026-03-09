@@ -196,6 +196,107 @@ input[type="file"] {
     white-space: pre-wrap;     /* 改行を維持しつつ自動折り返し */
 }
 
+/* 投稿上部右側のメタ情報エリア（日時・削除ボタン） */
+.post-meta {
+    position: absolute;
+    top: 15px;
+    right: 15px;
+    display: flex;
+    align-items: center;
+    gap: 10px; /* ボタンと日時の間隔 */
+}
+
+/* 削除ボタン（編集ボタン風の見た目） */
+.post-delete-btn {
+    text-decoration: none;
+    background: #ff69b4; /* 背景色（他のボタンと合わせる） */
+    color: white;
+    font-size: 11px;     /* 日時より少し小さめに */
+    border-radius: 6px;
+    padding: 4px 8px;
+    cursor: pointer;
+    border: none;
+    transition: opacity 0.2s;
+}
+
+.post-delete-btn:hover {
+    opacity: 0.8;
+}
+
+/* 日時テキスト（post_timeの絶対配置を除去したもの） */
+.post-time-text {
+    font-size: 0.85rem;
+    color: #353535;
+    white-space: nowrap;
+}
+
+/* 削除確認モーダル（画面全体を覆う） */
+.delete-post-confirm {
+    position: fixed;       /* 画面に対して固定 */
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5); /* 半透明の黒背景 */
+    z-index: 10000;        /* 最前面に表示 */
+    display: flex;         /* 中央寄せ用 */
+    justify-content: center;
+    align-items: center;
+}
+/* hidden属性がある場合は強制的に非表示にする */
+.delete-post-confirm[hidden] {
+    display: none !important;
+}
+
+/* ダイアログ本体（白い箱） */
+.delete-post-dialog {
+    background: #fff;
+    padding: 20px;
+    border-radius: 8px;
+    text-align: center;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.2);
+    min-width: 300px;      /* 最低限の幅を確保 */
+}
+
+/* ボタンの並び */
+.delete-post-actions {
+    margin-top: 15px;
+    display: flex;
+    justify-content: center;
+    gap: 15px;
+}
+
+/* 削除実行ボタン（はい） */
+.delete-post-yes {
+    background-color: #ff4d4d; /* 警告色（赤） */
+    color: #fff;
+    border: none;
+    border-radius: 6px;
+    padding: 8px 24px;
+    font-size: 14px;
+    cursor: pointer;
+    font-weight: bold;
+    transition: opacity 0.2s;
+}
+.delete-post-yes:hover {
+    opacity: 0.8;
+}
+
+/* キャンセルボタン（いいえ） */
+.delete-post-no {
+    background-color: #e5e7eb; /* グレー */
+    color: #374151;
+    border: none;
+    border-radius: 6px;
+    padding: 8px 24px;
+    font-size: 14px;
+    cursor: pointer;
+    font-weight: bold;
+    transition: background-color 0.2s;
+}
+.delete-post-no:hover {
+    background-color: #d1d5db;
+}
 
 
 

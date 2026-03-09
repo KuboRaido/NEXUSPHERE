@@ -1,6 +1,6 @@
 document.addEventListener("DOMContentLoaded", function() {
-    const toggleBtn = document.querySelector(".portfolio-toggle");
-    const content   = document.querySelector(".portfolio-content");
+    // const toggleBtn = document.querySelector(".portfolio-toggle");
+    // const content   = document.querySelector(".portfolio-content");
 
     const trigger       = document.getElementById("logout-trigger");
     const confirmLogout = document.getElementById("logout-confirm");
@@ -35,26 +35,56 @@ document.addEventListener("DOMContentLoaded", function() {
     }
 
   // ▼ ポートフォリオ開閉（ここが重要）
-    toggleBtn.addEventListener("click", () => {
-    content.classList.toggle("is-open");
+    // toggleBtn.addEventListener("click", () => {
+    // content.classList.toggle("is-open");
 
-    toggleBtn.innerHTML = content.classList.contains("is-open")
-        ? '<i class="fa-solid fa-chevron-up"></i>'
-        : '<i class="fa-solid fa-chevron-down"></i>';
-    });
+    // toggleBtn.innerHTML = content.classList.contains("is-open")
+    //     ? '<i class="fa-solid fa-chevron-up"></i>'
+    //     : '<i class="fa-solid fa-chevron-down"></i>';
+    // });
 });
-document.addEventListener("DOMContentLoaded", function () {
-    const sidebar = document.getElementById("sidebar");
-    const menuBtn = document.getElementById("menuBtn");
-    const overlay = document.getElementById("overlay");
 
-    menuBtn.addEventListener("click", function () {
-        sidebar.classList.toggle("active");
-        overlay.classList.toggle("active");
-    });
+document.addEventListener("DOMContentLoaded", function() {
+    const deleteTriggers = document.querySelectorAll(".delete-post-trigger");
 
-    overlay.addEventListener("click", function () {
-        sidebar.classList.remove("active");
-        overlay.classList.remove("active");
-    });
+    if (deleteTriggers.length > 0) {
+        deleteTriggers.forEach((postTrigger) => {
+            const postId = postTrigger.dataset.postId;
+            const confirmPost = document.getElementById(`delete-post-confirm-${postId}`);
+            const postNo = confirmPost ? confirmPost.querySelector(".delete-post-no") : null;
+
+            if (confirmPost && postNo) {
+                const showConfirm = () => {
+                    confirmPost.hidden = false;
+                    // confirmPost.style.display = "grid"; // CSSのflex設定を優先するため削除
+                };
+
+                const hideConfirm = () => {
+                    confirmPost.hidden = true;
+                    // confirmPost.style.display = "none"; // hidden属性だけで制御するため削除
+                };
+
+                // 初期状態を非表示に
+                hideConfirm();
+
+                postTrigger.addEventListener("click", showConfirm);
+                postNo.addEventListener("click", hideConfirm);
+
+                confirmPost.addEventListener("click", (e) => {
+                    if (e.target === e.currentTarget) hideConfirm();
+                });
+            }
+        });
+
+        // ESCキーで全てのモーダルを閉じる
+        document.addEventListener("keydown", (e) => {
+            if (e.key === "Escape") {
+                document.querySelectorAll(".delete-post-confirm").forEach(modal => {
+                    modal.hidden = true;
+                    // インラインスタイルを削除してCSSクラスの設定が適用されるようにする
+                    modal.style.display = ""; 
+                });
+            }
+        });
+    }
 });

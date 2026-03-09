@@ -1,23 +1,7 @@
 //いいねした人をダイアログで表示
 document.addEventListener('DOMContentLoaded', () => {
     let modal = document.getElementById('like-users-modal');
-
-    if (!modal) {
-        modal = document.createElement('div');
-        modal.id = 'like-users-modal';
-        modal.className = 'like-users-modal';
-        modal.setAttribute('aria-hidden', 'true');
-        modal.innerHTML = `
-            <div class="like-users-dialog" role="dialog" aria-modal="true" aria-labelledby="like-users-title">
-                <div class="like-users-head">
-                    <strong id="like-users-title">いいねした人</strong>
-                    <button type="button" id="like-users-close" class="like-users-close">✖</button>
-                </div>
-                <ul id="like-users-list" class="like-users-list"></ul>
-            </div>
-        `;
-        document.body.appendChild(modal);
-    }
+    if (!modal) return;
 
     const listEl = modal.querySelector('#like-users-list');
     const closeBtn = modal.querySelector('#like-users-close');
@@ -81,20 +65,6 @@ document.addEventListener('DOMContentLoaded', () => {
             console.error(err);
             alert('いいねしたユーザー一覧の取得に失敗しました');
         }
-    });
-});
-
-// プロフィール遷移
-document.querySelectorAll('.js-profile-link').forEach(el => {
-    el.addEventListener('click', () => {
-    const userId = el.dataset.userId;
-    if (!userId) return;
-
-    if (userId === document.body.dataset.meId) {
-        location.href = '/profile';
-    } else {
-        location.href = `/profile/${userId}`;
-    }
     });
 });
 
@@ -169,5 +139,23 @@ document.addEventListener('DOMContentLoaded', () => {
                 btn.disabled = false;
             }
         });
+    });
+});
+
+
+
+document.addEventListener("DOMContentLoaded", function () {
+    const sidebar = document.getElementById("sidebar");
+    const menuBtn = document.getElementById("menuBtn");
+    const overlay = document.getElementById("overlay");
+
+    menuBtn.addEventListener("click", function () {
+        sidebar.classList.toggle("active");
+        overlay.classList.toggle("active");
+    });
+
+    overlay.addEventListener("click", function () {
+        sidebar.classList.remove("active");
+        overlay.classList.remove("active");
     });
 });
