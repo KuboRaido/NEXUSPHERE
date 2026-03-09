@@ -93,9 +93,11 @@ erDiagram
     %% PRCS のリレーション
     PRCS ||--o{ IMAGES_AND_VIDEOS : "has"
     PRCS ||--o{ NICES : "receives"
+    PRCS ||--o{ PRCS : "parent/child"
     
     %% DMS のリレーション
     DMS ||--o{ IMAGES_AND_VIDEOS : "has"
+    DMS ||--o{ DMS : "parent/child"
 
     %% ==========================================
     %% テーブル定義（カラム詳細）
@@ -140,7 +142,7 @@ erDiagram
 
     DMS {
         bigint dm_id PK
-        string dm_key "unique"
+        string dm_key "nullable"
         bigint circle_id FK "nullable"
         bigint group_id FK "nullable"
         bigint sender_id FK
@@ -149,8 +151,8 @@ erDiagram
         bigint conversation_id "nullable"
         text message_text "nullable"
         json attachments "nullable"
-        timestamp read_at "nullable"
-        boolean is_read 
+        bigint user_id FK "Users(user_id)"
+        bigint parent_id FK "nullable"
         timestamp created_at
         timestamp updated_at
         timestamp deleted_at "nullable (Soft Delete)"
@@ -171,6 +173,7 @@ erDiagram
         bigint prc_id PK
         bigint user_id FK "nullable"
         bigint circle_id FK "nullable"
+        bigint profile_id FK "nullable"
         int type "nullable"
         int parent_id FK "nullable"
         text sentence "nullable"
@@ -206,17 +209,18 @@ erDiagram
 
     CIRCLE_USERS {
         bigint circle_user_id PK
-        bigint circle_id FK "nullable"
+        bigint circle_id FK
         bigint user_id FK "nullable"
         timestamp created_at
         timestamp updated_at
     }
 
     CIRCLE_REQUESTS {
-        bigint id PK
+        bigint circle_request_id PK
         bigint circle_id FK
         bigint user_id FK
         string status "pending/approved/rejected"
+        timestamp request_at "nullable"
         timestamp created_at
         timestamp updated_at
     }
@@ -229,10 +233,8 @@ erDiagram
     }
 
     CUSTOMS {
-        bigint id PK
+        bigint custom_id PK
         int user_id FK "unique"
-        string background_color
-        string header_color
         timestamp created_at
         timestamp updated_at
     }
@@ -242,20 +244,16 @@ erDiagram
         bigint user_id FK
         string ip_address "nullable"
         string user_agent "nullable"
-        timestamp created_at
-        timestamp updated_at
+        timestamp login_at
     }
 
     ACCESS_LOGS {
         bigint id PK
         bigint user_id FK
-        string route_name "nullable"
-        string url "nullable"
-        string method "nullable"
-        string ip_address "nullable"
+        string path "nullable"
+        string ip_address 
         string user_agent "nullable"
-        timestamp created_at
-        timestamp updated_at
+        timestamp access_at
     }
 ```
 ## 7.セットアップ
