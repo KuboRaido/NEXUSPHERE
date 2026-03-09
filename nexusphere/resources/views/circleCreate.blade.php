@@ -40,7 +40,7 @@
                 </div>
 
                 <div class="form-group">
-                    <label for="name">クラブ名（必須）</label>
+                    <label for="name">サークル名（必須）</label>
                     <input type="text" id="name" name="name" maxlength="30" required>
                 </div>
 

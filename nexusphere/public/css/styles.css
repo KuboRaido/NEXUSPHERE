@@ -192,8 +192,15 @@ input[type="file"] {
     margin-bottom: 10px;
     margin-left: 50px;
     overflow-wrap: break-word; /* 長い単語でも折り返す */
-    word-wrap: break-word;     /* 旧ブラウザ用 */
     white-space: pre-wrap;     /* 改行を維持しつつ自動折り返し */
+    word-break: break-word;    /* 長い単語やURLを適切に折り返し、日本語は自然に */
+    max-width: 100%;           /* 画面幅最大まで */
+}
+
+/* リンクがある場合は画面幅に合わせて折り返す */
+.post-content a {
+    white-space: normal;       /* 親のwhite-spaceを継承せず、折り返しを許可 */
+    word-break: break-all;     /* リンクは強制的に折り返す */
 }
 
 /* 投稿上部右側のメタ情報エリア（日時・削除ボタン） */
@@ -436,8 +443,20 @@ input[type="file"] {
     margin-left: 3.3rem;
     margin-bottom: 1rem;
     overflow-wrap: break-word; /* 長い単語でも折り返す */
-    word-wrap: break-word;     /* 旧ブラウザ用 */
     white-space: pre-wrap;     /* 改行を維持しつつ自動折り返し */
+    word-break: break-word;    /* 長い単語やURLを適切に折り返し、日本語は自然に */
+}
+
+/* リンクがある場合は画面幅に合わせて折り返す */
+.comment-text a {
+    white-space: normal;
+    word-break: break-all;
+}
+
+/* リンクがある場合は画面幅に合わせて折り返す */
+.comment-text a {
+    white-space: normal;
+    word-break: break-all;
 }
 
 /* 3つ目以降のコメントを非表示 */

@@ -120,6 +120,15 @@ input[type="file"] {
 .post-content {
     margin-bottom: 10px;
     line-height: 1.6;
+    overflow-wrap: break-word; /* 長い単語でも折り返す */
+    white-space: pre-wrap;     /* 改行を維持しつつ自動折り返し */
+    word-break: break-word;
+}
+
+/* リンクがある場合は画面幅に合わせて折り返す */
+.post-content a {
+    white-space: normal;       /* 親のwhite-spaceを継承せず、折り返しを許可 */
+    word-break: break-all;
 }
 
 /* ==============================
