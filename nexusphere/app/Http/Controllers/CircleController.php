@@ -239,10 +239,11 @@ class CircleController extends Controller
         $isMember = $circle->members()->where('circle_users.user_id', $userId)->exists();
         $role     = $isOwner ? 'owner' : ($isMember ? 'member' : 'guest');
         $posts    = Prc::where('circle_id', $circle->circle_id)
+                        ->with('user')
                         ->orderBy('created_at', 'desc')
                         ->get();
 
-        return view('circleProfile', ['circle' => $circle,'isMember' => $isMember, 'role' => $role, 'posts' => $posts ],);
+        return view('circleProfile', ['user' => $userId,'circle' => $circle,'isMember' => $isMember, 'role' => $role, 'posts' => $posts ],);
     }
 
     /*サークル投稿画面*/

@@ -100,7 +100,7 @@ async function loadConversation(currentPartnerId) {
     from: String(m.from_id),
     to:   String(m.to_id),
     text: m.text,
-    icon: (m.from_id ? ME_ICON : PARTNER_ICON),
+    icon: ((Number(m.from_id) === Number(getMeId())) ? ME_ICON : PARTNER_ICON),
     attachments: m.attachments || [],
     timestamp: new Date(m.created_at),
     pending: false,
@@ -206,7 +206,7 @@ function renderMessages() {
         if(statusLabel.textContent !== status) statusLabel.textContent = status;
       }else if(status && !statusLabel){
         //未読だった場合
-        const bubble = row.querySelector('.massage-bubble');
+        const bubble = row.querySelector('.message-bubble');
         if(bubble){
           const label = document.createElement('span');
             label.className = 'read-status';
@@ -242,7 +242,7 @@ function renderMessages() {
     })
     const bubble = document.createElement('div');
     bubble.className = 'message-bubble';
-    if(msg.text)bubble.textContent = msg.text;
+      if(msg.text)bubble.innerHTML = msg.text;
 
     //動画と画像を画面に表示する
   if(Array.isArray(msg.attachments) && msg.attachments.length){

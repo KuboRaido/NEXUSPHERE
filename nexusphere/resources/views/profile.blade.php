@@ -16,6 +16,11 @@
         <div class="header-inner">
             <h1 id="site-title">Nexusphere</h1>
         </div>
+
+      <button id="menuBtn" class="hamburger">
+        <i class="fa-solid fa-bars"></i>
+      </button>
+
 <!--ここからログアウトボタン-->
       @if($isMine)
         <button type="button" class="logout-btn" id="logout-trigger">ログアウト</button>
@@ -82,112 +87,29 @@
         <div class="content">
           <div class="left">
             <h4>最近の投稿</h4>
-
-              @forelse($posts as $post)
-              {{-- ホーム画面と同じレイアウトで表示 --}}
-              <div class="post" data-post-id="{{ $post->prc_id }}">
-                  {{-- 投稿者名 --}}
-                  <div class="post-header">
-                      <a href="{{ route('profile.other', $post->user->user_id) }}" class="user-link">
-                          <img src="{{ $post->user->avatar_url }}"
-                              class="user-icon"
-                              alt="icon">
-                          <span class="username">{{ $post->user->name }}</span>
-                        @if ($post->created_at->gt(now()->subWeek()))
-                          <time class="post_time">{{ $post->created_at->diffForHumans() }}</time>
-                        @else
-                          <time class="post_time">{{ $post->created_at->format('Y年m月d日') }}</time>
-                        @endif
-                      </a>
-                  </div>
-
-                  {{-- 投稿内容 --}}
-                  <div class="post-content">{{ $post->sentence }}</div>
-
-                  {{-- メディア (画像 or 動画) --}}
-                  @if ($post->images && $post->images->count() > 0)
-                      <div class="post-images">
-                          @foreach ($post->images as $media)
-                              @php
-                                  $filePath = $media->image ?? $media->video;
-                                  $exetension = strtolower(pathinfo($filePath, PATHINFO_EXTENSION));
-                              @endphp
-
-                              {{-- 画像 --}}
-                              @if (in_array($exetension, ['jpg', 'jpeg', 'png', 'webp', 'gif']))
-                                  <img src="{{ asset('storage/post/' . $filePath) }}"
-                                      alt="投稿画像"
-                                      class="post-image"
-                                      onclick="openModal(this.src)">
-                              @endif
-
-                              {{-- 動画 --}}
-                              @if (in_array($exetension, ['mp4', 'mov', 'webm']))
-                                  <video controls
-                                      class="post-video"
-                                      style="max-width: 100%; border-radius: 8px; margin-top: 10px;">
-                                      <source src="{{ asset('storage/post/' . $filePath) }}" type="video/{{ $exetension }}">
-                                  </video>
-                              @endif
-                          @endforeach
-                      </div>
+              @foreach($posts as $post)
+                  @if($isMine)
+                    <x-post_mainUnit :post="$post" :user_id="$userId" :deletePost="true"/>
+                  @else
+                    <x-post_mainUnit :post="$post" :deletePost="false"/>
                   @endif
-
-                  <div class="post-footer">
-                      {{-- いいね --}}
-                      <form method="POST" action="/posts/{{ $post->prc_id }}/like">
-                          @csrf
-                          <button type="submit" class="like-button">
-                              ❤️ <span class="like-count">{{ $post->nices->count() }}</span>
-                          </button>
-                      </form>
-
-                      {{-- コメント入力 --}}
-                      <form method="POST" action="/posts/{{ $post->prc_id }}/comment" class="comment-form">
-                          @csrf
-                          <input type="text" name="comment" placeholder="コメントを追加" required>
-                          <button type="submit">送信</button>
-                      </form>
-                  </div>
-
-                  {{-- コメント一覧 --}}
-                  <div class="comment-list">
-                      @foreach ($post->comments as $comment)
-                          <div class="comment">
-                                <div class="comment_head">
-                                    <a href="{{ route('profile.other', $comment->user->user_id) }}" class="user-link">
-                                        <img src="{{ $comment->user->avatar_url }}" class="user-icon small">
-                                        <strong class="user_name">{{ $comment->user->name }}</strong>
-                                    </a>
-                                    @if ($comment->created_at->gt(now()->subWeek()))
-                                            <time class="comment_time">{{ $comment->created_at->diffForHumans() }}</time>
-                                    @else
-                                            <time class="comment_time">{{ $comment->created_at->format('Y年m月d日') }}</time>
-                                    @endif
-                                </div>
-                                <span class="comment-text">{{ $comment->sentence }}</span>
-                            </div>
-                      @endforeach
-                  </div>
-                  @if($post->comments->count() > 3)
-                      <button class="showMoreBtn">全てのコメントを見る</button>
-                  @endif
-              </div>
-              @empty
-                  <div class="no-posts">投稿はありません</div>
-              @endforelse
+              @endforeach
           </div>
         </div>
       </section>
     </main>
 
-    <div class="footer-nav">
-      <a href="/home" class="tab {{ request()->is('home') ? 'active' : '' }}"><i class="fa-solid fa-house"></i><span>ホーム</span></a>
-      <a href="/post" class="tab {{ request()->is('post') ? 'active' : '' }}"><i class="fas fa-paper-plane"></i><span>投稿</span></a>
-      <a href="/dmlist" class="tab {{ request()->is('dmlist') ? 'active' : '' }}"><i class="fa-solid fa-comment"></i><span>DM</span></a>
-      <a href="/profile" class="tab {{ request()->is('profile') ? 'active' : '' }}"><i class="fa-solid fa-user"></i><span>プロフィール</span></a>
-      <a href="/circle" class="tab {{ request()->is('circle') ? 'active' : '' }}"><i class="fa-solid fa-cube"></i><span>サークル</span></a>
+    <div id="sidebar" class="footer-nav">
+        <a href="/home" class="tab {{ request()->is('home') ? 'active' : '' }}"><i class="fa-solid fa-house"></i><span>ホーム</span></a>
+        <a href="/post" class="tab {{ request()->is('post') ? 'active' : '' }}"><i class="fas fa-paper-plane"></i><span>投稿</span></a>
+        <a href="/dmlist" class="tab {{ request()->is('dmlist') ? 'active' : '' }}"><i class="fa-solid fa-comment"></i><span>DM</span></a>
+        <a href="/profile" class="tab {{ request()->is('profile') ? 'active' : '' }}"><i class="fa-solid fa-user"></i><span>プロフィール</span></a>
+        <a href="/circle" class="tab {{ request()->is('circle') ? 'active' : '' }}"><i class="fa-solid fa-cube"></i><span>サークル</span></a>
     </div>
+  <script src="{{ asset('js/module/post_mainUnit.js') }}"></script>
+
+    <div id="overlay" class="overlay"></div>
   <script src="{{ asset('js/profile.js') }}"></script>
+    <x-like-users-modal />
 </body>
 </html>

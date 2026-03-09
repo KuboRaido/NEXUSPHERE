@@ -14,17 +14,6 @@ class PrcController extends Controller
     // 投稿一覧（検索対応）
     public function index(Request $request)
     {
-        if(!empty($request->circle_id)){
-        // 投稿(type = 0) をベースにクエリ作成
-        $query = Prc::where('type', 0)
-                    ->with(['comments', 'images'])
-                    ->orderBy('created_at', 'desc');
-
-        $posts = $query->get();
-
-        return view('circleProfile', compact('posts'));
-        }
-
         if(empty($request -> circle_id)){
             // 投稿(type = 0) をベースにクエリ作成
             $query = Prc::where('type', 0)
@@ -95,6 +84,18 @@ class PrcController extends Controller
         }
 
         return redirect()->back();
+    }
+
+    public function delete($postId)
+    {
+        $post = Prc::where("prc_id", $postId)->first();
+        
+        // 投稿が存在し、かつ自分の投稿である場合のみ削除
+        if($post && $post->user_id == Auth::id()){
+            $post->delete();
+        }
+
+        return back();
     }
 
     public function circleStore(Request $request){
@@ -170,7 +171,7 @@ class PrcController extends Controller
     }
 
     // いいね(POST /posts/{prc_id}/like)
-    public function like($postId)
+    public function like(Request $request, $postId)
     {
         $userId = Auth::id();
         abort_if(!$userId, 401, 'Unauthenticated');
@@ -186,17 +187,46 @@ class PrcController extends Controller
         if ($existing) {
             // ❌ すでに存在 → 削除（いいね解除）
             $existing->delete();
+            $liked = false;
         } else {
             // ❤️ 存在しない → 新規作成
             Nice::firstOrCreate([
                 'prc_id' => $post->prc_id,
                 'user_id' => $userId,
             ]);
+
+            $liked = true;
         }
 
-        return redirect()->back();
+        $likeCount = Nice::where('prc_id', $post->prc_id)->count();
+        if($request->expectsJson()){
+            return response()->json([
+                'liked' => $liked,
+                'like_count' => $likeCount,
+            ]);
+        }
+
+
+        return back();
     }
 
+    public function likedUser($postId)
+    {
+        $likedUser = Nice::where('prc_id', $postId)
+                        ->with('user:user_id,name,icon')
+                        ->get()
+                        ->map(function ($nice) {
+                            return[
+                                'user_id' => $nice->user?->user_id,
+                                'name'    => $nice->user?->name,
+                                'icon'    => $nice->user?->icon,
+                            ];
+                        })
+                        ->filter(fn ($u) => !is_null($u['user_id']))
+                        ->values();
+
+        return response()->json($likedUser);
+    }
 
     // 投稿フォーム表示
     public function post()

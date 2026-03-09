@@ -1,6 +1,6 @@
 document.addEventListener("DOMContentLoaded", function() {
-    const toggleBtn = document.querySelector(".portfolio-toggle");
-    const content   = document.querySelector(".portfolio-content");
+    // const toggleBtn = document.querySelector(".portfolio-toggle");
+    // const content   = document.querySelector(".portfolio-content");
 
     const trigger       = document.getElementById("logout-trigger");
     const confirmLogout = document.getElementById("logout-confirm");
@@ -35,95 +35,56 @@ document.addEventListener("DOMContentLoaded", function() {
     }
 
   // ▼ ポートフォリオ開閉（ここが重要）
-    toggleBtn.addEventListener("click", () => {
-    content.classList.toggle("is-open");
+    // toggleBtn.addEventListener("click", () => {
+    // content.classList.toggle("is-open");
 
-    toggleBtn.innerHTML = content.classList.contains("is-open")
-        ? '<i class="fa-solid fa-chevron-up"></i>'
-        : '<i class="fa-solid fa-chevron-down"></i>';
-    });
+    // toggleBtn.innerHTML = content.classList.contains("is-open")
+    //     ? '<i class="fa-solid fa-chevron-up"></i>'
+    //     : '<i class="fa-solid fa-chevron-down"></i>';
+    // });
 });
 
-// いいね非同期
-document.addEventListener('DOMContentLoaded', () => {
-    const csrfToken = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
+document.addEventListener("DOMContentLoaded", function() {
+    const deleteTriggers = document.querySelectorAll(".delete-post-trigger");
 
-    document.querySelectorAll('.like-button').forEach(button => {
-        button.addEventListener('click', async () => {
+    if (deleteTriggers.length > 0) {
+        deleteTriggers.forEach((postTrigger) => {
+            const postId = postTrigger.dataset.postId;
+            const confirmPost = document.getElementById(`delete-post-confirm-${postId}`);
+            const postNo = confirmPost ? confirmPost.querySelector(".delete-post-no") : null;
 
-            const response = await fetch('/home', {
-                method: 'POST',
-                headers: {
-                    'X-CSRF-TOKEN': csrfToken,
-                    'Content-Type': 'application/json'
-                }
-            });
+            if (confirmPost && postNo) {
+                const showConfirm = () => {
+                    confirmPost.hidden = false;
+                    // confirmPost.style.display = "grid"; // CSSのflex設定を優先するため削除
+                };
 
-            const data = await response.json();
-            button.querySelector('.like-count').textContent = data.like_count;
+                const hideConfirm = () => {
+                    confirmPost.hidden = true;
+                    // confirmPost.style.display = "none"; // hidden属性だけで制御するため削除
+                };
+
+                // 初期状態を非表示に
+                hideConfirm();
+
+                postTrigger.addEventListener("click", showConfirm);
+                postNo.addEventListener("click", hideConfirm);
+
+                confirmPost.addEventListener("click", (e) => {
+                    if (e.target === e.currentTarget) hideConfirm();
+                });
+            }
         });
-    });
-});
 
-// プロフィール遷移
-document.querySelectorAll('.js-profile-link').forEach(el => {
-    el.addEventListener('click', () => {
-    const userId = el.dataset.userId;
-    if (!userId) return;
-
-    if (userId === document.body.dataset.meId) {
-        location.href = '/profile';
-    } else {
-        location.href = `/profile/${userId}`;
+        // ESCキーで全てのモーダルを閉じる
+        document.addEventListener("keydown", (e) => {
+            if (e.key === "Escape") {
+                document.querySelectorAll(".delete-post-confirm").forEach(modal => {
+                    modal.hidden = true;
+                    // インラインスタイルを削除してCSSクラスの設定が適用されるようにする
+                    modal.style.display = ""; 
+                });
+            }
+        });
     }
-    });
 });
-
-// モーダル（画像拡大）
-function openModal(src) {
-    const modal = document.createElement('div');
-    modal.classList.add('modal');
-    modal.innerHTML = `
-        <span class="modal-close" onclick="document.body.removeChild(this.parentElement)">×</span>
-        <img src="${src}">
-    `;
-    document.body.appendChild(modal);
-    modal.style.display = 'flex';
-}
-
-
-document.querySelectorAll('.like-button').forEach(button => {
-    button.addEventListener('click', () => {
-        button.classList.toggle('liked');
-    });
-});
-
-document.querySelectorAll('.like-button').forEach(button => {
-    button.addEventListener('click', () => {
-        // 色切り替え
-        button.classList.toggle('liked');
-
-        // アニメーション付与
-        button.classList.remove('animate');
-        void button.offsetWidth; // 再描画トリガー
-        button.classList.add('animate');
-    });
-});
-
-//コメントを全表示させるためのボタンを表示&コメント全表示をやめさせるボタン
-document.querySelectorAll('.showMoreBtn').forEach(btn => {
-    btn.addEventListener('click', function(){
-        //ボタンのすぐ上にあるリストを取得
-        const list = this.previousElementSibling;
-
-        //クラスのON/OFFを切り替え
-        list.classList.toggle('expanded');
-
-        //今の状態に合わせて文字を変える
-        if(list.classList.contains('expanded')){
-            this.textContent = '閉じる';
-        } else {
-            this.textContent = '全てのコメントを見る';
-        }
-    })
-})
