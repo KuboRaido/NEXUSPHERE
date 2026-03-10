@@ -4,6 +4,9 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
   <title>プロフィール</title>
+  <meta http-equiv="Cache-Control" content="no-store">
+  <meta http-equiv="Pragma" content="no-cache">
+  <meta http-equiv="Expires" content="0">
   <link rel="stylesheet" href="{{ asset('css/circlepf.css') }}">
   <link rel="stylesheet" href="{{ asset('css/styles.css') }}">
   <meta name="csrf-token" content="{{ csrf_token() }}">
