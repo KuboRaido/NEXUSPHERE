@@ -13,7 +13,7 @@
 </head>
 <body>
   <header class="header">
-      <span class="title">profile編集</span>
+      <span class="title">サークルプロフィール編集</span>
     </header>
   <div class="container">
 
@@ -65,13 +65,13 @@
 
 
       <div class="circle_name">
-        <label for="circle_name">名前</label>
-        <input id="circle_name" type="text" name="circle_name" value="{{ old('circle_name', $circle->circle_name) }}">
+        <label for="circle_name_title" class="circle_name_title">名前</label>
+        <input id="circle_name" type="text" name="circle_name" value="{{ old('circle_name', $circle->circle_name) }}"></input>
       </div>
 
       <div class="explain">
-        <label for="sentence">サークル説明</label>
-        <input id="sentence" type="text" name="sentence" value="{{ old('sentence', $circle->sentence) }}">
+        <label for="sentence_title" class="sentence_title">サークル説明</label>
+        <textarea id="sentence" type="text" name="sentence" value="{{ old('sentence', $circle->sentence) }}"></textarea>
       </div>
 
         <div class="actions">
