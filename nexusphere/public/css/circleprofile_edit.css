@@ -55,7 +55,7 @@ h1 {
   font-size: 20px;
   font-weight: bold;
   text-align: center;
-  margin-bottom: 16px;
+  margin-bottom: 18px;
 }
 
 /* フォーム */
@@ -68,7 +68,7 @@ h1 {
 .field label {
   margin-bottom: 6px;
   font-weight: bold;
-  font-size: 14px;
+  font-size: 18px;
 }
 
 .field input[type="text"],
@@ -109,9 +109,10 @@ h1 {
 
 /* ラベル */
 .avatar-label {
-  font-size: 14px;
+  font-size: 16px;
   margin-bottom: 8px;
   color: #444;
+  font-weight: bold;
 }
 
 /* アイコンサイズUP */
@@ -155,8 +156,27 @@ h1 {
   opacity: 1;
 }
 
+#circle_name,
+#sentence{
+  padding: 8px;
+  font-size: 14px;
+  border-radius: 6px;
+  border: 1px solid #ccc;
+}
 
+.circle_name_title,
+.sentence_title{
+  font-weight: bold;
+}
 
+.container{
+  width: 90%;
+  margin: 30px auto;
+  padding: 25px;
+  background: #fff;
+  border-radius: 15px;
+  box-shadow: 0 3px 10px rgba(0, 0, 0, 0.15);
+}
 /* ボタン */
 .actions {
   display: flex;

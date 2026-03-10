@@ -127,10 +127,6 @@ class CircleController extends Controller
     public function join(Circle $circle, Request $request)
     {
         $user = $request->user();
-        if($circle->members()->where('circle_users.user_id', $user->user_id)->exists()){
-            return back()->with('status', '既に参加済みのサークルです');
-        }
-
         try{
             Circle_requests::updateOrCreate(
                 ['user_id' => $user->user_id, 'circle_id' => $circle->circle_id],
@@ -237,13 +233,27 @@ class CircleController extends Controller
         $userId = Auth::id();
         $isOwner  = $circle->owner_id === $userId;
         $isMember = $circle->members()->where('circle_users.user_id', $userId)->exists();
+        
+        // 申請中かどうかを確認
+        $isPending = Circle_requests::where('circle_id', $circle->circle_id)
+                        ->where('user_id', $userId)
+                        ->where('status', 'pending')
+                        ->exists();
+
         $role     = $isOwner ? 'owner' : ($isMember ? 'member' : 'guest');
         $posts    = Prc::where('circle_id', $circle->circle_id)
                         ->with('user')
                         ->orderBy('created_at', 'desc')
                         ->get();
 
-        return view('circleProfile', ['user' => $userId,'circle' => $circle,'isMember' => $isMember, 'role' => $role, 'posts' => $posts ],);
+        return view('circleProfile', [
+            'user'      => $userId,
+            'circle'    => $circle,
+            'isMember'  => $isMember,
+            'isPending' => $isPending, // ビューに渡す
+            'role'      => $role,
+            'posts'     => $posts
+        ]);
     }
 
     /*サークル投稿画面*/

@@ -64,10 +64,14 @@
             <a class="btn role-owner role-member" href="{{ route('circle.post',['circle' => $circle->circle_id]) }}">投稿</a>
             <a class="btn role-owner role-member" href="{{ route('circle.cancel',['circle' => $circle->circle_id]) }}">退会</a>
             <!-- 一般ユーザー専用 -->
-              <form class = "btn role-guest" method="POST" action="{{ route('circle.join', ['circle' => $circle->circle_id ])}}" onsubmit="this.querySelector('button').disabled = true; this.querySelector('button').textContent = '送信中...';">
-                @csrf
-                <button type="submit">参加申請</button>
-              </form>
+              @if(isset($isPending) && $isPending)
+                  <button class="btn role-guest" disabled style="background: #ccc; cursor: default;">申請中</button>
+              @else
+                  <form class="role-guest" method="POST" action="{{ route('circle.join', ['circle' => $circle->circle_id ])}}" onsubmit="this.querySelector('button').disabled = true; this.querySelector('button').textContent = '送信中...';">
+                    @csrf
+                    <button type="submit" class="join-btn">参加申請</button>
+                  </form>
+              @endif
           </div>
 
         </div>
