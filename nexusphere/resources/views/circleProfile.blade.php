@@ -79,7 +79,7 @@
       <div class="left">
         <h4>最近の投稿</h4>
           @foreach($posts as $post)
-              <x-post_mainUnit :post="$post" :user_id="$post->user_id === $user" :deletePost="true"/>
+              <x-post_mainUnit :post="$post" :is_my_post="$post->user_id === $user" :deletePost="true"/>
           @endforeach
       </div>
     </div>
