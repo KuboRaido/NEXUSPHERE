@@ -1,4 +1,4 @@
-@props(['post','deletePost','user_id' => true])
+@props(['post','deletePost','is_my_post' => true])
 <div {{ $attributes -> merge(['class' => 'post']) }} data-post-id="{{ $post->prc_id }}">
 
             {{-- 投稿者名 --}}
@@ -12,7 +12,7 @@
 
                 {{-- 右上のメタ情報（削除ボタン＋日時） --}}
                 <div class="post-meta">
-                    @if( $deletePost && $user_id)
+                    @if( $deletePost && $is_my_post)
                         <button id="delete-post-trigger-{{ $post->prc_id }}" class="delete-post-trigger post-delete-btn" data-post-id="{{ $post->prc_id }}">削除</button>
                     @endif
                     
@@ -23,7 +23,7 @@
                     @endif
                 </div>
 
-                @if($deletePost)
+                @if($deletePost && $is_my_post)
                     <div id="delete-post-confirm-{{ $post->prc_id }}" class="delete-post-confirm" hidden>
                         <div class="delete-post-dialog">
                             <p>この投稿を削除しますか？</p>
