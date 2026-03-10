@@ -22,7 +22,7 @@ function formatTime(iso) {
 
 //検索
 let searchTimeout = null;
-
+//検索機能
 async function searchUsers(keyword){
   const searchResults = document.getElementById('search-results');
   if(!searchResults) return('存在しません');
@@ -60,6 +60,10 @@ async function searchUsers(keyword){
         <img class="icon" src="${user.icon || DEFAULT_AVATAR}">
         <div class="search-content">
           <div class="search-name">${escapeHtml(user.name)}</div>
+          ${user.job ? `<div class="search-grade">${escapeHtml(user.job)}</div>` : ''}
+          ${user.grade ? `<div class="search-grade">${escapeHtml(user.grade)}年生</div>` : ''}
+          ${user.subject ? `<div class="search-subject">${escapeHtml(user.subject)}</div>` : ''}
+          ${user.major ? `<div class="search-major">${escapeHtml(user.major)}</div>` : ''}
         </div>
       </a>
     `;
