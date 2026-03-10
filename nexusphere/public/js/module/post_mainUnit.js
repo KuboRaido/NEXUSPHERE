@@ -141,7 +141,51 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     });
 });
+//投稿削除ボタン
+document.addEventListener("DOMContentLoaded", function() {
+    const deleteTriggers = document.querySelectorAll(".delete-post-trigger");
 
+    if (deleteTriggers.length > 0) {
+        deleteTriggers.forEach((postTrigger) => {
+            const postId = postTrigger.dataset.postId;
+            const confirmPost = document.getElementById(`delete-post-confirm-${postId}`);
+            const postNo = confirmPost ? confirmPost.querySelector(".delete-post-no") : null;
+
+            if (confirmPost && postNo) {
+                const showConfirm = () => {
+                    confirmPost.hidden = false;
+                    // confirmPost.style.display = "grid"; // CSSのflex設定を優先するため削除
+                };
+
+                const hideConfirm = () => {
+                    confirmPost.hidden = true;
+                    // confirmPost.style.display = "none"; // hidden属性だけで制御するため削除
+                };
+
+                // 初期状態を非表示に
+                hideConfirm();
+
+                postTrigger.addEventListener("click", showConfirm);
+                postNo.addEventListener("click", hideConfirm);
+
+                confirmPost.addEventListener("click", (e) => {
+                    if (e.target === e.currentTarget) hideConfirm();
+                });
+            }
+        });
+
+        // ESCキーで全てのモーダルを閉じる
+        document.addEventListener("keydown", (e) => {
+            if (e.key === "Escape") {
+                document.querySelectorAll(".delete-post-confirm").forEach(modal => {
+                    modal.hidden = true;
+                    // インラインスタイルを削除してCSSクラスの設定が適用されるようにする
+                    modal.style.display = ""; 
+                });
+            }
+        });
+    }
+});
 
 
 document.addEventListener("DOMContentLoaded", function () {
