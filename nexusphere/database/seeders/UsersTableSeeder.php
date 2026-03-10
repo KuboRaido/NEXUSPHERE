@@ -33,19 +33,5 @@ class UsersTableSeeder extends Seeder
         'icon'    => null,
         'email_verified_at'   => '2026-01-15 02:48:25',
       ]);
-
-      User::create([
-        'user_id' => 102,
-        'mail'    => 'c@sba.ac.jp',
-        'password'=> Hash::make('00000000'),
-        'name'    => 'Guest3',
-        'grade'   => 2,
-        'job'     => '学生',
-        'subject' => 'AI&テクノロジー学科',
-        'major'   => 'AI専攻',
-        'icon'    => null,
-        'email_verified_at'   => '2026-01-15 02:48:25',
-      ]);
     }
 }
- 
