@@ -133,6 +133,8 @@ body {
 
 /* サークル名（左固定） */
 .circle-item .circle-link .name {
+  display: flex;
+  align-items: center;
   font-size: 18px;
   font-weight: bold;
   color: #000;
@@ -286,13 +288,12 @@ body {
   }
 
   .circle-container {
-  width: 80%;
   margin: 30px auto;
   padding: 25px;
   background: #fff;
   border-radius: 15px;
   box-shadow: 0 3px 10px rgba(0,0,0,0.15);
-  
+  font-size: 13px;
 }
 
 .sentence {

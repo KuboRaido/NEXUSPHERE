@@ -195,6 +195,7 @@ input[type="file"] {
     white-space: pre-wrap;     /* 改行を維持しつつ自動折り返し */
     word-break: break-word;    /* 長い単語やURLを適切に折り返し、日本語は自然に */
     max-width: 100%;           /* 画面幅最大まで */
+    font-size: 13px;
 }
 
 /* リンクがある場合は画面幅に合わせて折り返す */
@@ -743,9 +744,7 @@ input[type="file"] {
     }
 
     .comment_time{
-        position: absolute; /* ← 絶対配置 */
-        top: 15px;          /* 上端からの距離（.postのpaddingに合わせる） */
-        right: 15px;        /* 右端からの距離 */
+        margin-left:auto;
         font-size: 0.85rem; /* 少し小さめに */
         color: #353535;        /* 目立ちすぎない色に */
         white-space: nowrap; /* 日付が変に改行されないように */
@@ -799,12 +798,5 @@ input[type="file"] {
     /* オーバーレイ不要 */
     .overlay {
         display: none !important;
-    }
-
-    .comment_time{
-        margin-left:auto;
-        font-size: 0.85rem; /* 少し小さめに */
-        color: #353535;        /* 目立ちすぎない色に */
-        white-space: nowrap; /* 日付が変に改行されないように */
     }
 }

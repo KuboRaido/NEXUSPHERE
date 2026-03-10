@@ -207,3 +207,19 @@ h1 {
   color: #ff69b4;
   border: 1px solid #ff69b4;
 }
+
+.join-btn{
+  display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 4px 9px;
+    font-size: 15px;
+    border-radius: 8px;
+    background: #ff69b4;
+    color: #fff;
+    cursor: pointer;
+    text-decoration: none;
+    border: none;
+    line-height: 1;
+    box-sizing: border-box;
+}

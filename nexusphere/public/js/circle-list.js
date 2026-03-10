@@ -122,8 +122,10 @@
       li.innerHTML = `
         <a class="circle-link" href="${resolveLink(circle.circle_id ?? circle.id)}">
           <img src="${escapeHtml(circle.icon ? circle.icon : '')}">
-          <span class="name">${escapeHtml(circle.circle_name || '')}</span>
-          <span class="sentence">${escapeHtml(circle.sentence || '')}</span>
+          <div class="circle-text">
+            <span class="name">${escapeHtml(circle.circle_name || '')}</span>
+            <span class="sentence">${escapeHtml(circle.sentence || '')}</span>
+          </div>
           <span class="members">👥 ${circle.members_count ?? 0}人</span>
         </a>
       `;
