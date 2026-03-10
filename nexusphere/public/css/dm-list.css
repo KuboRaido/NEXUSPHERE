@@ -184,12 +184,18 @@ body {
 }
 
 
+.search-result-item {
+  padding: 8px 15px; /* 上下8px, 左右15px の余白を追加 */
+  border-bottom: 1px solid #f0f0f0; /* 区切り線もあったほうが綺麗 */
+}
+
 .search-result-item a {
   display: flex;
   align-items: center;
   gap: 8px; /* アイコンと名前の間の余白 */
   text-decoration: none; /* 下線消す */
   color: #333; /* 文字色を統一 */
+  padding: 16px 12px;
 }
 
 .icon {
@@ -198,6 +204,38 @@ body {
   border-radius: 50%;
   object-fit: cover;
 }
+
+/* 検索結果のアイテム内のレイアウト調整 */
+.user-id{
+  display: flex;
+  flex-wrap: wrap; /* 画面幅が狭いときは折り返す */
+  align-items: center;
+  gap: 10px; /* 各要素の間に少し隙間をあける */
+}
+
+/* 文字情報の箱そのものを横並びにする設定 */
+.search-content {
+  display: flex !important; /* 強制的に横並び */
+  flex-wrap: wrap;          /* 画面幅が狭いときは折り返す */
+  align-items: center;      /* 縦方向の中央揃え */
+  gap: 8px;                 /* 各項目の間隔 */
+}
+
+/* 個別の項目の調整 */
+.search-name {
+  font-weight: bold;
+  font-size: 16px;
+  margin-right: 5px;
+}
+
+.search-grade,
+.search-job,
+.search-subject,
+.search-major {
+  font-size: 14px;
+  color: #555;
+}
+
 
 .search-content .search-name {
   font-size: 14px;
@@ -214,8 +252,6 @@ body {
   margin: 0;
   padding: 0;
 }
-
-
 
 /* 名前＋メッセージ部分 */
 .chat-content {
@@ -373,7 +409,7 @@ body {
 }
 
 /* レスポンシブ対応 */
-@media screen and (max-width: 768px) {
+@media screen and (max-width: 600px) {
 .dmlist-container {
   width: 300px;
   margin: 20px auto;
@@ -382,7 +418,13 @@ body {
   border-radius: 15px;
   box-shadow: 0 2px 8px rgba(0,0,0,0.15);
 }
-
+.user-id{
+  font-size: 10px;
+  display: flex;
+  flex-wrap: wrap; /* 画面幅が狭いときは折り返す */
+  align-items: center;
+  gap: 10px; /* 各要素の間に少し隙間をあける */
+}
 .chat-item {
     padding: 12px; /* 小さく戻す */
   }
@@ -393,12 +435,42 @@ body {
     object-fit: cover;
   }
 .chat-name {
-    font-size: 14px;
+    font-size: 10px;
   }
 .chat-message {
     font-size: 13px;
   }
+/* 文字列の折り返しを禁止して1行にする */
+.search-content {
+    align-items: baseline !important; /* 文字の下揃えで綺麗に見せる */
+    gap: 4px !important; /* 各要素の間隔 */
+  }
 
+  /* フォントサイズを調整 */
+  .search-name {
+    font-size: 15px !important;
+  }
+
+/* 学年: 小さめに、名前の横に */
+  .search-grade,
+  .search-job {
+    font-size: 12px !important;
+  }
+  /* 学科と専攻は強制的に改行させる */
+  .search-subject,
+  .search-major {
+    width: 100%;       /* 横幅いっぱいに使う＝次の行に行く */
+    font-size: 11px !important;
+    color: #666;
+    margin-top: 0;
+    line-height: 1.2;
+  }
+  /* アイコンサイズも少し小さくしてスペース確保 */
+  .icon {
+    width: 28px !important;
+    height: 28px !important;
+    display: flex;
+  }
   /* ハンバーガーいらない */
     .hamburger {
         display: none;

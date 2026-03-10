@@ -90,9 +90,15 @@ class UserController extends Controller
         }
 
         // 正しい LIKE 構文で部分一致検索。自分は除外する。
-        $users = User::where('name', 'like', '%' . $keyword . '%')
-            ->where('user_id', '!=', $meId)
-            ->select('user_id', 'name', 'icon')
+        $users = User::where('user_id', '!=', $meId)
+            ->where(function ($query) use ($keyword) {
+                $query->where('name', 'like', '%' . $keyword . '%')
+                    ->orWhere('job', 'like', '%' . $keyword . '%')
+                    ->orWhere('grade', 'like', '%' . $keyword . '%')
+                    ->orWhere('subject', 'like', '%' . $keyword . '%')
+                    ->orWhere('major', 'like', '%' . $keyword . '%');
+            })
+            ->select('user_id', 'name', 'icon', 'grade', 'subject', 'major','job')
             ->limit(20)
             ->get();
 
@@ -100,7 +106,11 @@ class UserController extends Controller
             return [
                 'user_id' => $u->user_id,
                 'name'    => $u->name,
-                'icon'  => $u->icon ? asset('storage/icons/' . $u->icon) : null,
+                'icon'    => $u->icon ? asset('storage/icons/' . $u->icon) : null,
+                'subject' => $u->subject,
+                'major'   => $u->major,
+                'grade'   => $u->grade,
+                'job'     => $u->job,
             ];
         })->values());
     }
