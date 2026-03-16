@@ -9,7 +9,7 @@ class Images_and_videos extends Model
 {
     protected $table = 'images_and_videos';
     protected $primaryKey = 'image_and_video_id';
-    protected $fillable = ['prc_id','video','image','dm_id'];
+    protected $fillable = ['prc_id','video','image','dm_id','circle_id'];
     protected $appends = ['url','type'];
     public $timestamps = true;
     
