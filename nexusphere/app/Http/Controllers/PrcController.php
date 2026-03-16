@@ -101,6 +101,11 @@ class PrcController extends Controller
     public function circleStore(Request $request){
 
         $circle = $request->circle_id;
+        // circle_id のサークルに自分が所属しているか確認
+        $isMember = \App\Models\Circle_user::where('circle_id', $request->circle_id)
+            ->where('user_id', Auth::id())
+            ->exists();
+        abort_if(!$isMember, 403, 'サークルに参加していません');
         // バリデーション
         $request->validate([
             'sentence' => ['required','string','max:1000',new NgWord],
@@ -161,13 +166,20 @@ class PrcController extends Controller
 
         $post = Prc::findOrFail($postId);
 
-        $post->comments()->create([
+        $comment = $post->comments()->create([
             'sentence' => $request->comment,
             'user_id'  => Auth::id(),
             'type'     => 1,  // コメントを示す数値
         ]);
 
-        return redirect()->back();
+        $comment->load('user');
+        $user = Auth::user();
+        if($request->expectsJson()){
+            return response()->json([
+                'html' => view('components.comment_item',['comment' => $comment])->render(),
+            ]);
+        }
+        return back();
     }
 
     // いいね(POST /posts/{prc_id}/like)
@@ -235,7 +247,6 @@ class PrcController extends Controller
         abort_if(!$userId, 401);
 
         $post = Auth::user();
-        echo "<script>console.log(" . json_encode($post) . ");</script>";
         return view('post',['post' => $post]);
     }
 }
