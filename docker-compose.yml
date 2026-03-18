@@ -21,6 +21,7 @@ services:
     image: mysql:latest
     container_name: db-nexus
     environment:
+      # ローカル開発環境専用のパスワードです。本番環境では使用しないでください。
       MYSQL_ROOT_PASSWORD: root
       # .envファイルの「DB_DATABASE」とMYSQL_DATABASEを合わせる
       #MYSQL_DATABASE: sample_db
@@ -55,5 +56,4 @@ services:
         condition: service_started
     restart: on-failure #接続失敗時に自動リトライ
     #キューを監視して実行するコマンド
-
     command: php artisan queue:work --verbose --tries=3 --timeout=90
