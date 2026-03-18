@@ -435,7 +435,7 @@ input[type="file"] {
 /* ==============================
     9. コメント表示
 ============================== */
-.comment-list {
+.comment_list {
     margin-top: 2rem;
     margin: 10px 0;
 }
@@ -461,18 +461,18 @@ input[type="file"] {
 }
 
 /* 3つ目以降のコメントを非表示 */
-.comment-list .comment:nth-child(n+4){
+.comment_list .comment:nth-child(n+4){
     display: none;
 }
 
 /* コメント全表示の際に高さを制限してスクロール出来るようにする */
-.comment-list.expanded{
+.comment_list.expanded{
     max-height: 300px;
     overflow-y: auto; /*スクロール*/
 }
 
 /* expandedクラスが付いたら全部表示 */
-.comment-list.expanded .comment:nth-child(n+4){
+.comment_list.expanded .comment:nth-child(n+4){
     display: block;
 }
 
