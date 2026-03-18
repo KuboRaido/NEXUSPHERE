@@ -1,4 +1,4 @@
-@props(['post','deletePost','user_id' => true])
+@props(['post','deletePost','is_my_post' => true])
 <div {{ $attributes -> merge(['class' => 'post']) }} data-post-id="{{ $post->prc_id }}">
 
             {{-- 投稿者名 --}}
@@ -12,7 +12,7 @@
 
                 {{-- 右上のメタ情報（削除ボタン＋日時） --}}
                 <div class="post-meta">
-                    @if( $deletePost && $user_id)
+                    @if( $deletePost && $is_my_post)
                         <button id="delete-post-trigger-{{ $post->prc_id }}" class="delete-post-trigger post-delete-btn" data-post-id="{{ $post->prc_id }}">削除</button>
                     @endif
                     
@@ -23,7 +23,7 @@
                     @endif
                 </div>
 
-                @if($deletePost)
+                @if($deletePost && $is_my_post)
                     <div id="delete-post-confirm-{{ $post->prc_id }}" class="delete-post-confirm" hidden>
                         <div class="delete-post-dialog">
                             <p>この投稿を削除しますか？</p>
@@ -97,7 +97,7 @@
                 {{-- コメント入力 --}}
                 <form method="POST" action="/posts/{{ $post->prc_id }}/comment" class="comment-form">
                     @csrf
-                    <input type="text" name="comment" placeholder="コメントを追加" required>
+                    <input type="text" name="comment" class="comment-input"placeholder="コメントを追加" required>
                     <button type="submit">送信</button>
                 </form>
 
@@ -105,22 +105,9 @@
 
 
                 {{-- コメント一覧 --}}
-                    <div class="comment-list">
+                    <div class="comment_list">
                         @foreach ($post->comments as $comment)
-                            <div class="comment">
-                                <div class="comment_head">
-                                    <a href="{{ $comment->user->user_id === auth()->id() ? route('profile') : route('profile.other', $comment->user->user_id)}}" class="user-link">
-                                        <img src="{{ $comment->user->avatar_url }}" class="user-icon small">
-                                        <strong class="user_name">{{ $comment->user->name }}</strong>
-                                    </a>
-                                    @if ($comment->created_at->gt(now()->subWeek()))
-                                            <time class="comment_time">{{ $comment->created_at->diffForHumans() }}</time>
-                                    @else
-                                            <time class="comment_time">{{ $comment->created_at->format('Y年m月d日') }}</time>
-                                    @endif
-                                </div>
-                                <span class="comment-text">{!! \App\Support\TextHelper::linkify($comment->sentence ?? '') !!}</span>
-                            </div>
+                            <x-comment_item :comment="$comment"  />
                         @endforeach
                     </div>
                 @if($post->comments->count() > 3)

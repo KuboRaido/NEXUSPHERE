@@ -27,7 +27,7 @@ class Dm extends Model
         return $this->belongsTo(Circle_user::class,'circle_id','circle_id');
     }
     public function group(){
-        return $this->belongTo(groupmember::class,'group_id','group_id');
+        return $this->belongsTo(groupmember::class,'group_id','group_id');
     }
     public function sender(){
         return $this->belongsTo(User::class,'sender_id','user_id');

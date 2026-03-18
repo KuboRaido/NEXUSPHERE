@@ -142,6 +142,92 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 });
 
+//コメント投稿・非同期・fetch
+document.addEventListener('DOMContentLoaded', () => {
+    const csrfToken = document.querySelector('meta[name="csrf-token"]')?.getAttribute('content');
+
+    document.querySelectorAll('.comment-form').forEach((form) => {
+        form.addEventListener('submit', async (e) => {
+            e.preventDefault();
+
+            const cmt = form.querySelector('.comment-input');
+            if (!cmt) return;
+
+            const body = new FormData(form);
+            cmt.disabled = true;
+            try {
+                const response = await fetch(form.action, {
+                    method: 'POST',
+                    headers: {
+                        'X-CSRF-TOKEN': csrfToken,
+                        'Accept': 'application/json',
+                    },
+                    credentials: 'same-origin',
+                    body,
+                });
+
+                if (!response.ok) throw new Error(`HTTP ${response.status}`);
+                const data = await response.json();
+
+                const commentList = form.closest('.post').querySelector('.comment_list');
+                commentList.insertAdjacentHTML('afterbegin',data.html);
+
+                form.reset();
+
+            } catch (_) {
+                alert('コメントの表示に失敗しました');
+            } finally {
+                cmt.disabled = false;
+            }
+        });
+    });
+});
+
+//投稿削除ボタン
+document.addEventListener("DOMContentLoaded", function() {
+    const deleteTriggers = document.querySelectorAll(".delete-post-trigger");
+
+    if (deleteTriggers.length > 0) {
+        deleteTriggers.forEach((postTrigger) => {
+            const postId = postTrigger.dataset.postId;
+            const confirmPost = document.getElementById(`delete-post-confirm-${postId}`);
+            const postNo = confirmPost ? confirmPost.querySelector(".delete-post-no") : null;
+
+            if (confirmPost && postNo) {
+                const showConfirm = () => {
+                    confirmPost.hidden = false;
+                    // confirmPost.style.display = "grid"; // CSSのflex設定を優先するため削除
+                };
+
+                const hideConfirm = () => {
+                    confirmPost.hidden = true;
+                    // confirmPost.style.display = "none"; // hidden属性だけで制御するため削除
+                };
+
+                // 初期状態を非表示に
+                hideConfirm();
+
+                postTrigger.addEventListener("click", showConfirm);
+                postNo.addEventListener("click", hideConfirm);
+
+                confirmPost.addEventListener("click", (e) => {
+                    if (e.target === e.currentTarget) hideConfirm();
+                });
+            }
+        });
+
+        // ESCキーで全てのモーダルを閉じる
+        document.addEventListener("keydown", (e) => {
+            if (e.key === "Escape") {
+                document.querySelectorAll(".delete-post-confirm").forEach(modal => {
+                    modal.hidden = true;
+                    // インラインスタイルを削除してCSSクラスの設定が適用されるようにする
+                    modal.style.display = ""; 
+                });
+            }
+        });
+    }
+});
 
 
 document.addEventListener("DOMContentLoaded", function () {

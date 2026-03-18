@@ -34,6 +34,8 @@ Route::middleware('auth')->group(function () {
     Route::get('/post/{postId}/likes',[PrcController::class,'likedUser'])->name('posts.likes');
     Route::post('/post',[PrcController::class,'store'])->name('post.back');
     Route::post('circle/{circle}/post',[PrcController::class,'circleStore'])->name('circlePost.back');
+    Route::post('/posts/{postId}/comment', [PrcController::class, 'comment'])->name('posts.comment');
+    Route::post('/posts/{postId}/like', [PrcController::class, 'like'])->name('posts.like');
     Route::delete('/post/{postId}/delete', [PrcController::class, 'delete'])->name('post.delete'); // 削除ルートを追加
     
     Route::get('circle',[CircleController::class,'circleFront'])->name('circle');
@@ -50,11 +52,3 @@ Route::middleware('auth')->group(function () {
     Route::post('circle/{circle}/request/{circle_request}/approve',[CircleController::class,'approve'])->name('circle.approve');
     Route::post('circle/{circle}/request/{circle_request}/reject',[CircleController::class,'reject'])->name('circle.reject');
 });
-
-// コメント投稿
-Route::post('/posts/{postId}/comment', [PrcController::class, 'comment'])
-    ->name('posts.comment');
-
-// いいね
-Route::post('/posts/{postId}/like', [PrcController::class, 'like'])
-    ->name('posts.like');

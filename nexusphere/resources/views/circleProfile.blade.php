@@ -4,6 +4,9 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
   <title>プロフィール</title>
+  <meta http-equiv="Cache-Control" content="no-store">
+  <meta http-equiv="Pragma" content="no-cache">
+  <meta http-equiv="Expires" content="0">
   <link rel="stylesheet" href="{{ asset('css/circlepf.css') }}">
   <link rel="stylesheet" href="{{ asset('css/styles.css') }}">
   <meta name="csrf-token" content="{{ csrf_token() }}">
@@ -61,10 +64,14 @@
             <a class="btn role-owner role-member" href="{{ route('circle.post',['circle' => $circle->circle_id]) }}">投稿</a>
             <a class="btn role-owner role-member" href="{{ route('circle.cancel',['circle' => $circle->circle_id]) }}">退会</a>
             <!-- 一般ユーザー専用 -->
-              <form class = "btn role-guest" method="POST" action="{{ route('circle.join', ['circle' => $circle->circle_id ])}}" onsubmit="this.querySelector('button').disabled = true; this.querySelector('button').textContent = '送信中...';">
-                @csrf
-                <button type="submit">参加申請</button>
-              </form>
+              @if(isset($isPending) && $isPending)
+                  <button class="btn role-guest" disabled style="background: #ccc; cursor: default;">申請中</button>
+              @else
+                  <form class="role-guest" method="POST" action="{{ route('circle.join', ['circle' => $circle->circle_id ])}}" onsubmit="this.querySelector('button').disabled = true; this.querySelector('button').textContent = '送信中...';">
+                    @csrf
+                    <button type="submit" class="join-btn">参加申請</button>
+                  </form>
+              @endif
           </div>
 
         </div>
@@ -76,7 +83,7 @@
       <div class="left">
         <h4>最近の投稿</h4>
           @foreach($posts as $post)
-              <x-post_mainUnit :post="$post" :user_id="$post->user_id === $user" :deletePost="true"/>
+              <x-post_mainUnit :post="$post" :is_my_post="$post->user_id === $user" :deletePost="true"/>
           @endforeach
       </div>
     </div>

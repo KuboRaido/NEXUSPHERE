@@ -51,6 +51,7 @@ class Prc extends Model
     {
         return $this->hasMany(Prc::class, 'parent_id', 'prc_id')
                     ->where('type', 1)
+                    ->latest('created_at')
                     ->with('user');
     }
 }
