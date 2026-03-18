@@ -36,18 +36,21 @@ background-color: #add8e6;
    チャット全体
 ========================= */
 .chat-container {
-  width: 100%;
+  width: min(100%, 600px);
+  height: 100vh;
+  margin: 0 auto;
   padding: 0; /* 必要なら後で足す */
   background: #fff;
   border-radius: 15px;
   box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  min-height: 0;
 }
 
 .input-area {
-  position: fixed;
-  bottom: 0;
-  left: 0;
-  right: 0;
+  position: static;
   display: flex;
   align-items: center;
   gap: 10px;
@@ -55,6 +58,7 @@ background-color: #add8e6;
   height: 70px;
   padding: 8px 12px;
   box-sizing: border-box;
+  flex-shrink: 0;
 }
 #message-input {
   flex: 1;
@@ -74,7 +78,9 @@ background-color: #add8e6;
 
 .chat-box {
   flex: 1;
+  min-height: 0;
   overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
 }
 
 
@@ -166,7 +172,8 @@ background-color: #add8e6;
    チャットボックス
 ========================= */
 .chat-box {
-  height: 400px;
+  flex: 1;
+  min-height: 0;
   border-radius: 10px;
   padding: 10px;
   overflow-y: auto;
@@ -244,27 +251,31 @@ background-color: #add8e6;
    入力エリア
 ========================= */
 .input-area {
-  position: fixed;
-  bottom: 0;
-  left: 0;
-  right: 0;
+  position: static;
+  display: flex;
+  align-items: center;
+  gap: 10px;
   background-color: #fff;
   height: 70px;
   padding: 8px 12px;
+  box-sizing: border-box;
+  flex-shrink: 0;
 }
 
-.message-input textarea{
-  width: 100%;
-    min-height: 40px;      /* 最小の高さ */
-    max-height: 150px;     /* これ以上は伸びずにスクロールする高さ */
-    padding: 10px;
-    border-radius: 20px;   /* 丸くする */
-    border: 1px solid #ccc;
-    resize: none;          /* 右下のつまみを消す */
-    line-height: 1.5;
-    overflow-y: hidden;    /* スクロールバーを隠す（JSで制御） */
-    box-sizing: border-box;
-    font-family: inherit;  /* フォントを継承 */
+.message-input textarea {
+  flex: 1;
+  min-width: 0;
+  height: 48px;
+  min-height: 40px;      /* 最小の高さ */
+  max-height: 150px;     /* これ以上は伸びずにスクロールする高さ */
+  padding: 10px;
+  border-radius: 20px;   /* 丸くする */
+  border: 1px solid #ccc;
+  resize: none;          /* 右下のつまみを消す */
+  line-height: 1.5;
+  overflow-y: hidden;    /* スクロールバーを隠す（JSで制御） */
+  box-sizing: border-box;
+  font-family: inherit;  /* フォントを継承 */
 }
 
 /* 添付 */
@@ -328,15 +339,18 @@ background-color: #add8e6;
 ========================= */
 @media screen and (max-width: 768px) {
   .chat-container {
-    width: 300px;
-    margin: 20px auto;
+    width: 100%;
+    height: 100vh;
+    margin: 0;
+    border-radius: 0;
   }
 
   .chat-box {
-    height: 300px;
+    flex: 1;
+    min-height: 0;
   }
 
-  .input-area input[type="text"] {
+  #message-input {
     height: 50px;
     font-size: 17px;
   }
