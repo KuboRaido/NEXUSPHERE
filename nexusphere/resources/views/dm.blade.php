@@ -12,12 +12,6 @@
     <script>window.storageBaseUrl = "{{ asset('storage/icons/') }}/"; </script>
 </head>
 <body>
-    <!-- ヘッダー -->
-        <header class="site-header">
-            <div class="header-inner">
-                <h1 id="site-title">Nexusphere</h1>
-            </div>
-        </header>
         <div class="chat-container"> 
         <div class="chat-header">
             <!-- 左 -->
