@@ -50,7 +50,7 @@
                 <button type="button" id="attach-btn" class="attach-btn">＋</button>
                 <input type="file" id="image-input" accept="image/*,video/*" style="display:none;" multiple>
 
-                <input id="message-input" type="text" placeholder="メッセージを入力" autocomplete="off" enterkeyhint="send" />
+                <textarea id="message-input" placeholder="メッセージを入力" autocomplete="off" enterkeyhint="send" ></textarea>
 
                 <button type="submit" class="send-btn">送信</button>
             </div>

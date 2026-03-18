@@ -231,6 +231,7 @@ public function dmback(?int $partner=null){
 
    public function dmCircleBack(Circle $circle){
       $m = Dm::with('sender')->where('circle_id', $circle->circle_id)->whereNull('receiver_id')->orderBy('created_at')->get();
+      abort_if(!$circle->members()->where('circle_users.user_id', Auth::id())->exists(), 403, 'サークルに参加していません');
 
       return response()->json([
          'participants' => [
@@ -258,7 +259,8 @@ public function dmback(?int $partner=null){
 
    public function dmGroup(Group $group){
       $m = Dm::with('sender')->where('group_id', $group->group_id)->whereNull('receiver_id')->orderBy('created_at')->get();
-
+      abort_if(!$group->members()->where('groupmembers.user_id', Auth::id())->exists(), 403, 'グループに参加していません');
+      
       return response()->json([
          'participants' => [
             'me'     =>['id' => Auth::id()],
