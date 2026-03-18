@@ -17,7 +17,8 @@ public_html/hot
 
 storage/*.key
 .env
-.env.lolipop
+.env.*
+!.env.example
 Homestead.yaml
 Homestead.json
 /.vagrant
@@ -30,4 +31,7 @@ Homestead.json
 .phpactor.json
 auth.json
 docker/db/data/
-log/xdebug.log
+
+# ログファイル
+log/
+*.log
