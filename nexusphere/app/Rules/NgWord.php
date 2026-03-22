@@ -18,9 +18,7 @@ class NgWord implements ValidationRule
             return;
         }
 
-        // ==========================================
-        // 0. 入力値の正規化（表記ゆれ対策）
-        // ==========================================
+        // 入力値の正規化
         // 'RNASKVC':
         // R: 全角英字 -> 半角
         // N: 全角数字 -> 半角
@@ -31,10 +29,7 @@ class NgWord implements ValidationRule
         // C: 全角ひらがな -> 全角カタカナ (「ばか」と「バカ」を同一視するため)
         $normalized_value = mb_convert_kana($value, 'RNASKVC');
 
-        // ==========================================
-        // 1. ホワイトリスト処理（無害化）
-        // ==========================================
-        // ※ configファイル側で「文字数が長い順」に記述されていることを推奨
+        // ホワイトリスト処理
         $whitelists = config('ng_words.whitelist', []);
         
         // チェック対象は正規化済みの文字列
@@ -50,9 +45,7 @@ class NgWord implements ValidationRule
             $clean_value = str_ireplace($normalized_white_word, '@@@', $clean_value);
         }
 
-        // ==========================================
-        // 2. 部分一致チェック (partial_match)
-        // ==========================================
+        // 部分一致チェック 
         $partial_words = config('ng_words.partial_match', []);
 
         foreach($partial_words as $word){
@@ -68,9 +61,7 @@ class NgWord implements ValidationRule
             }
         }
 
-        // ==========================================
-        // 3. 完全一致・単語境界チェック (exact_match)
-        // ==========================================
+        // 完全一致・単語境界チェック 
         $exact_words = config('ng_words.exact_match', []);
         
         if (!empty($exact_words)) {
