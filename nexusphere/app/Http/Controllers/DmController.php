@@ -321,26 +321,30 @@ public function dmback(?int $partner=null){
    
    }
 
-   // public function dmGroupJoin(Request $request){
-   //    $request->validate([
-   //          'group_name' => 'required|string|max:255',
-   //          'user_ids'   => 'required|array',
-   //          'user_ids.*' => 'integer|exists:users,user_id',
-   //       ]);
+   public function dmGroupJoin(Request $request){
+      $request->validate([
+         'group_id'   => ['required', 'integer', 'exists:groups,group_id'],
+         'user_ids'   => ['required', 'array'],
+         'user_ids.*' => ['integer', 'exists:users,user_id'],
+      ]);
 
-   //    $meId = Auth::id();
+      $meId = Auth::id();
+      abort_if(!$meId, 401, 'ログインされていません');
+      $group = Group::findOrFail($request->integer('group_id'));
 
-   //    // 作成者と選択メンバーをマージして登録
-   //    $memberIds = array_unique(array_merge([$meId], $request->user_ids));
+      // 作成者と選択メンバーをマージして登録
+      $memberIds = array_unique(array_merge([$meId], $request->input('user_ids', [])));
 
-   //    // メンバーを一括追加
-   //    $group->members()->sync($memberIds);
+      // メンバーを一括追加
+      $group->members()->syncWithoutDetaching($memberIds);
 
-   //    // メンバー数更新
-   //    $group->update([
-   //       'members_count' => count($memberIds),
-   //    ]);
-   // }
+      // メンバー数更新
+      $group->update([
+         'members_count' => $group->members()->count(),
+      ]);
+
+      return back();
+   }
 
    public function dmsendback(Request $request)
    {

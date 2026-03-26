@@ -412,6 +412,186 @@ async function sendMessage() {
   }
 }
 
+
+function escapeHtml(value) {
+  return String(value).replace(/[&<>'"]/g, (ch) => ({
+    '&': '&amp;',
+    '<': '&lt;',
+    '>': '&gt;',
+    "'": '&#39;',
+    '"': '&quot;'
+  }[ch]));
+}
+
+
+
+//ユーザー追加のユーザー取得
+async function UserAssignData(){
+      const userListForm = document.getElementById("group_assign_form");
+      const userList     = document.getElementById("group_assignList");
+      if(!userListForm || !userList) return;
+
+      userListForm.classList.remove("hidden");
+      userList.innerHTML = "読み込み中";
+
+      try{
+        const qs = new URLSearchParams(location.search);
+        const groupId = (qs.get('group_id')||'').trim();
+        const isGroupId = /^\d+$/.test(groupId); //数字だけで出来た文字列かを判定
+
+        let res;
+        if(isGroupId){
+          res = await fetch(`/api/v1/group?group_id=${encodeURIComponent(groupId)}`, {
+            headers: {'Accept':'application/json'},
+            credentials:'include'
+          });
+        }
+
+          if (!res.ok) throw new Error(`HTTP ${res.status}`);
+
+          const groupRes = await res.json();
+          const group = Array.isArray(groupRes)?groupRes:[];
+
+          if(group.length === 0){
+            userList.innerHTML = "友達がいません";
+            return;
+          }
+
+          userList.innerHTML = "";
+          group.forEach(f => {
+            const div = document.createElement("div");
+            div.className = "friend-item";
+            div.innerHTML = `
+              <label>
+                <input type="checkbox" value="${f.id}" class="modal-friend-check">
+                ${escapeHtml(f.name)}
+              </label>
+              `
+            ;
+
+            userList.appendChild(div);
+          });
+
+            }catch(e){
+          console.error(e);
+          userList.innerHTML = "招待出来るユーザーはいません";
+      }
+  };
+
+//ユーザー追加
+function UserAssign(){
+  const AssignBtn      = document.getElementById("groupAssignBtn");
+  const closeAssignBtn = document.getElementById('closeAssignBtn');
+  const userAssignBtn  = document.getElementById("add-user-btn");
+  const userListForm   = document.getElementById("group_assign_form");
+  const modalContent   = document.querySelector("#group_assign_form .group-assign-content");
+  const menu           = document.getElementById('menu-dropdown');
+  if (!userAssignBtn ||!userListForm) return;
+  userAssignBtn.addEventListener("click", () => {
+    UserAssignData();
+  });
+
+  if(AssignBtn){
+    AssignBtn.addEventListener("click", async () => {
+      const checks = document.querySelectorAll(".modal-friend-check:checked");
+      const ids = Array.from(checks).map((c) => c.value);
+
+      if(ids.length === 0){
+          alert("ユーザーを選択してください");
+          return;
+      }
+
+      const qs = new URLSearchParams(location.search);
+      const groupId = (qs.get("group_id") || "").trim();
+      if (!/^\d+$/.test(groupId)) {
+        alert("group_id が不正です");
+        return;
+      }
+
+      const formData = new FormData();
+      formData.append("group_id", groupId);
+      ids.forEach((id) => formData.append("user_ids[]", id));
+      try{
+        await fetch("/api/v1/dm/group",{
+          method:"POST",
+          body: formData,
+          credentials: "include",
+          headers:{
+            "X-CSRF-TOKEN": document.querySelector('meta[name="csrf-token')?.content
+          }
+        });
+
+        const addedNames = Array.from(checks).map((c) => {
+          return c.closest(".friend-item").querySelector("label").textContent.trim();
+        });
+        const namesText = addedNames.join("\n");
+
+        const messagePayload = {
+          group_id: groupId,
+          text: `${namesText}を追加しました`  
+        };
+
+        const token = document.querySelector('meta[name="csrf-token"]')?.content;
+        await fetch("/api/v1/dm",{
+          method:"POST",
+          headers: {
+            "Accept": "application/json",
+            "Content-Type": "application/json",
+            ...(token?{"X-CSRF-TOKEN":token}:{})
+          },
+          credentials: "include",
+          body: JSON.stringify(messagePayload)
+        });
+        userListForm.classList.add("hidden");
+        location.reload();
+
+      }catch(e){
+          console.error(e);
+          alert(e.message || "ユーザーの追加に失敗しました");
+        }
+        userListForm.classList.add('hidden');
+      menu.classList.add('hidden');
+    });
+  }
+  if(closeAssignBtn){
+    closeAssignBtn.addEventListener('click', ()=>{
+      userListForm.classList.add('hidden');
+      menu.classList.add('hidden');
+    });
+
+    userListForm.addEventListener("click", (e)=>{
+      if (e.target === userListForm) {
+      userListForm.classList.add("hidden");
+    }
+    });
+    if (modalContent) {
+      modalContent.addEventListener("click", (e) => {
+        e.stopPropagation();
+      });
+    }
+    
+  }
+}
+
+
+// 退会
+document.getElementById("leave-chat-btn").addEventListener("click", () => {
+    if (!confirm("このチャットから退会しますか？")) return;
+
+    fetch("/dm/leave", {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json",
+            "X-CSRF-TOKEN": document.querySelector('meta[name="csrf-token"]').content
+        },
+        body: JSON.stringify({
+            partner_id: document.getElementById("recipientId").value
+        })
+    }).then(() => {
+        location.href = "/dmlist";
+    });
+});
+
 //起動
 document.addEventListener('DOMContentLoaded', async () => {
   if (!document.getElementById('chat-box')) return;
@@ -515,7 +695,7 @@ document.addEventListener('DOMContentLoaded', async () => {
         }
       }
     });
-  }
+  } 
   const menuBtn = document.getElementById("menu-btn");
   const dropdown = document.getElementById("menu-dropdown");
 
@@ -530,28 +710,6 @@ document.addEventListener('DOMContentLoaded', async () => {
         }
     });
 
-    // ユーザー追加
-    // document.getElementById("add-user-btn").addEventListener("click", () => {
-    //     alert("ユーザー追加処理を書く");
-    //     例: モーダル表示 or 別画面遷移
-    // });
-
-    // 退会
-    document.getElementById("leave-chat-btn").addEventListener("click", () => {
-        if (!confirm("このチャットから退会しますか？")) return;
-
-        fetch("/dm/leave", {
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json",
-                "X-CSRF-TOKEN": document.querySelector('meta[name="csrf-token"]').content
-            },
-            body: JSON.stringify({
-                partner_id: document.getElementById("recipientId").value
-            })
-        }).then(() => {
-            location.href = "/dmlist";
-        });
-    });
-
+    //ユーザー追加
+    UserAssign();
 });
