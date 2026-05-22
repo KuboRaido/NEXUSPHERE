@@ -574,23 +574,26 @@ function UserAssign(){
 }
 
 
-// 退会
-document.getElementById("leave-chat-btn").addEventListener("click", () => {
-    if (!confirm("このチャットから退会しますか？")) return;
+// 退会 
+const qs = new URLSearchParams(location.search);
+if(qs.get('group_id')){
+  document.getElementById("leave-chat-btn").addEventListener("click", () => {
+      if (!confirm("このチャットから退会しますか？")) return;
 
-    fetch("/dm/leave", {
-        method: "POST",
-        headers: {
-            "Content-Type": "application/json",
-            "X-CSRF-TOKEN": document.querySelector('meta[name="csrf-token"]').content
-        },
-        body: JSON.stringify({
-            partner_id: document.getElementById("recipientId").value
-        })
-    }).then(() => {
-        location.href = "/dmlist";
-    });
-});
+      fetch("/dm/leave", {
+          method: "POST",
+          headers: {
+              "Content-Type": "application/json",
+              "X-CSRF-TOKEN": document.querySelector('meta[name="csrf-token"]').content
+          },
+          body: JSON.stringify({
+              partner_id: document.getElementById("recipientId").value
+          })
+      }).then(() => {
+          location.href = "/dmlist";
+      });
+  });
+}
 
 //起動
 document.addEventListener('DOMContentLoaded', async () => {
@@ -699,6 +702,7 @@ document.addEventListener('DOMContentLoaded', async () => {
   const menuBtn = document.getElementById("menu-btn");
   const dropdown = document.getElementById("menu-dropdown");
 
+  if(menuBtn){
     menuBtn.addEventListener("click", () => {
         dropdown.classList.toggle("hidden");
     });
@@ -712,4 +716,5 @@ document.addEventListener('DOMContentLoaded', async () => {
 
     //ユーザー追加
     UserAssign();
+  }
 });
