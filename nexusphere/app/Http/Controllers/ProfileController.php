@@ -60,6 +60,9 @@ class ProfileController extends Controller
         if ($request->hasFile('icon')) {
             error_log('icon file received: ' . $request->file('icon')->getClientOriginalName());
             $path = $request->file('icon')->store('', 'direct');
+            if($request === false){
+                return back()->withErrors('画像の保存に失敗しました');
+            }
             $user->icon = $path; // 例: icons/2025/10/31/xxxx.png （public ディスク）
         } else {
             error_log('icon file NOT received');

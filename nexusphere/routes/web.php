@@ -28,7 +28,7 @@ Route::middleware('auth')->group(function () {
     Route::post('/profile',[ProfileController::class,'post'])->name('profile.post'); 
     // Route::put('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::put('/profile', [ProfileController::class, 'custom'])->name('profile.custom');
-    Route::post('/profile/edit/update',[ProfileController::class,'update'])->name('profile-update');//プロフィール更新処理
+    Route::post('/profile/edit',[ProfileController::class,'update'])->name('profile-update');//プロフィール更新処理
 
     Route::get('/home',[PrcController::class,'index'])->name('home');
 
