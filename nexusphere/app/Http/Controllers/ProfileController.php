@@ -58,14 +58,16 @@ class ProfileController extends Controller
     // ファイル入力は input() では取得しない。アップロードがあった場合のみ上書きする。
 
         if ($request->hasFile('icon')) {
-            error_log('icon file received: ' . $request->file('icon')->getClientOriginalName());
+            file_put_contents('/tmp/icon_debug.log', "File received: " . $request->file('icon')->getClientOriginalName() . "\n", FILE_APPEND);
             $path = $request->file('icon')->store('', 'direct');
-            if($request === false){
+            file_put_contents('/tmp/icon_debug.log', "Store result: " . ($path === false ? 'FALSE' : $path) . "\n", FILE_APPEND);
+            if($path === false){
+                file_put_contents('/tmp/icon_debug.log', "Store failed!\n", FILE_APPEND);
                 return back()->withErrors('画像の保存に失敗しました');
             }
-            $user->icon = $path; // 例: icons/2025/10/31/xxxx.png （public ディスク）
+            $user->icon = $path;
         } else {
-            error_log('icon file NOT received');
+            file_put_contents('/tmp/icon_debug.log', "No file received\n", FILE_APPEND);
         }
 
         $user->save();
