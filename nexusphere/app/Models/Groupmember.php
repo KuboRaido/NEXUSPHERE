@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 
 namespace App\Models;
 
@@ -8,5 +8,10 @@ class Groupmember extends Model
 {
     protected $table = 'groupmembers';
     protected $primaryKey = 'groupmember_id';
-    protected $fillable = ['groupmemmber_id','user_id','group_id'];
+
+    protected $fillable = [
+        'groupmember_id',
+        'user_id',
+        'group_id',
+    ];
 }

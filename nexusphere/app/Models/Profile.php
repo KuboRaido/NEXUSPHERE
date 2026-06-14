@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 
 namespace App\Models;
 
@@ -8,5 +8,6 @@ class Profile extends Model
 {
     protected $table = 'profiles';
     protected $primaryKey = 'profile_id';
+
     protected $fillable = ['user_id'];
 }

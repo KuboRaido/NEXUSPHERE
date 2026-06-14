@@ -1,31 +1,19 @@
-<?php
+<?php declare(strict_types=1);
 
 namespace App\Listeners;
 
 use Illuminate\Auth\Events\Login;
-use Illuminate\Contracts\Queue\ShouldQueue;
-use Illuminate\Queue\InteractsWithQueue;
+use App\Models\LoginHistory;
 
 class LogSuccessfulLogin
 {
-    /**
-     * Create the event listener.
-     */
-    public function __construct()
-    {
-        //
-    }
-
-    /**
-     * Handle the event.
-     */
     public function handle(Login $event): void
     {
-        \App\Models\LoginHistory::create([
+        LoginHistory::create([
             'user_id' => $event->user->user_id,
             'ip_address' => request()->ip(),
             'user_agent' => request()->userAgent(),
-            'login_at'  => now(),
+            'login_at' => now(),
         ]);
     }
 }

@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 
 namespace App\Support;
 
@@ -8,12 +8,16 @@ class TextHelper
     {
         $escaped = e($text);
 
-        return preg_replace_callback('~(https?://[^\s<]+)~iu', function ($m) {
+        return preg_replace_callback('~(https?://[^\s<]+)~iu', function (array $m): string {
             $url = $m[1];
-            if (!filter_var($url, FILTER_VALIDATE_URL)) return $url;
+            if (!filter_var($url, FILTER_VALIDATE_URL)) {
+                return $url;
+            }
 
             $scheme = strtolower((string) parse_url($url, PHP_URL_SCHEME));
-            if (!in_array($scheme, ['http', 'https'], true)) return $url;
+            if (!in_array($scheme, ['http', 'https'], true)) {
+                return $url;
+            }
 
             $label = mb_strimwidth($url, 0, 60, '…', 'UTF-8');
 

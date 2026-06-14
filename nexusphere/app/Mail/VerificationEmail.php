@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 
 namespace App\Mail;
 
@@ -13,44 +13,23 @@ class VerificationEmail extends Mailable
 {
     use Queueable, SerializesModels;
 
-    public \App\Models\User $user;
-
-    /**
-     * Create a new message instance.
-     */
-    public function __construct(\App\Models\User $user)
+    public function __construct(public User $user)
     {
-        $this->user = $user;
     }
 
-    /**
-     * Get the message envelope.
-     */
     public function envelope(): Envelope
     {
-        return new Envelope(
-            subject: 'Verification Email',
-        );
+        return new Envelope(subject: 'Verification Email');
     }
 
-    /**
-     * Get the message content definition.
-     */
     public function content(): Content
     {
         return new Content(
             markdown: 'emails.verify',
-            with: [
-                'user' => $this->user,
-            ],
+            with: ['user' => $this->user]
         );
     }
 
-    /**
-     * Get the attachments for the message.
-     *
-     * @return array<int, \Illuminate\Mail\Mailables\Attachment>
-     */
     public function attachments(): array
     {
         return [];

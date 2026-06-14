@@ -1,80 +1,102 @@
-<?php
+<?php declare(strict_types=1);
 
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Dm extends Model
 {
     use SoftDeletes;
-    
-    protected $table = 'dms';
-    protected $primaryKey = 'dm_id';
+
+    protected $table = ‘dms’;
+    protected $primaryKey = ‘dm_id’;
     public $incrementing = true;
-    protected $keyType = 'int';
+    protected $keyType = ‘int’;
 
-    protected $fillable = ['circle_id','user_id','group_id','sender_id','receiver_id','message_text','conversation_id','attachments','parent_id','reply_to_dm_id'];
+    protected $fillable = [
+        ‘circle_id’,
+        ‘user_id’,
+        ‘group_id’,
+        ‘sender_id’,
+        ‘receiver_id’,
+        ‘message_text’,
+        ‘conversation_id’,
+        ‘attachments’,
+        ‘parent_id’,
+        ‘reply_to_dm_id’,
+    ];
 
-    protected $casts = ['attachments' => 'array',];
+    protected $casts = [‘attachments’ => ‘array’];
 
-    public function replyTo() {return $this->belongsTo(self::class,'reply_to_dm_id','dm_id');}#このメッセージが’どのメッセージに対する引用返信か’
-    public function repliedBy() {return $this->hasMany(self::class,'reply_to_dm_id','dm_id');}#このメッセージを”引用返信しているメッセージ一覧”
-    public function parent() {return $this->belongsTo(self::class,'parent_id','dm_id');}#このメッセージの”親（直上のコメント）”
-    public function replies() {return $this->hasMany(self::class,'parent_id','dm_id');}#このメッセージの"子"
-
-    public function circle(){
-        return $this->belongsTo(Circle_user::class,'circle_id','circle_id');
-    }
-    public function group(){
-        return $this->belongsTo(groupmember::class,'group_id','group_id');
-    }
-    public function sender(){
-        return $this->belongsTo(User::class,'sender_id','user_id');
-    }
-
-    public function receiver(){
-        return $this->belongsTo(User::class,'receiver_id','user_id');
-    }
-
-    protected static function booted()
+    public function replyTo(): BelongsTo
     {
-        static::saving(function (Dm $dm){
-            if(!empty($dm->circle_id)){
-                $circle = $dm->circle_id;
+        return $this->belongsTo(self::class, ‘reply_to_dm_id’, ‘dm_id’);
+    }
 
-                $dm->circle_id = $circle;
+    public function repliedBy(): HasMany
+    {
+        return $this->hasMany(self::class, ‘reply_to_dm_id’, ‘dm_id’);
+    }
 
-                return;
-            } elseif(!empty($dm->group_id)){
-                $group = $dm->group_id;
+    public function parent(): BelongsTo
+    {
+        return $this->belongsTo(self::class, ‘parent_id’, ‘dm_id’);
+    }
 
-                $dm->group_id = $group;
+    public function replies(): HasMany
+    {
+        return $this->hasMany(self::class, ‘parent_id’, ‘dm_id’);
+    }
 
+    public function circle(): BelongsTo
+    {
+        return $this->belongsTo(Circle::class, ‘circle_id’, ‘circle_id’);
+    }
+
+    public function group(): BelongsTo
+    {
+        return $this->belongsTo(Group::class, ‘group_id’, ‘group_id’);
+    }
+
+    public function sender(): BelongsTo
+    {
+        return $this->belongsTo(User::class, ‘sender_id’, ‘user_id’);
+    }
+
+    public function receiver(): BelongsTo
+    {
+        return $this->belongsTo(User::class, ‘receiver_id’, ‘user_id’);
+    }
+
+    public function Images_and_videos(): HasMany
+    {
+        return $this->hasMany(Images_and_videos::class, ‘dm_id’, ‘dm_id’);
+    }
+
+    protected static function booted(): void
+    {
+        static::saving(function (Dm $dm): void {
+            if (!empty($dm->circle_id)) {
                 return;
             }
-            
-            if(isset($dm->sender_id, $dm->receiver_id)){
-                $a = (int) $dm->sender_id;
-                $b = (int) $dm->receiver_id;
-                $low = min($a,$b);
-                $high = max($a,$b);
 
-                $dm->dm_key = "{$low}-{$high}";
-
+            if (!empty($dm->group_id)) {
                 return;
             }
 
-            throw new \InvalidArgumentException('sender_idとreceiver_idは必須です。');
+            if (isset($dm->sender_id, $dm->receiver_id)) {
+                $a = (int)$dm->sender_id;
+                $b = (int)$dm->receiver_id;
+                $low = min($a, $b);
+                $high = max($a, $b);
+                $dm->dm_key = “{$low}-{$high}”;
+                return;
+            }
 
+            throw new \InvalidArgumentException(‘sender_idとreceiver_idは必須です。’);
         });
     }
-
-    public $timestamps = true;
-
-    public function Images_and_videos()
-    {
-        return $this->hasMany(Images_and_videos::class, 'dm_id', 'dm_id');
-    }
-
 }

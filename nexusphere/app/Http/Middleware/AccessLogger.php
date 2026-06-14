@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 
 namespace App\Http\Middleware;
 
@@ -10,23 +10,18 @@ use Symfony\Component\HttpFoundation\Response;
 
 class AccessLogger
 {
-    /**
-     * Handle an incoming request.
-     *
-     * @param  \Closure(\Illuminate\Http\Request): (\Symfony\Component\HttpFoundation\Response)  $next
-     */
     public function handle(Request $request, Closure $next): Response
     {
-        //Auth::Check（）ユーザーがログインしているかチェック
-        if(Auth::check()){
+        if (Auth::check()) {
             AccessLog::create([
                 'user_id' => Auth::id(),
-                'ip_address' => request()->ip(),
-                'user_agent' => request()->userAgent(),
-                'path'      => request()->path(),
+                'ip_address' => $request->ip(),
+                'user_agent' => $request->userAgent(),
+                'path' => $request->path(),
                 'access_at' => now(),
             ]);
         }
+
         return $next($request);
     }
 }
