@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\RegisterUserRequest;
 use App\Models\User;
+use App\Models\Group;
 use App\Http\Controllers\Controller;
 use App\Mail\VerificationEmail;
 use Illuminate\Http\Request;
@@ -123,6 +124,35 @@ class UserController extends Controller
                         ->where('user_id', '!=', $meId)
                         ->orderBy('created_at','desc')
                         ->get()
+                        ->map(fn ($u) =>
+            [
+                'id' => $u->user_id,
+                'name'    => $u->name,
+            ]);
+
+        return response()->json($User->values());
+    }
+
+    public function groupAssign(Request $request)
+    {
+        $meId = Auth::id();
+        $groupId = $request->integer('group_id');
+        if (!$groupId) {
+            return $this->group();
+        }
+
+        $group   = Group::findOrFail($groupId);
+        $memberIds = $group->members()->pluck('users.user_id')->toArray();
+
+        $query = User::query()
+                        ->where('user_id', '!=', $meId)
+                        ->orderBy('created_at', 'desc');
+
+        if (!empty($memberIds)) {
+            $query->whereNotIn('user_id', $memberIds);
+        }
+
+        $User = $query->get()
                         ->map(fn ($u) =>
             [
                 'id' => $u->user_id,

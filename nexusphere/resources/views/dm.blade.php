@@ -21,14 +21,28 @@
             <span class="username">{{ $partnerName }}</span>
 
             <!-- 右 -->
-                <div class="chat-header-right">
-                    <button id="menu-btn" class="menu-btn">☰</button>
-
-                    <div id="menu-dropdown" class="menu-dropdown hidden">
-                        <button id="add-user-btn">ユーザーを追加</button>
-                        <button id="leave-chat-btn" class="danger">退会する</button>
+                @if(request('group_id'))
+                    <div class="chat-header-right">
+                        <button id="menu-btn" class="menu-btn">☰</button>
+                        <div id="menu-dropdown" class="menu-dropdown hidden">
+                            <button id="add-user-btn">ユーザーを追加</button>
+                            <button id="leave-chat-btn" class="danger">退会する</button>
+                        </div>
                     </div>
+                @endif
+        </div>
+
+        <div id="group_assign_form" class="group_assign_form hidden">
+            <div class="group-assign-content">
+                <h3>メンバー追加</h3>
+                <div id="group_assignList">
                 </div>
+
+                <div class="assign_button">
+                    <button id="groupAssignBtn">追加</button>
+                    <button id="closeAssignBtn">閉じる</button>
+                </div>
+            </div>
         </div>
 
         <!-- チャットボックス -->

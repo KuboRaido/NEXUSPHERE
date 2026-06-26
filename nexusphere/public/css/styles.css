@@ -102,15 +102,7 @@ html, body {
 }
 
 
-/* ==============================
-    5. 投稿フォーム
-============================== */
-/* form {
-    background: #fff;
-    margin-bottom: 1.5rem;
-    display: flex;
-    gap: 1rem;
-} */
+/*投稿フォーム*/
 
 textarea {
     width: 100%;
@@ -142,9 +134,7 @@ input[type="file"] {
 }
 
 
-/* ==============================
-    6. 投稿カード
-============================== */
+/*投稿カード */
 .post {
     background: white;
     margin-bottom: 20px;
@@ -308,9 +298,7 @@ input[type="file"] {
 
 
 
-/* ==============================
-    7. 投稿画像
-============================== */
+/*投稿画像*/
 .post-images {
     display: flex;
     flex-direction: column;
@@ -331,9 +319,7 @@ input[type="file"] {
 }
 
 
-/* ==============================
-    8. 投稿フッター（いいね＋コメント入力）
-============================== */
+/* 投稿フッター*/
 .post-footer {
     display: flex;
     align-items: center;
@@ -469,6 +455,9 @@ input[type="file"] {
 .comment_list.expanded{
     max-height: 300px;
     overflow-y: auto; /*スクロール*/
+    overscroll-behavior-y: contain; /* 終端で親要素にスクロールを伝播させない */
+    -webkit-overflow-scrolling: touch; /* iOSで慣性スクロールを有効化 */
+    scrollbar-width: none;
 }
 
 /* expandedクラスが付いたら全部表示 */
@@ -481,6 +470,7 @@ input[type="file"] {
     align-items:flex-start;
     justify-content:space-between;
     gap:8pxz;
+    margin-top:12px;
 }
 
 .user_name{
@@ -505,9 +495,7 @@ input[type="file"] {
 }
 
 
-/* ==============================
-    10. モーダル
-============================== */
+/*モーダル*/
 .modal {
     display: none;
     position: fixed;
@@ -534,9 +522,7 @@ input[type="file"] {
 }
 
 
-/* ==============================
-    11. フッターナビ（固定）
-============================== */
+/*フッターナビ（固定）*/
 
 .hamburger {
     position: fixed;
