@@ -58,8 +58,16 @@ class ProfileController extends Controller
     // ファイル入力は input() では取得しない。アップロードがあった場合のみ上書きする。
 
         if ($request->hasFile('icon')) {
+            file_put_contents('/tmp/icon_debug.log', "File received: " . $request->file('icon')->getClientOriginalName() . "\n", FILE_APPEND);
             $path = $request->file('icon')->store('', 'direct');
-            $user->icon = $path; // 例: icons/2025/10/31/xxxx.png （public ディスク）
+            file_put_contents('/tmp/icon_debug.log', "Store result: " . ($path === false ? 'FALSE' : $path) . "\n", FILE_APPEND);
+            if($path === false){
+                file_put_contents('/tmp/icon_debug.log', "Store failed!\n", FILE_APPEND);
+                return back()->withErrors('画像の保存に失敗しました');
+            }
+            $user->icon = $path;
+        } else {
+            file_put_contents('/tmp/icon_debug.log', "No file received\n", FILE_APPEND);
         }
 
         $user->save();
@@ -82,5 +90,10 @@ class ProfileController extends Controller
             'isMine' => $isMine,
             'posts' => $posts,
         ]);
+    }
+
+    public function custom()
+    {
+        return view("custom");
     }
 }
