@@ -1,0 +1,74 @@
+name: Deploy to Production
+
+on:
+  push:
+    branches: [ "develop" ]
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    # CI テストが成功した後に実行（ci.yml が成功してから）
+    # needs: laravel-tests  # 将来的には ci.yml の job名を指定して連鎖させることも可能
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+
+    # SSH 秘密鍵をセットアップ
+    - name: Setup SSH
+      run: |
+        mkdir -p ~/.ssh
+        echo "${{ secrets.SSH_PRIVATE_KEY }}" > ~/.ssh/id_rsa
+        chmod 600 ~/.ssh/id_rsa
+        # SSH ホストキーの検証をスキップ（初回接続時のプロンプト対策）
+        ssh-keyscan -H ${{ secrets.SSH_HOST }} >> ~/.ssh/known_hosts
+
+    # リモートサーバーにコードをデプロイ
+    - name: Deploy to server
+      run: |
+        ssh -i ~/.ssh/id_rsa ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }} << 'EOF'
+
+        # デプロイパスに移動
+        cd ${{ secrets.DEPLOY_PATH }}
+
+        # Git から最新コードを取得
+        git pull origin develop
+
+        # 依存パッケージをインストール
+        composer install --no-dev --optimize-autoloader
+
+        # フロントエンドアセットをビルド
+        npm ci
+        npm run build
+
+        # Laravel キャッシュをクリア
+        php artisan config:cache
+        php artisan route:cache
+        php artisan view:cache
+
+        # マイグレーションを実行（必要に応じて）
+        php artisan migrate --force
+
+        # キューをリセット（必要に応じて）
+        php artisan queue:restart
+
+        # ディレクトリのパーミッション設定
+        chmod -R 775 storage bootstrap/cache
+
+        echo "✅ デプロイ完了"
+        EOF
+
+    # デプロイ成功時の通知（オプション）
+    - name: Deployment Success
+      if: success()
+      run: |
+        echo "🎉 本番環境へのデプロイが完了しました"
+        echo "サーバー: ${{ secrets.SSH_HOST }}"
+        echo "パス: ${{ secrets.DEPLOY_PATH }}"
+
+    # デプロイ失敗時の通知（オプション）
+    - name: Deployment Failed
+      if: failure()
+      run: |
+        echo "❌ デプロイに失敗しました"
+        exit 1
