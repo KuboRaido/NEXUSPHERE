@@ -75,4 +75,3 @@ jobs:
       run: |
         echo "❌ デプロイに失敗しました"
         exit 1
-# Deployment test
