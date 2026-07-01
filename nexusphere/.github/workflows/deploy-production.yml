@@ -3,6 +3,8 @@ name: Deploy to Production
 on:
   push:
     branches: [ "develop" ]
+  pull_request:
+    branches: [ "develop" ]
 
 jobs:
   deploy:
@@ -23,8 +25,9 @@ jobs:
         # SSH ホストキーの検証をスキップ（初回接続時のプロンプト対策）
         ssh-keyscan -H ${{ secrets.SSH_HOST }} >> ~/.ssh/known_hosts
 
-    # リモートサーバーにコードをデプロイ
+    # リモートサーバーにコードをデプロイ（push / merge 時のみ実行）
     - name: Deploy to server
+      if: github.event_name == 'push'
       run: |
         ssh -i ~/.ssh/id_rsa ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }} << 'EOF'
 
@@ -58,17 +61,17 @@ jobs:
         echo "✅ デプロイ完了"
         EOF
 
-    # デプロイ成功時の通知（オプション）
+    # デプロイ成功時の通知（push / merge 時のみ）
     - name: Deployment Success
-      if: success()
+      if: success() && github.event_name == 'push'
       run: |
         echo "🎉 本番環境へのデプロイが完了しました"
         echo "サーバー: ${{ secrets.SSH_HOST }}"
         echo "パス: ${{ secrets.DEPLOY_PATH }}"
 
-    # デプロイ失敗時の通知（オプション）
+    # デプロイ失敗時の通知（push / merge 時のみ）
     - name: Deployment Failed
-      if: failure()
+      if: failure() && github.event_name == 'push'
       run: |
         echo "❌ デプロイに失敗しました"
         exit 1
