@@ -123,17 +123,17 @@ return [
         'store' => env('APP_MAINTENANCE_STORE', 'database'),
     ],
 
-    // Web Push API
-    //RFC 8292 VAPID使用に準拠
-    'vapid'=>[
-        //公開鍵：ブラウザに配布される
-        'public_key' => env('VAPID_PUBLIC_KEY'),
-
-        //秘密鍵：サーバーに安全に保管
-        'private_key' => env('VAPID_PRIVATE_KEY'),
-
-        //VAPID Subject:Push Serviceが送信者を識別するために使用
-        'subject' => env('VAPID_SUBJECT','mailto:SBA24@edu.sba.ac.jp'),
-    ]
+    // ================================
+    // Web Push API (VAPID Configuration)
+    // ================================
+    // RFC 8292 VAPID 仕様に準拠
+    'vapid' => [
+    // 公開鍵：ブラウザに配布される
+    'public_key'  => env('VAPID_PUBLIC_KEY'),
+    // 秘密鍵：サーバーに安全に保管
+    'private_key' => env('VAPID_PRIVATE_KEY'),
+    // VAPID Subject：Push Service が送信者を識別するために使用
+    'subject'     => env('VAPID_SUBJECT', 'mailto:SBA24J20001@edu.sba.ac.jp'),
+],
 
 ];
