@@ -28,5 +28,10 @@ RUN apt install -y npm \
     && n stable
 
 RUN npm install -g web-push
+=======
+# Web Push API用のパッケージをインストール
+# 理由:VAPIDキー生成に必要。ビルド時にインストール→イメージに永続化
+RUN npm install -g web-push
+
 # RUN , CMD , ENTRYPOINT , COPY , ADD を実行する時のワーキングディレクトリを指定
 WORKDIR /var/www

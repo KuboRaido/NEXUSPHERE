@@ -1,0 +1,143 @@
+name: Deploy to Production
+
+on:
+  push:
+    branches: [ "develop" ]
+  pull_request:
+    branches: [ "develop" ]
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+
+    # SSH 秘密鍵をセットアップ（詳細デバッグ付き）
+    - name: Setup SSH
+      run: |
+        set -x
+        echo "=== SSH Setup Start ==="
+        mkdir -p ~/.ssh
+
+        echo "Checking if SSH_PRIVATE_KEY secret exists..."
+        if [ -z "${{ secrets.SSH_PRIVATE_KEY }}" ]; then
+          echo "ERROR: SSH_PRIVATE_KEY secret is empty or not set!"
+          exit 1
+        fi
+
+        echo "Writing private key to ~/.ssh/id_rsa..."
+        echo "${{ secrets.SSH_PRIVATE_KEY }}" > ~/.ssh/id_rsa
+
+        echo "Setting permissions..."
+        chmod 600 ~/.ssh/id_rsa
+
+        echo "=== SSH Key Info ==="
+        ls -lah ~/.ssh/id_rsa
+        file ~/.ssh/id_rsa
+        echo "First line of key:"
+        head -1 ~/.ssh/id_rsa
+        echo "Last line of key:"
+        tail -1 ~/.ssh/id_rsa
+
+        echo "=== SSH Host Key Scan ==="
+        if ssh-keyscan -H ${{ secrets.SSH_HOST }} >> ~/.ssh/known_hosts 2>&1; then
+          echo "Host key added successfully"
+        else
+          echo "ERROR: Failed to scan host key"
+          exit 1
+        fi
+
+        echo "=== Known Hosts ==="
+        cat ~/.ssh/known_hosts
+
+    # SSH 接続テスト
+    - name: Test SSH Connection
+      run: |
+        set -x
+        echo "=== Testing SSH Connection ==="
+
+        if ssh -vvv -i ~/.ssh/id_rsa -o StrictHostKeyChecking=accept-new ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }} "echo 'Connection successful' && id && pwd"; then
+          echo "SSH connection successful!"
+        else
+          echo "ERROR: SSH connection failed!"
+          echo "Debugging info:"
+          echo "SSH_HOST: ${{ secrets.SSH_HOST }}"
+          echo "SSH_USER: ${{ secrets.SSH_USER }}"
+          exit 1
+        fi
+      continue-on-error: true
+
+    # リモートサーバーにコードをデプロイ
+    - name: Deploy to server
+      if: github.event_name == 'push'
+      run: |
+        set -x
+        echo "=== Starting Deployment ==="
+
+        ssh -i ~/.ssh/id_rsa -o StrictHostKeyChecking=accept-new ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }} << 'DEPLOY_EOF'
+        set -x
+        echo "=== Deployment Script Start ==="
+
+        # デプロイパスに移動
+        echo "Moving to deploy path: ${{ secrets.DEPLOY_PATH }}"
+        cd ${{ secrets.DEPLOY_PATH }} || { echo "ERROR: Cannot cd to DEPLOY_PATH"; exit 1; }
+        pwd
+
+        # Git から最新コードを取得
+        echo "Pulling latest code..."
+        git pull origin develop || { echo "ERROR: git pull failed"; exit 1; }
+
+        # 依存パッケージをインストール
+        echo "Running composer install..."
+        composer install --no-dev --optimize-autoloader || { echo "ERROR: composer install failed"; exit 1; }
+
+        # フロントエンドアセットをビルド
+        echo "Running npm ci..."
+        npm ci || { echo "ERROR: npm ci failed"; exit 1; }
+        echo "Building assets..."
+        npm run build || { echo "ERROR: npm run build failed"; exit 1; }
+
+        # Laravel キャッシュをクリア
+        echo "Clearing Laravel caches..."
+        php artisan config:cache || { echo "WARNING: config:cache failed"; }
+        php artisan route:cache || { echo "WARNING: route:cache failed"; }
+        php artisan view:cache || { echo "WARNING: view:cache failed"; }
+
+        # マイグレーションを実行
+        echo "Running migrations..."
+        php artisan migrate --force || { echo "WARNING: migrate failed (may be normal if no pending migrations)"; }
+
+        # キューをリセット
+        echo "Restarting queue..."
+        php artisan queue:restart || { echo "WARNING: queue:restart failed"; }
+
+        # ディレクトリのパーミッション設定
+        echo "Setting permissions..."
+        chmod -R 775 storage bootstrap/cache || { echo "WARNING: chmod failed"; }
+
+        echo "✅ デプロイ完了"
+        echo "=== Deployment Script End ==="
+        DEPLOY_EOF
+
+    # デプロイ成功時の通知
+    - name: Deployment Success
+      if: success() && github.event_name == 'push'
+      run: |
+        echo "🎉 本番環境へのデプロイが完了しました"
+        echo "サーバー: ${{ secrets.SSH_HOST }}"
+        echo "パス: ${{ secrets.DEPLOY_PATH }}"
+
+    # デプロイ失敗時の通知
+    - name: Deployment Failed
+      if: failure() && github.event_name == 'push'
+      run: |
+        echo "❌ デプロイに失敗しました"
+        echo "確認してください："
+        echo "1. SSH_PRIVATE_KEY が正しく登録されているか"
+        echo "2. SSH_HOST が正しいか"
+        echo "3. SSH_USER が正しいか"
+        echo "4. DEPLOY_PATH が正しいか"
+        echo "5. サーバー側で必要なツール（git, composer, npm）がインストールされているか"
+        exit 1
