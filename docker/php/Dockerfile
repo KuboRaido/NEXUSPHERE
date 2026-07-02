@@ -27,5 +27,6 @@ RUN apt install -y npm \
     && npm install n -g \
     && n stable
 
+RUN npm install -g web-push
 # RUN , CMD , ENTRYPOINT , COPY , ADD を実行する時のワーキングディレクトリを指定
 WORKDIR /var/www
