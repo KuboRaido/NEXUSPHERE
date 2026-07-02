@@ -76,7 +76,7 @@ jobs:
         set -x
         echo "=== Starting Deployment ==="
 
-        ssh -i ~/.ssh/id_rsa -o StrictHostKeyChecking=accept-new ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }} << 'DEPLOY_EOF'
+        ssh -i ~/.ssh/id_rsa -o StrictHostKeyChecking=accept-new ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }} bash -l << 'DEPLOY_EOF'
         set -x
         echo "=== Deployment Script Start ==="
 
@@ -89,33 +89,27 @@ jobs:
         echo "Pulling latest code..."
         git pull origin develop || { echo "ERROR: git pull failed"; exit 1; }
 
-        # 依存パッケージをインストール
-        echo "Running composer install..."
-        composer install --no-dev --optimize-autoloader || { echo "ERROR: composer install failed"; exit 1; }
+        # Docker イメージをビルド・コンテナを起動
+        echo "Building and starting Docker containers..."
+        docker compose up -d --build || { echo "ERROR: docker compose up failed"; exit 1; }
 
-        # フロントエンドアセットをビルド
-        echo "Running npm ci..."
-        npm ci || { echo "ERROR: npm ci failed"; exit 1; }
-        echo "Building assets..."
-        npm run build || { echo "ERROR: npm run build failed"; exit 1; }
+        # コンテナの起動を待機
+        echo "Waiting for containers to be ready..."
+        sleep 5
 
         # Laravel キャッシュをクリア
         echo "Clearing Laravel caches..."
-        php artisan config:cache || { echo "WARNING: config:cache failed"; }
-        php artisan route:cache || { echo "WARNING: route:cache failed"; }
-        php artisan view:cache || { echo "WARNING: view:cache failed"; }
+        docker compose exec -T app-nexus-dev sh -c "cd /var/www/nexusphere && php artisan config:cache" || { echo "WARNING: config:cache failed"; }
+        docker compose exec -T app-nexus-dev sh -c "cd /var/www/nexusphere && php artisan route:cache" || { echo "WARNING: route:cache failed"; }
+        docker compose exec -T app-nexus-dev sh -c "cd /var/www/nexusphere && php artisan view:cache" || { echo "WARNING: view:cache failed"; }
 
         # マイグレーションを実行
         echo "Running migrations..."
-        php artisan migrate --force || { echo "WARNING: migrate failed (may be normal if no pending migrations)"; }
+        docker compose exec -T app-nexus-dev sh -c "cd /var/www/nexusphere && php artisan migrate --force" || { echo "WARNING: migrate failed (may be normal if no pending migrations)"; }
 
         # キューをリセット
         echo "Restarting queue..."
-        php artisan queue:restart || { echo "WARNING: queue:restart failed"; }
-
-        # ディレクトリのパーミッション設定
-        echo "Setting permissions..."
-        chmod -R 775 storage bootstrap/cache || { echo "WARNING: chmod failed"; }
+        docker compose exec -T app-nexus-dev sh -c "cd /var/www/nexusphere && php artisan queue:restart" || { echo "WARNING: queue:restart failed"; }
 
         echo "✅ デプロイ完了"
         echo "=== Deployment Script End ==="
