@@ -3,6 +3,9 @@
 namespace App\Http\Controllers;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\JoinGroupRequest;
+use App\Http\Requests\SendDmRequest;
+use App\Http\Requests\StoreGroupRequest;
 use App\Http\Resources\DmMessageResource;
 use App\Http\Resources\RoomMessageResource;
 use Illuminate\Http\Request;
@@ -12,7 +15,6 @@ use App\Models\Dm;
 use App\Models\User;
 use App\Models\Circle;
 use App\Models\Group;
-use App\Rules\NgWord;
 
 class DmController extends Controller
 {
@@ -215,14 +217,7 @@ public function dmback(?int $partner=null){
       ]);
    }
 
-   public function dmGroupCreate(Request $request){
-         $request->validate([
-            'group_name' => ['required','string','max:255',new NgWord],
-            'user_ids'   => 'required|array',
-            'user_ids.*' => 'integer|exists:users,user_id',
-            'icon' => [ 'nullable','image','max:2048' ],
-         ]);
-
+   public function dmGroupCreate(StoreGroupRequest $request){
          $iconPath = null;
          if ($request->hasFile('icon')) {
             $iconPath = $request->file('icon')->store('', 'direct');
@@ -251,13 +246,7 @@ public function dmback(?int $partner=null){
    
    }
 
-   public function dmGroupJoin(Request $request){
-      $request->validate([
-         'group_id'   => ['required', 'integer', 'exists:groups,group_id'],
-         'user_ids'   => ['required', 'array'],
-         'user_ids.*' => ['integer', 'exists:users,user_id'],
-      ]);
-
+   public function dmGroupJoin(JoinGroupRequest $request){
       $meId = Auth::id();
       abort_if(!$meId, 401, 'ログインされていません');
       $group = Group::findOrFail($request->integer('group_id'));
@@ -276,24 +265,16 @@ public function dmback(?int $partner=null){
       return back();
    }
 
-   public function dmsendback(Request $request)
+   public function dmsendback(SendDmRequest $request)
    {
       $me = $request ->user()?->getAuthIdentifier() ?? Auth::id();
       abort_if(!$me, 401, 'Unauthenticated');
 
       $circle_id = $request -> integer('circle_id');
       $group_id = $request -> integer('group_id');
-      $userPk = (new User)->getKeyName();
+      $data = $request->validated();
 
-      $baseRules = [
-         'text' => ['nullable','string','max:5000'],
-         'files.*' => ['nullable','file','max:51200','mimetypes:image/*,video/*'],
-      ];
       if($circle_id){
-         $data = $request->validate($baseRules + [
-            'circle_id' => ['required', 'integer', 'exists:circles,circle_id'],
-         ]);
-
          $dm = Dm::create([
          'sender_id'    => $me,
          'receiver_id'  => null,
@@ -302,10 +283,6 @@ public function dmback(?int $partner=null){
          'circle_id'    => $circle_id,
       ]);
       } elseif($group_id) {
-         $data = $request->validate($baseRules + [
-            'group_id' => ['required', 'integer', 'exists:groups,group_id'],
-         ]);
-
          $dm = Dm::create([
          'sender_id'    => $me,
          'receiver_id'  => null,
@@ -314,10 +291,6 @@ public function dmback(?int $partner=null){
          'group_id'     => $group_id,
       ]);
       } else {
-         $data = $request->validate($baseRules + [
-            'to' => ['required', 'integer', "exists:users,{$userPk}"],
-         ]);
-
          $dm = Dm::create([
          'sender_id'    => $me,
          'receiver_id'  => $data['to'],
