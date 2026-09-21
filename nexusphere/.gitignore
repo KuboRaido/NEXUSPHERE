@@ -25,3 +25,4 @@ Thumbs.db
 log\xdebug.log
 docker-compose-dev.yml
 docker-compose.yml
+!.env.testing.example
