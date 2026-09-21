@@ -3,6 +3,11 @@
 namespace App\Http\Controllers;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\JoinGroupRequest;
+use App\Http\Requests\SendDmRequest;
+use App\Http\Requests\StoreGroupRequest;
+use App\Http\Resources\DmMessageResource;
+use App\Http\Resources\RoomMessageResource;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
@@ -10,34 +15,9 @@ use App\Models\Dm;
 use App\Models\User;
 use App\Models\Circle;
 use App\Models\Group;
-use App\Rules\NgWord;
 
 class DmController extends Controller
 {
-   private function avatarUrl(?User $u): string
-   {
-      $default = asset('images/default-avatar.png');
-      if (!$u)return $default;
-
-      $path = $u->avatarUrl 
-         ?? $u->icon
-         ?? $u->icon_path
-         ?? $u->avatar_path
-         ?? $u->profile_photo_path
-         ?? null;
-
-      if (!$path) return $default;
-
-      if (\Illuminate\Support\Str::startsWith($path, ['http://','https://','/'])){
-         return $path;
-      }
-
-      if (file_exists(public_path('icons/' . $path))){
-         return asset('storage/icons/' . $path);
-      }
-
-      return asset($path);
-   }
    # DM一覧（フロント）
    public function dmlistfront(){
       return view('dm-list');
@@ -121,13 +101,13 @@ class DmController extends Controller
             ->get()->keyBy($userPk);
    // 自分のアイコンURL
    $meUser = $users[(int)$me] ?? null;
-   $meIcon = $this->avatarUrl($meUser);
+   $meIcon = $meUser?->avatar_url ?? asset('images/default-avatar.png');
    foreach($list as &$t){
       if (!empty($t['is_group'])) continue; // グループの場合は名前などを上書きしない
 
       $u = $users[$t['partner_id']] ?? null;
       $t['partner_name'] = $u?->name ?? 'Unknown';
-      $t['partner_icon'] = $u ? $this->avatarUrl($u) : ((int)$t['partner_id'] === (int)$me ? $meIcon : asset('images/default-avatar.png'));
+      $t['partner_icon'] = $u ? $u->avatar_url : ((int)$t['partner_id'] === (int)$me ? $meIcon : asset('images/default-avatar.png'));
    }
    unset($t);
 
@@ -206,26 +186,8 @@ public function dmback(?int $partner=null){
          'me'     =>['id'=>$meUser->$userPk, 'name'=>$meUser->name, 'icon'=>$meUser->avatar_url],
          'partner'=>['id'=>$partnerUser->$userPk, 'name'=>$partnerUser->name,'icon'=>$partnerUser->avatar_url]
       ],
-      'dms' => $messages->map(function($m) use ($partnerReadAt, $meUser, $userPk){
-         $isMine = ((int) $m->sender_id === (int) $meUser->$userPk);
-         $is_read = $isMine && $partnerReadAt ? $m->created_at <= $partnerReadAt : false;
-
-         return[
-            'id'        =>$m->dm_id,
-            'from_id'   =>$m->sender_id,
-            'to_id'     =>$m->receiver_id,
-            'text'      =>\App\Support\TextHelper::linkify($m->message_text ?? ''),
-            'dm_key'    =>$m->dm_key,
-            'created_at'=>$m->created_at?->toISOString(),
-            'is_read'   =>$is_read,
-            'attachments'=>$m->Images_and_videos->map(function($rec){
-                  $path = $rec->image ?: $rec->video;
-                  $url  = $path ? asset('storage/dms/' . $path) : null;
-                  $type = $rec->image ? 'image' : ($rec->video ? 'video' : 'file');
-                  return ['type'=>$type,'url' =>$url];
-            })->values(),
-         ];
-      }),
+      'dms' => $messages->map(fn (Dm $m) => (new DmMessageResource($m))
+         ->withReadStatus((int) $meUser->$userPk, $partnerReadAt)),
    ]);
 }
 
@@ -238,22 +200,7 @@ public function dmback(?int $partner=null){
             'me'     =>['id' => Auth::id()],
             'circle' =>['id' => $circle->circle_id, 'name' => $circle->circle_name],
          ],
-         'dms' => $m->map(function (DM $dm){
-            return[
-            'id'        =>$dm->dm_id,
-            'from_id'   =>$dm->sender_id,
-            'text'      =>\App\Support\TextHelper::linkify($dm->message_text),
-            'icon'      =>$this->avatarUrl($dm->sender),
-            'created_at'=>$dm->created_at?->toISOString(),
-            'is_read'   =>$dm->is_read,
-            'attachments'=>$dm->Images_and_videos->map(function($rec){
-                  return [
-                     'type'=>$rec->image ? 'image' : ($rec->video ? 'video' : 'file'),
-                     'url' =>asset('storage/dms/' . $rec->image ?: $rec->video),
-                  ];
-               }),
-            ];
-         }),
+         'dms' => RoomMessageResource::collection($m),
       ]);
    }
 
@@ -266,33 +213,11 @@ public function dmback(?int $partner=null){
             'me'     =>['id' => Auth::id()],
             'group' =>['id' => $group->group_id, 'name' => $group->group_name],
          ],
-         'dms' => $m->map(function (DM $dm){
-            return[
-            'id'        =>$dm->dm_id,
-            'from_id'   =>$dm->sender_id,
-            'text'      =>\App\Support\TextHelper::linkify($dm->message_text ?? ''),
-            'icon'      =>$this->avatarUrl($dm->sender),
-            'created_at'=>$dm->created_at?->toISOString(),
-            'is_read'   =>$dm->is_read,
-            'attachments'=>$dm->Images_and_videos->map(function($rec){
-                  return [
-                     'type'=>$rec->image ? 'image' : ($rec->video ? 'video' : 'file'),
-                     'url' =>asset('storage/dms/' . $rec->image ?: $rec->video),
-                  ];
-               }),
-            ];
-         }),
+         'dms' => RoomMessageResource::collection($m),
       ]);
    }
 
-   public function dmGroupCreate(Request $request){
-         $request->validate([
-            'group_name' => ['required','string','max:255',new NgWord],
-            'user_ids'   => 'required|array',
-            'user_ids.*' => 'integer|exists:users,user_id',
-            'icon' => [ 'nullable','image','max:2048' ],
-         ]);
-
+   public function dmGroupCreate(StoreGroupRequest $request){
          $iconPath = null;
          if ($request->hasFile('icon')) {
             $iconPath = $request->file('icon')->store('', 'direct');
@@ -321,13 +246,7 @@ public function dmback(?int $partner=null){
    
    }
 
-   public function dmGroupJoin(Request $request){
-      $request->validate([
-         'group_id'   => ['required', 'integer', 'exists:groups,group_id'],
-         'user_ids'   => ['required', 'array'],
-         'user_ids.*' => ['integer', 'exists:users,user_id'],
-      ]);
-
+   public function dmGroupJoin(JoinGroupRequest $request){
       $meId = Auth::id();
       abort_if(!$meId, 401, 'ログインされていません');
       $group = Group::findOrFail($request->integer('group_id'));
@@ -346,24 +265,16 @@ public function dmback(?int $partner=null){
       return back();
    }
 
-   public function dmsendback(Request $request)
+   public function dmsendback(SendDmRequest $request)
    {
       $me = $request ->user()?->getAuthIdentifier() ?? Auth::id();
       abort_if(!$me, 401, 'Unauthenticated');
 
       $circle_id = $request -> integer('circle_id');
       $group_id = $request -> integer('group_id');
-      $userPk = (new User)->getKeyName();
+      $data = $request->validated();
 
-      $baseRules = [
-         'text' => ['nullable','string','max:5000'],
-         'files.*' => ['nullable','file','max:51200','mimetypes:image/*,video/*'],
-      ];
       if($circle_id){
-         $data = $request->validate($baseRules + [
-            'circle_id' => ['required', 'integer', 'exists:circles,circle_id'],
-         ]);
-
          $dm = Dm::create([
          'sender_id'    => $me,
          'receiver_id'  => null,
@@ -372,10 +283,6 @@ public function dmback(?int $partner=null){
          'circle_id'    => $circle_id,
       ]);
       } elseif($group_id) {
-         $data = $request->validate($baseRules + [
-            'group_id' => ['required', 'integer', 'exists:groups,group_id'],
-         ]);
-
          $dm = Dm::create([
          'sender_id'    => $me,
          'receiver_id'  => null,
@@ -384,10 +291,6 @@ public function dmback(?int $partner=null){
          'group_id'     => $group_id,
       ]);
       } else {
-         $data = $request->validate($baseRules + [
-            'to' => ['required', 'integer', "exists:users,{$userPk}"],
-         ]);
-
          $dm = Dm::create([
          'sender_id'    => $me,
          'receiver_id'  => $data['to'],
@@ -398,7 +301,6 @@ public function dmback(?int $partner=null){
          ]);
       }
 
-      $attachments = [];
       if($request->hasFile('files')){
          foreach ($request->file('files') as $file){
             $path  = $file->store('','dm');
@@ -406,27 +308,15 @@ public function dmback(?int $partner=null){
             $isImg = str_starts_with($mime,'image/');
             $isMov = str_starts_with($mime,'video/');
 
-         $rec = \App\Models\Images_and_videos::create([
+            \App\Models\Images_and_videos::create([
                'image'  => $isImg ? $path : null,
                'video'  => $isMov ? $path : null,
                'dm_id'  => $dm->dm_id,
             ]);
-
-            $attachments[] = [
-               'type' => $rec->type,
-               'url'  => $rec->url,
-            ];
          }
       }
-      return response()->json([
-         'id'         => $dm->dm_id,
-         'from_id'    => (int)$dm->sender_id,
-         'to_id'      => (int)$dm->receiver_id,
-         'text'       => \App\Support\TextHelper::linkify($dm->message_text ?? ''),
-         'dm_key'     => $dm->dm_key,
-         'created_at' => $dm->created_at->toISOString(),
-         'attachments'=> $attachments,
-      ], 201);
+
+      return (new DmMessageResource($dm))->response()->setStatusCode(201);
    }
 
    public function read(User $partner, Request $req)
