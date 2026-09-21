@@ -3,7 +3,7 @@
 use App\Models\User;
 use App\Models\Circle;
 
-it('正しいメールとパスワードでログインでき / へ移動する', function () {
+it('正しいメールとパスワードでログインでき /home へ移動する', function () {
     // 準備
     $user = User::factory()->create();
     Circle::forceCreate([

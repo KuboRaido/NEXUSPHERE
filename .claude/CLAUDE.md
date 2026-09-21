@@ -18,7 +18,7 @@
 - 開発環境: WSL2 Ubuntu 22.04 上の `~/NEXUSPHERE`
 
 ## 環境
-- PHP 8.3（Dockerfile）/ Laravel 11 / MySQL（mysql:latest）/ TailwindCSS / 素のJavaScript
+- PHP 8.3（Dockerfile）/ Laravel 12 / MySQL（mysql:latest）/ TailwindCSS / 素のJavaScript
 - コンテナ: `app-nexus`（PHP-FPM）, `nginx-nexus`, `db-nexus`, `mail-nexus`（キューワーカー。`queue:work` が常駐）
 - ローカルURL: http://127.0.0.1:8881
 
@@ -71,7 +71,7 @@ docker compose exec -w /var/www/nexusphere app-nexus npm run build
 - 処理は Controller に書き込まず Service に切り出す
 
 ## コミット
-- Conventional Commits: `feat` / `fix` / `docs` / `style` / `refactor` / `chore`
+- Conventional Commits: `feat` / `fix` / `docs` /`test`/ `style` / `refactor` / `chore`
 - 形式: `type: 変更内容の要約`（日本語、50字以内目安）
 - マイグレーションを追加したら README のER図も同じブランチで更新する
 
