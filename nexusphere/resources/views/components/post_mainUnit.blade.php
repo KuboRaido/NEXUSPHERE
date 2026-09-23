@@ -81,7 +81,7 @@
                 </div>
             @endif
 
-            <div class="post-footer">
+            <!-- <div class="post-footer">
 
                 {{-- いいね --}}
                 @php $liked = $post->nices->contains('user_id', auth()->id()); @endphp
@@ -101,7 +101,7 @@
                     <button type="submit">送信</button>
                 </form>
 
-            </div>
+            </div> -->
 
 
                 {{-- コメント一覧 --}}

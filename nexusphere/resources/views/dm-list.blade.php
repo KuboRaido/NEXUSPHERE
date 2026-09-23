@@ -29,32 +29,32 @@
         </div>
         {{-- 検索結果表示 --}}
         <ul id="search-results" class="search-results" style="display: none;"></ul>
-        <button id="openPopupBtn" class="plus-button">
+        <!-- <button id="openPopupBtn" class="plus-button">
             <i class="fa-solid fa-plus"></i>
-        </button>
+        </button> -->
 
 
         <ul id="dm-list" class="dm-list" data-chat-url-template="{{ url('/dm') }}?to=__ID__"></ul>
 
-        <div id="createDmModal" class="dm-modal hidden">
+        <!-- <div id="createDmModal" class="dm-modal hidden">
             <div class="dm-modal-content">
                 <h3>グループDM作成</h3>
                 <input id="group_name" type="text" placeholder="グループ名を入力" autocomplete="off" />
-                <!-- アイコン -->
+
                 <div class="icon-upload-container">
                     <label class="label-text">アイコン</label>
                     <input type="file" id="iconUpload" name="icon" accept="image/*" class="icon-upload-input">
                 </div>
 
                 <div id="modalFriendList">
-                    <!-- JSでここに友達一覧 -->
+                
                 </div>
 
                 <div class="modal-buttons">
                     <button id="createRoomBtn">作成</button>
                     <button id="closeModalBtn">閉じる</button>
                 </div>
-            </div>
+            </div> -->
         </div>
     </main>
     <div id="sidebar" class="footer-nav active">
@@ -66,8 +66,8 @@
                 class="fa-solid fa-comment"></i><span>DM</span></a>
         <a href="/profile" class="tab {{ request()->is('profile') ? 'active' : '' }}"><i
                 class="fa-solid fa-user"></i><span>プロフィール</span></a>
-        <a href="/circle" class="tab {{ request()->is('circle') ? 'active' : '' }}"><i
-                class="fa-solid fa-cube"></i><span>サークル</span></a>
+        <!-- <a href="/circle" class="tab {{ request()->is('circle') ? 'active' : '' }}"><i
+                class="fa-solid fa-cube"></i><span>サークル</span></a> -->
     </div>
 
     <div id="overlay" class="overlay"></div>
