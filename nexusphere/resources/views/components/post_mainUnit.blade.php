@@ -104,7 +104,7 @@
             </div> -->
 
 
-                {{-- コメント一覧 --}}
+                <!-- {{-- コメント一覧 --}}
                     <div class="comment_list">
                         @foreach ($post->comments as $comment)
                             <x-comment_item :comment="$comment"  />
@@ -112,5 +112,5 @@
                     </div>
                 @if($post->comments->count() > 3)
                     <button class="showMoreBtn">全てのコメントを見る</button>
-                @endif
+                @endif -->
 </div>
