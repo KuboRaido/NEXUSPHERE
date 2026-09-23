@@ -81,9 +81,9 @@
                 </div>
             @endif
 
-            <!-- <div class="post-footer">
+            {{-- <div class="post-footer">
 
-                {{-- いいね --}}
+                いいね
                 @php $liked = $post->nices->contains('user_id', auth()->id()); @endphp
                 <form method="POST" action="/posts/{{ $post->prc_id }}/like" class="js-like-form">
                     @csrf
@@ -94,17 +94,17 @@
                         <span class="like-count">{{ $post->nices->count() }}</span>
                     </button>
                 </form>
-                {{-- コメント入力 --}}
+                コメント入力
                 <form method="POST" action="/posts/{{ $post->prc_id }}/comment" class="comment-form">
                     @csrf
                     <input type="text" name="comment" class="comment-input"placeholder="コメントを追加" required>
                     <button type="submit">送信</button>
                 </form>
 
-            </div> -->
+            </div> --}}
 
 
-                <!-- {{-- コメント一覧 --}}
+                {{-- コメント一覧
                     <div class="comment_list">
                         @foreach ($post->comments as $comment)
                             <x-comment_item :comment="$comment"  />
@@ -112,5 +112,5 @@
                     </div>
                 @if($post->comments->count() > 3)
                     <button class="showMoreBtn">全てのコメントを見る</button>
-                @endif -->
+                @endif --}}
 </div>
