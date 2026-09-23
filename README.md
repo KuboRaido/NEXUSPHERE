@@ -74,6 +74,7 @@ erDiagram
     USERS ||--o{ CIRCLE_REQUESTS : "requests"
     USERS ||--|| PROFILES : "has"
     USERS ||--|| CUSTOMS : "has"
+    USERS ||--o| PORTFOLIO_SITES : "has"
     USERS ||--o{ LOGIN_HISTORIES : "has"
     USERS ||--o{ ACCESS_LOGS : "has"
 
@@ -254,6 +255,16 @@ erDiagram
         string ip_address 
         string user_agent "nullable"
         timestamp access_at
+    }
+
+    CIRCLE_REQUESTS {
+        bigint circle_request_id PK
+        bigint circle_id FK
+        bigint user_id FK
+        string status "pending/approved/rejected"
+        timestamp request_at "nullable"
+        timestamp created_at
+        timestamp updated_at
     }
 ```
 ## 7.セットアップ
