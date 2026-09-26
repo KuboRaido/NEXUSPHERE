@@ -1,7 +1,7 @@
 # NEXUSPHERE
 **学内の人を「属性」と「活動」で見つけ、外部SNSやポートフォリオへつなぐ導線サービス**
 ### デモ環境URL
-https://nexupshere-dev.top
+https://dev.nexupshere.top
 ログインアカウント
 メールアドレス　a@sba.ac.jp
 パスワード　　　00000000
