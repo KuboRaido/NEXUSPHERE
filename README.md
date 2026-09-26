@@ -1,62 +1,54 @@
 # NEXUSPHERE
-**学生の専門性を掛け合わせ、学科を越えた共創を生むSNSプラットフォーム**
+**学内の人を「属性」と「活動」で見つけ、外部SNSやポートフォリオへつなぐ導線サービス**
+### デモ環境URL
+https://dev.nexupshere.top
+ログインアカウント
+メールアドレス　a@sba.ac.jp
+パスワード　　　00000000
 
 ## 1. プロジェクト概要
-NEXUSPHERE（ネクスフィア）は、学生特有のコミュニティ形成と情報交換を最適化するためのSNSです。
-既存のSNSでは困難だった「スキルベースでの他学科ユーザー探索」を可能にし、エンジニア、デザイナー、クリエイターが所属の枠を超えて繋がるきっかけを提供します。
+NEXUSPHERE（ネクスフィア）は、学内の人を属性（学年・学科・専攻）と活動（タイムライン投稿）で見つけ、その人の外部SNSやポートフォリオへ渡すためのサービスです。
+ユーザーを滞在させるSNSではなく、学内で出会うきっかけを作り、つながった後は各自が普段使っているツールへ移ってもらうことを目的にしています。
 
-## 2. 開発背景（解決したい課題）
-* **課題**: 「アプリを作りたいエンジニア」と「UIをデザインしたい学生」が同じキャンパスにいても、学科が違うだけで接点が持てないという「学科間の分断」。
-* **解決策**: 属性（学年・学科）に特化した検索・プロフィール機能の実装により、効率的なネットワーキングを実現。
-* **目標**: 企画からデータベース設計、コンテナ化、本番デプロイまでのフルサイクル開発。
+## 2. 開発背景
+* **きっかけ**: 2年次のチーム開発の授業で、4人チームで開発を開始。同じキャンパスにいても、学科や専攻が違うだけで協力相手を探せない「学科間の分断」を解決したかった。
+* **方針転換**: 当初はサークル・グループDM・いいね・コメントを備えた滞在型SNSとして作ったが、試験運用ではほとんど使われなかった。そこで「何のためのSNSか」を問い直し、学内の人を外部へつなぐ導線サービスに定義し直した。
+* **現在の目標**: 企画・DB設計・コンテナ化・本番運用までを一人で回しながら、導線として機能するかを限定公開で検証する。
 
 ## 3. 技術スタック
 | カテゴリ | 技術選定 | 選定理由 |
 | :--- | :--- | :--- |
-| **Backend** | PHP 8.2 / Laravel 11.x | 最新のフレームワーク機能を活用した迅速かつ堅牢な開発。 |
-| **Frontend** | JavaScript / Tailwind CSS | ユーティリティファーストによるレスポンシブUIの高速実装。 |
-| **Database** | MySQL 8.0 | 外部キー制約とインデックス最適化によるデータ整合性の担保。 |
-| **Infrastructure** | Docker / Docker Compose | 開発環境のコンテナ化による再現性の確保。 |
-| **Server** | ConohaVPS | WebSocket・Docker・php.ini・DNS、NEXUSPHEREに必要な自由度が全部揃って月¥880固定で動かせる唯一の選択肢だから。|
-## 4. 機能詳細と技術的なこだわり
-### 認証・ユーザー管理
-* **新規登録**: 学内メールアドレス（ドメイン制限）による関係者限定の登録フロー。学年・学科・専攻の属性情報を保持。
-* **ログイン**: 評価用ゲストアカウントを設置（詳細は後述）。
-* **プロフィール**: 自己紹介、スキル、ポートフォリオURLの管理。自身へのDM送信やプロフィール編集が可能。
+| **Backend** | PHP 8.3 / Laravel 12 | Service層・Enum・キューなど、フレームワークの機能で堅牢に書ける。 |
+| **Frontend** | JavaScript / CSS | 画面ごとのCSSと素のJavaScriptで構成。 |
+| **Database** | MySQL | 外部キー制約とインデックスでデータ整合性を担保。 |
+| **Test** | Pest | 既存機能と公開サイトのServiceをテストで保護。 |
+| **Infrastructure** | Docker / Docker Compose | 開発環境と本番環境を同じ構成で再現。 |
+| **Server** | ConoHa VPS | Docker・php.ini・DNSを自分で制御でき、月¥880固定で運用できるため。 |
 
-### コミュニケーション
-* **ホーム（タイムライン）**: 全ユーザーの投稿を閲覧、検索、リアクション（いいね・コメント）。
-* **ダイレクトメッセージ（DM）**: 
-    * 1対1およびグループ形式のリアルタイムに近いチャット。
-    * 画像・動画の添付送信（画像: 最大5MB / 動画: 最大500MB）。
-    * ユーザー名による宛先検索および既読管理。
-* **サークル機能**: 
-    * 共通の目的を持つ学生同士のコミュニティ作成。
-    * 参加承認制（オーナーによる申請承諾・拒否）の実装。
-    * サークル内限定の掲示板およびトークルーム。
-### 運用を見据えた堅牢性
-* **学内限定認証**: 特定ドメインのメールアドレスのみ登録を許可し、クローズドなコミュニティの安全性を担保。
-* **NGワードフィルタリング**: 自作のバリデーションルールにより、不適切な投稿を自動検閲。
-* **フルアクセスロギング**: ミドルウェアにより、全ての操作ログ（URL、メソッド、IP、UA）をDBに記録。
+## 4. 機能
+### 認証・プロフィール
+* **新規登録**: 学内ドメインのメールアドレスのみ登録可能。学年・学科・専攻を登録。
+* **プロフィール**: 名前・学年・学科・専攻・アイコンを管理。他の学生のプロフィールからDMを送信可能。
+* **ユーザー検索**: 名前・学年・学科・専攻のキーワードで部分一致検索。
 
-### コミュニティ・共創支援
-* **サークル・グループ機能**: 
-    * 属性に応じたサークル作成および参加承認フローの実装。
-    * サークル内メンバー限定のグループDMおよびファイル添付機能。
-* **詳細な検索システム**: 投稿内容、ユーザー名、サークル名のキーワード検索。
+### タイムライン
+* テキスト（最大1000字）と画像（1枚最大5MB）・動画（最大50MB）の投稿。
+* 投稿本文のキーワード検索。
 
-### ユーザー体験
-* **メディアアップロード**: 最大500MBの動画および5MBの画像投稿に対応。
-## 5. 評価用アカウント
-環境構築なしで動作を確認するためのデモアカウントです。
-- **URL**: `https://nexusphere.top/newlogin`
-- **ログイン情報**:
-  | 役割 | メールアドレス | パスワード |
-  | :--- | :--- | :--- |
-  | テストユーザーA | a@sba.ac.jp | 00000000 |
-  | テストユーザーB | b@sba.ac.jp | 00000000 |
-## 6. 設計・データベース
-スケーラビリティとデータ整合性を重視し、第3正規化までを徹底した設計を行っています。
+### ダイレクトメッセージ（1対1）
+* テキスト（最大5000字）と画像・動画の添付（1ファイル最大50MB）。
+* 一定間隔のポーリングで新着メッセージを反映。既読管理あり。
+
+### 運用・安全性
+* **NGワードフィルタリング**: 自作のバリデーションルールで不適切な投稿を弾く。
+
+### 非表示にした機能
+方針転換に合わせ、グループDM・サークル・いいね・コメントは画面から非表示にしています（サーバー側の実装とテーブルは残っています）。
+
+### 開発中
+* **公開サイト**: 学生が企業に渡せるポートフォリオURLを持てる機能。外部URLの登録か、テンプレート入力の2方式。乱数トークンのURL・リンク限定公開・noindex・規約同意の記録で設計。
+
+## 5. 設計・データベース
 ## ER図
 ``` mermaid
 erDiagram
@@ -74,8 +66,14 @@ erDiagram
     USERS ||--o{ CIRCLE_REQUESTS : "requests"
     USERS ||--|| PROFILES : "has"
     USERS ||--|| CUSTOMS : "has"
+    USERS ||--o| PORTFOLIO_SITES : "has"
     USERS ||--o{ LOGIN_HISTORIES : "has"
-    USERS ||--o{ ACCESS_LOGS : "has"
+    USERS ||--o{ WEB_PUSH_SUBSCRIPTIONS : "has"
+
+    %% 学科・専攻のマスタ
+    SUBJECTS ||--o{ MAJORS : "has"
+    SUBJECTS ||--o{ USERS : "belongs (subject_id)"
+    MAJORS ||--o{ USERS : "belongs (major_id)"
 
     %% CIRCLES のリレーション
     CIRCLES ||--o{ GROUPS : "has"
@@ -94,7 +92,7 @@ erDiagram
     PRCS ||--o{ IMAGES_AND_VIDEOS : "has"
     PRCS ||--o{ NICES : "receives"
     PRCS ||--o{ PRCS : "parent/child"
-    
+
     %% DMS のリレーション
     DMS ||--o{ IMAGES_AND_VIDEOS : "has"
     DMS ||--o{ DMS : "parent/child"
@@ -110,10 +108,51 @@ erDiagram
         text name
         string job "default: 学生"
         int grade "nullable"
-        text subject "nullable"
-        text major "nullable"
+        bigint subject_id FK "nullable"
+        bigint major_id FK "nullable"
+        text subject "nullable (旧カラム)"
+        text major "nullable (旧カラム)"
         text icon "nullable"
+        string remember_token "nullable"
         timestamp email_verified_at "nullable"
+        timestamp created_at
+        timestamp updated_at
+    }
+
+    SUBJECTS {
+        bigint subject_id PK
+        string subject_name "unique"
+    }
+
+    MAJORS {
+        bigint major_id PK
+        bigint subject_id FK
+        string major_name "unique (subject_id, major_name)"
+    }
+
+    PORTFOLIO_SITES {
+        bigint portfolio_site_id PK
+        bigint user_id FK "unique"
+        string token "unique, 16文字"
+        string site_type "template / external"
+        string external_url "nullable"
+        boolean is_public "default: false"
+        timestamp agreed_at "nullable"
+        string terms_version "nullable"
+        string display_name "nullable"
+        text bio "nullable"
+        json links "nullable"
+        timestamp created_at
+        timestamp updated_at
+    }
+
+    WEB_PUSH_SUBSCRIPTIONS {
+        bigint id PK
+        bigint user_id FK
+        text endpoint
+        text p256dh
+        text auth
+        timestamp last_used_at "nullable"
         timestamp created_at
         timestamp updated_at
     }
@@ -124,7 +163,7 @@ erDiagram
         int owner_id FK "Users(user_id)"
         string category "nullable"
         string sentence
-        string icon "nullable"
+        string icon "nullable, unique"
         int members_count
         timestamp created_at
         timestamp updated_at
@@ -134,7 +173,7 @@ erDiagram
         bigint group_id PK
         string group_name "unique"
         bigint circle_id FK "nullable"
-        string icon "nullable"
+        text icon "nullable"
         int members_count
         timestamp created_at
         timestamp updated_at
@@ -246,35 +285,42 @@ erDiagram
         string user_agent "nullable"
         timestamp login_at
     }
-
-    ACCESS_LOGS {
-        bigint id PK
-        bigint user_id FK
-        string path "nullable"
-        string ip_address 
-        string user_agent "nullable"
-        timestamp access_at
-    }
 ```
-## 7.セットアップ
+CIRCLES・GROUPS・GROUPMEMBERS・CIRCLE_USERS・CIRCLE_REQUESTS・NICES は、画面を非表示にした機能のテーブルです。
+
+## 6. セットアップ
+```bash
 # リポジトリのクローン
 git clone https://github.com/KuboRaido/NEXUSPHERE.git
-cd KuboRaido-NEXUSPHERE
+cd NEXUSPHERE
 
 # コンテナの起動
-docker-compose up -d
+docker compose up -d
 
-# 依存パッケージのインストール (コンテナ内)
-docker-compose exec php composer install
-docker-compose exec php npm install
-docker-compose exec php npm run build
+# 環境設定（DB接続は下の値に書き換える）
+docker compose exec -w /var/www/nexusphere app-nexus cp .env.example .env
+#   DB_CONNECTION=mysql
+#   DB_HOST=db-nexus
+#   DB_PORT=3306
+#   DB_DATABASE=platform
+#   DB_USERNAME=dbuser
+#   DB_PASSWORD=dbuser
 
-# 環境設定・DBマイグレーション
-docker-compose exec php cp .env.example .env
-docker-compose exec php php artisan key:generate
-docker-compose exec php php artisan migrate --seed
+# 依存パッケージのインストールとビルド
+docker compose exec -w /var/www/nexusphere app-nexus composer install
+docker compose exec -w /var/www/nexusphere app-nexus npm install
+docker compose exec -w /var/www/nexusphere app-nexus npm run build
 
-## 8.今後の展望
-* **PWA化** : モバイル端末でのネイティブアプリに近い操作性とプッシュ通知の導入。
-* **検索エンジンの強化** : 形態素解析を用いた全文検索機能の追加。
-* **CI/CD** : GitHub Actionsを用いた自動テスト・デプロイパイプラインの構築。
+# アプリキーの生成・DBマイグレーション・アップロード画像の公開設定
+docker compose exec -w /var/www/nexusphere app-nexus php artisan key:generate
+docker compose exec -w /var/www/nexusphere app-nexus php artisan migrate --seed
+docker compose exec -w /var/www/nexusphere app-nexus php artisan storage:link
+```
+起動後は http://127.0.0.1:8881 で開けます。
+
+## 7. 今後の予定
+* **公開サイト**: Controller・画面・テストを実装し、本番で公開。
+* **メール認証の強化**: 確認リンクを署名付きURLにし、未認証ユーザーのログインを拒否。
+* **DM受信のメール通知**。
+* **CI**: GitHub Actionsでテストと静的解析（PHPStan）を自動実行。
+* **限定公開**: 10人×2週間の限定公開で、導線として機能するかを検証。
