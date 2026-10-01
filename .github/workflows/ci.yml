@@ -40,7 +40,9 @@ jobs:
         coverage: xdebug
 
     - name: Copy .env
-      run: php -r "file_exists('.env') || copy('.env.example', '.env');"
+      run: |
+        php -r "file_exists('.env') || copy('.env.example', '.env');"
+        php -r "file_exists('.env.testing') || copy('.env.testing.example','.env.testing');"
 
     # Composerのキャッシュを利用して高速化
     - name: Cache Composer packages
@@ -63,6 +65,8 @@ jobs:
 
     - name: Execute tests
       run: vendor/bin/pest
+      env:
+        DB_HOST: 127.0.0.1
   
   deploy:
     needs: laravel-tests
