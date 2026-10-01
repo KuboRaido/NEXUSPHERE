@@ -58,7 +58,9 @@ jobs:
       run: composer install --prefer-dist --no-progress --no-suggest
 
     - name: Generate key
-      run: php artisan key:generate
+      run: |
+        php artisan key:generate
+        php artisan key:generate --env=testing
 
     - name: Directory Permissions
       run: chmod -R 777 storage bootstrap/cache
@@ -67,7 +69,7 @@ jobs:
       run: vendor/bin/pest
       env:
         DB_HOST: 127.0.0.1
-  
+
   deploy:
     needs: laravel-tests
     if: github.event_name == 'push'
