@@ -39,20 +39,6 @@ jobs:
     - name: Install Dependencies
       run: composer install --prefer-dist --no-progress --no-suggest
 
-    # フロントエンドのビルドが必要な場合に追加
-    - name: Setup Node.js
-      uses: actions/setup-node@v3
-      with:
-        node-version: '20'
-        cache: 'npm'
-        cache-dependency-path: nexusphere/package-lock.json
-
-    - name: Install NPM dependencies
-      run: npm ci
-
-    - name: Build assets
-      run: npm run build
-
     - name: Generate key
       run: php artisan key:generate
 
