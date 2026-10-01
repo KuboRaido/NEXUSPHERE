@@ -44,4 +44,10 @@ class User extends Authenticatable
     public function circleRequest(){
         return $this->hasMany(Circle_requests::class,'circle_request_id','user_id');
     }
+
+    // app/Models/User.php に追加
+    public function portfolioSite()
+    {
+        return $this->hasOne(PortfolioSite::class, 'user_id', 'user_id');
+    }
 }
