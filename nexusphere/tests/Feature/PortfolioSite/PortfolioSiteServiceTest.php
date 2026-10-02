@@ -65,3 +65,27 @@ it('規約が改定されたら再同意が必要と判定される', function (
 
     expect($this->service->needsReagreement($site))->toBeTrue();
 });
+
+it('同意し直してもトークンは変わらない', function () {
+    $user  = User::factory()->create();
+    $first = $this->service->agreeAndCreate($user, SiteType::Template);
+    $tokenBefore = $first->token;
+
+    $second = $this->service->agreeAndCreate($user, SiteType::Template);
+
+    expect($second->token)->toBe($tokenBefore);
+});
+
+it('テンプレート方式に戻すと外部URLは消える', function () {
+    $site = $this->service->agreeAndCreate(
+        User::factory()->create(),
+        SiteType::External,
+        'https://example.com'
+    );
+
+    $this->service->changeSiteType($site,SiteType::Template);
+
+    $site->refresh();
+    expect($site->site_type)->toBe(SiteType::Template);
+    expect($site->external_url)->toBeNull();
+});
