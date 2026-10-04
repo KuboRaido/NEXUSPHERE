@@ -30,9 +30,11 @@ class PortfolioSiteService
             $site->agreed_at     = now();
             $site->terms_version = config('terms.current_version');
 
+            $isNewSite = $site->exists;
             $this->changeSiteType($site, $siteType, $externalUrl);
-            $this->publish($site);
-            
+            if (!$isNewSite){
+                $this->publish($site);
+            }
             return $site;
         });
     }
@@ -65,6 +67,7 @@ class PortfolioSiteService
 
         $site->site_type    = $siteType;
         $site->external_url = $siteType === SiteType::External ? $externalUrl : null;
+
         $site->save();
     }
 
