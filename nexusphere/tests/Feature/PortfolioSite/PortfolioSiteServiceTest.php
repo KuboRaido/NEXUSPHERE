@@ -94,7 +94,7 @@ it('https以外の外部URLは登録できない', function(string $url) {
     // テンプレート方式のサイトを作る
     $site = $this->service->agreeAndCreate(User::factory()->create(), SiteType::Template);
 
-    $this->service->changeSiteType($site,SiteType::External,$url);
+    $this->service->changeSiteType($site,SiteType::External, $url);
 })->with([
     'javascript'     => 'javascript:alert(1)',
     'javascript偽装' => 'javascript://comment%0Aalert(1)',

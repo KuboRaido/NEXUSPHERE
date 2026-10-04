@@ -13,6 +13,7 @@ use Illuminate\Support\Facades\DB;
 class PortfolioSiteService
 {
     private const TOKEN_LENGTH = 16;
+    private const EXTERNAL_URL_MAX_LENGTH = 255;
 
     /**
      * 規約に同意して公開サイトを作る（既にあれば再同意として更新する）
@@ -29,7 +30,6 @@ class PortfolioSiteService
             $site->site_type     = $siteType; 
             $site->agreed_at     = now();
             $site->terms_version = config('terms.current_version');
-            $site->save();
 
             $this->changeSiteType($site, $siteType, $externalUrl);
             $this->publish($site);
@@ -69,12 +69,10 @@ class PortfolioSiteService
         $site->save();
     }
 
-    private const EXTERNAL_URL_MAX_LENGTH = 255;
-
     private function assertHttpsUrl(?string $url): void
     {
         $isValid = $url !== null
-            && strlen($url)  <= self::EXTERNAL_URL_MAX_LENGTH
+            && strlen($url) <= self::EXTERNAL_URL_MAX_LENGTH
             && filter_var($url, FILTER_VALIDATE_URL) !== false
             && strtolower((string) parse_url($url, PHP_URL_SCHEME)) === 'https';
 
