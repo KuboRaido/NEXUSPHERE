@@ -27,7 +27,6 @@ class PortfolioSiteService
                 $site->token = $this->generateToken();
             }
 
-            $site->site_type     = $siteType; 
             $site->agreed_at     = now();
             $site->terms_version = config('terms.current_version');
 

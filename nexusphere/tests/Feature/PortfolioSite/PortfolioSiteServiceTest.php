@@ -121,3 +121,11 @@ it('不正なURLで同意したときは公開サイトが作られない', func
     // そのあと、DBに行が残っていないことを確かめる
     expect(PortfolioSite::where('user_id', $user->user_id)->exists())->toBeFalse();
 });
+
+it('外部URL方式で保存できる',function() {
+    $site = $this->service->agreeAndCreate(User::factory()->create(),SiteType::External,'https://example.com');
+
+    $site->refresh();
+    expect($site->site_type)->toBe(SiteType::External);
+    expect($site->external_url)->toBe('https://example.com');
+});
