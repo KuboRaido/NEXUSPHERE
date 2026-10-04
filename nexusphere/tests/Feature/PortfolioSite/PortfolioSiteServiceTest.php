@@ -130,9 +130,9 @@ it('外部URL方式で保存できる',function() {
     expect($site->external_url)->toBe('https://example.com');
 });
 
-it('再同意した時に現状の公開状況になる',function() {
-
-    $site = $this->service->agreeAndCreate($user = User::factory()->create(),SiteType::Template);
+it('公開を停止していた人は、再同意しても非公開のまま',function() {
+    $user = User::factory()->create();
+    $site = $this->service->agreeAndCreate($user,SiteType::Template);
 
     $this->service->unpublish($site);
 

@@ -30,9 +30,9 @@ class PortfolioSiteService
             $site->agreed_at     = now();
             $site->terms_version = config('terms.current_version');
 
-            $isNewSite = $site->exists;
+            $isNewSite = ! $site->exists;
             $this->changeSiteType($site, $siteType, $externalUrl);
-            if (!$isNewSite){
+            if ($isNewSite){
                 $this->publish($site);
             }
             return $site;
