@@ -129,3 +129,14 @@ it('外部URL方式で保存できる',function() {
     expect($site->site_type)->toBe(SiteType::External);
     expect($site->external_url)->toBe('https://example.com');
 });
+
+it('再同意した時に現状の公開状況になる',function() {
+
+    $site = $this->service->agreeAndCreate($user = User::factory()->create(),SiteType::Template);
+
+    $this->service->unpublish($site);
+
+    $site = $this->service->agreeAndCreate($user,SiteType::Template);
+    $site->refresh();
+    expect($site->is_public)->toBeFalse();
+});
