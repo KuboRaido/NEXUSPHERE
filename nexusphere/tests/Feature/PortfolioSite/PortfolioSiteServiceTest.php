@@ -89,3 +89,35 @@ it('テンプレート方式に戻すと外部URLは消える', function () {
     expect($site->site_type)->toBe(SiteType::Template);
     expect($site->external_url)->toBeNull();
 });
+
+it('https以外の外部URLは登録できない', function(string $url) {
+    // テンプレート方式のサイトを作る
+    $site = $this->service->agreeAndCreate(User::factory()->create(), SiteType::Template);
+
+    $this->service->changeSiteType($site,SiteType::External,$url);
+})->with([
+    'javascript'     => 'javascript:alert(1)',
+    'javascript偽装' => 'javascript://comment%0Aalert(1)',
+    'data'           => 'data:text/html,<script>alert(1)</script>',
+    'http'           => 'http://example.com',
+    'スキームのみ'    => 'https://',
+    '先頭に空白'      => ' https://example.com',
+    '途中に空白' => 'https://exa mple.com',
+])->throws(DomainException::class);
+
+it('外部URL方式でURLが空なら登録できない', function() {
+    $site = $this->service->agreeAndCreate(User::factory()->create(), SiteType::Template);
+
+    $this->service->changeSiteType($site,SiteType::External, null);
+})->throws(DomainException::class);
+
+it('不正なURLで同意したときは公開サイトが作られない', function () {
+    $user = User::factory()->create();
+
+    // 例外が出ることを確かめる（テストはここで止まらない）
+    expect(fn () => $this->service->agreeAndCreate($user, SiteType::External, 'javascript:alert(1)'))
+        ->toThrow(DomainException::class);
+
+    // そのあと、DBに行が残っていないことを確かめる
+    expect(PortfolioSite::where('user_id', $user->user_id)->exists())->toBeFalse();
+});

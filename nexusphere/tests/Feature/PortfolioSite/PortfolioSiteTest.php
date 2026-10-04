@@ -46,34 +46,3 @@ it('同じトークンは登録できない', function () {
         'user_id' => $b->user_id, 'token' => 'cccccccccccccccc', 'site_type' => SiteType::Template,
     ]);
 })->throws(QueryException::class);
-
-it('https以外の外部URLは登録できない', function(string $url) {
-    // テンプレート方式のサイトを作る
-    $site = $this->service->agreeAndCreate(User::factory()->create(), SiteType::Template);
-
-    $this->service->changeSiteType($site,SiteType::External, $url);
-})->with([
-    'javascript'     => 'javascript:alert(1)',
-    'javascript偽装' => 'javascript://comment%0Aalert(1)',
-    'data'           => 'data:text/html,<script>alert(1)</script>',
-    'http'           => 'http://example.com',
-    'スキームのみ'    => 'https://',
-    '先頭に空白'      => ' https://example.com',
-])->throws(DomainException::class);
-
-it('外部URL方式でURLが空なら登録できない', function() {
-    $site = $this->service->agreeAndCreate(User::factory()->create(), SiteType::Template);
-
-    $this->service->changeSiteType($site,SiteType::External, $url);
-})->throws(DomainException::class);
-
-it('不正なURLで同意したときは公開サイトが作られない', function () {
-    $user = User::factory()->create();
-
-    // 例外が出ることを確かめる（テストはここで止まらない）
-    expect(fn () => $this->service->agreeAndCreate($user, SiteType::External, 'javascript:alert(1)'))
-        ->toThrow(DomainException::class);
-
-    // そのあと、DBに行が残っていないことを確かめる
-    expect(PortfolioSite::where('user_id', $user->user_id)->exists())->toBeFalse();
-});

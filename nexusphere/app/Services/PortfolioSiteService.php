@@ -59,11 +59,29 @@ class PortfolioSiteService
     // 設定画面で方式を切り替える
     public function changeSiteType(PortfolioSite $site, SiteType $siteType, ?string $externalUrl = null): void
     {
+        // 外部URL方式のときだけ、URLを検査する。代入より前に置くので、弾いたときは何も変わらない
+        if ($siteType === SiteType::External) {
+            $this->assertHttpsUrl($externalUrl);
+        }
+
         $site->site_type    = $siteType;
         $site->external_url = $siteType === SiteType::External ? $externalUrl : null;
         $site->save();
     }
 
+    private const EXTERNAL_URL_MAX_LENGTH = 255;
+
+    private function assertHttpsUrl(?string $url): void
+    {
+        $isValid = $url !== null
+            && strlen($url)  <= self::EXTERNAL_URL_MAX_LENGTH
+            && filter_var($url, FILTER_VALIDATE_URL) !== false
+            && strtolower((string) parse_url($url, PHP_URL_SCHEME)) === 'https';
+
+        if(! $isValid) {
+            throw new DomainException('外部URLはhttps://で始まるURLのみ登録できます。');
+        }
+    }
     // 利用規約のバージョン管理
     public function needsReagreement(PortfolioSite $site): bool
     {
