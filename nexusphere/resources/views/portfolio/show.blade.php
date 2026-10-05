@@ -8,5 +8,10 @@
 <body>
     <h1>{{ $site->display_name }}</h1>
     <p>{{ $site->bio }}</p>
+    @foreach ($site->links ?? [] as $link)
+    <a href="{{ $link['url'] }}" rel="noopener noreferrer">
+        {{ ($link['label'] ?? '') !== '' ? $link['label'] : $link['url'] }}
+    </a>
+    @endforeach
 </body>
 </html>
