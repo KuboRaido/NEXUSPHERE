@@ -27,6 +27,7 @@ class PortfolioSiteController extends Controller
     public function agree(Request $request, PortfolioSiteService $service)
     {
         $validated = $request->validate([
+            'agreed'       => ['accepted', 'boolean'],
             'site_type'    => ['required', Rule::enum(SiteType::class)],
             'external_url' => ['nullable', 'string'],
         ]);
@@ -79,6 +80,7 @@ class PortfolioSiteController extends Controller
         return back()->with('status', '公開サイトを公開しました。');
     }
 
+    //公開サイトを非公開にする
     public function unpublish(Request $request, PortfolioSiteService $service)
     {
         $site = $this->ownSite($request);
@@ -86,6 +88,38 @@ class PortfolioSiteController extends Controller
         $service->unpublish($site);
 
         return back()->with('status', '公開サイトを非公開にしました。');
+    }
+
+    // 設定画面を表示・規約に同意していない場合は規約の同意foamを表示
+    public function edit () {
+
+    }
+
+    // 公開サイトの情報を修正したものをアップデート
+    public function updateTemplate (Request $request, PortfolioSiteService $service) {
+        $validated = $request->validate([
+            'display_name'  => ['nullable', 'string'],
+            'bio'           => ['nullable', 'string'],
+            'links'         => ['nullable', 'array'],
+            'links.*.label' => ['nullable', 'string'],
+            'links.*.url'   => ['nullable', 'string'],
+        ]);
+
+        $site = $this->ownSite($request);
+
+         // URLが空の行は捨てて、番号を0から振り直す
+        $links = array_values(array_filter(
+            $validated['links'] ?? [],
+            fn ($link) => ($link['url'] ?? '') !== ''
+        ));
+
+        try {
+            $service->updateTemplate($site, $validated['display_name'] ?? null, $validated['bio'] ?? null, $links);
+        } catch (DomainException $e) {
+            return back()->withErrors(['portfolio_site' => $e->getMessage()])->withInput();
+        }
+
+        return back()->with('status', '公開サイトの内容を保存しました。');
     }
 
     // ログイン中のUserの公開siteを取って、なければ404を返す

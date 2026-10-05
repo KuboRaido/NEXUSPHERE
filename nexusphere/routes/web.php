@@ -36,7 +36,9 @@ Route::middleware('auth')->group(function () {
     Route::put('/portfolio-site/type',[PortfolioSiteController::class,'changeType'])->name('portfolio.changeType');
     Route::post('/portfolio-site/publish',[PortfolioSiteController::class,'publish'])->name('portfolio.publish');
     Route::post('/portfolio-site/unpublish',[PortfolioSiteController::class,'unpublish'])->name('portfolio.unpublish');
-
+    Route::get('/portfolio-site', [PortfolioSiteController::class,'edit'])->name('portfolio.edit');
+    Route::put('/portfolio-site/template',[PortfolioSiteController::class,'updateTemplate'])->name('portfolio.updateTemplate');
+    
     Route::get('/home',[PrcController::class,'index'])->name('home');
 
     Route::get('/post', [PrcController::class, 'post'])->name('post');
