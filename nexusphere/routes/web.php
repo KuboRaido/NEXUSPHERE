@@ -33,7 +33,7 @@ Route::middleware('auth')->group(function () {
     Route::post('/profile/edit',[ProfileController::class,'update'])->name('profile-update');//プロフィール更新処理
 
     Route::post('/portfolio-site/agree',[PortfolioSiteController::class,'agree'])->name('portfolio.agree');
-    Route::get('/portfolio-site/changeType',[PortfolioSiteController::class,'changeType'])->name('portfolio.changeType');
+    Route::put('/portfolio-site/type',[PortfolioSiteController::class,'changeType'])->name('portfolio.changeType');
     Route::post('/portfolio-site/publish',[PortfolioSiteController::class,'publish'])->name('portfolio.publish');
     Route::post('/portfolio-site/unpublish',[PortfolioSiteController::class,'unpublish'])->name('portfolio.unpublish');
 
