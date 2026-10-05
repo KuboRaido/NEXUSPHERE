@@ -78,7 +78,7 @@ class ProfileController extends Controller
     public function profileOther(Request $request){
         $userId = Auth::id();
         $profileUser = User::findOrFail($request->user_id);
-        $isMine = ($userId && ((int)$userId === $profileUser));
+        $isMine = ($userId && ((int)$userId === $profileUser->user_id));
 
         $posts = Prc::where('user_id', $profileUser->user_id)
                     ->whereNull('circle_id')

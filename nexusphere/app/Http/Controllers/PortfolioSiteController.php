@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers;
 
-use app\Models\PortfolioSite;
+use App\Models\PortfolioSite;
 use App\Enums\SiteType;
 use App\Services\PortfolioSiteService;
 use DomainException;
@@ -12,12 +12,17 @@ use Illuminate\Validation\Rule;
 class PortfolioSiteController extends Controller
 {
     public function show(String $token){
-        // 公開中のトークンだけを探す。見つからなければ自動で404
         $site = PortfolioSite::where('token', $token)
             ->where('is_public', true)
             ->firstOrFail();
 
-        // 画面に返しつつ、検索エンジンに載せないヘッダを付ける
+        // 外部URL方式：保存済みのURLへ302でリダイレクト
+        if ($site->site_type === SiteType::External) {
+            return redirect()->away($site->external_url)
+                ->header('X-Robots-Tag', 'noindex');
+        }
+
+        // テンプレート方式：ページを表示
         return response()
             ->view('portfolio.show', ['site' => $site])
             ->header('X-Robots-Tag', 'noindex');
@@ -91,8 +96,17 @@ class PortfolioSiteController extends Controller
     }
 
     // 設定画面を表示・規約に同意していない場合は規約の同意foamを表示
-    public function edit () {
+    public function edit(Request $request, PortfolioSiteService $service)
+    {
+        $site = $request->user()->portfolioSite;   // まだ作っていなければ null
 
+        // 未同意、または規約が改定されて再同意が必要なら、同意フォームを出す
+        $needsAgreement = $site === null || $service->needsReagreement($site);
+
+        return view('portfolio.edit', [
+            'site'           => $site,
+            'needsAgreement' => $needsAgreement,
+        ]);
     }
 
     // 公開サイトの情報を修正したものをアップデート
@@ -127,4 +141,5 @@ class PortfolioSiteController extends Controller
     {
         return $request->user()->portfolioSite ?? abort(404);
     }
+
 }

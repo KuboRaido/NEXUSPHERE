@@ -8,8 +8,5 @@
 <body>
     <h1>{{ $site->display_name }}</h1>
     <p>{{ $site->bio }}</p>
-    @if ($site->external_url)
-        <a href="{{ $site->external_url }}" rel="noopener noreferrer">ポートフォリオを見る</a>
-    @endif
 </body>
 </html>
