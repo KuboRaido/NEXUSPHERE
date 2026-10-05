@@ -20,16 +20,16 @@ NEXUSPHERE（ネクスフィア）は、学内の人を属性（学年・学科�
 | :--- | :--- | :--- |
 | **Backend** | PHP 8.3 / Laravel 12 | Service層・Enum・キューなど、フレームワークの機能で堅牢に書ける。 |
 | **Frontend** | JavaScript / CSS | 画面ごとのCSSと素のJavaScriptで構成。 |
-| **Database** | MySQL | 外部キー制約とインデックスでデータ整合性を担保。 |
+| **Database** | MySQL | 主要テーブルは外部キー制約とインデックスでデータ整合性を担保（初期に作った一部テーブルは制約なし）。 |
 | **Test** | Pest | 既存機能と公開サイトのServiceをテストで保護。 |
 | **Infrastructure** | Docker / Docker Compose | 開発環境と本番環境を同じ構成で再現。 |
 | **Server** | ConoHa VPS | Docker・php.ini・DNSを自分で制御でき、月¥880固定で運用できるため。 |
 
 ## 4. 機能
 ### 認証・プロフィール
-* **新規登録**: 学内ドメインのメールアドレスのみ登録可能。学年・学科・専攻を登録。
+* **新規登録**: 学内ドメインのメールアドレスのみ登録可能。職種・学年・学科・専攻を登録（学年・学科・専攻は職種が学生の場合のみ必須）。
 * **プロフィール**: 名前・学年・学科・専攻・アイコンを管理。他の学生のプロフィールからDMを送信可能。
-* **ユーザー検索**: 名前・学年・学科・専攻のキーワードで部分一致検索。
+* **ユーザー検索**: 名前・職種・学年・学科・専攻のキーワードで部分一致検索。
 
 ### タイムライン
 * テキスト（最大1000字）と画像（1枚最大5MB）・動画（最大50MB）の投稿。
@@ -64,7 +64,7 @@ erDiagram
     USERS ||--o{ GROUPMEMBERS : "joins"
     USERS ||--o{ CIRCLE_USERS : "joins"
     USERS ||--o{ CIRCLE_REQUESTS : "requests"
-    USERS ||--|| PROFILES : "has"
+    USERS ||--o{ PROFILES : "has"
     USERS ||--|| CUSTOMS : "has"
     USERS ||--o| PORTFOLIO_SITES : "has"
     USERS ||--o{ LOGIN_HISTORIES : "has"
@@ -108,10 +108,10 @@ erDiagram
         text name
         string job "default: 学生"
         int grade "nullable"
-        bigint subject_id FK "nullable"
-        bigint major_id FK "nullable"
-        text subject "nullable (旧カラム)"
-        text major "nullable (旧カラム)"
+        bigint subject_id FK "nullable (現在アプリから未参照)"
+        bigint major_id FK "nullable (現在アプリから未参照)"
+        text subject "nullable (アプリが使用中)"
+        text major "nullable (アプリが使用中)"
         text icon "nullable"
         string remember_token "nullable"
         timestamp email_verified_at "nullable"
@@ -160,7 +160,7 @@ erDiagram
     CIRCLES {
         bigint circle_id PK
         string circle_name "unique"
-        int owner_id FK "Users(user_id)"
+        int owner_id "Users(user_id), FK制約なし"
         string category "nullable"
         string sentence
         string icon "nullable, unique"
@@ -214,7 +214,7 @@ erDiagram
         bigint circle_id FK "nullable"
         bigint profile_id FK "nullable"
         int type "nullable"
-        int parent_id FK "nullable"
+        int parent_id "nullable, FK制約なし"
         text sentence "nullable"
         timestamp created_at
         timestamp updated_at
@@ -232,16 +232,16 @@ erDiagram
 
     NICES {
         bigint nice_id PK
-        int prc_id FK
-        int user_id FK
+        int prc_id "FK制約なし"
+        int user_id "FK制約なし"
         timestamp created_at
         timestamp updated_at
     }
 
     GROUPMEMBERS {
         bigint groupmember_id PK
-        bigint user_id FK
-        bigint group_id FK
+        bigint user_id "FK制約なし"
+        bigint group_id "FK制約なし"
         timestamp created_at
         timestamp updated_at
     }
@@ -273,7 +273,7 @@ erDiagram
 
     CUSTOMS {
         bigint custom_id PK
-        int user_id FK "unique"
+        int user_id "unique, FK制約なし"
         timestamp created_at
         timestamp updated_at
     }
@@ -287,6 +287,10 @@ erDiagram
     }
 ```
 CIRCLES・GROUPS・GROUPMEMBERS・CIRCLE_USERS・CIRCLE_REQUESTS・NICES は、画面を非表示にした機能のテーブルです。
+
+学科・専攻はマスタ（SUBJECTS・MAJORS）と USERS.subject_id / major_id を用意していますが、移行途中のため、登録・プロフィール更新・検索は現在も USERS.subject / major（文字列）を使っています。
+
+Laravel 標準のテーブル（sessions・password_reset_tokens・cache・jobs など）と、Sanctum の personal_access_tokens は図から省略しています。
 
 ## 6. セットアップ
 ```bash
