@@ -90,3 +90,15 @@ it('リンクの空の行は捨てて保存される', function () {
         ['label' => 'GitHub', 'url' => 'https://github.com/example'],
     ]);
 });
+
+it('ログインしている人は設定画面を開ける', function () {
+    $user = User::factory()->create();
+
+    $response = $this->actingAs($user)->get('/portfolio-site');
+
+    $response->assertOk();
+    $response->assertViewIs('portfolio.edit');            // このBladeが使われたか
+    $response->assertViewHas('needsAgreement', true);     // 未同意なので同意フォームを出す
+});
+
+

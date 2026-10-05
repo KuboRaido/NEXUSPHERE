@@ -71,6 +71,22 @@
                   @endif
                     <a class="dm-btn" href="{{ url('/dm') }}?to={{ $isMine ? 'me' : $profileUser->user_id }}">DM</a>
               </div>
+              @php
+                  $site    = $profileUser->portfolioSite;
+                  $canView = $site && $site->is_public;   // 公開中のときだけ「見る」
+
+                  // 外部URL方式なら登録したURL、テンプレート方式なら公開ページ
+                  $viewUrl = $canView && $site->site_type === \App\Enums\SiteType::External
+                      ? $site->external_url
+                      : ($canView ? route('portfolio.show', $site->token) : null);
+              @endphp
+
+              @if ($canView)
+                  <a class="btn"href="{{ $viewUrl }}" target="_blank" rel="noopener noreferrer">ポートフォリオ</a>
+              @endif
+              @if ($isMine)
+                  <a class="btn" href="{{ route('portfolio.edit') }}">ポートフォリオ設定</a>
+              @endif 
             </div>
             <!-- <div class="portfolio-section">
               <button class="portfolio-toggle"><i class="fa-solid fa-chevron-down"></i>
