@@ -4,6 +4,11 @@ use App\Enums\SiteType;
 use App\Models\PortfolioSite;
 use App\Models\User;
 use Illuminate\Database\QueryException;
+use App\Services\PortfolioSiteService;
+
+beforeEach(function () {
+    $this->service = app(PortfolioSiteService::class);
+});
 
 it('公開サイトを作成できる', function () {
     $user = User::factory()->create();
