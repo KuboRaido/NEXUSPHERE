@@ -8,6 +8,7 @@ use App\Models\User;
 use DomainException;
 use Illuminate\Support\Str;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Http\Request;
 
 // ポートフォリオの作成に必要なルールを守るための処理
 class PortfolioSiteService
@@ -97,5 +98,34 @@ class PortfolioSiteService
 
 
         return $token;
+    }
+
+    private const DISPLAY_NAME_MAX_LENGTH = 50;
+    private const BIO_MAX_LENGTH          = 1000;
+    private const LINKS_MAX_COUNT         = 5;
+
+    // 公開情報を変更
+    public function updateTemplate(PortfolioSite $site, ?string $displayName, ?string $bio, array $links):void
+    {
+        if ($displayName !== null && mb_strlen($displayName) > self::DISPLAY_NAME_MAX_LENGTH){
+            throw new DomainException('表示名は50文字以内で入力してください。');
+        }
+
+        if ($bio !== null && mb_strlen($bio) > self::BIO_MAX_LENGTH){
+            throw new DomainException('自己紹介は1000文字以内で入力してください。');
+        }
+
+        if (count($links) > self::LINKS_MAX_COUNT){
+            throw new DomainException('リンクは5件まで登録できます。');
+        }
+
+        foreach ($links as $link){
+            $this->assertHttpsUrl($link['url'] ?? null);
+        }
+
+        $site->display_name = $displayName;
+        $site->bio          = $bio;
+        $site->links        = $links;
+        $site->save();
     }
 }

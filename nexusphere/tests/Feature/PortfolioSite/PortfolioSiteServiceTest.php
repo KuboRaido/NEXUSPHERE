@@ -140,3 +140,48 @@ it('公開を停止していた人は、再同意しても非公開のまま',fu
     $site->refresh();
     expect($site->is_public)->toBeFalse();
 });
+
+it('テンプレートの表示名・自己紹介・リンクを保存できる', function () {
+    $site = $this->service->agreeAndCreate(User::factory()->create(), SiteType::Template);
+
+    $this->service->updateTemplate($site, 'らいど', 'バックエンドを中心に学んでいます。', [
+        ['label' => 'GitHub', 'url'=> 'https://github.com/example'],
+    ]);
+
+    $site->refresh();
+    expect($site->display_name)->toBe('らいど');
+    expect($site->bio)->toBe('バックエンドを中心に学んでいます。');
+    expect($site->links)->toEqual([
+        ['label' => 'GitHub', 'url' => 'https://github.com/example'],
+    ]);
+});
+
+it('リンクのURLがhttps以外なら弾かれる', function (string $url) {
+    $site = $this->service->agreeAndCreate(User::factory()->create(), SiteType::Template);
+
+    $this->service->updateTemplate($site, 'らいど', 'バックエンドを中心に学んでいます。', [['label' => 'x', 'url' => $url]]);
+})->with([
+    'javascript'     => 'javascript:alert(1)',
+    'http'           => 'http://example.com',
+])->throws(DomainException::class);
+
+it('リンクが6件以上なら弾かれる', function () {
+    $site = $this->service->agreeAndCreate(User::factory()->create(), SiteType::Template);
+
+    $this->service->updateTemplate($site, 'らいど', 'バックエンドを中心に学んでいます。', array_fill(0, 6, ['label' => 'x', 'url' => 'https://example.com']));
+})->throws(DomainException::class);
+
+it('弾かれた時、元の中身は変わらない', function () {
+    $site = $this->service->agreeAndCreate(User::factory()->create(), SiteType::Template);
+
+    $this->service->updateTemplate($site, 'らいど', 'バックエンドを中心に学んでいます。', [
+        ['label' => 'GitHub', 'url'=> 'https://github.com/example'],
+    ]);
+
+    expect(fn () => $this->service->updateTemplate($site, '書き替え', '書き替え',
+        [['label' => 'x', 'url' => 'http://example.com']]
+        ))->toThrow(DomainException::class);
+
+    $site->refresh();
+    expect($site->display_name)->toBe('らいど');
+});
