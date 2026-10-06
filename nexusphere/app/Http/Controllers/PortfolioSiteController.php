@@ -44,7 +44,7 @@ class PortfolioSiteController extends Controller
                 $validated['external_url'] ?? null
             );
         } catch (DomainException $e) {
-            return back()->withErrors(['external_url' => $e->getMessage()]);
+            return back()->withErrors(['external_url' => $e->getMessage()])->withInput();
         }
 
         return back()->with('status', '公開サイトを作成しました。');
