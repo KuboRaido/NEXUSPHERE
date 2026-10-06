@@ -72,7 +72,7 @@ class PortfolioSiteService
         $site->save();
     }
 
-    private function assertHttpsUrl(?string $url): void
+    private function assertHttpsUrl(?string $url, string $label = '外部URL'): void
     {
         $isValid = $url !== null
             && strlen($url) <= self::EXTERNAL_URL_MAX_LENGTH
@@ -80,7 +80,7 @@ class PortfolioSiteService
             && strtolower((string) parse_url($url, PHP_URL_SCHEME)) === 'https';
 
         if(! $isValid) {
-            throw new DomainException('外部URLはhttps://で始まるURLのみ登録できます。');
+            throw new DomainException($label.'はhttps://で始まるURLのみ登録できます。');
         }
     }
     // 利用規約のバージョン管理
@@ -120,7 +120,7 @@ class PortfolioSiteService
         }
 
         foreach ($links as $link){
-            $this->assertHttpsUrl($link['url'] ?? null);
+            $this->assertHttpsUrl($link['url'] ?? null, 'リンクのURL');
         }
 
         $site->display_name = $displayName;
