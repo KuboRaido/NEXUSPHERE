@@ -124,7 +124,7 @@ class PortfolioSiteController extends Controller
          // URLが空の行は捨てて、番号を0から振り直す
         $links = array_values(array_filter(
             $validated['links'] ?? [],
-            fn ($link) => ($link['url'] ?? '') !== ''
+            fn ($link) => ($link['label'] ?? '') !== '' || ($link['url'] ?? '') !== ''
         ));
 
         try {

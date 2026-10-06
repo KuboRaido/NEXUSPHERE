@@ -15,6 +15,7 @@ class PortfolioSiteService
 {
     private const TOKEN_LENGTH = 16;
     private const EXTERNAL_URL_MAX_LENGTH = 255;
+    private const LINK_LABEL_MAX_LENGTH = 30;
 
     /**
      * 規約に同意して公開サイトを作る（既にあれば再同意として更新する）
@@ -119,13 +120,31 @@ class PortfolioSiteService
             throw new DomainException('リンクは5件まで登録できます。');
         }
 
-        foreach ($links as $link){
-            $this->assertHttpsUrl($link['url'] ?? null, 'リンクのURL');
+        $cleanLinks = [];
+        foreach ($links as $link) {
+            $label = trim($link['label'] ?? '');
+            $url   = trim($link['url'] ?? '');
+
+            if ($label === '') {
+                throw new DomainException('リンクの表示名を入力してください。');
+            }
+
+            if ($url === '') {
+                throw new DomainException('リンクのURLを入力してください。');
+            }
+
+            $this->assertHttpsUrl($url, 'リンクのURL');
+
+            if (mb_strlen($label) > self::LINK_LABEL_MAX_LENGTH) {
+                throw new DomainException('リンクの表示名は30文字以内で入力してください。');
+            }
+
+            $cleanLinks[] = ['label' => $label, 'url' => $url];
         }
 
         $site->display_name = $displayName;
         $site->bio          = $bio;
-        $site->links        = $links;
+        $site->links        = $cleanLinks;
         $site->save();
     }
     

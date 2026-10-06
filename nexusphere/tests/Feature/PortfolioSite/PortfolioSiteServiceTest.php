@@ -185,3 +185,60 @@ it('弾かれた時、元の中身は変わらない', function () {
     $site->refresh();
     expect($site->display_name)->toBe('らいど');
 });
+
+it('リンクの表示名が31文字なら弾かれ、保存済みのリンクは変わらない', function () {
+    $site = $this->service->agreeAndCreate(User::factory()->create(), SiteType::Template);
+
+    // 先に正しいリンクを1件保存しておく
+    $this->service->updateTemplate($site, 'らいど', null, [
+        ['label' => 'GitHub', 'url' => 'https://github.com/example'],
+    ]);
+
+    // 日本語31文字。strlen（バイト数）で数えていたら、ここは93になり別の結果になる
+    expect(fn () => $this->service->updateTemplate($site, 'らいど', null, [
+        ['label' => str_repeat('あ', 31), 'url' => 'https://github.com/example'],
+    ]))->toThrow(DomainException::class, 'リンクの表示名は30文字以内で入力してください。');
+
+    // DBから読み直して、最初のリンクのままか確かめる
+    $site->refresh();
+    expect($site->links)->toEqual([
+        ['label' => 'GitHub', 'url' => 'https://github.com/example'],
+    ]);
+});
+
+it('リンクに余計なキーがあっても、保存されるのは label と url だけ', function () {
+    $site = $this->service->agreeAndCreate(User::factory()->create(), SiteType::Template);
+
+    $this->service->updateTemplate($site, 'らいど', null, [
+        ['label' => 'GitHub', 'url' => 'https://github.com/example', 'memo' => 'x'],
+    ]);
+
+    $site->refresh();
+    expect($site->links)->toEqual([
+        ['label' => 'GitHub', 'url' => 'https://github.com/example'],
+    ]);
+});
+
+it('URLがあって表示名が空なら弾かれる', function (?string $label) {
+    $site = $this->service->agreeAndCreate(User::factory()->create(), SiteType::Template);
+
+    $this->service->updateTemplate($site, 'らいど', null, [
+        ['label' => $label, 'url' => 'https://github.com/example'],
+    ]);
+})->with([
+    '空文字'   => [''],
+    '空白だけ' => ['   '],
+    'null'     => [null],
+])->throws(DomainException::class, 'リンクの表示名を入力してください。');
+
+it('表示名があってURLが空なら弾かれる', function (?string $url) {
+    $site = $this->service->agreeAndCreate(User::factory()->create(), SiteType::Template);
+
+    $this->service->updateTemplate($site, 'らいど', null, [
+        ['label' => 'GitHub', 'url' => $url],
+    ]);
+})->with([
+    '空文字'   => [''],
+    '空白だけ' => ['   '],
+    'null'     => [null],
+])->throws(DomainException::class, 'リンクのURLを入力してください。');
