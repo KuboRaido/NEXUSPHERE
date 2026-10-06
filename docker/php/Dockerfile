@@ -12,7 +12,7 @@ RUN apt update \
     && apt install -y zlib1g-dev mariadb-client vim libzip-dev \
     # docker-php-ext-installはPHPに標準で備わっている拡張パッケージのインストール＆有効化ができるコマンド
     # PDO_MYSQL は、PHP から MySQL データベースへのアクセスを可能にするための PHP Data Objects (PDO) インターフェイス を実装したドライバ。
-    && docker-php-ext-install zip pdo_mysql \
+    && docker-php-ext-install zip pdo_mysql bcmath \
     # gitのインストール
     && apt install -y git \
     # xdebugのインストール
