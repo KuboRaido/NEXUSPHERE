@@ -11,7 +11,7 @@
 <main class="portfolio">
     @auth
         @if (auth()->user()->user_id === $site->user_id)
-            <a href="{{ route('portfolio.edit') }}">設定を編集する</a>
+            <a class="portfolio__edit" href="{{ route('portfolio.edit') }}">設定を編集する</a>
         @endif
     @endauth
 
