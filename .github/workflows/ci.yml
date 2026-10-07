@@ -36,7 +36,7 @@ jobs:
       uses: shivammathur/setup-php@v2
       with:
         php-version: '8.3'
-        extensions: mbstring, dom, curl, libxml, sqlite3
+        extensions: mbstring, dom, curl, libxml, sqlite3, gd, exif
         coverage: xdebug
 
     - name: Copy .env
@@ -156,6 +156,10 @@ jobs:
         # Docker イメージをビルド・コンテナを起動
         echo "Building and starting Docker containers..."
         docker compose -f docker-compose-dev.yml up -d --build || { echo "ERROR: docker compose -f docker-compose-dev.yml up failed"; exit 1; }
+
+        # composer.lock に合わせてライブラリを入れる（新しいライブラリを足したときに必要）
+        echo "Installing PHP dependencies..."
+        docker compose -f docker-compose-dev.yml exec -T app-nexus-dev sh -c "cd /var/www/nexusphere && composer install --no-interaction --prefer-dist" || { echo "ERROR: composer install failed"; exit 1; }
 
         # コンテナの起動を待機
         echo "Waiting for containers to be ready..."
