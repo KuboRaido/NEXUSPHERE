@@ -5,10 +5,20 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>公開サイトの設定</title>
     <link rel="stylesheet" href="{{ asset('css/portfolio_edit.css') }}">
+    <script defer src="{{ asset('js/alpine-3.17.4.min.js') }}"></script>
 </head>
 <body>
 <main class="portfolio-edit">
     <h1>公開サイトの設定</h1>
+    <div x-data="{ fruits: ['りんご'] }">
+    <template x-for="(fruit, i) in fruits">
+        <div>
+            <input type="text" x-model="fruits[i]" :name="'fruits[' + i + ']'">
+            <button type="button" @click="fruits.splice(i, 1)">行を削除</button>
+        </div>
+    </template>
+    <button type="button" x-show="fruits.length < 5" @click="fruits.push('')">行を追加</button>
+    </div>
 
     {{-- 成功メッセージ（Controller の ->with('status', ...)） --}}
     @if (session('status'))
@@ -138,8 +148,22 @@
                     <label>
                         表示名（50文字まで）
                         <input type="text" name="display_name" maxlength="50"
-                            value="{{ old('display_name', $site->display_name) }}">
+                            value="{{ old('display_name', $site->display_name) }}" placeholder='例：田中太郎'>
                     </label>
+
+                    <fieldset>
+                        <legend>スキル(10個まで)</legend>
+                        <div x-data="{ skills: @js(old('skills', $site->skills) ?: [['name' => '', 'detail' => '']]) }">
+                            <template x-for="(skill, i) in skills">
+                                <div>
+                                    <input type="text" x-model="skill.name" :name="'skills[' + i + '][name]'" maxlength="30" placeholder='スキル名（例：PHP）'><br>
+                                    <input type="text" x-model="skill.detail" :name="'skills[' + i + '][detail]'" maxlength="30" placeholder='詳細（例：3年）'>
+                                    <button type="button" @click="skills.splice(i, 1)">行を削除</button>
+                                </div>
+                            </template>
+                            <button type="button" x-show="skills.length < 10" @click="skills.push({ name: '', detail: '' })">行を追加</button>
+                        </div>
+                    </fieldset>
 
                     <label>
                         自己紹介（1000文字まで）
