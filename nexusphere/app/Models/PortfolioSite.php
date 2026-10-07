@@ -56,6 +56,12 @@ class PortfolioSite extends Model
         'details_saved_at' => 'datetime',
     ];
 
+    // 公開ページにその項目を出すか。visibility にキーがなければ出す
+    public function isVisible(string $key): bool
+    {
+        return ($this->visibility[$key] ?? true) === true;
+    }
+
     public function user()
     {
         return $this->belongsTo(User::class, 'user_id', 'user_id');

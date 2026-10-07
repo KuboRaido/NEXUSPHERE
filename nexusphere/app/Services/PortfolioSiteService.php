@@ -9,7 +9,6 @@ use DomainException;
 use Illuminate\Support\Str;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Validator;
-use Illuminate\Http\Request;
 
 // ポートフォリオの作成に必要なルールを守るための処理
 class PortfolioSiteService
@@ -17,10 +16,6 @@ class PortfolioSiteService
     private const TOKEN_LENGTH = 16;
     private const EXTERNAL_URL_MAX_LENGTH = 255;
     private const LINK_LABEL_MAX_LENGTH = 30;
-    private const SKILLS_MAX_COUNT = 30;
-    private const SKILL_NAME_MAX_LENGTH = 30;
-    private const VISIBILITY_KEYS = ['school_name','department','major','job_axis','hobbies','life_story','skills','certifications','careers','awards','custom_sections'];
-
 
     /**
      * 規約に同意して公開サイトを作る（既にあれば再同意として更新する）
@@ -110,7 +105,7 @@ class PortfolioSiteService
     public function updateDetails(PortfolioSite $site, array $details): void
     {
         // 1. 検査する。違反があればここで止まり、下の代入は1つも実行されない
-        $validated = Validator::make($details, self::DETAIL_RULES,['date_format' => '年と月の両方を選んでください。'])->validate();
+        $validated = Validator::make($details, self::DETAIL_RULES,self::DETAIL_MESSAGES)->validate();
 
         // 2. 1つの値
         $site->school_name = $validated['school_name'] ?? null;
@@ -216,19 +211,19 @@ class PortfolioSiteService
         return $clean;
     }
 
-    private const DISPLAY_NAME_MAX_LENGTH = 50;
-    private const BIO_MAX_LENGTH          = 1000;
+    private const DISPLAY_NAME_MAX_LENGTH = 20;
+    private const BIO_MAX_LENGTH          = 500;
     private const LINKS_MAX_COUNT         = 5;
 
     // 公開情報を変更
     public function updateTemplate(PortfolioSite $site, ?string $displayName, ?string $bio, array $links):void
     {
         if ($displayName !== null && mb_strlen($displayName) > self::DISPLAY_NAME_MAX_LENGTH){
-            throw new DomainException('表示名は50文字以内で入力してください。');
+            throw new DomainException('表示名は20文字以内で入力してください。');
         }
 
         if ($bio !== null && mb_strlen($bio) > self::BIO_MAX_LENGTH){
-            throw new DomainException('自己紹介は1000文字以内で入力してください。');
+            throw new DomainException('自己紹介は500文字以内で入力してください。');
         }
 
         if (count($links) > self::LINKS_MAX_COUNT){
@@ -265,7 +260,7 @@ class PortfolioSiteService
 
     private const DETAIL_RULES = [
             // 1つの値
-            'school_name' => ['nullable', 'string', 'max:30'],
+            'school_name' => ['nullable', 'string', 'max:20'],
             'department'  => ['nullable', 'string', 'max:20'],
             'major'       => ['nullable', 'string', 'max:20'],
             'job_axis'    => ['nullable', 'string', 'max:500'],
@@ -281,13 +276,13 @@ class PortfolioSiteService
             'life_story.*.detail' => ['nullable', 'string', 'max:50', 'required_with:life_story.*.period'],
  
             // スキル：詳細があればスキル名が必須
-            'skills'          => ['nullable', 'array', 'max:30'],
+            'skills'          => ['nullable', 'array', 'max:10'],
             'skills.*'        => ['array'],
             'skills.*.name'   => ['nullable', 'string', 'max:30', 'required_with:skills.*.detail'],
             'skills.*.detail' => ['nullable', 'string', 'max:30'],
  
             // 資格：取得時期があれば資格名が必須
-            'certifications'            => ['nullable', 'array', 'max:20'],
+            'certifications'            => ['nullable', 'array', 'max:10'],
             'certifications.*'          => ['array'],
             'certifications.*.name'     => ['nullable', 'string', 'max:30', 'required_with:certifications.*.acquired'],
             'certifications.*.acquired' => ['nullable', 'date_format:Y-m'],
@@ -301,7 +296,7 @@ class PortfolioSiteService
             // 受賞歴：どれかがあれば受賞名が必須
             'awards'               => ['nullable', 'array', 'max:20'],
             'awards.*'             => ['array'],
-            'awards.*.period'       => ['nullable', 'date_format:Y-m'],
+            'awards.*.period'      => ['nullable', 'date_format:Y-m'],
             'awards.*.name'        => ['nullable', 'string', 'max:20', 'required_with:awards.*.period,awards.*.organizer,awards.*.description'],
             'awards.*.organizer'   => ['nullable', 'string', 'max:30'],
             'awards.*.description' => ['nullable', 'string', 'max:50'],
@@ -328,5 +323,49 @@ class PortfolioSiteService
             'visibility.certifications' => ['nullable', 'boolean'],
             'visibility.careers'        => ['nullable', 'boolean'],
             'visibility.awards'         => ['nullable', 'boolean'],
+        ];
+
+        // updateDetails のエラー文。行のある項目は :position（1から数えた番号）で何行目かを出す。
+        // ここにない組み合わせは lang/ja/validation.php の文の型と attributes の名前が使われる。
+        private const DETAIL_MESSAGES = [
+            // 年月の共通（下で項目ごとに書いたものが優先される）
+            'date_format' => '年と月の両方を選んでください。',
+
+            // 趣味
+            'hobbies.*.max' => '趣味の:position個目：20文字以内で入力してください。',
+
+            // 人生の道筋
+            'life_story.*.period.required_with' => '人生の道筋の:position行目：詳細を書いた場合は、年月も選んでください。',
+            'life_story.*.period.date_format'   => '人生の道筋の:position行目：年と月の両方を選んでください。',
+            'life_story.*.detail.required_with' => '人生の道筋の:position行目：年月を選んだ場合は、詳細も入力してください。',
+            'life_story.*.detail.max'           => '人生の道筋の:position行目：詳細は50文字以内で入力してください。',
+
+            // スキル
+            'skills.*.name.required_with' => 'スキルの:position行目：詳細を書いた場合は、スキル名も入力してください。',
+            'skills.*.name.max'           => 'スキルの:position行目：スキル名は30文字以内で入力してください。',
+            'skills.*.detail.max'         => 'スキルの:position行目：詳細は30文字以内で入力してください。',
+
+            // 資格
+            'certifications.*.name.required_with' => '資格の:position行目：取得時期を選んだ場合は、資格名も入力してください。',
+            'certifications.*.name.max'           => '資格の:position行目：資格名は30文字以内で入力してください。',
+            'certifications.*.acquired.date_format' => '資格の:position行目：取得時期は年と月の両方を選んでください。',
+
+            // 経歴と活動
+            'careers.*.period.date_format'   => '経歴の:position行目：時期は年と月の両方を選んでください。',
+            'careers.*.content.required_with' => '経歴の:position行目：時期を選んだ場合は、内容も入力してください。',
+            'careers.*.content.max'           => '経歴の:position行目：内容は500文字以内で入力してください。',
+
+            // 受賞歴
+            'awards.*.period.date_format'   => '受賞歴の:position行目：年と月の両方を選んでください。',
+            'awards.*.name.required_with'   => '受賞歴の:position行目：年月・主催・説明のどれかを書いた場合は、受賞名も入力してください。',
+            'awards.*.name.max'             => '受賞歴の:position行目：受賞名は20文字以内で入力してください。',
+            'awards.*.organizer.max'        => '受賞歴の:position行目：主催は30文字以内で入力してください。',
+            'awards.*.description.max'      => '受賞歴の:position行目：説明は50文字以内で入力してください。',
+
+            // 学生が足す項目
+            'custom_sections.*.title.required_with' => '追加した項目の:position行目：本文を書いた場合は、見出しも入力してください。',
+            'custom_sections.*.title.max'           => '追加した項目の:position行目：見出しは50文字以内で入力してください。',
+            'custom_sections.*.body.required_with'  => '追加した項目の:position行目：見出しを書いた場合は、本文も入力してください。',
+            'custom_sections.*.body.max'            => '追加した項目の:position行目：本文は500文字以内で入力してください。',
         ];
 }
