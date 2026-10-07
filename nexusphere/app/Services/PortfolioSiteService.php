@@ -9,7 +9,6 @@ use DomainException;
 use Illuminate\Support\Str;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Validator;
-use Illuminate\Http\Request;
 
 // ポートフォリオの作成に必要なルールを守るための処理
 class PortfolioSiteService

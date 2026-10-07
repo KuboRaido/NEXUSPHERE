@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\PortfolioSite;
+use App\Models\User;
 use App\Enums\SiteType;
 use App\Services\PortfolioSiteService;
 use DomainException;
@@ -103,9 +104,18 @@ class PortfolioSiteController extends Controller
         // 未同意、または規約が改定されて再同意が必要なら、同意フォームを出す
         $needsAgreement = $site === null || $service->needsReagreement($site);
 
+        $defaults = [];
+
+        if($site !== null && $site->details_saved_at === null){
+            $defaults['display_name'] = $request->user()->name;
+            $defaults['department']   = $request->user()->subject;
+            $defaults['major']        = $request->user()->major;
+        }
+
         return view('portfolio.edit', [
             'site'           => $site,
             'needsAgreement' => $needsAgreement,
+            'defaults'       => $defaults
         ]);
     }
 
