@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\PortfolioSite;
+use App\Models\User;
 use App\Enums\SiteType;
 use App\Services\PortfolioSiteService;
 use DomainException;
@@ -103,9 +104,32 @@ class PortfolioSiteController extends Controller
         // 未同意、または規約が改定されて再同意が必要なら、同意フォームを出す
         $needsAgreement = $site === null || $service->needsReagreement($site);
 
+        $defaults = [];
+
+        if($site !== null && $site->details_saved_at === null){
+            $defaults['display_name'] = $request->user()->name;
+            $defaults['department']   = $request->user()->subject;
+            $defaults['major']        = $request->user()->major;
+        }
+
+        $ymLists = [];
+        //年月を分解する
+        $ymLists['life_story']     = $this->splitYearMonth($site->life_story ?? [], 'period');
+        $ymLists['certifications'] = $this->splitYearMonth($site->certifications ?? [], 'acquired');
+        $ymLists['careers']        = $this->splitYearMonth($site->careers ?? [], 'period');
+        $ymLists['awards']         = $this->splitYearMonth($site->awards ?? [], 'period');
+
+        $customSections = $request->old('custom_sections' , $site?->custom_sections) ?: [['title' => '', 'body' => '' , 'visible' => 1]];
+        foreach($customSections as $i => $row){
+            $customSections[$i]['visible'] = filter_var($row['visible'] ?? true, FILTER_VALIDATE_BOOLEAN);
+        }
+
         return view('portfolio.edit', [
             'site'           => $site,
             'needsAgreement' => $needsAgreement,
+            'defaults'       => $defaults,
+            'ymLists'        => $ymLists,
+            'customSections' => $customSections
         ]);
     }
 
@@ -120,7 +144,7 @@ class PortfolioSiteController extends Controller
         ]);
 
         //配列を受け取る
-        $details = $request->only(['hobbies', 'life_story','skills','certifications','careers','awards','custom_sections','visibility']);
+        $details = $request->only(['hobbies', 'life_story','skills','certifications','careers','awards','custom_sections','visibility','school_name','department','major','job_axis']);
 
         //年月をくっつける
         $details['life_story']     = $this->combineYearMonth($details['life_story'] ?? [], 'period');
@@ -153,7 +177,7 @@ class PortfolioSiteController extends Controller
     }
 
     // Y-mをくっつける
-    private function combineYearMonth(array $rows, string $key)
+    private function combineYearMonth(array $rows, string $key):array
     {
         foreach ($rows as $i => $row) {
             // 行が配列でなければ触らない（Service の 'careers.*' => ['array'] が弾く）
@@ -173,4 +197,19 @@ class PortfolioSiteController extends Controller
 
         return $rows;
     }
-}
+
+    //Y-mに分ける
+    private function splitYearMonth(array $rows, string $key) :array
+    {
+        foreach($rows as $i => $row){
+            if(str_contains($row[$key], '-')){
+                [$rows[$i]['year'],$rows[$i]['month']] = explode("-",$row[$key]);
+            } else {
+                [$rows[$i]['year'],$rows[$i]['month']] = ['',''];
+            }
+        }
+
+        return $rows;
+    }
+
+    }
