@@ -10,15 +10,6 @@
 <body>
 <main class="portfolio-edit">
     <h1>公開サイトの設定</h1>
-    <div x-data="{ fruits: ['りんご'] }">
-    <template x-for="(fruit, i) in fruits">
-        <div>
-            <input type="text" x-model="fruits[i]" :name="'fruits[' + i + ']'">
-            <button type="button" @click="fruits.splice(i, 1)">行を削除</button>
-        </div>
-    </template>
-    <button type="button" x-show="fruits.length < 5" @click="fruits.push('')">行を追加</button>
-    </div>
 
     {{-- 成功メッセージ（Controller の ->with('status', ...)） --}}
     @if (session('status'))
@@ -156,12 +147,37 @@
                         <div x-data="{ skills: @js(old('skills', $site->skills) ?: [['name' => '', 'detail' => '']]) }">
                             <template x-for="(skill, i) in skills">
                                 <div>
-                                    <input type="text" x-model="skill.name" :name="'skills[' + i + '][name]'" maxlength="30" placeholder='スキル名（例：PHP）'><br>
+                                    <input type="text" x-model="skill.name" :name="'skills[' + i + '][name]'" maxlength="30" placeholder='スキル名（例：PHP）'>
                                     <input type="text" x-model="skill.detail" :name="'skills[' + i + '][detail]'" maxlength="30" placeholder='詳細（例：3年）'>
                                     <button type="button" @click="skills.splice(i, 1)">行を削除</button>
                                 </div>
                             </template>
                             <button type="button" x-show="skills.length < 10" @click="skills.push({ name: '', detail: '' })">行を追加</button>
+                        </div>
+                    </fieldset>
+
+                    <fieldset>
+                        <legend>人生の道筋(10個まで)</legend>
+                        <div x-data="{ life_story: @js(old('life_story', $ymLists['life_story'] ?? []) ?: [['year' => '', 'month' => '', 'detail' => '']]) }">
+                            <template x-for="(life, i) in life_story">
+                                <div>
+                                    <select  x-model="life.year" :name="'life_story[' + i + '][year]'" >
+                                        <option value="">年</option>
+                                        @for ($y = 2010; $y <= now()->year + 5; $y++)
+                                            <option value="{{ $y }}">{{ $y }}年</option>
+                                        @endfor
+                                    </select>
+                                    <select x-model="life.month" :name="'life_story[' + i + '][month]'" >
+                                        <option value="">月</option>
+                                        @for ($m = 1; $m <= 12; $m++)
+                                            <option value="{{ sprintf('%02d', $m) }}">{{ $m }}月</option>
+                                        @endfor
+                                    </select>
+                                    <input type="text" x-model="life.detail" :name="'life_story[' + i + '][detail]'" maxlength="50" placeholder='詳細'>
+                                    <button type="button" @click="life_story.splice(i, 1)">行を削除</button>
+                                </div>
+                            </template>
+                            <button type="button" x-show="life_story.length < 10" @click="life_story.push({ year: '', month: '', detail: '' })">行を追加</button>
                         </div>
                     </fieldset>
 

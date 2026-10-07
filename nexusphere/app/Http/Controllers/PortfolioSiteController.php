@@ -112,10 +112,18 @@ class PortfolioSiteController extends Controller
             $defaults['major']        = $request->user()->major;
         }
 
+        $ymLists = [];
+        //年月を分解する
+        $ymLists['life_story']     = $this->splitYearMonth($site->life_story ?? [], 'period');
+        $ymLists['certifications'] = $this->splitYearMonth($site->certifications ?? [], 'acquired');
+        $ymLists['careers']        = $this->splitYearMonth($site->careers ?? [], 'period');
+        $ymLists['awards']         = $this->splitYearMonth($site->awards ?? [], 'period');
+
         return view('portfolio.edit', [
             'site'           => $site,
             'needsAgreement' => $needsAgreement,
-            'defaults'       => $defaults
+            'defaults'       => $defaults,
+            'ymLists'        => $ymLists
         ]);
     }
 
@@ -163,7 +171,7 @@ class PortfolioSiteController extends Controller
     }
 
     // Y-mをくっつける
-    private function combineYearMonth(array $rows, string $key)
+    private function combineYearMonth(array $rows, string $key):array
     {
         foreach ($rows as $i => $row) {
             // 行が配列でなければ触らない（Service の 'careers.*' => ['array'] が弾く）
@@ -178,6 +186,20 @@ class PortfolioSiteController extends Controller
                 $rows[$i][$key] = null;
             } else {
                 $rows[$i][$key] = $year . '-' . $month;
+            }
+        }
+
+        return $rows;
+    }
+
+    //Y-mに分ける
+    private function splitYearMonth(array $rows, string $key) :array
+    {
+        foreach($rows as $i => $row){
+            if(str_contains($row[$key], '-')){
+                [$rows[$i]['year'],$rows[$i]['month']] = explode("-",$row[$key]);
+            } else {
+                [$rows[$i]['year'],$rows[$i]['month']] = ['',''];
             }
         }
 
