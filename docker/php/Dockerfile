@@ -17,8 +17,11 @@ RUN apt update \
     && apt install -y git \
     # xdebugのインストール
     && pecl install xdebug \
-    && docker-php-ext-enable xdebug
-    
+    && docker-php-ext-enable xdebug \
+    # libpng / libjpeg / libfreetype / libwebp は、GD が PNG・JPEG・文字・WebP を扱うための部品
+    && apt install -y libpng-dev libjpeg62-turbo-dev libfreetype6-dev libwebp-dev \
+    && docker-php-ext-configure gd --with-freetype --with-jpeg --with-webp \
+    && docker-php-ext-install gd exif
 # Composerのインストール & パス通す
 COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
 
