@@ -219,11 +219,11 @@ class PortfolioSiteService
     public function updateTemplate(PortfolioSite $site, ?string $displayName, ?string $bio, array $links):void
     {
         if ($displayName !== null && mb_strlen($displayName) > self::DISPLAY_NAME_MAX_LENGTH){
-            throw new DomainException('表示名は50文字以内で入力してください。');
+            throw new DomainException('表示名は20文字以内で入力してください。');
         }
 
         if ($bio !== null && mb_strlen($bio) > self::BIO_MAX_LENGTH){
-            throw new DomainException('自己紹介は1000文字以内で入力してください。');
+            throw new DomainException('自己紹介は500文字以内で入力してください。');
         }
 
         if (count($links) > self::LINKS_MAX_COUNT){

@@ -135,20 +135,39 @@
                     @csrf
                     @method('PUT')
 
-                    {{-- 初期値に本名（$user->name）は入れない --}}
+                    {{-- 公開する：隠し入力欄（0）を前、チェックボックス（1）を後ろに置く。チェックが外れていても 0 が必ず届く --}}
+                    <input type="hidden" name="visibility[display_name]" value="0">
+                    <label><input type="checkbox" name="visibility[display_name]" value="1" @checked(filter_var(old('visibility.display_name', $site->visibility['display_name'] ?? true), FILTER_VALIDATE_BOOLEAN))>公開する</label>
                     <label>
-                        表示名（50文字まで）
-                        <input type="text" name="display_name" maxlength="50"
-                            value="{{ old('display_name', $site->display_name) }}" placeholder='例：田中太郎'>
+                        表示名
+                        <input type="text" name="display_name" maxlength="20"
+                            value="{{ old('display_name', $site->display_name ?? $defaults['display_name'] ?? '' )}}" placeholder='例：田中太郎'>
                     </label>
 
+                    <input type="hidden" name="visibility[school_name]" value="0">
+                    <label><input type="checkbox" name="visibility[school_name]" value="1" @checked(filter_var(old('visibility.school_name', $site->visibility['school_name'] ?? true), FILTER_VALIDATE_BOOLEAN))>学校名を公開する</label>
+                    <input type="hidden" name="visibility[department]" value="0">
+                    <label><input type="checkbox" name="visibility[department]" value="1" @checked(filter_var(old('visibility.department', $site->visibility['department'] ?? true), FILTER_VALIDATE_BOOLEAN))>学科を公開する</label>
+                    <input type="hidden" name="visibility[major]" value="0">
+                    <label><input type="checkbox" name="visibility[major]" value="1" @checked(filter_var(old('visibility.major', $site->visibility['major'] ?? true), FILTER_VALIDATE_BOOLEAN))>専攻を公開する</label>
                     <label>
-                        自己紹介（1000文字まで）
-                        <textarea name="bio" rows="6" maxlength="1000">{{ old('bio', $site->bio) }}</textarea>
+                        学校名・学科・専攻
+                            <input type='text' name='school_name' maxlength='30' value="{{ old('school_name', $site->school_name)}}" placeholder="学校名を入力してください">
+                            <input type='text' name='department' maxlength='20' value="{{ old('department', $site->department ?? $defaults['department'] ?? '')}}" placeholder="学科名を入力してください">
+                            <input type='text' name='major' maxlength='20' value="{{ old('major', $site->major ??  $defaults['major'] ?? '')}}" placeholder="専攻名を入力してください">
+                    </label>
+
+                    <input type="hidden" name="visibility[bio]" value="0">
+                    <label><input type="checkbox" name="visibility[bio]" value="1" @checked(filter_var(old('visibility.bio', $site->visibility['bio'] ?? true), FILTER_VALIDATE_BOOLEAN))>公開する</label>
+                    <label>
+                        自己紹介
+                        <textarea name="bio" rows="6" maxlength="500" placeholder="500文字まで">{{ old('bio', $site->bio) }}</textarea>
                     </label>
 
                     <fieldset>
                         <legend>趣味(10個まで)</legend>
+                        <input type="hidden" name="visibility[hobbies]" value="0">
+                        <label><input type="checkbox" name="visibility[hobbies]" value="1" @checked(filter_var(old('visibility.hobbies', $site->visibility['hobbies'] ?? true), FILTER_VALIDATE_BOOLEAN))>公開する</label>
                         <div x-data="{ hobbies: @js(old('hobbies', $site->hobbies) ?: [''] )}">
                             <template x-for="(hobby, i) in hobbies">
                                 <div>
@@ -162,6 +181,8 @@
 
                     <fieldset>
                         <legend>スキル(10個まで)</legend>
+                        <input type="hidden" name="visibility[skills]" value="0">
+                        <label><input type="checkbox" name="visibility[skills]" value="1" @checked(filter_var(old('visibility.skills', $site->visibility['skills'] ?? true), FILTER_VALIDATE_BOOLEAN))>公開する</label>
                         <div x-data="{ skills: @js(old('skills', $site->skills) ?: [['name' => '', 'detail' => '']]) }">
                             <template x-for="(skill, i) in skills">
                                 <div>
@@ -176,6 +197,8 @@
 
                     <fieldset>
                         <legend>人生の道筋(10個まで)</legend>
+                        <input type="hidden" name="visibility[life_story]" value="0">
+                        <label><input type="checkbox" name="visibility[life_story]" value="1" @checked(filter_var(old('visibility.life_story', $site->visibility['life_story'] ?? true), FILTER_VALIDATE_BOOLEAN))>公開する</label>
                         <div x-data="{ life_story: @js(old('life_story', $ymLists['life_story'] ?? []) ?: [['year' => '', 'month' => '', 'detail' => '']]) }">
                             <template x-for="(life, i) in life_story">
                                 <div>
@@ -201,6 +224,8 @@
 
                     <fieldset>
                         <legend>資格(10個まで)</legend>
+                        <input type="hidden" name="visibility[certifications]" value="0">
+                        <label><input type="checkbox" name="visibility[certifications]" value="1" @checked(filter_var(old('visibility.certifications', $site->visibility['certifications'] ?? true), FILTER_VALIDATE_BOOLEAN))>公開する</label>
                         <div x-data="{ certifications: @js(old('certifications', $ymLists['certifications'] ?? []) ?: [['year' => '', 'month' => '', 'name' => '']]) }">
                             <template x-for="(certification, i) in certifications">
                                 <div>
@@ -226,6 +251,8 @@
 
                     <fieldset>
                         <legend>経歴と活動（20件まで）</legend>
+                        <input type="hidden" name="visibility[careers]" value="0">
+                        <label><input type="checkbox" name="visibility[careers]" value="1" @checked(filter_var(old('visibility.careers', $site->visibility['careers'] ?? true), FILTER_VALIDATE_BOOLEAN))>公開する</label>
                         <div x-data="{ careers: @js(old('careers', $ymLists['careers'] ?? []) ?: [['year' => '', 'month' => '', 'content' => '']]) }">
                             <template x-for="(career, i) in careers">
                                 <div>
@@ -249,8 +276,16 @@
                         </div>
                     </fieldset>
 
+                    <input type="hidden" name="visibility[job_axis]" value="0">
+                    <label><input type="checkbox" name="visibility[job_axis]" value="1" @checked(filter_var(old('visibility.job_axis', $site->visibility['job_axis'] ?? true), FILTER_VALIDATE_BOOLEAN))>公開する</label>
+                    <label>
+                        就活軸
+                        <textarea name='job_axis' maxlength='500' placeholder="就活の軸にしていることを入力してください">{{ old('job_axis', $site->job_axis)}}</textarea>
+                    </label>
                     <fieldset>
                         <legend>受賞歴（20件まで）</legend>
+                        <input type="hidden" name="visibility[awards]" value="0">
+                        <label><input type="checkbox" name="visibility[awards]" value="1" @checked(filter_var(old('visibility.awards', $site->visibility['awards'] ?? true), FILTER_VALIDATE_BOOLEAN))>公開する</label>
                         <div x-data="{ awards: @js(old('awards', $ymLists['awards'] ?? []) ?: [['year' => '', 'month' => '', 'name' => '', 'organizer' => '', 'description' => '']]) }">
                             <template x-for="(award, i) in awards">
                                 <div>
@@ -296,6 +331,8 @@
 
                     <fieldset>
                         <legend>リンク（5件まで。URLが空の行は保存されません）</legend>
+                        <input type="hidden" name="visibility[links]" value="0">
+                        <label><input type="checkbox" name="visibility[links]" value="1" @checked(filter_var(old('visibility.links', $site->visibility['links'] ?? true), FILTER_VALIDATE_BOOLEAN))>公開する</label>
                         @for ($i = 0; $i < 5; $i++)
                             <div class="link-row">
                                 <input type="text" name="links[{{ $i }}][label]" placeholder="表示名（例：GitHub）"
