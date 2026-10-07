@@ -17,10 +17,6 @@ class PortfolioSiteService
     private const TOKEN_LENGTH = 16;
     private const EXTERNAL_URL_MAX_LENGTH = 255;
     private const LINK_LABEL_MAX_LENGTH = 30;
-    private const SKILLS_MAX_COUNT = 30;
-    private const SKILL_NAME_MAX_LENGTH = 30;
-    private const VISIBILITY_KEYS = ['school_name','department','major','job_axis','hobbies','life_story','skills','certifications','careers','awards','custom_sections'];
-
 
     /**
      * 規約に同意して公開サイトを作る（既にあれば再同意として更新する）

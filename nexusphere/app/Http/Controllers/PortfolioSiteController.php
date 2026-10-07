@@ -120,7 +120,7 @@ class PortfolioSiteController extends Controller
         ]);
 
         //配列を受け取る
-        $details = $request->only(['hobbies', 'life_story','skills','certifications','careers','awards','custom_sections','visibility']);
+        $details = $request->only(['hobbies', 'life_story','skills','certifications','careers','awards','custom_sections','visibility','school_name','department','major','job_axis']);
 
         //年月をくっつける
         $details['life_story']     = $this->combineYearMonth($details['life_story'] ?? [], 'period');
@@ -173,4 +173,5 @@ class PortfolioSiteController extends Controller
 
         return $rows;
     }
-}
+
+    }
