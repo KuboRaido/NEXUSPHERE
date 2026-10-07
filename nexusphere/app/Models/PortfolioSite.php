@@ -24,14 +24,36 @@ class PortfolioSite extends Model
         'display_name',
         'bio',
         'links',
+        'school_name',
+        'department',
+        'major',
+        'job_axis',
+        'hobbies',
+        'life_story',
+        'skills',
+        'certifications',
+        'careers',
+        'awards',
+        'custom_sections',
+        'visibility',
+        'accent_color',
     ];
 
     //DBの値をPHPで扱いやすい形に変換する設定
     protected $casts = [
-        'site_type' => SiteType::class,
-        'is_public' => 'boolean',
-        'agreed_at' => 'datetime',
-        'links'     => 'array',
+        'site_type'        => SiteType::class,
+        'is_public'        => 'boolean',
+        'agreed_at'        => 'datetime',
+        'links'            => 'array',
+        'hobbies'          => 'array',
+        'life_story'       => 'array',
+        'skills'           => 'array',
+        'certifications'   => 'array',
+        'careers'          => 'array',
+        'awards'           => 'array',
+        'custom_sections'  => 'array',
+        'visibility'       => 'array',
+        'details_saved_at' => 'datetime',
     ];
 
     public function user()

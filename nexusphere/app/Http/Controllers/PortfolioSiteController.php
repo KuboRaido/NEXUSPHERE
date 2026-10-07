@@ -119,6 +119,16 @@ class PortfolioSiteController extends Controller
             'links.*.url'   => ['nullable', 'string'],
         ]);
 
+        //配列を受け取る
+        $details = $request->only(['hobbies', 'life_story','skills','certifications','careers','awards','custom_sections','visibility']);
+
+        //年月をくっつける
+        $details['life_story']     = $this->combineYearMonth($details['life_story'] ?? [], 'period');
+        $details['certifications'] = $this->combineYearMonth($details['certifications'] ?? [], 'acquired');
+        $details['careers']        = $this->combineYearMonth($details['careers'] ?? [], 'period');
+        $details['awards']         = $this->combineYearMonth($details['awards'] ?? [], 'period');
+
+        //サイトを受けとる
         $site = $this->ownSite($request);
 
          // URLが空の行は捨てて、番号を0から振り直す
@@ -128,7 +138,7 @@ class PortfolioSiteController extends Controller
         ));
 
         try {
-            $service->updateTemplate($site, $validated['display_name'] ?? null, $validated['bio'] ?? null, $links);
+            $service->saveTemplate($site, $validated['display_name'] ?? null, $validated['bio'] ?? null, $links, $details);
         } catch (DomainException $e) {
             return back()->withErrors(['portfolio_site' => $e->getMessage()])->withInput();
         }
@@ -142,4 +152,25 @@ class PortfolioSiteController extends Controller
         return $request->user()->portfolioSite ?? abort(404);
     }
 
+    // Y-mをくっつける
+    private function combineYearMonth(array $rows, string $key)
+    {
+        foreach ($rows as $i => $row) {
+            // 行が配列でなければ触らない（Service の 'careers.*' => ['array'] が弾く）
+            if (! is_array($row)) {
+                continue;
+            }
+
+            $year  = $row['year'] ?? null;
+            $month = $row['month'] ?? null;
+
+            if (blank($year) && blank($month)) {
+                $rows[$i][$key] = null;
+            } else {
+                $rows[$i][$key] = $year . '-' . $month;
+            }
+        }
+
+        return $rows;
+    }
 }
