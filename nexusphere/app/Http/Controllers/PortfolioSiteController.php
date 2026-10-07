@@ -119,11 +119,17 @@ class PortfolioSiteController extends Controller
         $ymLists['careers']        = $this->splitYearMonth($site->careers ?? [], 'period');
         $ymLists['awards']         = $this->splitYearMonth($site->awards ?? [], 'period');
 
+        $customSections = $request->old('custom_sections' , $site?->custom_sections) ?: [['title' => '', 'body' => '' , 'visible' => 1]];
+        foreach($customSections as $i => $row){
+            $customSections[$i]['visible'] = filter_var($row['visible'] ?? true, FILTER_VALIDATE_BOOLEAN);
+        }
+
         return view('portfolio.edit', [
             'site'           => $site,
             'needsAgreement' => $needsAgreement,
             'defaults'       => $defaults,
-            'ymLists'        => $ymLists
+            'ymLists'        => $ymLists,
+            'customSections' => $customSections
         ]);
     }
 

@@ -142,6 +142,24 @@
                             value="{{ old('display_name', $site->display_name) }}" placeholder='例：田中太郎'>
                     </label>
 
+                    <label>
+                        自己紹介（1000文字まで）
+                        <textarea name="bio" rows="6" maxlength="1000">{{ old('bio', $site->bio) }}</textarea>
+                    </label>
+
+                    <fieldset>
+                        <legend>趣味(10個まで)</legend>
+                        <div x-data="{ hobbies: @js(old('hobbies', $site->hobbies) ?: [''] )}">
+                            <template x-for="(hobby, i) in hobbies">
+                                <div>
+                                    <input type="text" x-model="hobbies[i]" :name="'hobbies[' + i + ']'" maxlength="20" placeholder='趣味'>
+                                    <button type="button" @click="hobbies.splice(i, 1)">行を削除</button>
+                                </div>
+                            </template>
+                            <button type="button" x-show="hobbies.length < 10" @click="hobbies.push('')">行を追加</button>
+                        </div>
+                    </fieldset>
+
                     <fieldset>
                         <legend>スキル(10個まで)</legend>
                         <div x-data="{ skills: @js(old('skills', $site->skills) ?: [['name' => '', 'detail' => '']]) }">
@@ -181,10 +199,100 @@
                         </div>
                     </fieldset>
 
-                    <label>
-                        自己紹介（1000文字まで）
-                        <textarea name="bio" rows="6" maxlength="1000">{{ old('bio', $site->bio) }}</textarea>
-                    </label>
+                    <fieldset>
+                        <legend>資格(10個まで)</legend>
+                        <div x-data="{ certifications: @js(old('certifications', $ymLists['certifications'] ?? []) ?: [['year' => '', 'month' => '', 'name' => '']]) }">
+                            <template x-for="(certification, i) in certifications">
+                                <div>
+                                    <select  x-model="certification.year" :name="'certifications[' + i + '][year]'" >
+                                        <option value="">年</option>
+                                        @for ($y = 2010; $y <= now()->year + 5; $y++)
+                                            <option value="{{ $y }}">{{ $y }}年</option>
+                                        @endfor
+                                    </select>
+                                    <select x-model="certification.month" :name="'certifications[' + i + '][month]'" >
+                                        <option value="">月</option>
+                                        @for ($m = 1; $m <= 12; $m++)
+                                            <option value="{{ sprintf('%02d', $m) }}">{{ $m }}月</option>
+                                        @endfor
+                                    </select>
+                                    <input type="text" x-model="certification.name" :name="'certifications[' + i + '][name]'" maxlength="30" placeholder='資格名'>
+                                    <button type="button" @click="certifications.splice(i, 1)">行を削除</button>
+                                </div>
+                            </template>
+                            <button type="button" x-show="certifications.length < 10" @click="certifications.push({ year: '', month: '', name: '' })">行を追加</button>
+                        </div>
+                    </fieldset>
+
+                    <fieldset>
+                        <legend>経歴と活動（20件まで）</legend>
+                        <div x-data="{ careers: @js(old('careers', $ymLists['careers'] ?? []) ?: [['year' => '', 'month' => '', 'content' => '']]) }">
+                            <template x-for="(career, i) in careers">
+                                <div>
+                                    <select x-model="career.year" :name="'careers[' + i + '][year]'">
+                                        <option value="">年</option>
+                                        @for ($y = 2010; $y <= now()->year + 5; $y++)
+                                            <option value="{{ $y }}">{{ $y }}年</option>
+                                        @endfor
+                                    </select>
+                                    <select x-model="career.month" :name="'careers[' + i + '][month]'">
+                                        <option value="">月</option>
+                                        @for ($m = 1; $m <= 12; $m++)
+                                            <option value="{{ sprintf('%02d', $m) }}">{{ $m }}月</option>
+                                        @endfor
+                                    </select>
+                                    <textarea x-model="career.content" :name="'careers[' + i + '][content]'" maxlength="500" rows="3" placeholder="内容（例：株式会社〇〇でECサイトの保守を担当）"></textarea>
+                                    <button type="button" @click="careers.splice(i, 1)">行を削除</button>
+                                </div>
+                            </template>
+                            <button type="button" x-show="careers.length < 20" @click="careers.push({ year: '', month: '', content: '' })">行を追加</button>
+                        </div>
+                    </fieldset>
+
+                    <fieldset>
+                        <legend>受賞歴（20件まで）</legend>
+                        <div x-data="{ awards: @js(old('awards', $ymLists['awards'] ?? []) ?: [['year' => '', 'month' => '', 'name' => '', 'organizer' => '', 'description' => '']]) }">
+                            <template x-for="(award, i) in awards">
+                                <div>
+                                    <select x-model="award.year" :name="'awards[' + i + '][year]'">
+                                        <option value="">年</option>
+                                        @for ($y = 2010; $y <= now()->year + 5; $y++)
+                                            <option value="{{ $y }}">{{ $y }}年</option>
+                                        @endfor
+                                    </select>
+                                    <select x-model="award.month" :name="'awards[' + i + '][month]'">
+                                        <option value="">月</option>
+                                        @for ($m = 1; $m <= 12; $m++)
+                                            <option value="{{ sprintf('%02d', $m) }}">{{ $m }}月</option>
+                                        @endfor
+                                    </select>
+                                    <input type="text" x-model="award.name" :name="'awards[' + i + '][name]'" maxlength="20" placeholder="受賞名（例：最優秀賞）">
+                                    <input type="text" x-model="award.organizer" :name="'awards[' + i + '][organizer]'" maxlength="30" placeholder="主催（例：校内ハッカソン2026）">
+                                    <input type="text" x-model="award.description" :name="'awards[' + i + '][description]'" maxlength="50" placeholder="説明（例：3人チームで LINE Bot を作成）">
+                                    <button type="button" @click="awards.splice(i, 1)">行を削除</button>
+                                </div>
+                            </template>
+                            <button type="button" x-show="awards.length < 20" @click="awards.push({ year: '', month: '', name: '', organizer: '', description: '' })">行を追加</button>
+                        </div>
+                    </fieldset>
+
+                    <fieldset>
+                        <legend>そのほか(10個まで)</legend>
+                        <div x-data="{ custom_sections: @js($customSections) }">
+                            <template x-for="(custom_section, i) in custom_sections">
+                                <div>
+                                    <input type="text" x-model="custom_section.title" :name="'custom_sections[' + i + '][title]'" maxlength="50" placeholder='項目名'>
+                                    <textarea x-model="custom_section.body" :name="'custom_sections[' + i + '][body]'" maxlength="500" placeholder='詳細'></textarea>
+                                    <label>
+                                        <input type="checkbox" x-model="custom_section.visible" >この項目を公開する<br>
+                                        <input type="hidden" :name="'custom_sections[' + i + '][visible]'" :value="custom_section.visible ? 1 : 0">
+                                    </label>
+                                    <button type="button" @click="custom_sections.splice(i, 1)">行を削除</button>
+                                </div>
+                            </template>
+                            <button type="button" x-show="custom_sections.length < 10" @click="custom_sections.push({ title: '', body: '', visible: true })">行を追加</button>
+                        </div>
+                    </fieldset>
 
                     <fieldset>
                         <legend>リンク（5件まで。URLが空の行は保存されません）</legend>

@@ -282,7 +282,7 @@ class PortfolioSiteService
             'skills.*.detail' => ['nullable', 'string', 'max:30'],
  
             // 資格：取得時期があれば資格名が必須
-            'certifications'            => ['nullable', 'array', 'max:20'],
+            'certifications'            => ['nullable', 'array', 'max:10'],
             'certifications.*'          => ['array'],
             'certifications.*.name'     => ['nullable', 'string', 'max:30', 'required_with:certifications.*.acquired'],
             'certifications.*.acquired' => ['nullable', 'date_format:Y-m'],
