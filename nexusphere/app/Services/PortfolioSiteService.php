@@ -211,8 +211,8 @@ class PortfolioSiteService
         return $clean;
     }
 
-    private const DISPLAY_NAME_MAX_LENGTH = 50;
-    private const BIO_MAX_LENGTH          = 1000;
+    private const DISPLAY_NAME_MAX_LENGTH = 20;
+    private const BIO_MAX_LENGTH          = 500;
     private const LINKS_MAX_COUNT         = 5;
 
     // 公開情報を変更
@@ -260,7 +260,7 @@ class PortfolioSiteService
 
     private const DETAIL_RULES = [
             // 1つの値
-            'school_name' => ['nullable', 'string', 'max:30'],
+            'school_name' => ['nullable', 'string', 'max:20'],
             'department'  => ['nullable', 'string', 'max:20'],
             'major'       => ['nullable', 'string', 'max:20'],
             'job_axis'    => ['nullable', 'string', 'max:500'],
