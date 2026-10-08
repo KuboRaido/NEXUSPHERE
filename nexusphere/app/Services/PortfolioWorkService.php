@@ -5,10 +5,11 @@ namespace App\Services;
 use App\Models\PortfolioSite;
 use App\Models\PortfolioWork;
 use DomainException;
-use Intervention\Image;
-use Intervention\Validation;
 use Intervention\Image\Exceptions\DecoderException;
 use Intervention\Image\ImageManager;
+use Illuminate\Support\Str;
+use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Validation\ValidationException;
 
@@ -57,18 +58,30 @@ class PortfolioWorkService
         }
 
         $imageManager = ImageManager::gd(autoOrientation: true, strip: true);
-        $result = [];
+        $results = [];
         foreach($newImages as $slot => $newImage){
             try{
                 $image = $imageManager->read($newImage);
                 $scale = $image->scaleDown(width: 1600, height: 1600);
                 $toWebp = $scale->toWebp(quality: 75);
-                $result[$slot] = $toWebp;
+                $results[$slot] = $toWebp;
             } catch(DecoderException $e) {
                 throw ValidationException::withMessages([
                     'new_images.' . $slot => '画像の' . ($slot + 1) . '枚目：読み込めませんでした。別の画像を選んでください。',
                 ]);
             }
+        }
+
+        $resultPath = [];
+        foreach($results as $slot => $result){
+            $path        = $site->token."/".Str::random(40).'.webp';
+            $trueOrFalse = Storage::disk('works')->put($path,$result->toString());
+            if($trueOrFalse === false){
+                Storage::disk('works')->delete($resultPath);
+                Log::error('画像の保存に失敗しました。',['portfolio_site_id' => $site->portfolio_site_id, 'slot' => $slot]);
+                throw new DomainException('画像の保存に失敗しました。時間をおいてもう一度保存してください。');
+            }
+            $resultPath[$slot] = $path;
         }
     }
     /**
