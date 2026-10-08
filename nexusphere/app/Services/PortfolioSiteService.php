@@ -260,7 +260,7 @@ class PortfolioSiteService
 
     private const DETAIL_RULES = [
             // 1つの値
-            'school_name' => ['nullable', 'string', 'max:20'],
+            'school_name' => ['nullable', 'string', 'max:30'],
             'department'  => ['nullable', 'string', 'max:20'],
             'major'       => ['nullable', 'string', 'max:20'],
             'job_axis'    => ['nullable', 'string', 'max:500'],
