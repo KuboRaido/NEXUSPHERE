@@ -5,7 +5,12 @@ namespace App\Services;
 use App\Models\PortfolioSite;
 use App\Models\PortfolioWork;
 use DomainException;
+use Intervention\Image;
+use Intervention\Validation;
+use Intervention\Image\Exceptions\DecoderException;
+use Intervention\Image\ImageManager;
 use Illuminate\Support\Facades\Validator;
+use Illuminate\Validation\ValidationException;
 
 // 制作物（portfolio_works）と画像（portfolio_work_images）を、決めたルールどおりに保存・削除するための処理
 class PortfolioWorkService
@@ -50,7 +55,21 @@ class PortfolioWorkService
             $slots = array_keys($newImages);
             $imagesToDelete = $imagesToDelete->merge($work->images()->whereIn('sort_order', $slots)->get())->unique('portfolio_work_image_id');
         }
-        
+
+        $imageManager = ImageManager::gd(autoOrientation: true, strip: true);
+        $result = [];
+        foreach($newImages as $slot => $newImage){
+            try{
+                $image = $imageManager->read($newImage);
+                $scale = $image->scaleDown(width: 1600, height: 1600);
+                $toWebp = $scale->toWebp(quality: 75);
+                $result[$slot] = $toWebp;
+            } catch(DecoderException $e) {
+                throw ValidationException::withMessages([
+                    'new_images.' . $slot => '画像の' . ($slot + 1) . '枚目：読み込めませんでした。別の画像を選んでください。',
+                ]);
+            }
+        }
     }
     /**
      * 制作物1件分の入力のルール。
@@ -79,7 +98,6 @@ class PortfolioWorkService
         // 画像：中身から判定した形式が jpg・png・webp のものだけ、1枚10MB（10240KB）まで、縦横どちらも 8192px まで
         'new_images'       => ['nullable', 'array:0,1,2,3,4,5,6,7,8,9'],
         'new_images.*'     => ['file', 'mimes:jpg,jpeg,png,webp', 'max:10240', 'dimensions:max_width=8192,max_height=8192'],
-        'new_images.array' => '画像の枠の指定が正しくありません。ページを読み込み直してください。',
         // 消す画像の ID
         'delete_images'    => ['nullable', 'array'],
         'delete_images.*'  => ['integer'],
@@ -101,6 +119,7 @@ class PortfolioWorkService
         'own_ideas.max'         => '「担当として工夫したこと」は500文字以内で入力してください。',
         'current_status.max'    => '「現在どうなっているか」は500文字以内で入力してください。',
         'new_images.max'        => '画像は1つの制作物につき10枚までです。',
+        'new_images.array'      => '画像の枠の指定が正しくありません。ページを読み込み直してください。',
         'new_images.*.file'     => '画像の:position枚目：アップロードに失敗しました。もう一度選んでください。',
         'new_images.*.mimes'    => '画像の:position枚目：JPEG・PNG・WebP の画像を選んでください。',
         'new_images.*.max'      => '画像の:position枚目：10MB以下の画像を選んでください。',
