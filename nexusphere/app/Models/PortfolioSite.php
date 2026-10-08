@@ -66,4 +66,11 @@ class PortfolioSite extends Model
     {
         return $this->belongsTo(User::class, 'user_id', 'user_id');
     }
+
+    // 制作物は並び順どおりに取り出す。first() が公開ページで大きく出る1件目
+    public function works()
+    {
+        return $this->hasMany(PortfolioWork::class, 'portfolio_site_id', 'portfolio_site_id')
+            ->orderBy('sort_order');
+    }
 }

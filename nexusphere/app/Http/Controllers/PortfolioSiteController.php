@@ -170,6 +170,19 @@ class PortfolioSiteController extends Controller
         return back()->with('status', '公開サイトの内容を保存しました。');
     }
 
+    public function picture(Request $request, PortfolioSiteService $service)
+    {
+        $site_token = $request->only([]);
+        $site_file = $request->file('new_images', []);
+
+        $techStack = array_values(array_filter($request->input('tech_stack', []), fn ($tech) => ! blank($tech)));
+        $newImages = array_filter($request->file('new_images', []));
+        
+        try{
+            $service->
+        }
+    }
+
     // ログイン中のUserの公開siteを取って、なければ404を返す
     private function ownSite(Request $request): PortfolioSite
     {
