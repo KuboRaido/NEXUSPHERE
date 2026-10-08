@@ -2,13 +2,18 @@
 
 namespace App\Services;
 
+use App\Models\PortfolioSite;
+use App\Models\PortfolioWork;
+use DomainException;
+use Illuminate\Support\Facades\Validator;
+
 // 制作物（portfolio_works）と画像（portfolio_work_images）を、決めたルールどおりに保存・削除するための処理
 class PortfolioWorkService
 {
     // 1人あたりの制作物の上限
     public const WORKS_MAX_COUNT = 10;
 
-    // 1つの制作物あたりの画像の上限（保存済みの枚数 − 消す枚数 + 新しく選んだ枚数 で数える）
+    // 1つの制作物あたりの画像の枠の数（枠の番号は 0〜9）
     public const IMAGES_MAX_COUNT = 10;
 
     // 画像を保存するディスク（config/filesystems.php の works）
@@ -17,6 +22,36 @@ class PortfolioWorkService
     // 縮小したあとの長辺（px）
     private const IMAGE_LONG_EDGE = 1600;
 
+    public function save(PortfolioSite $site, ?PortfolioWork $work, array $input, array $newImages): void
+    {
+        $validated = Validator::make([...$input, 'new_images' => $newImages], self::WORK_RULES, self::WORK_MESSAGES)->validate();
+
+        if(!$work && $site->works()->count() >= self::WORKS_MAX_COUNT){
+            throw new DomainException('制作物は10件まで登録可能です。');
+        }
+
+        $deleteIds = array_unique($validated['delete_images'] ?? []);
+
+        $imagesToDelete = collect();
+
+        if($deleteIds !== []){
+            if($work === null) {
+                throw new DomainException('消す画像の指定が正しくありません。ページを読み込み直してください。');
+            }
+
+            $imagesToDelete = $work->images()->whereIn('portfolio_work_image_id', $deleteIds)->get();
+
+            if($imagesToDelete->count() !== count($deleteIds)) {
+                throw new DomainException('消す画像の指定が正しくありません。ページを読み込み直してください。');
+            }
+        }
+
+        if($newImages !== [] && $work !== null){
+            $slots = array_keys($newImages);
+            $imagesToDelete = $imagesToDelete->merge($work->images()->whereIn('sort_order', $slots)->get())->unique('portfolio_work_image_id');
+        }
+        
+    }
     /**
      * 制作物1件分の入力のルール。
      * フォームのキー：title, summary, tech_stack[], url, team_role, why_built, why_tech,
@@ -25,29 +60,29 @@ class PortfolioWorkService
      */
     private const WORK_RULES = [
         // どれか1つでも入っていたら、タイトルは必須（「これがあるならこれも必要」）
-        'title'          => ['nullable', 'string', 'max:50', 'required_with:summary,tech_stack,url,team_role,why_built,why_tech,hardest_part,own_ideas,current_status,new_images'],
+        'title'            => ['nullable', 'string', 'max:50', 'required_with:summary,tech_stack,url,team_role,why_built,why_tech,hardest_part,own_ideas,current_status,new_images'],
 
         // カードに出す欄
-        'summary'        => ['nullable', 'string', 'max:100'],
-        'tech_stack'     => ['nullable', 'array', 'max:10'],
-        'tech_stack.*'   => ['nullable', 'string', 'max:30'],
-        'url'            => ['nullable', 'string', 'max:255', 'url:https'],
+        'summary'          => ['nullable', 'string', 'max:100'],
+        'tech_stack'       => ['nullable', 'array', 'max:10'],
+        'tech_stack.*'     => ['nullable', 'string', 'max:30'],
+        'url'              => ['nullable', 'string', 'max:255', 'url:https'],
 
         // 押したときに開く欄
-        'team_role'      => ['nullable', 'string', 'max:50'],
-        'why_built'      => ['nullable', 'string', 'max:500'],
-        'why_tech'       => ['nullable', 'string', 'max:500'],
-        'hardest_part'   => ['nullable', 'string', 'max:500'],
-        'own_ideas'      => ['nullable', 'string', 'max:500'],
-        'current_status' => ['nullable', 'string', 'max:500'],
+        'team_role'        => ['nullable', 'string', 'max:50'],
+        'why_built'        => ['nullable', 'string', 'max:500'],
+        'why_tech'         => ['nullable', 'string', 'max:500'],
+        'hardest_part'     => ['nullable', 'string', 'max:500'],
+        'own_ideas'        => ['nullable', 'string', 'max:500'],
+        'current_status'   => ['nullable', 'string', 'max:500'],
 
         // 画像：中身から判定した形式が jpg・png・webp のものだけ、1枚10MB（10240KB）まで、縦横どちらも 8192px まで
-        'new_images'     => ['nullable', 'array', 'max:10'],
-        'new_images.*'   => ['file', 'mimes:jpg,jpeg,png,webp', 'max:10240', 'dimensions:max_width=8192,max_height=8192'],
-
+        'new_images'       => ['nullable', 'array:0,1,2,3,4,5,6,7,8,9'],
+        'new_images.*'     => ['file', 'mimes:jpg,jpeg,png,webp', 'max:10240', 'dimensions:max_width=8192,max_height=8192'],
+        'new_images.array' => '画像の枠の指定が正しくありません。ページを読み込み直してください。',
         // 消す画像の ID
-        'delete_images'   => ['nullable', 'array'],
-        'delete_images.*' => ['integer'],
+        'delete_images'    => ['nullable', 'array'],
+        'delete_images.*'  => ['integer'],
     ];
 
     // エラー文。行のある欄は :position（1から数えた番号）で何個目かを出す
