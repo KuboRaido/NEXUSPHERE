@@ -111,6 +111,13 @@ class PortfolioWorkService
 
         Storage::disk('works')->delete($imagesToDelete->pluck('path')->all());
     }
+
+    public function delete(PortfolioWork $work): void
+    {
+            $path = $work->images()->pluck('path')->all();
+            $work->delete();
+            Storage::disk('works')->delete($path);
+    }
     /**
      * 制作物1件分の入力のルール。
      * フォームのキー：title, summary, tech_stack[], url, team_role, why_built, why_tech,
