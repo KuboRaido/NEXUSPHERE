@@ -2,11 +2,10 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\PortfolioSite;
-use App\Models\User;
-use App\Enums\SiteType;
-use App\Services\PortfolioSiteService;
 use DomainException;
+use App\Enums\SiteType;
+use App\Models\PortfolioSite;
+use App\Services\PortfolioSiteService;
 use Illuminate\Http\Request;
 use Illuminate\Validation\Rule;
 
@@ -168,19 +167,6 @@ class PortfolioSiteController extends Controller
         }
 
         return back()->with('status', '公開サイトの内容を保存しました。');
-    }
-
-    public function picture(Request $request, PortfolioSiteService $service)
-    {
-        $site_token = $request->only([]);
-        $site_file = $request->file('new_images', []);
-
-        $techStack = array_values(array_filter($request->input('tech_stack', []), fn ($tech) => ! blank($tech)));
-        $newImages = array_filter($request->file('new_images', []));
-        
-        try{
-            $service->
-        }
     }
 
     // ログイン中のUserの公開siteを取って、なければ404を返す

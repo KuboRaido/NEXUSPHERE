@@ -2,9 +2,12 @@
 
 namespace App\Services;
 
+use DomainException;
+use Throwable;
 use App\Models\PortfolioSite;
 use App\Models\PortfolioWork;
-use DomainException;
+use Illuminate\Support\Arr;
+use Illuminate\Support\Facades\DB;
 use Intervention\Image\Exceptions\DecoderException;
 use Intervention\Image\ImageManager;
 use Illuminate\Support\Str;
@@ -83,6 +86,30 @@ class PortfolioWorkService
             }
             $resultPath[$slot] = $path;
         }
+
+        $fields = Arr::except($validated, ['new_images', 'delete_images']);
+
+        try {
+            DB::transaction(function () use ($site, $work, $fields, $imagesToDelete, $resultPath) {
+                if ($work === null) {
+                    $sortOrder = ($site->works()->max('sort_order') ?? -1) + 1;
+                    $work = $site->works()->create([...$fields, 'sort_order' => $sortOrder]);
+                } else {
+                    $work->update($fields);
+                }
+
+                $work->images()->whereIn('portfolio_work_image_id', $imagesToDelete->pluck('portfolio_work_image_id'))->delete();
+
+                foreach ($resultPath as $slot => $path) {
+                    $work->images()->create(['sort_order' => $slot, 'path' => $path]);
+                }
+            });
+        } catch (Throwable $e) {
+            Storage::disk('works')->delete(array_values($resultPath));
+            throw $e;
+        }
+
+        Storage::disk('works')->delete($imagesToDelete->pluck('path')->all());
     }
     /**
      * 制作物1件分の入力のルール。
