@@ -44,6 +44,15 @@ class PortfolioWorkController extends Controller
 
         return back()->with('status','制作物の保存が完了しました。');
     }
+
+    public function destroy(Request $request, PortfolioWorkService $service, int $workId){
+        $site = $this->ownSite($request);
+        $work = $site->works()->findOrFail($workId);
+
+        $service->delete($work);
+        return back()->with('status','制作物の削除が完了しました。');
+    }
+
     private function ownSite(Request $request){
         return $request->user()->portfolioSite ?? abort(404);
     }

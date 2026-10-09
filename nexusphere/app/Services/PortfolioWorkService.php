@@ -114,9 +114,9 @@ class PortfolioWorkService
 
     public function delete(PortfolioWork $work): void
     {
-            $path = $work->images()->pluck('path')->all();
-            $work->delete();
-            Storage::disk('works')->delete($path);
+        $path = $work->images()->pluck('path')->all();
+        $work->delete();
+        Storage::disk('works')->delete($path);
     }
     /**
      * 制作物1件分の入力のルール。
