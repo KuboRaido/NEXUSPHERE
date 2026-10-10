@@ -214,3 +214,17 @@ body {
 .portfolio-edit .button--secondary:hover { background: var(--surface); }
 .portfolio-edit .button--danger { background: var(--bg); color: var(--error-text); border: 1px solid var(--error-text); }
 .portfolio-edit .button--danger:hover { background: var(--error-bg); }
+
+
+/* ===== 公開ページの色（8色のラジオボタン） ===== */
+.accent-picker { display: flex; flex-wrap: wrap; gap: 8px 16px; }
+.accent-picker__item { display: inline-flex; align-items: center; gap: 6px; }
+.accent-picker__swatch { width: 20px; height: 20px; border-radius: 50%; border: 1px solid var(--border); }
+.accent-picker__swatch--blue   { background: #185FA5; }
+.accent-picker__swatch--teal   { background: #0F6E56; }
+.accent-picker__swatch--green  { background: #3B6D11; }
+.accent-picker__swatch--amber  { background: #854F0B; }
+.accent-picker__swatch--coral  { background: #993C1D; }
+.accent-picker__swatch--pink   { background: #993556; }
+.accent-picker__swatch--purple { background: #534AB7; }
+.accent-picker__swatch--gray   { background: #5F5E5A; }

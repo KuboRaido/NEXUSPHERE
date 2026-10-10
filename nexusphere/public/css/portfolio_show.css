@@ -1,67 +1,348 @@
-/* 色と余白を変数にまとめる。後で色を変えるときはここだけ直せばいい */
+/*
+  公開ページ（案C-2）。決定は 04 決定ログ 2026-10-08「案C-2」、試作は https://claude.ai/artifact/SgeUmRiTYso96PRhEwNqvS
+  クラス名は portfolio__名前。色は .portfolio の data-accent（PortfolioSiteService::ACCENT_COLORS の8色）で切り替える。
+*/
+
+/*
+  色：1つの色相 × 3段階 ＋ 無彩色（10-07 の決定）。
+  無彩色を青みの灰色から、少し温かい生成り色に変えた（参考：Andrew Clay のベージュ・黒・白＋差し色1色）。
+  アクセントはリンクと「企業選びの軸」の帯だけに使う。
+*/
 :root {
-  --text: #1f2328;
-  --muted: #59636e;
-  --accent: #2563eb;
-  --border: #d1d9e0;
-  --bg: #ffffff;
+  color-scheme: light;
+  --text: #1c1b19;
+  --muted: #5c574e;
+  --rule: #1c1b19;      /* セクションの区切り線（本文と同じ濃さ。境目を確実に見せる） */
+  --border: #e2ddd3;
+  --page: #f6f4ef;
+  --card: #fffefb;
+  --accent: #185FA5;
+  --accent-soft: #E6F1FB;
+  --accent-ink: #0C447C;
+
+  --space-1: 8px;
+  --space-2: 16px;
+  --space-3: 24px;
+  --space-4: 32px;
+  --space-6: 48px;
+  --space-8: 64px;
+
+  --fs-small: 0.875rem;   /* 14px */
+  --fs-body: 1rem;        /* 16px */
+  --fs-h3: 1.25rem;       /* 20px */
+  --fs-h2: 1.5625rem;     /* 25px（横見出しの列に収まる大きさ） */
+  --fs-big: 2rem;         /* 32px 連絡先の見出し */
+  --fs-hero: 3.5rem;      /* 56px（スマホ 40px） */
+
+  --header-h: 56px;
+
+  box-sizing: border-box;
+  padding-top: env(safe-area-inset-top, 0px);
+  padding-bottom: env(safe-area-inset-bottom, 0px);
+  scroll-padding-top: calc(var(--header-h) + env(safe-area-inset-top, 0px) + var(--space-2));
+  scroll-behavior: smooth;
 }
+@media (prefers-reduced-motion: reduce) { :root { scroll-behavior: auto; } }
 
-* { box-sizing: border-box; }   /* 幅の計算に padding と border を含める */
+.portfolio[data-accent="blue"]   { --accent:#185FA5; --accent-soft:#E6F1FB; --accent-ink:#0C447C; }
+.portfolio[data-accent="teal"]   { --accent:#0F6E56; --accent-soft:#E1F5EE; --accent-ink:#085041; }
+.portfolio[data-accent="green"]  { --accent:#3B6D11; --accent-soft:#EAF3DE; --accent-ink:#27500A; }
+.portfolio[data-accent="amber"]  { --accent:#854F0B; --accent-soft:#FAEEDA; --accent-ink:#633806; }
+.portfolio[data-accent="coral"]  { --accent:#993C1D; --accent-soft:#FAECE7; --accent-ink:#712B13; }
+.portfolio[data-accent="pink"]   { --accent:#993556; --accent-soft:#FBEAF0; --accent-ink:#72243E; }
+.portfolio[data-accent="purple"] { --accent:#534AB7; --accent-soft:#EEEDFE; --accent-ink:#3C3489; }
+.portfolio[data-accent="gray"]   { --accent:#5F5E5A; --accent-soft:#F1EFE8; --accent-ink:#444441; }
 
+*, *::before, *::after { box-sizing: border-box; }
+html { background: var(--page); }
 body {
   margin: 0;
-  background: var(--bg);
+  background: var(--page);
   color: var(--text);
-  font-family: system-ui, -apple-system, "Hiragino Sans", "Noto Sans JP", sans-serif;
-  line-height: 1.7;
+  font-family: -apple-system, BlinkMacSystemFont, "Hiragino Sans", "Hiragino Kaku Gothic ProN",
+               "Yu Gothic UI", "Yu Gothic", Meiryo, "Noto Sans JP", "Noto Sans CJK JP", sans-serif;
+  font-size: var(--fs-body);
+  line-height: 1.8;
 }
 
-/* 1カラム：中央寄せで、横幅が広すぎて読みにくくならないようにする */
-.portfolio {
-  max-width: 640px;
-  margin: 0 auto;
-  padding: 48px 20px;
-}
+.portfolio__inner { max-width: 1120px; margin: 0 auto; padding: 0 var(--space-3); }
 
-.portfolio__name {
-  margin: 0 0 16px;
-  font-size: 1.75rem;
+.portfolio__skip {
+  position: absolute; left: var(--space-2); top: -100px; z-index: 30;
+  padding: var(--space-1) var(--space-2); background: var(--card); color: var(--accent-ink);
 }
+.portfolio__skip:focus { top: calc(env(safe-area-inset-top, 0px) + var(--space-1)); }
+a:focus-visible, summary:focus-visible { outline: 3px solid var(--accent); outline-offset: 2px; border-radius: 2px; }
 
-/* ② 自己紹介の改行を残す。pre-wrap は改行と空白をそのまま出し、端では折り返す */
-.portfolio__bio {
-  margin: 0 0 32px;
-  white-space: pre-wrap;
-  overflow-wrap: anywhere;   /* 長い英数字の連続でも、はみ出さずに折り返す */
+/* ---- ヘッダー：左に表示名、真ん中にナビ、右に「連絡先」（参考記事：行動の入口をヘッダーとフッターの両方に置く） ---- */
+.portfolio__topbar {
+  position: sticky; top: env(safe-area-inset-top, 0px); z-index: 20;
+  background: var(--page);
+  border-bottom: 1px solid var(--border);
 }
-
-/* リンクはボタン状に縦に並べる。スマホで指で押しやすい大きさにする */
-.portfolio__links {
-  list-style: none;
-  margin: 0;
-  padding: 0;
-  display: flex;
-  flex-direction: column;
-  gap: 12px;
+.portfolio__topbar .portfolio__inner {
+  min-height: var(--header-h);
+  display: flex; align-items: center; gap: var(--space-3);
 }
+.portfolio__brand {
+  flex: none; font-weight: 700; line-height: 1.4; color: var(--text); text-decoration: none;
+}
+.portfolio__nav { margin-left: auto; min-width: 0; }
+.portfolio__nav ul { display: flex; gap: var(--space-3); margin: 0; padding: 0; list-style: none; }
+.portfolio__nav a {
+  display: block; padding: var(--space-1) 0;
+  color: var(--muted); font-size: var(--fs-small); line-height: 1.5;
+  text-decoration: none; white-space: nowrap;
+  border-bottom: 2px solid transparent;
+}
+.portfolio__nav a:hover { color: var(--text); border-bottom-color: var(--text); }
+.portfolio__contact-link {
+  flex: none;
+  padding: var(--space-1) var(--space-2);
+  border-radius: 4px;
+  background: var(--text); color: var(--page);
+  font-size: var(--fs-small); font-weight: 700; line-height: 1.5; text-decoration: none;
+}
+.portfolio__contact-link:hover { background: var(--accent-ink); }
 
-.portfolio__link {
-  display: block;
-  padding: 14px 16px;
+/* ---- ヒーロー：名前と自己紹介とリンクだけ。作品は制作物のセクションで見せる ---- */
+.portfolio__hero { padding: var(--space-8) 0; }
+.portfolio__affiliation { margin: 0 0 var(--space-2); color: var(--muted); font-size: var(--fs-small); line-height: 1.6; }
+.portfolio__name { margin: 0; font-size: var(--fs-hero); line-height: 1.2; font-weight: 700; letter-spacing: 0.02em; }
+.portfolio__bio { max-width: 40em; margin: var(--space-3) 0 0; white-space: pre-wrap; }
+
+.portfolio__links { display: flex; flex-wrap: wrap; gap: var(--space-2); margin: var(--space-4) 0 0; padding: 0; list-style: none; }
+.portfolio__links a {
+  display: inline-block;
+  padding: var(--space-1) var(--space-3);
+  border-radius: 4px;
+  background: var(--accent); color: #ffffff;
+  font-weight: 700; line-height: 2; text-decoration: none;
+}
+.portfolio__links a:hover { background: var(--accent-ink); }
+
+/* ---- セクション：上に濃い線、PC は左の列に見出し・右に中身（横見出し）
+   見出しが必ず同じ列に縦に並ぶので、左端を目で追えばどこに何があるか分かる ---- */
+.portfolio__section { padding: var(--space-8) 0; }
+.portfolio__section > .portfolio__inner {
+  display: grid;
+  grid-template-columns: 240px minmax(0, 1fr);
+  gap: var(--space-4);
+}
+.portfolio__section > .portfolio__inner::before {
+  content: "";
+  grid-column: 1 / -1;
+  height: 1px;
+  background: var(--rule);
+  margin-bottom: var(--space-1);
+}
+.portfolio__heading { margin: 0; font-size: var(--fs-h2); line-height: 1.3; font-weight: 700; }
+.portfolio__lead { margin: var(--space-1) 0 0; color: var(--muted); font-size: var(--fs-small); line-height: 1.7; }
+.portfolio__subheading { margin: 0 0 var(--space-2); font-size: var(--fs-h3); line-height: 1.4; font-weight: 700; }
+.portfolio__text { max-width: 40em; margin: 0; white-space: pre-wrap; }
+
+.portfolio__tags { display: flex; flex-wrap: wrap; gap: var(--space-1); margin: 0; padding: 0; list-style: none; }
+.portfolio__tags li {
+  padding: 0 var(--space-1);
   border: 1px solid var(--border);
-  border-radius: 8px;
-  color: var(--accent);
-  text-decoration: none;
-  overflow-wrap: anywhere;   /* label が空だと URL がそのまま出るので、長いURLでも崩れないように */
+  border-radius: 4px;
+  background: var(--card);
+  font-size: var(--fs-small);
+  line-height: 1.9;
+}
+.portfolio__tags small { margin-left: 4px; color: var(--muted); }
+
+/* ---- 制作物：一番上（1件目）は代表作として横いっぱい・画像を大きく。2件目以降は2列。
+   全体が偶数件のときは最後の1件も横いっぱいにして穴を空けない（:last-child:nth-child(even) ＝ 全体が偶数件） ---- */
+.portfolio__works { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: var(--space-4) var(--space-3); }
+.portfolio__work { display: flex; flex-direction: column; gap: var(--space-2); min-width: 0; }
+.portfolio__work:last-child:nth-child(even) { grid-column: 1 / -1; }
+.portfolio__work:first-child {
+  grid-column: 1 / -1;
+  display: grid;
+  grid-template-columns: minmax(0, 1.4fr) minmax(0, 1fr);
+  gap: var(--space-2) var(--space-4);
+  align-items: start;
+  padding-bottom: var(--space-4);
+  border-bottom: 1px solid var(--border);
+}
+.portfolio__work:first-child .portfolio__work-image { grid-row: 1 / span 7; aspect-ratio: 4 / 3; }
+.portfolio__work:first-child .portfolio__work-title { font-size: var(--fs-h2); line-height: 1.3; }
+.portfolio__featured-label {
+  justify-self: start;
+  padding: 0 var(--space-1);
+  border-radius: 4px;
+  background: var(--accent-soft);
+  color: var(--accent-ink);
+  font-size: var(--fs-small);
+  font-weight: 700;
+  line-height: 1.9;
+}
+.portfolio__work-image {
+  aspect-ratio: 16 / 10;
+  border-radius: 6px;
+  background: #e9e5dc;
+  color: var(--muted);
+  display: flex; align-items: center; justify-content: center;
+  font-size: var(--fs-small);
+}
+.portfolio__work:last-child:nth-child(even) .portfolio__work-image { aspect-ratio: 21 / 9; }
+.portfolio__work-title { margin: 0; font-size: var(--fs-h3); line-height: 1.4; font-weight: 700; }
+.portfolio__work-desc { margin: 0; color: var(--muted); }
+.portfolio__work-link {
+  justify-self: start; align-self: flex-start;
+  color: var(--accent-ink); font-weight: 700;
+  text-decoration: underline; text-underline-offset: 3px; overflow-wrap: anywhere;
+}
+.portfolio__work-link:hover { color: var(--accent); }
+
+.portfolio__work-more { border-top: 1px solid var(--border); padding-top: var(--space-2); }
+.portfolio__work-more summary {
+  cursor: pointer; color: var(--text); font-size: var(--fs-small); font-weight: 700;
+  list-style: none; display: flex; align-items: center; gap: var(--space-1);
+}
+.portfolio__work-more summary::-webkit-details-marker { display: none; }
+.portfolio__work-more summary::before {
+  content: ""; width: 8px; height: 8px;
+  border-right: 2px solid currentColor; border-bottom: 2px solid currentColor;
+  transform: rotate(-45deg); transition: transform 0.15s;
+}
+.portfolio__work-more[open] summary::before { transform: rotate(45deg); }
+@media (prefers-reduced-motion: reduce) { .portfolio__work-more summary::before { transition: none; } }
+.portfolio__work-detail { margin: var(--space-2) 0 0; display: grid; gap: var(--space-2); }
+.portfolio__work-detail dt { font-size: var(--fs-small); font-weight: 700; color: var(--muted); line-height: 1.6; }
+.portfolio__work-detail dd { margin: 0; white-space: pre-wrap; }
+
+/* ---- 人生の道筋：縦のタイムライン ---- */
+.portfolio__story { margin: 0; padding: 0; list-style: none; display: grid; gap: var(--space-3); max-width: 40em; }
+.portfolio__story li { position: relative; padding-left: var(--space-4); }
+.portfolio__story li::before {
+  content: ""; position: absolute; left: 5px; top: 1.6em; bottom: calc(-1 * var(--space-3));
+  width: 2px; background: var(--border);
+}
+.portfolio__story li:last-child::before { content: none; }
+.portfolio__story time {
+  display: flex; align-items: center; gap: var(--space-2);
+  margin-left: calc(-1 * var(--space-4));
+  font-size: var(--fs-small); font-weight: 700; color: var(--muted);
+}
+.portfolio__story time::before {
+  content: ""; flex: none; width: 12px; height: 12px; border-radius: 50%; background: var(--text);
+}
+.portfolio__story p { margin: 0; }
+
+/* ---- 企業選びの軸：ページで1か所だけの濃い色の帯（参考：Ine Agresta の大きな一言の帯）。文字は本文の大きさ（最大500文字） ---- */
+.portfolio__section--band { background: var(--accent-ink); color: #ffffff; }
+.portfolio__section--band > .portfolio__inner::before { background: rgba(255, 255, 255, 0.5); }
+.portfolio__section--band .portfolio__lead { color: rgba(255, 255, 255, 0.82); }
+.portfolio__section--band .portfolio__text { font-size: var(--fs-h3); line-height: 1.8; }
+
+/* ---- 経歴と活動：表の形 ---- */
+.portfolio__careers { margin: 0; padding: 0; list-style: none; max-width: 48em; }
+.portfolio__careers li {
+  display: grid; grid-template-columns: 9em minmax(0, 1fr); gap: var(--space-3);
+  padding: var(--space-2) 0; border-bottom: 1px solid var(--border);
+}
+.portfolio__careers li:first-child { padding-top: 0; }
+.portfolio__careers time { color: var(--muted); font-size: var(--fs-small); font-weight: 700; line-height: 1.8; padding-top: 1px; }
+.portfolio__careers p { margin: 0; }
+
+/* ---- スキル・資格・受賞歴：箱に入れず、3列に並べる ---- */
+.portfolio__columns { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: var(--space-4); }
+.portfolio__items { margin: 0; padding: 0; list-style: none; display: grid; gap: var(--space-2); }
+.portfolio__item-name { margin: 0; font-weight: 700; line-height: 1.6; }
+.portfolio__item-meta { margin: 0; font-size: var(--fs-small); color: var(--muted); line-height: 1.6; }
+.portfolio__item-desc { margin: 0; }
+
+.portfolio__others { display: grid; gap: var(--space-4); max-width: 40em; }
+
+/* ---- 連絡先（フッター）：最後まで読んだ人がそのまま連絡できる ---- */
+.portfolio__footer { padding: var(--space-8) 0 var(--space-4); }
+.portfolio__footer .portfolio__inner::before {
+  content: ""; display: block; height: 1px; background: var(--rule); margin-bottom: var(--space-6);
+}
+.portfolio__footer-title { margin: 0; font-size: var(--fs-big); line-height: 1.25; font-weight: 700; }
+.portfolio__footer .portfolio__links { margin: var(--space-3) 0 var(--space-8); }
+.portfolio__credit { margin: 0; font-size: var(--fs-small); color: var(--muted); }
+
+/* ---- タブレット以下：横見出しをやめて縦に積む ---- */
+@media (max-width: 900px) {
+  .portfolio__section > .portfolio__inner { grid-template-columns: minmax(0, 1fr); gap: var(--space-3); }
+  .portfolio__section > .portfolio__inner::before { margin-bottom: 0; }
+  .portfolio__work:first-child { display: flex; }
+  .portfolio__work:first-child .portfolio__work-image { aspect-ratio: 16 / 10; }
+  .portfolio__columns { grid-template-columns: minmax(0, 1fr); gap: var(--space-4); }
 }
 
-.portfolio__link:hover { background: #f6f8fa; }
+/* ---- スマホ：ヘッダーは2段（上に表示名と連絡先、下に横にスクロールするナビ） ---- */
+@media (max-width: 600px) {
+  :root { --header-h: 100px; --fs-hero: 2.5rem; }
+  .portfolio__inner { padding: 0 var(--space-2); }
+  .portfolio__topbar .portfolio__inner {
+    display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 0;
+    padding: var(--space-1) 0 0;
+  }
+  .portfolio__brand { grid-row: 1; padding: 0 var(--space-2); align-self: center; }
+  .portfolio__contact-link { grid-row: 1; grid-column: 2; margin-right: var(--space-2); }
+  .portfolio__nav {
+    grid-row: 2; grid-column: 1 / -1; margin: 0;
+    overflow-x: auto; scrollbar-width: none; -webkit-overflow-scrolling: touch;
+  }
+  .portfolio__nav::-webkit-scrollbar { display: none; }
+  .portfolio__nav ul { padding: var(--space-1) var(--space-2) 0; width: max-content; gap: var(--space-3); }
+  .portfolio__hero { padding: var(--space-4) 0 var(--space-6); }
+  .portfolio__section { padding: var(--space-6) 0; }
+  .portfolio__works { grid-template-columns: minmax(0, 1fr); }
+  .portfolio__work:last-child:nth-child(even) .portfolio__work-image { aspect-ratio: 16 / 10; }
+  .portfolio__careers li { grid-template-columns: minmax(0, 1fr); gap: 0; }
+}
 
-/* ④ 本人だけに出る編集ボタン。リンクと区別するため控えめにする */
+
+/* ===== 試作から足した所（実際のデータ用） ===== */
+
+/* 制作物の画像：学生のスクショは縦長も横長もあるので、切らずに枠の中に収める（contain） */
+.portfolio__work-image { overflow: hidden; }
+.portfolio__work-image img { width: 100%; height: 100%; object-fit: contain; display: block; }
+
+/* 画像の無い代表作は、横並びにせず縦に積む */
+.portfolio__work--no-image:first-child { display: flex; }
+
+/* 「詳しく見る」の中の2枚目以降の画像 */
+.portfolio__gallery {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+  gap: var(--space-1);
+  margin: var(--space-2) 0 0;
+  padding: 0;
+  list-style: none;
+}
+.portfolio__gallery img {
+  width: 100%;
+  aspect-ratio: 4 / 3;
+  object-fit: contain;
+  background: #e9e5dc;
+  border-radius: 4px;
+  display: block;
+}
+
+/* スキル・資格・受賞歴：出す列の数が学生ごとに違う（1〜3）ので、ある分だけ並べる */
+.portfolio__columns { grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); }
+@media (max-width: 900px) { .portfolio__columns { grid-template-columns: minmax(0, 1fr); } }
+
+/* 本人だけに見える「設定を編集する」 */
 .portfolio__edit {
   display: inline-block;
-  margin-top: 40px;
-  color: var(--muted);
-  font-size: 0.875rem;
+  margin-bottom: var(--space-3);
+  font-size: var(--fs-small);
+  color: var(--accent-ink);
+}
+
+/* 印刷・PDF 保存：固定ヘッダーとナビを出さず、帯の色を白黒にする（社内で回覧されるとき用） */
+@media print {
+  :root { padding: 0; }
+  .portfolio__topbar, .portfolio__skip, .portfolio__edit { display: none; }
+  .portfolio__section--band { background: none; color: var(--text); }
+  .portfolio__section--band .portfolio__lead { color: var(--muted); }
+  .portfolio__section, .portfolio__hero { padding: var(--space-4) 0; }
+  .portfolio__work, .portfolio__careers li { break-inside: avoid; }
 }

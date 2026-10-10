@@ -24,7 +24,7 @@ class PortfolioSiteController extends Controller
 
         // テンプレート方式：ページを表示
         return response()
-            ->view('portfolio.show', ['site' => $site])
+            ->view('portfolio.show', ['site' => $site, 'works' => $site->works()->with('images')->get()])
             ->header('X-Robots-Tag', 'noindex');
     }
 

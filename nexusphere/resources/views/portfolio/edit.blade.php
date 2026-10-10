@@ -330,12 +330,33 @@
                     </fieldset>
 
                     <fieldset>
+                        <legend>制作物</legend>
+                        {{-- 制作物の中身は、このフォームの下の「制作物（1件ずつ保存）」で入力する。ここは公開ページに出すかだけ --}}
+                        <input type="hidden" name="visibility[works]" value="0">
+                        <label><input type="checkbox" name="visibility[works]" value="1" @checked(filter_var(old('visibility.works', $site->visibility['works'] ?? true), FILTER_VALIDATE_BOOLEAN))>制作物を公開する</label>
+                    </fieldset>
+
+                    <fieldset>
+                        <legend>公開ページの色</legend>
+                        @php $currentAccent = old('accent_color', $site->accent_color ?? 'blue'); @endphp
+                        <div class="accent-picker">
+                            @foreach (\App\Services\PortfolioSiteService::ACCENT_COLORS as $color)
+                                <label class="accent-picker__item">
+                                    <input type="radio" name="accent_color" value="{{ $color }}" @checked($currentAccent === $color)>
+                                    <span class="accent-picker__swatch accent-picker__swatch--{{ $color }}"></span>
+                                    {{ ['blue' => '青', 'teal' => '青緑', 'green' => '緑', 'amber' => '琥珀', 'coral' => '珊瑚', 'pink' => '桃', 'purple' => '紫', 'gray' => '灰'][$color] }}
+                                </label>
+                            @endforeach
+                        </div>
+                    </fieldset>
+
+                    <fieldset>
                         <legend>リンク（5件まで。URLが空の行は保存されません）</legend>
                         <input type="hidden" name="visibility[links]" value="0">
                         <label><input type="checkbox" name="visibility[links]" value="1" @checked(filter_var(old('visibility.links', $site->visibility['links'] ?? true), FILTER_VALIDATE_BOOLEAN))>公開する</label>
                         @for ($i = 0; $i < 5; $i++)
                             <div class="link-row">
-                                <input type="text" name="links[{{ $i }}][label]" placeholder="表示名（例：GitHub）"
+                                <input type="text" name="links[{{ $i }}][label]" maxlength="30" placeholder="表示名（例：GitHub）"
                                     value="{{ old("links.$i.label", $site->links[$i]['label'] ?? '') }}">
                                 <input type="url" name="links[{{ $i }}][url]" placeholder="https://"
                                     value="{{ old("links.$i.url", $site->links[$i]['url'] ?? '') }}">
