@@ -128,7 +128,9 @@ class PortfolioSiteController extends Controller
             'needsAgreement' => $needsAgreement,
             'defaults'       => $defaults,
             'ymLists'        => $ymLists,
-            'customSections' => $customSections
+            'customSections' => $customSections,
+            // 制作物（sort_order の順）と画像を一緒に読み込む。画像を1件ずつ読みに行かないように with を使う
+            'works'          => $site ? $site->works()->with('images')->get() : collect(),
         ]);
     }
 

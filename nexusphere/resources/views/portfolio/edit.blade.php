@@ -346,6 +346,8 @@
                     <button type="submit">内容を保存する</button>
                 </form>
             </section>
+
+            @include('portfolio.partials.works', ['works' => $works])
         @endif
     @endif
 </main>
