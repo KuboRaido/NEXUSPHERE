@@ -1,0 +1,67 @@
+/* 色と余白を変数にまとめる。後で色を変えるときはここだけ直せばいい */
+:root {
+  --text: #1f2328;
+  --muted: #59636e;
+  --accent: #2563eb;
+  --border: #d1d9e0;
+  --bg: #ffffff;
+}
+
+* { box-sizing: border-box; }   /* 幅の計算に padding と border を含める */
+
+body {
+  margin: 0;
+  background: var(--bg);
+  color: var(--text);
+  font-family: system-ui, -apple-system, "Hiragino Sans", "Noto Sans JP", sans-serif;
+  line-height: 1.7;
+}
+
+/* 1カラム：中央寄せで、横幅が広すぎて読みにくくならないようにする */
+.portfolio {
+  max-width: 640px;
+  margin: 0 auto;
+  padding: 48px 20px;
+}
+
+.portfolio__name {
+  margin: 0 0 16px;
+  font-size: 1.75rem;
+}
+
+/* ② 自己紹介の改行を残す。pre-wrap は改行と空白をそのまま出し、端では折り返す */
+.portfolio__bio {
+  margin: 0 0 32px;
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;   /* 長い英数字の連続でも、はみ出さずに折り返す */
+}
+
+/* リンクはボタン状に縦に並べる。スマホで指で押しやすい大きさにする */
+.portfolio__links {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.portfolio__link {
+  display: block;
+  padding: 14px 16px;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  color: var(--accent);
+  text-decoration: none;
+  overflow-wrap: anywhere;   /* label が空だと URL がそのまま出るので、長いURLでも崩れないように */
+}
+
+.portfolio__link:hover { background: #f6f8fa; }
+
+/* ④ 本人だけに出る編集ボタン。リンクと区別するため控えめにする */
+.portfolio__edit {
+  display: inline-block;
+  margin-top: 40px;
+  color: var(--muted);
+  font-size: 0.875rem;
+}

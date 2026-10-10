@@ -23,5 +23,4 @@ Route::middleware('auth:sanctum')->prefix('v1')->group(function(){
     Route::post('group/{group}/dm',[DmController::class,'read']);
     Route::post('dm/group',[DmController::class,'dmGroupJoin'])->name('groupJoin');
     Route::post('/circle/{circle}/edit/update',[CircleController::class,'update'])->name('circle-update');//プロフィール更新処理
-    Route::post('/profile/edit/update',[ProfileController::class,'update'])->name('profile-update');//プロフィール更新処理
 });

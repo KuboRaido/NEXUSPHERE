@@ -1,0 +1,63 @@
+services:
+  app-nexus-dev:
+    container_name: app-nexus-dev
+    build: ./docker/php
+    volumes:
+      - ./:/var/www
+      - ./docker/php/php.ini:/usr/local/etc/php/php.ini
+      - ./log:/var/log
+
+  nginx-nexus-dev:
+    container_name: nginx-nexus-dev
+    image: nginx
+    ports:
+      - "0.0.0.0:8882:80"
+    volumes:
+      - ./:/var/www
+      - ./docker/nginx/default.conf:/etc/nginx/conf.d/default.conf
+
+  # .envファイルの「DB_HOST」とサービス名を合わせる
+  db-nexus-dev:
+    image: mysql:latest
+    container_name: db-nexus-dev
+    environment:
+      # ローカル開発環境専用のパスワードです。本番環境では使用しないでください。
+      MYSQL_ROOT_PASSWORD: root
+      # .envファイルの「DB_DATABASE」とMYSQL_DATABASEを合わせる
+      #MYSQL_DATABASE: sample_db
+      TZ: "Asia/Tokyo"
+      # 文字コード指定
+    command: mysqld --character-set-server=utf8mb4 --collation-server=utf8mb4_unicode_ci
+    volumes:
+      - ./docker/db/data:/var/lib/mysql
+      - ./docker/db/my.cnf:/etc/mysql/conf.d/my.cnf
+      - ./docker/db/sql:/docker-entrypoint-initdb.d
+    ports:
+      - "127.0.0.1:8308:3306"
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "127.0.0.1", "-uroot", "-proot"]
+      interval: 20s
+      timeout: 10s
+      retries: 10
+      start_period: 60s #DB起動の猶予
+
+  mail-nexus-dev:
+    container_name: mail-nexus-dev
+    build:  ./docker/php  #app-nexusと同じDockerfileを使う
+    working_dir: /var/www/nexusphere
+    volumes:
+      - ./:/var/www   #app-nexusと同じパスに合わせないと同じファイルを使用できない
+      - ./docker/php/php.ini:/usr/local/etc/php/php.ini
+      - ./log:/var/log
+    depends_on:
+      db-nexus-dev:  #自分のDBサービス名に合わせる
+        condition: service_healthy
+      app-nexus-dev:
+        condition: service_started
+    restart: on-failure #接続失敗時に自動リトライ
+    #キューを監視して実行するコマンド
+    command: php artisan queue:work --verbose --tries=3 --timeout=90
+networks:
+  default:
+    name: nexusphere_default
+    external: true

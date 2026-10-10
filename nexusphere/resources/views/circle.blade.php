@@ -21,11 +21,8 @@
             <h1 id="site-title">Nexusphere</h1>
         </div>
     </header>
-    
+
       <div class=circle-container>
-        <button id="menuBtn" class= "hamburger">
-            <i class="fa-solid fa-bars"></i>
-        </button>
       <!-- 検索ボックス -->
         <div class="search-container">
           <input type="text" id="search-input" placeholder="サークルを検索..." />
@@ -51,7 +48,7 @@
         <!-- サークル一覧 -->
         <ul id="circle-list" class="circle-list" data-club-url-template="{{ url('/circle/__ID__') }}?"></ul>
    </div>
-    <div id="sidebar" class="footer-nav">
+    <div id="sidebar" class="footer-nav active">
         <a href="/home" class="tab {{ request()->is('home') ? 'active' : '' }}"><i class="fa-solid fa-house"></i><span>ホーム</span></a>
         <a href="/post" class="tab {{ request()->is('post') ? 'active' : '' }}"><i class="fas fa-paper-plane"></i><span>投稿</span></a>
         <a href="/dmlist" class="tab {{ request()->is('dmlist') ? 'active' : '' }}"><i class="fa-solid fa-comment"></i><span>DM</span></a>
