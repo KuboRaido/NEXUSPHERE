@@ -6,7 +6,6 @@ https://nexupshere.top
 メールアドレス　a@sba.ac.jp
 パスワード　　　00000000
 ### 検証環境URL
-### デモ環境URL
 https://dev.nexupshere.top
 ログインアカウント
 メールアドレス　a@sba.ac.jp
