@@ -316,7 +316,13 @@ docker compose exec -w /var/www/nexusphere app-nexus php artisan migrate --seed
 docker compose exec -w /var/www/nexusphere app-nexus php artisan storage:link
 ```
 起動後は http://127.0.0.1:8881 で開けます。
-
+## 7. ログイン方法
+```bash
+php artisan migrate
+php artisan db:seed
+```
+ログインメールアドレス： a@sba.ac.jp
+ログインパスワード　　： 00000000
 ## 7. 今後の予定
 * **公開サイト**: Controller・画面・テストを実装し、本番で公開。
 * **メール認証の強化**: 確認リンクを署名付きURLにし、未認証ユーザーのログインを拒否。
