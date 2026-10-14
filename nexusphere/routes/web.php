@@ -7,6 +7,10 @@ use App\Http\Controllers\DmController;
 use App\Http\Controllers\PrcController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\CircleController;
+use App\Http\Controllers\PortfolioSiteController;
+use App\Http\Controllers\PortfolioWorkController;
+
+Route::get('/p/{token}',[PortfolioSiteController::class,'show'])->middleware('throttle:60,1')->name('portfolio.show');
 
 Route::middleware('guest')->group(function(){
     Route::get('/newlogin',[UserController::class,'newLoginForm'])->name('newLogin');
@@ -26,7 +30,18 @@ Route::middleware('auth')->group(function () {
     Route::get('/profile/{user_id}',[ProfileController::class,'profileOther'])->name('profile.other'); //他人のプロフィール
     Route::post('/profile/logout',[LoginController::class,'logout'])->name('logout');
     Route::post('/profile',[ProfileController::class,'post'])->name('profile.post'); 
-    Route::put('/profile', [ProfileController::class, 'update'])->name('profile.update');
+    Route::put('/profile', [ProfileController::class, 'custom'])->name('profile.custom');
+    Route::post('/profile/edit',[ProfileController::class,'update'])->name('profile-update');//プロフィール更新処理
+
+    Route::post('/portfolio-site/agree',[PortfolioSiteController::class,'agree'])->name('portfolio.agree');
+    Route::put('/portfolio-site/type',[PortfolioSiteController::class,'changeType'])->name('portfolio.changeType');
+    Route::post('/portfolio-site/publish',[PortfolioSiteController::class,'publish'])->name('portfolio.publish');
+    Route::post('/portfolio-site/unpublish',[PortfolioSiteController::class,'unpublish'])->name('portfolio.unpublish');
+    Route::get('/portfolio-site', [PortfolioSiteController::class,'edit'])->name('portfolio.edit');
+    Route::put('/portfolio-site/template',[PortfolioSiteController::class,'updateTemplate'])->name('portfolio.updateTemplate');
+    Route::post('/portfolio-site/works', [PortfolioWorkController::class, 'store'])->name('portfolio.works.store');
+    Route::put('/portfolio-site/works/{workId}', [PortfolioWorkController::class, 'update'])->whereNumber('workId')->name('portfolio.works.update');
+    Route::delete('/portfolio-site/works/{workId}', [PortfolioWorkController::class, 'destroy'])->whereNumber('workId')->name('portfolio.works.destroy');
 
     Route::get('/home',[PrcController::class,'index'])->name('home');
 

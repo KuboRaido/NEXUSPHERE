@@ -1,0 +1,175 @@
+
+:root {
+  --text: #1f2328;
+  --muted: #59636e;
+  --accent: #2563eb;
+  --accent-hover: #1d4ed8;
+  --border: #d1d9e0;
+  --bg: #ffffff;
+  --surface: #f6f8fa;
+  --success-bg: #ecfdf3;
+  --success-text: #146c43;
+  --error-bg: #fef2f2;
+  --error-text: #b42318;
+}
+
+* { box-sizing: border-box; }
+
+body {
+  margin: 0;
+  background: var(--bg);
+  color: var(--text);
+  font-family: system-ui, -apple-system, "Hiragino Sans", "Noto Sans JP", sans-serif;
+  line-height: 1.7;
+}
+
+/* 1カラム。show と同じ幅にして、設定と公開ページで印象を揃える */
+.portfolio-edit {
+  max-width: 640px;
+  margin: 0 auto;
+  padding: 48px 20px;
+}
+
+.portfolio-edit h1 {
+  margin: 0 0 24px;
+  font-size: 1.75rem;
+}
+
+.portfolio-edit h2 {
+  margin: 0 0 12px;
+  font-size: 1.125rem;
+}
+
+/* 各ブロック（公開URL・作り方・ページの内容）を線で区切る */
+.portfolio-edit section {
+  padding: 24px 0;
+  border-top: 1px solid var(--border);
+}
+
+.portfolio-edit section p {
+  margin: 0 0 12px;
+}
+
+/* ===== 成功・エラーのメッセージ ===== */
+.message {
+  margin: 0 0 24px;
+  padding: 12px 16px;
+  border-radius: 8px;
+}
+
+.message--success {
+  background: var(--success-bg);
+  color: var(--success-text);
+}
+
+.message--error {
+  background: var(--error-bg);
+  color: var(--error-text);
+  list-style: none;              /* <ul> の黒丸を消す */
+}
+
+.message--error li + li { margin-top: 4px; }
+
+/* ===== フォーム ===== */
+.portfolio-edit form {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+/* 「ポートフォリオのURL」のように、文字の下に入力欄を置くラベル */
+.portfolio-edit label {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  font-size: 0.9375rem;
+}
+
+/* ラジオとチェックボックスは、入力と文字を横に並べる */
+.portfolio-edit label:has(> input[type="radio"]),
+.portfolio-edit label:has(> input[type="checkbox"]) {
+  flex-direction: row;
+  align-items: center;
+  gap: 8px;
+  cursor: pointer;
+}
+
+.portfolio-edit fieldset {
+  margin: 0;
+  padding: 0;
+  border: none;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.portfolio-edit legend {
+  margin-bottom: 8px;
+  padding: 0;
+  font-weight: 600;
+}
+
+.portfolio-edit input[type="text"],
+.portfolio-edit input[type="url"],
+.portfolio-edit textarea {
+  width: 100%;
+  padding: 10px 12px;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  background: var(--bg);
+  color: var(--text);
+  font: inherit;                 /* 入力欄だけ別のフォントになるのを防ぐ */
+}
+
+.portfolio-edit textarea {
+  resize: vertical;              /* 横には広げさせない */
+  min-height: 9rem;
+}
+
+.portfolio-edit input[type="radio"],
+.portfolio-edit input[type="checkbox"] {
+  width: 18px;
+  height: 18px;
+  margin: 0;
+  accent-color: var(--accent);   /* チェックの色をアクセント色にする */
+}
+
+/* キーボードで移動したときだけ、どこにいるかを太い枠で示す */
+.portfolio-edit input:focus-visible,
+.portfolio-edit textarea:focus-visible,
+.portfolio-edit button:focus-visible,
+.portfolio-edit a:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+}
+
+/* リンク5行：表示名とURLを横に並べる。スマホでは縦に積む */
+.link-row {
+  display: grid;
+  grid-template-columns: 1fr 2fr;
+  gap: 8px;
+}
+
+@media (max-width: 480px) {
+  .link-row { grid-template-columns: 1fr; }
+}
+
+/* ===== ボタンとリンク ===== */
+.portfolio-edit button {
+  align-self: flex-start;        /* 横幅いっぱいに伸ばさない */
+  padding: 10px 20px;
+  border: none;
+  border-radius: 8px;
+  background: var(--accent);
+  color: #fff;
+  font: inherit;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.portfolio-edit button:hover { background: var(--accent-hover); }
+
+.portfolio-edit a {
+  color: var(--accent);
+  overflow-wrap: anywhere;       /* 長いURLでも横にはみ出さない */
+}
