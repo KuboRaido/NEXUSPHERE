@@ -12,11 +12,11 @@ NEXUSPHERE（ネクスフィア）は、学内の人を属性（学年・学科�
 
 ## 3. 技術スタック
 | カテゴリ | 技術選定 |
-| :--- | :--- | :--- |
+| :--- | :--- |
 | バックエンド| PHP / Laravel |
 | フロントエンド | JavaScript / CSS / Alpine.js|
 | 画像処理 | Intervention Image / GD / exif |
-| DB| MySQL |
+| DB | MySQL |
 | インフラ | Docker / Docker Compose |
 | サーバー | ConoHa VPS |
 | CI/CD | GithubActions |
