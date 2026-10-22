@@ -11,14 +11,15 @@ NEXUSPHERE（ネクスフィア）は、学内の人を属性（学年・学科�
 * **現在の目標**: 企画・DB設計・コンテナ化・本番運用までを一人で回しながら、導線として機能するかを限定公開で検証する。
 
 ## 3. 技術スタック
-| カテゴリ | 技術選定 | 選定理由 |
+| カテゴリ | 技術選定 |
 | :--- | :--- | :--- |
-| **Backend** | PHP 8.3 / Laravel 12 | Service層・Enum・キューなど、フレームワークの機能で堅牢に書ける。 |
-| **Frontend** | JavaScript / CSS | 画面ごとのCSSと素のJavaScriptで構成。 |
-| **Database** | MySQL | 主要テーブルは外部キー制約とインデックスでデータ整合性を担保（初期に作った一部テーブルは制約なし）。 |
-| **Test** | Pest | 既存機能と公開サイトのServiceをテストで保護。 |
-| **Infrastructure** | Docker / Docker Compose | 開発環境と本番環境を同じ構成で再現。 |
-| **Server** | ConoHa VPS | Docker・php.ini・DNSを自分で制御でき、月¥880固定で運用できるため。 |
+| バックエンド| PHP / Laravel |
+| フロントエンド | JavaScript / CSS / Alpine.js|
+| 画像処理 | Intervention Image / GD / exif |
+| DB| MySQL |
+| インフラ | Docker / Docker Compose |
+| サーバー | ConoHa VPS |
+| CI/CD | GithubActions |
 
 ## 4. 機能
 ### 認証・プロフィール
