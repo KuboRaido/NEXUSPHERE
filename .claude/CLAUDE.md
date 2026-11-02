@@ -18,8 +18,8 @@
 - 開発環境: WSL2 Ubuntu 22.04 上の `~/NEXUSPHERE`
 
 ## 環境
-- PHP 8.3（Dockerfile）/ Laravel 12 / MySQL（mysql:latest）/ TailwindCSS / 素のJavaScript
-- コンテナ: `app-nexus`（PHP-FPM）, `nginx-nexus`, `db-nexus`, `mail-nexus`（キューワーカー。`queue:work` が常駐）
+- PHP 8.3（Dockerfile）/ Laravel 12 / MySQL（mysql:latest）/ 素のJavaScript
+- コンテナ: `app-nexus`（PHP-FPM）, `nginx-nexus`, `db-nexus`
 - ローカルURL: http://127.0.0.1:8881
 
 ## よく使うコマンド（リポジトリルートで実行）
@@ -32,7 +32,6 @@ docker compose exec -w /var/www/nexusphere app-nexus npm run build
 - nginx-nexus の再起動は `restart` ではなく stop → start（restart だと FastCGI upstream のIPキャッシュが残り通信障害が起きる）
   `docker compose stop nginx-nexus && docker compose start nginx-nexus`
 - app-nexus を再起動した後は nginx-nexus も stop → start する
-- キューで動く Job / Notification を変更したら mail-nexus を再起動する（queue:work は起動時のコードを保持し続ける）
 
 ## 作業の進め方（必ず守る）
 1. Notion の目次ページと、タスクに関係するページを読む
@@ -60,7 +59,7 @@ docker compose exec -w /var/www/nexusphere app-nexus npm run build
 - 公開ページのルートは auth の外に出すが、必ず `throttle` を付ける
 
 ## コーディング規約
-- PSR-12 と Laravel の慣習に従う
+- PSR-12 と PSR-4 と Laravel の慣習に従う
 - 主キーは `テーブル単数形_id`（`user_id`, `prc_id`）。モデルで `$primaryKey` を明示し、リレーションではキー名を明示する
   例: `$this->belongsTo(User::class, 'user_id', 'user_id')`
 - 命名: クラスは PascalCase / メソッド・変数は camelCase / テーブルは snake_case 複数形 / カラムは snake_case / ルート名はドット区切り / 新規Bladeは camelCase
