@@ -7,19 +7,20 @@ NEXUSPHERE（ネクスフィア）は、学内の人を属性（学年・学科�
 
 ## 2. 開発背景
 * **きっかけ**: 2年次のチーム開発の授業で、4人チームで開発を開始。同じキャンパスにいても、学科や専攻が違うだけで協力相手を探せない「学科間の分断」を解決したかった。
+* **チームでの担当**: リーダーとして、バックエンド全般・DB設計・Notionでのタスク管理・GitHubでのバージョン管理を担当。
 * **方針転換**: 当初はサークル・グループDM・いいね・コメントを備えた滞在型SNSとして作ったが、試験運用ではほとんど使われなかった。そこで「何のためのSNSか」を問い直し、学内の人を外部へつなぐ導線サービスに定義し直した。
 * **現在の目標**: 企画・DB設計・コンテナ化・本番運用までを一人で回しながら、導線として機能するかを限定公開で検証する。
 
 ## 3. 技術スタック
 | カテゴリ | 技術選定 |
 | :--- | :--- |
-| バックエンド| PHP / Laravel |
-| フロントエンド | JavaScript / CSS / Alpine.js|
+| バックエンド | PHP / Laravel |
+| フロントエンド | JavaScript / CSS / Alpine.js |
 | 画像処理 | Intervention Image / GD / exif |
 | DB | MySQL |
 | インフラ | Docker / Docker Compose |
 | サーバー | ConoHa VPS |
-| CI/CD | GithubActions |
+| CI/CD | GitHub Actions |
 
 ## 4. 機能
 ### 認証・プロフィール
@@ -28,25 +29,25 @@ NEXUSPHERE（ネクスフィア）は、学内の人を属性（学年・学科�
 * **ユーザー検索**: 名前・職種・学年・学科・専攻のキーワードで部分一致検索。
 
 ### タイムライン
-* テキスト（最大1000字）と画像（1枚最大5MB）・動画（最大50MB）の投稿。
+* テキストと画像・動画の投稿。
 * 投稿本文のキーワード検索。
 
 ### ダイレクトメッセージ（1対1）
-* テキスト（最大5000字）と画像・動画の添付（1ファイル最大50MB）。
+* テキストと画像・動画の添付。
 * 一定間隔のポーリングで新着メッセージを反映。既読管理あり。
 
 ### 運用・安全性
 * **NGワードフィルタリング**: 自作のバリデーションルールで不適切な投稿を弾く。
 
 ### 非表示にした機能
-方針転換に合わせ、グループDM・サークル・いいね・コメントは画面から非表示にしています（サーバー側の実装とテーブルは残っています）。
+方針転換に合わせ、グループDM・サークル・いいね・コメントは画面から非表示にしています。
 
 ### 開発中
 * **公開サイト**: 学生が企業に渡せるポートフォリオURLを持てる機能。外部URLの登録か、テンプレート入力の2方式。乱数トークンのURL・リンク限定公開・noindex・規約同意の記録で設計。
 
 ## 5. 設計・データベース
-## ER図
-``` mermaid
+### ER図
+```mermaid
 erDiagram
 
     %% USERS のリレーション
@@ -282,11 +283,6 @@ erDiagram
         timestamp login_at
     }
 ```
-CIRCLES・GROUPS・GROUPMEMBERS・CIRCLE_USERS・CIRCLE_REQUESTS・NICES は、画面を非表示にした機能のテーブルです。
-
-学科・専攻はマスタ（SUBJECTS・MAJORS）と USERS.subject_id / major_id を用意していますが、移行途中のため、登録・プロフィール更新・検索は現在も USERS.subject / major（文字列）を使っています。
-
-Laravel 標準のテーブル（sessions・password_reset_tokens・cache・jobs など）と、Sanctum の personal_access_tokens は図から省略しています。
 
 ## 6. セットアップ
 ```bash
@@ -317,14 +313,15 @@ docker compose exec -w /var/www/nexusphere app-nexus php artisan migrate --seed
 docker compose exec -w /var/www/nexusphere app-nexus php artisan storage:link
 ```
 起動後は http://127.0.0.1:8881 で開けます。
+
 ## 7. ログイン方法
-```bash
-php artisan migrate
-php artisan db:seed
-```
-ログインメールアドレス： a@sba.ac.jp
-ログインパスワード　　： 00000000
-## 7. 今後の予定
+セットアップ後、次のテストアカウントでログインできます。
+
+| メールアドレス | パスワード |
+| :--- | :--- |
+| a@sba.ac.jp | 00000000 |
+
+## 8. 今後の予定
 * **公開サイト**: Controller・画面・テストを実装し、本番で公開。
 * **メール認証の強化**: 確認リンクを署名付きURLにし、未認証ユーザーのログインを拒否。
 * **DM受信のメール通知**。
