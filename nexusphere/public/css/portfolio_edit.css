@@ -1,10 +1,13 @@
 
+/* アプリの他の画面の水色の背景（profile_edit.css）と、プロフィールのボタンのピンク（profile.css の .btn）に揃える。
+   hover は styles.css の .btn-submit:hover と同じ色 */
 :root {
   --text: #1f2328;
-  --muted: #59636e;
-  --accent: #2563eb;
-  --accent-hover: #1d4ed8;
+  --muted: #4b5563;
+  --accent: #ff69b4;
+  --accent-hover: #ff4d9a;
   --border: #d1d9e0;
+  --page: #add8e6;
   --bg: #ffffff;
   --surface: #f6f8fa;
   --success-bg: #ecfdf3;
@@ -17,7 +20,7 @@
 
 body {
   margin: 0;
-  background: var(--bg);
+  background: var(--page);
   color: var(--text);
   font-family: system-ui, -apple-system, "Hiragino Sans", "Noto Sans JP", sans-serif;
   line-height: 1.7;

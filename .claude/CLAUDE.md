@@ -60,7 +60,7 @@ docker compose exec -w /var/www/nexusphere app-nexus npm run build
 - 公開ページのルートは auth の外に出すが、必ず `throttle` を付ける
 
 ## コーディング規約
-- PSR-12 と Laravel の慣習に従う
+- PSR-12 と PSR-4 と Laravel の慣習に従う
 - 主キーは `テーブル単数形_id`（`user_id`, `prc_id`）。モデルで `$primaryKey` を明示し、リレーションではキー名を明示する
   例: `$this->belongsTo(User::class, 'user_id', 'user_id')`
 - 命名: クラスは PascalCase / メソッド・変数は camelCase / テーブルは snake_case 複数形 / カラムは snake_case / ルート名はドット区切り / 新規Bladeは camelCase
