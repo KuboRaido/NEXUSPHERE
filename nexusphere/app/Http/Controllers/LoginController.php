@@ -22,7 +22,7 @@ class LoginController extends Controller
         $remember = (bool) $request->boolean('remember');
 
         if (Auth::attempt(['mail' => $credentials['mail'],'password' =>$credentials['password']],$remember)){
-            
+
             // メール確認済みかチェック
             if (Auth::user()->email_verified_at === null) {
                 Auth::logout(); // ログイン状態を解除

@@ -1,0 +1,277 @@
+diff --git a/nexusphere/app/Http/Controllers/PortfolioSiteController.php b/nexusphere/app/Http/Controllers/PortfolioSiteController.php
+index 3d75688..b826f89 100644
+--- a/nexusphere/app/Http/Controllers/PortfolioSiteController.php
++++ b/nexusphere/app/Http/Controllers/PortfolioSiteController.php
+@@ -128,7 +128,9 @@ public function edit(Request $request, PortfolioSiteService $service)
+             'needsAgreement' => $needsAgreement,
+             'defaults'       => $defaults,
+             'ymLists'        => $ymLists,
+-            'customSections' => $customSections
++            'customSections' => $customSections,
++            // 制作物（sort_order の順）と画像を一緒に読み込む。画像を1件ずつ読みに行かないように with を使う
++            'works'          => $site ? $site->works()->with('images')->get() : collect(),
+         ]);
+     }
+ 
+diff --git a/nexusphere/public/css/portfolio_edit.css b/nexusphere/public/css/portfolio_edit.css
+index b2071c2..7ea1edb 100644
+--- a/nexusphere/public/css/portfolio_edit.css
++++ b/nexusphere/public/css/portfolio_edit.css
+@@ -172,4 +172,45 @@ .portfolio-edit button:hover { background: var(--accent-hover); }
+ .portfolio-edit a {
+   color: var(--accent);
+   overflow-wrap: anywhere;       /* 長いURLでも横にはみ出さない */
+-}
+\ No newline at end of file
++}
++/* ===== 制作物（1件ずつ保存） ===== */
++[x-cloak] { display: none !important; }   /* Alpine が動く前に「新しい制作物」が一瞬見えるのを防ぐ */
++
++.work-form {
++  margin-top: 24px;
++  padding: 24px;
++  border: 1px solid var(--border);
++  border-radius: 8px;
++  background: var(--surface);
++  display: flex;
++  flex-direction: column;
++  gap: 16px;
++}
++.work-form h3 { margin: 0; font-size: 1.125rem; }
++
++.tech-row { display: flex; gap: 8px; margin-bottom: 8px; }
++.tech-row input { flex: 1; }
++
++.hint { margin: 0; color: var(--muted); font-size: 0.875rem; }
++
++/* 画像の10枠：PC は2列、スマホは1列 */
++.work-images { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 16px; }
++.work-image {
++  padding: 16px;
++  border: 1px dashed var(--border);
++  border-radius: 8px;
++  background: var(--bg);
++  display: flex;
++  flex-direction: column;
++  gap: 8px;
++  min-width: 0;
++}
++.work-image__label { font-weight: 600; font-size: 0.875rem; }
++.work-image img { width: 100%; aspect-ratio: 4 / 3; object-fit: contain; background: var(--surface); border-radius: 4px; }
++.work-image input[type="file"] { max-width: 100%; font-size: 0.875rem; }
++@media (max-width: 480px) { .work-images { grid-template-columns: minmax(0, 1fr); } }
++
++.portfolio-edit .button--secondary { background: var(--bg); color: var(--text); border: 1px solid var(--border); }
++.portfolio-edit .button--secondary:hover { background: var(--surface); }
++.portfolio-edit .button--danger { background: var(--bg); color: var(--error-text); border: 1px solid var(--error-text); }
++.portfolio-edit .button--danger:hover { background: var(--error-bg); }
+diff --git a/nexusphere/resources/views/portfolio/edit.blade.php b/nexusphere/resources/views/portfolio/edit.blade.php
+index 7dade68..375751c 100644
+--- a/nexusphere/resources/views/portfolio/edit.blade.php
++++ b/nexusphere/resources/views/portfolio/edit.blade.php
+@@ -346,6 +346,8 @@
+                     <button type="submit">内容を保存する</button>
+                 </form>
+             </section>
++
++            @include('portfolio.partials.works', ['works' => $works])
+         @endif
+     @endif
+ </main>
+diff --git a/nexusphere/resources/views/portfolio/partials/work-fields.blade.php b/nexusphere/resources/views/portfolio/partials/work-fields.blade.php
+new file mode 100644
+index 0000000..e3ab562
+--- /dev/null
++++ b/nexusphere/resources/views/portfolio/partials/work-fields.blade.php
+@@ -0,0 +1,87 @@
++{{--
++    制作物1件分の入力欄（新規と編集で共通）
++    受け取るもの：
++      $values   … 欄の値（old() か、保存済みの制作物の値。新規で初めて開いたときは空の配列）
++      $images   … 枠の番号 => 保存済みの画像の行（新規は空）
++      $idPrefix … label と入力欄を結ぶ id の頭（フォームごとに違う値にして、id が重ならないようにする）
++    上限の数字は PortfolioWorkService::WORK_RULES と、マイグレーションの列の長さにそろえる。
++--}}
++@php
++    $tech = array_values(array_filter((array) ($values['tech_stack'] ?? []), fn ($t) => ! blank($t)));
++@endphp
++
++<label>
++    タイトル（50文字まで。ほかの欄に何か書いたら必須）
++    <input type="text" name="title" maxlength="50" value="{{ $values['title'] ?? '' }}" placeholder="例：学内SNS">
++</label>
++
++<label>
++    要約（100文字まで。カードに出ます）
++    <input type="text" name="summary" maxlength="100" value="{{ $values['summary'] ?? '' }}" placeholder="例：学内の人を学年・学科で見つけ、外部SNSにつなぐサービス">
++</label>
++
++<fieldset>
++    <legend>使った技術（10個まで、1つ30文字まで）</legend>
++    <div x-data="{ tech: @js($tech ?: ['']) }">
++        <template x-for="(t, i) in tech">
++            <div class="tech-row">
++                <input type="text" x-model="tech[i]" :name="'tech_stack[' + i + ']'" maxlength="30" placeholder="例：Laravel">
++                <button type="button" class="button--secondary" @click="tech.splice(i, 1)">削除</button>
++            </div>
++        </template>
++        <button type="button" class="button--secondary" x-show="tech.length < 10" @click="tech.push('')">技術を追加</button>
++    </div>
++</fieldset>
++
++<label>
++    作品のURL（https:// で始まるものだけ）
++    <input type="url" name="url" maxlength="255" value="{{ $values['url'] ?? '' }}" placeholder="https://github.com/…">
++</label>
++
++<label>
++    チームと担当（50文字まで）
++    <input type="text" name="team_role" maxlength="50" value="{{ $values['team_role'] ?? '' }}" placeholder="例：4人チーム。リーダーとバックエンドを担当">
++</label>
++
++<label>
++    なぜ作ったか（500文字まで）
++    <textarea name="why_built" maxlength="500" rows="4" placeholder="例：学内で同じ技術に興味がある人を探す手段がなかった">{{ $values['why_built'] ?? '' }}</textarea>
++</label>
++
++<label>
++    なぜその技術を選んだか（500文字まで）
++    <textarea name="why_tech" maxlength="500" rows="4" placeholder="例：授業で学んだ Laravel なら、4人とも同じ書き方で分担できた">{{ $values['why_tech'] ?? '' }}</textarea>
++</label>
++
++<label>
++    技術的に苦労したところ（500文字まで）
++    <textarea name="hardest_part" maxlength="500" rows="4" placeholder="例：画像の保存と DB の保存がずれないように、保存の順番を設計した">{{ $values['hardest_part'] ?? '' }}</textarea>
++</label>
++
++<label>
++    担当として工夫したこと（500文字まで）
++    <textarea name="own_ideas" maxlength="500" rows="4" placeholder="例：機能を増やすのをやめ、外部SNSへの導線に絞った">{{ $values['own_ideas'] ?? '' }}</textarea>
++</label>
++
++<label>
++    現在どうなっているか（500文字まで）
++    <textarea name="current_status" maxlength="500" rows="4" placeholder="例：学内で限定公開中">{{ $values['current_status'] ?? '' }}</textarea>
++</label>
++
++<fieldset>
++    <legend>画像（{{ \App\Services\PortfolioWorkService::IMAGES_MAX_COUNT }}枚まで。JPEG・PNG・WebP、1枚10MBまで。1枚目がカードに出ます）</legend>
++    <p class="hint">選び直した枠は、保存したときに新しい画像に入れ替わります。画像は長い辺1600pxに縮め、位置情報を消してから保存します。</p>
++    <div class="work-images">
++        @for ($slot = 0; $slot < \App\Services\PortfolioWorkService::IMAGES_MAX_COUNT; $slot++)
++            @php $image = $images->get($slot); @endphp
++            <div class="work-image">
++                <span class="work-image__label">{{ $slot + 1 }}枚目</span>
++                @if ($image)
++                    <img src="{{ Storage::disk('works')->url($image->path) }}" alt="{{ $slot + 1 }}枚目の画像" loading="lazy">
++                    <label><input type="checkbox" name="delete_images[]" value="{{ $image->portfolio_work_image_id }}">この画像を消す</label>
++                @endif
++                <input type="file" name="new_images[{{ $slot }}]" accept="image/jpeg,image/png,image/webp" aria-label="{{ $slot + 1 }}枚目の画像を選ぶ">
++            </div>
++        @endfor
++    </div>
++</fieldset>
+diff --git a/nexusphere/resources/views/portfolio/partials/works.blade.php b/nexusphere/resources/views/portfolio/partials/works.blade.php
+new file mode 100644
+index 0000000..3b95985
+--- /dev/null
++++ b/nexusphere/resources/views/portfolio/partials/works.blade.php
+@@ -0,0 +1,98 @@
++{{--
++    制作物（1件ずつ保存）
++    受け取るもの：$works（この公開サイトの制作物。sort_order の順、images を一緒に読み込み済み）
++
++    大きなフォーム（内容を保存する）の外に置く。制作物ごとに別のフォームで、1回の保存で1件だけ送る。
++    どのフォームから送ったかを hidden の work_form（'new' か制作物の ID）で覚えておき、
++    エラーで戻ったときは、そのフォームにだけ old() の値とエラーを出す（全部のフォームに同じ値が入らないように）。
++--}}
++@php
++    $oldForm   = old('work_form');               // 直前に送ったフォーム（'new' か ID の文字列）。エラーで戻ったときだけ入っている
++    $maxWorks  = \App\Services\PortfolioWorkService::WORKS_MAX_COUNT;
++    $maxImages = \App\Services\PortfolioWorkService::IMAGES_MAX_COUNT;
++@endphp
++
++<section class="works" id="works"
++    x-data="{ adding: @js($oldForm === 'new' || $works->isEmpty()) }">
++    <h2>制作物（1件ずつ保存）</h2>
++    <p>一番自信のある作品から登録してください。一番上（最初に登録した制作物）が、公開ページで「代表作」として大きく表示されます。</p>
++    <p>制作物は1件ずつ「この制作物を保存」で保存します。保存していない入力は、別の制作物を保存したときに消えます。</p>
++
++    {{-- ===== 保存済みの制作物 ===== --}}
++    @foreach ($works as $work)
++        @php
++            $key    = (string) $work->portfolio_work_id;
++            $useOld = $oldForm === $key;                       // このフォームから送ってエラーで戻ってきたか
++            $images = $work->images->keyBy('sort_order');      // 枠の番号 => 画像の行
++        @endphp
++
++        <article class="work-form">
++            <h3>{{ $loop->first ? '制作物 1（代表作）' : '制作物 ' . $loop->iteration }}</h3>
++
++            @if ($useOld && $errors->any())
++                <ul class="message message--error">
++                    @foreach ($errors->all() as $error)
++                        <li>{{ $error }}</li>
++                    @endforeach
++                </ul>
++            @endif
++
++            <form method="POST" action="{{ route('portfolio.works.update', $work->portfolio_work_id) }}" enctype="multipart/form-data">
++                @csrf
++                @method('PUT')
++                <input type="hidden" name="work_form" value="{{ $key }}">
++
++                @include('portfolio.partials.work-fields', [
++                    'values' => $useOld ? old() : $work->only(['title', 'summary', 'tech_stack', 'url', 'team_role', 'why_built', 'why_tech', 'hardest_part', 'own_ideas', 'current_status']),
++                    'images' => $images,
++                    'idPrefix' => 'work-' . $key,
++                ])
++
++                <button type="submit">この制作物を保存</button>
++            </form>
++
++            {{-- 削除は別のフォーム（フォームの中にフォームは置けない）。押したら確認を出す。
++                 タイトルは学生が書いた文字なので、JavaScript の文字列には Js::from で入れる（{{ }} だけだと ' で文字列が切れ、好きな JS を動かせてしまう） --}}
++            <form method="POST" action="{{ route('portfolio.works.destroy', $work->portfolio_work_id) }}"
++                @submit="if (!confirm({{ Js::from('「' . $work->title . '」を削除します。画像も消え、元に戻せません。よろしいですか？') }})) $event.preventDefault()">
++                @csrf
++                @method('DELETE')
++                <button type="submit" class="button--danger">この制作物を削除</button>
++            </form>
++        </article>
++    @endforeach
++
++    {{-- ===== 新しい制作物（1件ずつ） ===== --}}
++    @if ($works->count() < $maxWorks)
++        <button type="button" x-show="!adding" @click="adding = true">制作物を追加</button>
++
++        <article class="work-form" x-show="adding" x-cloak>
++            <h3>新しい制作物</h3>
++
++            @if ($oldForm === 'new' && $errors->any())
++                <ul class="message message--error">
++                    @foreach ($errors->all() as $error)
++                        <li>{{ $error }}</li>
++                    @endforeach
++                </ul>
++            @endif
++
++            <form method="POST" action="{{ route('portfolio.works.store') }}" enctype="multipart/form-data" x-ref="newForm">
++                @csrf
++                <input type="hidden" name="work_form" value="new">
++
++                @include('portfolio.partials.work-fields', [
++                    'values' => $oldForm === 'new' ? old() : [],
++                    'images' => collect(),
++                    'idPrefix' => 'work-new',
++                ])
++
++                <button type="submit">この制作物を保存</button>
++                {{-- 未保存の行は画面から消すだけ（DB には何も無い） --}}
++                <button type="button" class="button--secondary" @click="$refs.newForm.reset(); adding = false">入力をやめる</button>
++            </form>
++        </article>
++    @else
++        <p>制作物は{{ $maxWorks }}件まで登録できます。新しく登録するには、どれかを削除してください。</p>
++    @endif
++</section>

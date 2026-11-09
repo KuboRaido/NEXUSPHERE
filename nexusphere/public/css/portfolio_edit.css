@@ -1,0 +1,233 @@
+
+/* アプリの他の画面の水色の背景（profile_edit.css）と、プロフィールのボタンのピンク（profile.css の .btn）に揃える。
+   hover は styles.css の .btn-submit:hover と同じ色 */
+:root {
+  --text: #1f2328;
+  --muted: #4b5563;
+  --accent: #ff69b4;
+  --accent-hover: #ff4d9a;
+  --border: #d1d9e0;
+  --page: #add8e6;
+  --bg: #ffffff;
+  --surface: #f6f8fa;
+  --success-bg: #ecfdf3;
+  --success-text: #146c43;
+  --error-bg: #fef2f2;
+  --error-text: #b42318;
+}
+
+* { box-sizing: border-box; }
+
+body {
+  margin: 0;
+  background: var(--page);
+  color: var(--text);
+  font-family: system-ui, -apple-system, "Hiragino Sans", "Noto Sans JP", sans-serif;
+  line-height: 1.7;
+}
+
+/* 1カラム。show と同じ幅にして、設定と公開ページで印象を揃える */
+.portfolio-edit {
+  max-width: 640px;
+  margin: 0 auto;
+  padding: 48px 20px;
+}
+
+.portfolio-edit h1 {
+  margin: 0 0 24px;
+  font-size: 1.75rem;
+}
+
+.portfolio-edit h2 {
+  margin: 0 0 12px;
+  font-size: 1.125rem;
+}
+
+/* 各ブロック（公開URL・作り方・ページの内容）を線で区切る */
+.portfolio-edit section {
+  padding: 24px 0;
+  border-top: 1px solid var(--border);
+}
+
+.portfolio-edit section p {
+  margin: 0 0 12px;
+}
+
+/* ===== 成功・エラーのメッセージ ===== */
+.message {
+  margin: 0 0 24px;
+  padding: 12px 16px;
+  border-radius: 8px;
+}
+
+.message--success {
+  background: var(--success-bg);
+  color: var(--success-text);
+}
+
+.message--error {
+  background: var(--error-bg);
+  color: var(--error-text);
+  list-style: none;              /* <ul> の黒丸を消す */
+}
+
+.message--error li + li { margin-top: 4px; }
+
+/* ===== フォーム ===== */
+.portfolio-edit form {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+/* 「ポートフォリオのURL」のように、文字の下に入力欄を置くラベル */
+.portfolio-edit label {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  font-size: 0.9375rem;
+}
+
+/* ラジオとチェックボックスは、入力と文字を横に並べる */
+.portfolio-edit label:has(> input[type="radio"]),
+.portfolio-edit label:has(> input[type="checkbox"]) {
+  flex-direction: row;
+  align-items: center;
+  gap: 8px;
+  cursor: pointer;
+}
+
+.portfolio-edit fieldset {
+  margin: 0;
+  padding: 0;
+  border: none;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.portfolio-edit legend {
+  margin-bottom: 8px;
+  padding: 0;
+  font-weight: 600;
+}
+
+.portfolio-edit input[type="text"],
+.portfolio-edit input[type="url"],
+.portfolio-edit textarea {
+  width: 100%;
+  padding: 10px 12px;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  background: var(--bg);
+  color: var(--text);
+  font: inherit;                 /* 入力欄だけ別のフォントになるのを防ぐ */
+}
+
+.portfolio-edit textarea {
+  resize: vertical;              /* 横には広げさせない */
+  min-height: 9rem;
+}
+
+.portfolio-edit input[type="radio"],
+.portfolio-edit input[type="checkbox"] {
+  width: 18px;
+  height: 18px;
+  margin: 0;
+  accent-color: var(--accent);   /* チェックの色をアクセント色にする */
+}
+
+/* キーボードで移動したときだけ、どこにいるかを太い枠で示す */
+.portfolio-edit input:focus-visible,
+.portfolio-edit textarea:focus-visible,
+.portfolio-edit button:focus-visible,
+.portfolio-edit a:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+}
+
+/* リンク5行：表示名とURLを横に並べる。スマホでは縦に積む */
+.link-row {
+  display: grid;
+  grid-template-columns: 1fr 2fr;
+  gap: 8px;
+}
+
+@media (max-width: 480px) {
+  .link-row { grid-template-columns: 1fr; }
+}
+
+/* ===== ボタンとリンク ===== */
+.portfolio-edit button {
+  align-self: flex-start;        /* 横幅いっぱいに伸ばさない */
+  padding: 10px 20px;
+  border: none;
+  border-radius: 8px;
+  background: var(--accent);
+  color: #fff;
+  font: inherit;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.portfolio-edit button:hover { background: var(--accent-hover); }
+
+.portfolio-edit a {
+  color: var(--accent);
+  overflow-wrap: anywhere;       /* 長いURLでも横にはみ出さない */
+}
+/* ===== 制作物（1件ずつ保存） ===== */
+[x-cloak] { display: none !important; }   /* Alpine が動く前に「新しい制作物」が一瞬見えるのを防ぐ */
+
+.work-form {
+  margin-top: 24px;
+  padding: 24px;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  background: var(--surface);
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+.work-form h3 { margin: 0; font-size: 1.125rem; }
+
+.tech-row { display: flex; gap: 8px; margin-bottom: 8px; }
+.tech-row input { flex: 1; }
+
+.hint { margin: 0; color: var(--muted); font-size: 0.875rem; }
+
+/* 画像の10枠：PC は2列、スマホは1列 */
+.work-images { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 16px; }
+.work-image {
+  padding: 16px;
+  border: 1px dashed var(--border);
+  border-radius: 8px;
+  background: var(--bg);
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  min-width: 0;
+}
+.work-image__label { font-weight: 600; font-size: 0.875rem; }
+.work-image img { width: 100%; aspect-ratio: 4 / 3; object-fit: contain; background: var(--surface); border-radius: 4px; }
+.work-image input[type="file"] { max-width: 100%; font-size: 0.875rem; }
+@media (max-width: 480px) { .work-images { grid-template-columns: minmax(0, 1fr); } }
+
+.portfolio-edit .button--secondary { background: var(--bg); color: var(--text); border: 1px solid var(--border); }
+.portfolio-edit .button--secondary:hover { background: var(--surface); }
+.portfolio-edit .button--danger { background: var(--bg); color: var(--error-text); border: 1px solid var(--error-text); }
+.portfolio-edit .button--danger:hover { background: var(--error-bg); }
+
+
+/* ===== 公開ページの色（8色のラジオボタン） ===== */
+.accent-picker { display: flex; flex-wrap: wrap; gap: 8px 16px; }
+.accent-picker__item { display: inline-flex; align-items: center; gap: 6px; }
+.accent-picker__swatch { width: 20px; height: 20px; border-radius: 50%; border: 1px solid var(--border); }
+.accent-picker__swatch--blue   { background: #185FA5; }
+.accent-picker__swatch--teal   { background: #0F6E56; }
+.accent-picker__swatch--green  { background: #3B6D11; }
+.accent-picker__swatch--amber  { background: #854F0B; }
+.accent-picker__swatch--coral  { background: #993C1D; }
+.accent-picker__swatch--pink   { background: #993556; }
+.accent-picker__swatch--purple { background: #534AB7; }
+.accent-picker__swatch--gray   { background: #5F5E5A; }

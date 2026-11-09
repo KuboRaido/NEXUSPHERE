@@ -20,10 +20,6 @@
             <h1 id="site-title">Nexusphere</h1>
         </div>
 
-      <button id="menuBtn" class="hamburger">
-        <i class="fa-solid fa-bars"></i>
-      </button>
-
 <!--ここからログアウトボタン-->
       @if($isMine)
         <button type="button" class="logout-btn" id="logout-trigger">ログアウト</button>
@@ -75,6 +71,22 @@
                   @endif
                     <a class="dm-btn" href="{{ url('/dm') }}?to={{ $isMine ? 'me' : $profileUser->user_id }}">DM</a>
               </div>
+              @php
+                  $site    = $profileUser->portfolioSite;
+                  $canView = $site && $site->is_public;   // 公開中のときだけ「見る」
+
+                  // 外部URL方式なら登録したURL、テンプレート方式なら公開ページ
+                  $viewUrl = $canView && $site->site_type === \App\Enums\SiteType::External
+                      ? $site->external_url
+                      : ($canView ? route('portfolio.show', $site->token) : null);
+              @endphp
+
+              @if ($canView)
+                  <a class="btn"href="{{ $viewUrl }}" target="_blank" rel="noopener noreferrer">ポートフォリオ</a>
+              @endif
+              @if ($isMine)
+                  <a class="btn" href="{{ route('portfolio.edit') }}">ポートフォリオ設定</a>
+              @endif 
             </div>
             <!-- <div class="portfolio-section">
               <button class="portfolio-toggle"><i class="fa-solid fa-chevron-down"></i>
@@ -102,12 +114,12 @@
       </section>
     </main>
 
-    <div id="sidebar" class="footer-nav">
+    <div id="sidebar" class="footer-nav active">
         <a href="/home" class="tab {{ request()->is('home') ? 'active' : '' }}"><i class="fa-solid fa-house"></i><span>ホーム</span></a>
         <a href="/post" class="tab {{ request()->is('post') ? 'active' : '' }}"><i class="fas fa-paper-plane"></i><span>投稿</span></a>
         <a href="/dmlist" class="tab {{ request()->is('dmlist') ? 'active' : '' }}"><i class="fa-solid fa-comment"></i><span>DM</span></a>
         <a href="/profile" class="tab {{ request()->is('profile') ? 'active' : '' }}"><i class="fa-solid fa-user"></i><span>プロフィール</span></a>
-        <a href="/circle" class="tab {{ request()->is('circle') ? 'active' : '' }}"><i class="fa-solid fa-cube"></i><span>サークル</span></a>
+        <!-- <a href="/circle" class="tab {{ request()->is('circle') ? 'active' : '' }}"><i class="fa-solid fa-cube"></i><span>サークル</span></a> -->
     </div>
   <script src="{{ asset('js/module/post_mainUnit.js') }}"></script>
 

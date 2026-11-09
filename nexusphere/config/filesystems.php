@@ -67,6 +67,14 @@ return [
             'visibility' => 'public',
         ],
 
+        // 制作物の画像。{公開サイトの token}/{40文字の乱数}.{拡張子} で保存する
+        'works' => [
+            'driver'     => 'local',
+            'root'       => public_path() . '/storage/works',
+            'url'        => env('APP_URL').'/storage/works',
+            'visibility' => 'public',
+        ],
+
         'post' => [
             'driver'     => 'local',
             'root'       => public_path() . '/storage/post',

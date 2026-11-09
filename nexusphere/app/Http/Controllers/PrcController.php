@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Auth;
 use App\Models\Images_and_videos;
 use App\Models\Prc;
@@ -60,14 +61,16 @@ class PrcController extends Controller
             $images = is_array($fileInputs) ? $fileInputs : [$fileInputs];
             $images = array_slice($images, 0, 10);
 
-            foreach ($images as $image) {
+            DB::transaction(function($images,$post){
+                foreach ($images as $image) {
                     $path = $image->store('', 'post');
                     // Images_and_videos のカラム名は 'image'
                     Images_and_videos::create([
                     'prc_id' => $post->prc_id,
                     'image' => $path,
                     ]);
-            }
+                };
+            });
         }
 
         if ($request->hasFile('videos')) {

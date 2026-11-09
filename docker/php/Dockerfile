@@ -12,13 +12,16 @@ RUN apt update \
     && apt install -y zlib1g-dev mariadb-client vim libzip-dev \
     # docker-php-ext-installはPHPに標準で備わっている拡張パッケージのインストール＆有効化ができるコマンド
     # PDO_MYSQL は、PHP から MySQL データベースへのアクセスを可能にするための PHP Data Objects (PDO) インターフェイス を実装したドライバ。
-    && docker-php-ext-install zip pdo_mysql \
+    && docker-php-ext-install zip pdo_mysql bcmath \
     # gitのインストール
     && apt install -y git \
     # xdebugのインストール
     && pecl install xdebug \
-    && docker-php-ext-enable xdebug
-    
+    && docker-php-ext-enable xdebug \
+    # libpng / libjpeg / libfreetype / libwebp は、GD が PNG・JPEG・文字・WebP を扱うための部品
+    && apt install -y libpng-dev libjpeg62-turbo-dev libfreetype6-dev libwebp-dev \
+    && docker-php-ext-configure gd --with-freetype --with-jpeg --with-webp \
+    && docker-php-ext-install gd exif
 # Composerのインストール & パス通す
 COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
 
@@ -26,6 +29,12 @@ COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
 RUN apt install -y npm \
     && npm install n -g \
     && n stable
+
+RUN npm install -g web-push
+
+# Web Push API用のパッケージをインストール
+# 理由:VAPIDキー生成に必要。ビルド時にインストール→イメージに永続化
+RUN npm install -g web-push
 
 # RUN , CMD , ENTRYPOINT , COPY , ADD を実行する時のワーキングディレクトリを指定
 WORKDIR /var/www

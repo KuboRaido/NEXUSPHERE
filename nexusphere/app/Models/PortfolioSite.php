@@ -1,0 +1,76 @@
+<?php
+
+namespace App\Models;
+
+use App\Enums\SiteType;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Model;
+
+class PortfolioSite extends Model
+{
+    use HasFactory;
+
+    protected $table = 'portfolio_sites';
+    protected $primaryKey = 'portfolio_site_id';
+
+    protected $fillable = [
+        'user_id',
+        'token',
+        'site_type',
+        'external_url',
+        'is_public',
+        'agreed_at',
+        'terms_version',
+        'display_name',
+        'bio',
+        'links',
+        'school_name',
+        'department',
+        'major',
+        'job_axis',
+        'hobbies',
+        'life_story',
+        'skills',
+        'certifications',
+        'careers',
+        'awards',
+        'custom_sections',
+        'visibility',
+        'accent_color',
+    ];
+
+    //DBの値をPHPで扱いやすい形に変換する設定
+    protected $casts = [
+        'site_type'        => SiteType::class,
+        'is_public'        => 'boolean',
+        'agreed_at'        => 'datetime',
+        'links'            => 'array',
+        'hobbies'          => 'array',
+        'life_story'       => 'array',
+        'skills'           => 'array',
+        'certifications'   => 'array',
+        'careers'          => 'array',
+        'awards'           => 'array',
+        'custom_sections'  => 'array',
+        'visibility'       => 'array',
+        'details_saved_at' => 'datetime',
+    ];
+
+    // 公開ページにその項目を出すか。visibility にキーがなければ出す
+    public function isVisible(string $key): bool
+    {
+        return ($this->visibility[$key] ?? true) === true;
+    }
+
+    public function user()
+    {
+        return $this->belongsTo(User::class, 'user_id', 'user_id');
+    }
+
+    // 制作物は並び順どおりに取り出す。first() が公開ページで大きく出る1件目
+    public function works()
+    {
+        return $this->hasMany(PortfolioWork::class, 'portfolio_site_id', 'portfolio_site_id')
+            ->orderBy('sort_order');
+    }
+}

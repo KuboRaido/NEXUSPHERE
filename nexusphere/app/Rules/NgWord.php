@@ -19,15 +19,15 @@ class NgWord implements ValidationRule
         }
 
         // 入力値の正規化
-        // 'RNASKVC':
-        // R: 全角英字 -> 半角
-        // N: 全角数字 -> 半角
-        // A: 半角英数字 -> 半角 (RとNに含まれるが念のため)
-        // S: 全角スペース -> 半角スペース
+        // 'rnasKVC':
+        // r: 全角英字 -> 半角
+        // n: 全角数字 -> 半角
+        // a: 全角英数字・記号 -> 半角 (対象外なのは全角の ＂＇＼～)
+        // s: 全角スペース -> 半角スペース
         // K: 半角カタカナ -> 全角カタカナ
         // V: 濁点付きの文字を1文字に合成
         // C: 全角ひらがな -> 全角カタカナ (「ばか」と「バカ」を同一視するため)
-        $normalized_value = mb_convert_kana($value, 'RNASKVC');
+        $normalized_value = mb_convert_kana($value, 'rnasKVC');
 
         // ホワイトリスト処理
         $whitelists = config('ng_words.whitelist', []);
@@ -39,7 +39,7 @@ class NgWord implements ValidationRule
             if ($white_word === '') continue;
             
             // ホワイトリストも入力値と同じ基準で正規化してマッチさせる
-            $normalized_white_word = mb_convert_kana($white_word, 'RNASKVC');
+            $normalized_white_word = mb_convert_kana($white_word, 'rnasKVC');
             
             // 大文字小文字を区別せず置換 (str_ireplace)
             $clean_value = str_ireplace($normalized_white_word, '@@@', $clean_value);
@@ -52,7 +52,7 @@ class NgWord implements ValidationRule
             if($word === '') continue;
             
             // NGワードも入力値と同じ基準で正規化
-            $normalized_word = mb_convert_kana($word, 'RNASKVC');
+            $normalized_word = mb_convert_kana($word, 'rnasKVC');
 
             // 正規化済みの $clean_value に対してチェック
             if(mb_stripos($clean_value, $normalized_word) !== false){
@@ -70,7 +70,7 @@ class NgWord implements ValidationRule
                 if ($w === '') continue;
                 
                 // NGワードを正規化（例: 全角ＳＭ → 半角SM）
-                $norm_w = mb_convert_kana($w, 'RNASKVC');
+                $norm_w = mb_convert_kana($w, 'rnasKVC');
                 
                 // 正規表現用にエスケープして配列に追加
                 $quoted_words[] = preg_quote($norm_w, '/');
