@@ -377,7 +377,7 @@ async function sendMessage() {
       files.forEach(f => fd.append('files[]',f));
       res = await fetch('/api/v1/dm', {
         method: 'POST',
-        headers:{...(token ? {'X-XSRF-TOKEN':token} : {})},
+        headers:{'Accept':'application/json',...(token ? {'X-XSRF-TOKEN':token} : {})},
         credentials:'include',
         body:fd
       });

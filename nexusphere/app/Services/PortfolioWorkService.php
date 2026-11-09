@@ -25,12 +25,6 @@ class PortfolioWorkService
     // 1つの制作物あたりの画像の枠の数（枠の番号は 0〜9）
     public const IMAGES_MAX_COUNT = 10;
 
-    // 画像を保存するディスク（config/filesystems.php の works）
-    private const DISK = 'works';
-
-    // 縮小したあとの長辺（px）
-    private const IMAGE_LONG_EDGE = 1600;
-
     public function save(PortfolioSite $site, ?PortfolioWork $work, array $input, array $newImages): void
     {
         $validated = Validator::make([...$input, 'new_images' => $newImages], self::WORK_RULES, self::WORK_MESSAGES)->validate();

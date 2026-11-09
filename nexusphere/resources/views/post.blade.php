@@ -24,6 +24,10 @@
         <form method="POST" action="{{ route('post.back') }}" enctype="multipart/form-data" class="createPost">
             @csrf
             <textarea name="sentence" placeholder="いまどうしてる？" required></textarea>
+            @error('sentence')
+                <p>{{ $message }}</p>
+            @enderror
+
             <div id="preview-container"></div>
 
             {{-- ファイル選択（標準の見た目を隠して自作ボタンを表示） --}}

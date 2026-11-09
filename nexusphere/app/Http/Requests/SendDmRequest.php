@@ -2,6 +2,7 @@
 
 namespace App\Http\Requests;
 
+use App\Rules\NgWord;
 use App\Models\User;
 use Illuminate\Foundation\Http\FormRequest;
 
@@ -26,7 +27,7 @@ class SendDmRequest extends FormRequest
     public function rules(): array
     {
         $rules = [
-            'text'    => ['nullable','string','max:5000'],
+            'text'    => ['nullable','string','max:5000',new NgWord],
             'files.*' => ['nullable','file','max:51200','mimetypes:image/*,video/*'],
         ];
 

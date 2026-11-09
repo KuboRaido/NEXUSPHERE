@@ -112,6 +112,7 @@ class PortfolioSiteService
         $site->department  = $validated['department'] ?? null;
         $site->major       = $validated['major'] ?? null;
         $site->job_axis    = $validated['job_axis'] ?? null;
+        $site->accent_color = $validated['accent_color'] ?? null;
 
         // 3. リスト：決めたキーだけで作り直し、全部空の行を捨てる
         $site->hobbies        = array_values(array_filter($validated['hobbies'] ?? [], fn ($hobby) => ! blank($hobby)));
@@ -211,6 +212,8 @@ class PortfolioSiteService
         return $clean;
     }
 
+        /** 公開ページのアクセントカラー（10-07 に決めた8色）。show.blade と設定画面もこの一覧を使う */
+    public const ACCENT_COLORS = ['blue', 'teal', 'green', 'amber', 'coral', 'pink', 'purple', 'gray'];
     private const DISPLAY_NAME_MAX_LENGTH = 20;
     private const BIO_MAX_LENGTH          = 500;
     private const LINKS_MAX_COUNT         = 5;
@@ -323,6 +326,9 @@ class PortfolioSiteService
             'visibility.certifications' => ['nullable', 'boolean'],
             'visibility.careers'        => ['nullable', 'boolean'],
             'visibility.awards'         => ['nullable', 'boolean'],
+            'visibility.works'          => ['nullable', 'boolean'],
+            // アクセントカラー：決めた8色の名前だけ（上の ACCENT_COLORS と同じ並び。const の中では implode が使えないので書き並べる）
+            'accent_color'              => ['nullable', 'string', 'in:blue,teal,green,amber,coral,pink,purple,gray'],
         ];
 
         // updateDetails のエラー文。行のある項目は :position（1から数えた番号）で何行目かを出す。

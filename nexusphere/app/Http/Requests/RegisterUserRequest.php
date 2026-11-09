@@ -23,7 +23,7 @@ class RegisterUserRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'mail'     => ['required', 'email', 'unique:users,mail', 'regex:/@(edu.sba|edu.ssm|sba|ssm)\.ac\.jp$/'],
+            'mail'     => ['required', 'email', 'regex:/@(edu.sba|edu.ssm|sba|ssm)\.ac\.jp$/'],
             'password' => ['required', 'confirmed', Password::min(8)->letters()->mixedCase()->numbers()],
             'name'     => ['required', 'string', 'max:255'],
             'job'      => ['required', 'string', 'max:2'],

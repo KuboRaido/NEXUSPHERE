@@ -1,167 +1,316 @@
+@php
+    /*
+     * 公開ページ（案C-2）。決定は 04 決定ログ 2026-10-08「案C-2」、設計は 13 の10章。
+     * セクションは「公開する」（isVisible）かつ中身があるときだけ出す。ナビにも同じ条件で出す。
+     */
+    $ym = fn (?string $p) => filled($p) ? substr($p, 0, 4) . '年' . (int) substr($p, 5, 2) . '月' : null;   // '2025-04' → 「2025年4月」
+
+    $accent = in_array($site->accent_color, \App\Services\PortfolioSiteService::ACCENT_COLORS, true) ? $site->accent_color : 'blue';
+
+    $name        = $site->isVisible('display_name') && filled($site->display_name) ? $site->display_name : null;
+    $affiliation = collect(['school_name', 'department', 'major'])
+        ->filter(fn ($key) => $site->isVisible($key) && filled($site->{$key}))
+        ->map(fn ($key) => $site->{$key})
+        ->implode('　');
+
+    $showWorks   = $site->isVisible('works') && $works->isNotEmpty();
+    $showStory   = $site->isVisible('life_story') && ! empty($site->life_story);
+    $showAxis    = $site->isVisible('job_axis') && filled($site->job_axis);
+    $showCareers = $site->isVisible('careers') && ! empty($site->careers);
+    $showSkills  = $site->isVisible('skills') && ! empty($site->skills);
+    $showCerts   = $site->isVisible('certifications') && ! empty($site->certifications);
+    $showAwards  = $site->isVisible('awards') && ! empty($site->awards);
+    $showHobbies = $site->isVisible('hobbies') && ! empty($site->hobbies);
+    $customs     = collect($site->custom_sections ?? [])->filter(fn ($s) => ($s['visible'] ?? true) === true && filled($s['title'] ?? null));
+    $showLinks   = $site->isVisible('links') && ! empty($site->links);
+
+    $showSkillGroup = $showSkills || $showCerts || $showAwards;
+    $showOthers     = $showHobbies || $customs->isNotEmpty();
+
+    // 制作物の「詳しく見る」の6欄（中身があるものだけ出す）
+    $detailLabels = [
+        'team_role'      => 'チームと担当',
+        'why_built'      => 'なぜ作ったか',
+        'why_tech'       => 'なぜその技術を選んだか',
+        'hardest_part'   => '技術的に苦労したところ',
+        'own_ideas'      => '担当として工夫したこと',
+        'current_status' => '現在どうなっているか',
+    ];
+@endphp
+
 <!DOCTYPE html>
 <html lang="ja">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
     <meta name="robots" content="noindex">
     {{-- 表示名を出さない設定なら、タブにも名前を出さない --}}
-    <title>{{ $site->isVisible('display_name') && filled($site->display_name) ? $site->display_name : 'ポートフォリオ' }}</title>
+    <title>{{ $name ?? 'ポートフォリオ' }}</title>
     <link rel="stylesheet" href="{{ asset('css/portfolio_show.css') }}">
 </head>
 <body>
-<main class="portfolio">
-    @auth
-        @if (auth()->user()->user_id === $site->user_id)
-            <a class="portfolio__edit" href="{{ route('portfolio.edit') }}">設定を編集する</a>
-        @endif
-    @endauth
+<div class="portfolio" data-accent="{{ $accent }}">
+    <a class="portfolio__skip" href="#main">本文へ移動</a>
 
-    {{-- どの項目も「公開する」（isVisible）かつ中身があるときだけ出す --}}
-    @if ($site->isVisible('display_name') && filled($site->display_name))
-        <h1 class="portfolio__name">{{ $site->display_name }}</h1>
-    @endif
+    <header class="portfolio__topbar">
+        <div class="portfolio__inner">
+            <a class="portfolio__brand" href="#top">{{ $name ?? 'ポートフォリオ' }}</a>
+            <nav class="portfolio__nav" aria-label="ページ内の移動">
+                <ul>
+                    @if ($showWorks)      <li><a href="#works">制作物</a></li> @endif
+                    @if ($showStory)      <li><a href="#story">人生の道筋</a></li> @endif
+                    @if ($showAxis)       <li><a href="#axis">企業選びの軸</a></li> @endif
+                    @if ($showCareers)    <li><a href="#careers">経歴と活動</a></li> @endif
+                    @if ($showSkillGroup) <li><a href="#skills">スキル・資格・受賞歴</a></li> @endif
+                    @if ($showOthers)     <li><a href="#others">その他</a></li> @endif
+                </ul>
+            </nav>
+            @if ($showLinks)
+                <a class="portfolio__contact-link" href="#contact">連絡先</a>
+            @endif
+        </div>
+    </header>
 
-    @if ($site->isVisible('school_name') && filled($site->school_name))
-        <p class="portfolio__school-name">{{ $site->school_name }}</p>
-    @endif
-    @if ($site->isVisible('department') && filled($site->department))
-        <p class="portfolio__department">{{ $site->department }}</p>
-    @endif
-    @if ($site->isVisible('major') && filled($site->major))
-        <p class="portfolio__major">{{ $site->major }}</p>
-    @endif
+    <section class="portfolio__hero" id="top">
+        <div class="portfolio__inner">
+            @auth
+                @if (auth()->user()->user_id === $site->user_id)
+                    <a class="portfolio__edit" href="{{ route('portfolio.edit') }}">設定を編集する</a>
+                @endif
+            @endauth
 
-    @if ($site->isVisible('bio') && filled($site->bio))
-        <p class="portfolio__bio">{{ $site->bio }}</p>
-    @endif
+            @if ($affiliation !== '')
+                <p class="portfolio__affiliation">{{ $affiliation }}</p>
+            @endif
+            @if ($name)
+                <h1 class="portfolio__name">{{ $name }}</h1>
+            @endif
+            @if ($site->isVisible('bio') && filled($site->bio))
+                <p class="portfolio__bio">{{ $site->bio }}</p>
+            @endif
+            @if ($showLinks)
+                @include('portfolio.partials.show_links', ['links' => $site->links])
+            @endif
+        </div>
+    </section>
 
-    @if ($site->isVisible('job_axis') && filled($site->job_axis))
-        <section class="portfolio__section">
-            <h2>企業選びの軸</h2>
-            <p class="portfolio__job-axis">{{ $site->job_axis }}</p>
-        </section>
-    @endif
+    <main class="portfolio__main" id="main">
 
-    @if ($site->isVisible('hobbies') && ! empty($site->hobbies))
-        <section class="portfolio__section">
-            <h2>趣味</h2>
-            <ul class="portfolio__hobbies">
-                @foreach ($site->hobbies as $hobby)
-                    <li>{{ $hobby }}</li>
-                @endforeach
-            </ul>
-        </section>
-    @endif
+        @if ($showWorks)
+            <section class="portfolio__section" id="works">
+                <div class="portfolio__inner">
+                    <div>
+                        <h2 class="portfolio__heading">制作物</h2>
+                    </div>
+                    <div class="portfolio__works">
+                        @foreach ($works as $work)
+                            @php $first = $work->images->first(); @endphp
+                            <article @class(['portfolio__work', 'portfolio__work--no-image' => ! $first])>
+                                @if ($first)
+                                    <div class="portfolio__work-image">
+                                        {{-- 代表作の画像は最初の画面に近いので遅延読み込みにしない（表示が遅れて見えるのを防ぐ） --}}
+                                        <img src="{{ Storage::disk('works')->url($first->path) }}" alt="{{ $work->title }}の画像"
+                                            @if ($loop->first) fetchpriority="high" @else loading="lazy" @endif>
+                                    </div>
+                                @endif
+                                @if ($loop->first)
+                                    <p class="portfolio__featured-label">代表作</p>
+                                @endif
+                                <h3 class="portfolio__work-title">{{ $work->title }}</h3>
+                                @if (filled($work->summary))
+                                    <p class="portfolio__work-desc">{{ $work->summary }}</p>
+                                @endif
+                                @if (! empty($work->tech_stack))
+                                    <ul class="portfolio__tags">
+                                        @foreach ($work->tech_stack as $tech)
+                                            <li>{{ $tech }}</li>
+                                        @endforeach
+                                    </ul>
+                                @endif
+                                @if (filled($work->url))
+                                    {{-- 新しいタブで開く。noreferrer で公開ページの URL（token）をリンク先に渡さない --}}
+                                    <a class="portfolio__work-link" href="{{ $work->url }}" target="_blank" rel="noopener noreferrer">作品を見る</a>
+                                @endif
 
-    @if ($site->isVisible('life_story') && ! empty($site->life_story))
-        <section class="portfolio__section">
-            <h2>人生の道筋</h2>
-            <ul class="portfolio__life-story">
-                @foreach ($site->life_story as $row)
-                    <li>
-                        {{-- '2025-04' を「2025年4月」にする --}}
-                        @if (filled($row['period'] ?? null))
-                            <span>{{ substr($row['period'], 0, 4) }}年{{ (int) substr($row['period'], 5, 2) }}月</span>
-                        @endif
-                        {{ $row['detail'] ?? '' }}
-                    </li>
-                @endforeach
-            </ul>
-        </section>
-    @endif
-
-    @if ($site->isVisible('skills') && ! empty($site->skills))
-        <section class="portfolio__section">
-            <h2>スキル</h2>
-            <ul class="portfolio__skills">
-                @foreach ($site->skills as $skill)
-                    <li>
-                        {{ $skill['name'] ?? '' }}
-                        @if (filled($skill['detail'] ?? null))
-                            <span>（{{ $skill['detail'] }}）</span>
-                        @endif
-                    </li>
-                @endforeach
-            </ul>
-        </section>
-    @endif
-
-    @if ($site->isVisible('certifications') && ! empty($site->certifications))
-        <section class="portfolio__section">
-            <h2>資格</h2>
-            <ul class="portfolio__certifications">
-                @foreach ($site->certifications as $certification)
-                    <li>
-                        @if (filled($certification['acquired'] ?? null))
-                            <span>{{ substr($certification['acquired'], 0, 4) }}年{{ (int) substr($certification['acquired'], 5, 2) }}月</span>
-                        @endif
-                        {{ $certification['name'] ?? '' }}
-                    </li>
-                @endforeach
-            </ul>
-        </section>
-    @endif
-
-    @if ($site->isVisible('careers') && ! empty($site->careers))
-        <section class="portfolio__section">
-            <h2>経歴と活動</h2>
-            <ul class="portfolio__careers">
-                @foreach ($site->careers as $career)
-                    <li>
-                        @if (filled($career['period'] ?? null))
-                            <span>{{ substr($career['period'], 0, 4) }}年{{ (int) substr($career['period'], 5, 2) }}月</span>
-                        @endif
-                        {{ $career['content'] ?? '' }}
-                    </li>
-                @endforeach
-            </ul>
-        </section>
-    @endif
-
-    @if ($site->isVisible('awards') && ! empty($site->awards))
-        <section class="portfolio__section">
-            <h2>受賞歴</h2>
-            <ul class="portfolio__awards">
-                @foreach ($site->awards as $award)
-                    <li>
-                        @if (filled($award['period'] ?? null))
-                            <span>{{ substr($award['period'], 0, 4) }}年{{ (int) substr($award['period'], 5, 2) }}月</span>
-                        @endif
-                        {{ $award['name'] ?? '' }}
-                        @if (filled($award['organizer'] ?? null))
-                            <span>（{{ $award['organizer'] }}）</span>
-                        @endif
-                        @if (filled($award['description'] ?? null))
-                            <p>{{ $award['description'] }}</p>
-                        @endif
-                    </li>
-                @endforeach
-            </ul>
-        </section>
-    @endif
-
-    {{-- 追加項目は行ごとの visible で出す・出さないを決める --}}
-    @foreach ($site->custom_sections ?? [] as $section)
-        @if (($section['visible'] ?? true) === true)
-            <section class="portfolio__section">
-                <h2>{{ $section['title'] ?? '' }}</h2>
-                <p>{{ $section['body'] ?? '' }}</p>
+                                @php $filled = collect($detailLabels)->filter(fn ($label, $key) => filled($work->{$key})); @endphp
+                                @if ($filled->isNotEmpty() || $work->images->count() > 1)
+                                    <details class="portfolio__work-more">
+                                        <summary>詳しく見る</summary>
+                                        @if ($filled->isNotEmpty())
+                                            <dl class="portfolio__work-detail">
+                                                @foreach ($filled as $key => $label)
+                                                    <div><dt>{{ $label }}</dt><dd>{{ $work->{$key} }}</dd></div>
+                                                @endforeach
+                                            </dl>
+                                        @endif
+                                        @if ($work->images->count() > 1)
+                                            <ul class="portfolio__gallery">
+                                                @foreach ($work->images->skip(1) as $image)
+                                                    <li><img src="{{ Storage::disk('works')->url($image->path) }}" alt="{{ $work->title }}の画像" loading="lazy"></li>
+                                                @endforeach
+                                            </ul>
+                                        @endif
+                                    </details>
+                                @endif
+                            </article>
+                        @endforeach
+                    </div>
+                </div>
             </section>
         @endif
-    @endforeach
 
-    @if ($site->isVisible('links') && ! empty($site->links))
-        <ul class="portfolio__links">
-            @foreach ($site->links as $link)
-                <li>
-                    {{-- 新しいタブで開く。noreferrer で token をリンク先に渡さない --}}
-                    <a class="portfolio__link" href="{{ $link['url'] }}" target="_blank" rel="noopener noreferrer">
-                        {{ ($link['label'] ?? '') !== '' ? $link['label'] : $link['url'] }}
-                    </a>
-                </li>
-            @endforeach
-        </ul>
-    @endif
-</main>
+        @if ($showStory)
+            <section class="portfolio__section" id="story">
+                <div class="portfolio__inner">
+                    <div>
+                        <h2 class="portfolio__heading">人生の道筋</h2>
+                        <p class="portfolio__lead">今に至るまでの歩み</p>
+                    </div>
+                    <ol class="portfolio__story">
+                        @foreach ($site->life_story as $row)
+                            <li>
+                                @if ($ym($row['period'] ?? null))
+                                    <time datetime="{{ $row['period'] }}">{{ $ym($row['period']) }}</time>
+                                @endif
+                                <p>{{ $row['detail'] ?? '' }}</p>
+                            </li>
+                        @endforeach
+                    </ol>
+                </div>
+            </section>
+        @endif
+
+        @if ($showAxis)
+            <section class="portfolio__section portfolio__section--band" id="axis">
+                <div class="portfolio__inner">
+                    <div>
+                        <h2 class="portfolio__heading">企業選びの軸</h2>
+                        <p class="portfolio__lead">会社を選ぶときに大事にしていること</p>
+                    </div>
+                    <p class="portfolio__text">{{ $site->job_axis }}</p>
+                </div>
+            </section>
+        @endif
+
+        @if ($showCareers)
+            <section class="portfolio__section" id="careers">
+                <div class="portfolio__inner">
+                    <div>
+                        <h2 class="portfolio__heading">経歴と活動</h2>
+                    </div>
+                    <ul class="portfolio__careers">
+                        @foreach ($site->careers as $career)
+                            <li>
+                                @if ($ym($career['period'] ?? null))
+                                    <time datetime="{{ $career['period'] }}">{{ $ym($career['period']) }}</time>
+                                @else
+                                    <span></span>
+                                @endif
+                                <p>{{ $career['content'] ?? '' }}</p>
+                            </li>
+                        @endforeach
+                    </ul>
+                </div>
+            </section>
+        @endif
+
+        @if ($showSkillGroup)
+            <section class="portfolio__section" id="skills">
+                <div class="portfolio__inner">
+                    <div>
+                        <h2 class="portfolio__heading">スキル・資格・受賞歴</h2>
+                    </div>
+                    <div class="portfolio__columns">
+                        @if ($showSkills)
+                            <div>
+                                <h3 class="portfolio__subheading">スキル</h3>
+                                <ul class="portfolio__tags">
+                                    @foreach ($site->skills as $skill)
+                                        <li>{{ $skill['name'] ?? '' }}@if (filled($skill['detail'] ?? null))<small>{{ $skill['detail'] }}</small>@endif</li>
+                                    @endforeach
+                                </ul>
+                            </div>
+                        @endif
+                        @if ($showCerts)
+                            <div>
+                                <h3 class="portfolio__subheading">資格</h3>
+                                <ul class="portfolio__items">
+                                    @foreach ($site->certifications as $certification)
+                                        <li>
+                                            <p class="portfolio__item-name">{{ $certification['name'] ?? '' }}</p>
+                                            @if ($ym($certification['acquired'] ?? null))
+                                                <p class="portfolio__item-meta"><time datetime="{{ $certification['acquired'] }}">{{ $ym($certification['acquired']) }}</time></p>
+                                            @endif
+                                        </li>
+                                    @endforeach
+                                </ul>
+                            </div>
+                        @endif
+                        @if ($showAwards)
+                            <div>
+                                <h3 class="portfolio__subheading">受賞歴</h3>
+                                <ul class="portfolio__items">
+                                    @foreach ($site->awards as $award)
+                                        <li>
+                                            <p class="portfolio__item-name">{{ $award['name'] ?? '' }}</p>
+                                            @if (filled($award['organizer'] ?? null) || $ym($award['period'] ?? null))
+                                                <p class="portfolio__item-meta">
+                                                    {{ $award['organizer'] ?? '' }}
+                                                    @if ($ym($award['period'] ?? null))　<time datetime="{{ $award['period'] }}">{{ $ym($award['period']) }}</time>@endif
+                                                </p>
+                                            @endif
+                                            @if (filled($award['description'] ?? null))
+                                                <p class="portfolio__item-desc">{{ $award['description'] }}</p>
+                                            @endif
+                                        </li>
+                                    @endforeach
+                                </ul>
+                            </div>
+                        @endif
+                    </div>
+                </div>
+            </section>
+        @endif
+
+        @if ($showOthers)
+            <section class="portfolio__section" id="others">
+                <div class="portfolio__inner">
+                    <div>
+                        <h2 class="portfolio__heading">その他</h2>
+                    </div>
+                    <div class="portfolio__others">
+                        @if ($showHobbies)
+                            <div>
+                                <h3 class="portfolio__subheading">趣味</h3>
+                                <ul class="portfolio__tags">
+                                    @foreach ($site->hobbies as $hobby)
+                                        <li>{{ $hobby }}</li>
+                                    @endforeach
+                                </ul>
+                            </div>
+                        @endif
+                        @foreach ($customs as $section)
+                            <div>
+                                <h3 class="portfolio__subheading">{{ $section['title'] }}</h3>
+                                <p class="portfolio__text">{{ $section['body'] ?? '' }}</p>
+                            </div>
+                        @endforeach
+                    </div>
+                </div>
+            </section>
+        @endif
+
+    </main>
+
+    <footer class="portfolio__footer" id="contact">
+        <div class="portfolio__inner">
+            @if ($showLinks)
+                <h2 class="portfolio__footer-title">連絡先</h2>
+                @include('portfolio.partials.show_links', ['links' => $site->links])
+            @endif
+            <p class="portfolio__credit">NEXUSPHERE で作成</p>
+        </div>
+    </footer>
+</div>
 </body>
 </html>

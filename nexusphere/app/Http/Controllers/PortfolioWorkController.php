@@ -16,7 +16,6 @@ class PortfolioWorkController extends Controller
         $input['tech_stack'] = array_values(array_filter($request->input('tech_stack', []), fn ($tech) => ! blank($tech)));
         $newImages = array_filter($request->file('new_images', []));
 
-        
         try{
             $service->save($site,null,$input,$newImages);
         } catch(DomainException $e) {

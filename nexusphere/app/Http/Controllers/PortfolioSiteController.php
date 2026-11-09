@@ -24,7 +24,7 @@ class PortfolioSiteController extends Controller
 
         // テンプレート方式：ページを表示
         return response()
-            ->view('portfolio.show', ['site' => $site])
+            ->view('portfolio.show', ['site' => $site, 'works' => $site->works()->with('images')->get()])
             ->header('X-Robots-Tag', 'noindex');
     }
 
@@ -128,7 +128,9 @@ class PortfolioSiteController extends Controller
             'needsAgreement' => $needsAgreement,
             'defaults'       => $defaults,
             'ymLists'        => $ymLists,
-            'customSections' => $customSections
+            'customSections' => $customSections,
+            // 制作物（sort_order の順）と画像を一緒に読み込む。画像を1件ずつ読みに行かないように with を使う
+            'works'          => $site ? $site->works()->with('images')->get() : collect(),
         ]);
     }
 
